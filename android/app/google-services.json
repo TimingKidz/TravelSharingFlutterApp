@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "961455945728",
+    "firebase_url": "https://travelsharing-86fc2.firebaseio.com",
+    "project_id": "travelsharing-86fc2",
+    "storage_bucket": "travelsharing-86fc2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:961455945728:android:70c75677931611286700e5",
+        "android_client_info": {
+          "package_name": "com.cmu.TravelSharing"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "961455945728-qli9g3nkb6to1ei8b19ri5iui01boe6h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cmu.TravelSharing",
+            "certificate_hash": "f44f544b4d0e1d2af0fa1b4ab94225d395e91071"
+          }
+        },
+        {
+          "client_id": "961455945728-cv0lhv4is8384764hk145flckbh7qjdo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZ1mapORzgTWUHBn-7--B6meDwimqHrF0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "961455945728-cv0lhv4is8384764hk145flckbh7qjdo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

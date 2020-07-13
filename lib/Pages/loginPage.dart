@@ -32,7 +32,9 @@ class LoginPageState extends State<LoginPage> {
 
   Widget buildBody () {
     if(_currentUser != null) {
-      debugPrint(_currentUser.email);
+
+      print(_googleSignIn.isSignedIn());
+      debugPrint(_currentUser.hashCode.toString());
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
