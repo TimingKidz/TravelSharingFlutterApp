@@ -27,6 +27,9 @@ dependencies:
   http:
   google_sign_in:
   flutter_auth_buttons:
+  google_maps_flutter:
+  location:
+  flutter_socket_io:
 
 
   # The following adds the Cupertino Icons font to your application.
