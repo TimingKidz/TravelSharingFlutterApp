@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
           color: Colors.white
           )
         ),
-        home: Dashboard(),
+        home: LoginPage(),
 //      home: MyHomePage(title: 'Flutter Demo Home Page'),
       );
 
