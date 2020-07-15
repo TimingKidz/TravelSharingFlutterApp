@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:google_sign_in/widgets.dart';
+import 'package:travel_sharing/Pages/dashboard.dart';
+import 'package:travel_sharing/Pages/home.dart';
+import 'package:travel_sharing/Pages/map.dart';
 
 class SignUpPage extends StatefulWidget {
   final GoogleSignInAccount currentUser;
@@ -36,12 +39,22 @@ class SignUpPageState extends State<SignUpPage> {
                 RaisedButton(
                   onPressed: widget.signOut,
                   child: Text('SIGN OUT'),
-                )
+                ),
+                FloatingActionButton(
+                  child: Icon(Icons.arrow_back),
+                  onPressed: _Nextpage,
+                ),
               ],
             ),
-          )
+          ),
+
       )
     );
   }
 
+  _Nextpage(){
+    Navigator.push(context,MaterialPageRoute(
+        builder : (context) => Dashboard()));
+  }
 }
+
