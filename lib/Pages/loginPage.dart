@@ -17,9 +17,7 @@ class LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account){
-      setState(() {
         _currentUser = account;
-      });
     });
     _googleSignIn.signInSilently();
   }
@@ -69,7 +67,7 @@ class LoginPageState extends State<LoginPage> {
     try{
       var isDismiss = await _googleSignIn.signIn();
       if(isDismiss != null){
-        Navigator.push(context, MaterialPageRoute(
+        Navigator.pushReplacement(context, MaterialPageRoute(
             builder: (context) => SignUpPage(currentUser: _currentUser, signOut: _handleSignOut)));
       }
     }catch(error){

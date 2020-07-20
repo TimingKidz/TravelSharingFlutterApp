@@ -4,11 +4,14 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:latlong/latlong.dart' as l;
 import 'package:location/location.dart' ;
 import "package:google_maps_webservice/places.dart" as p;
 import 'package:google_maps_webservice/directions.dart' as d;
 import 'package:flutter_polyline_points/flutter_polyline_points.dart' ;
 import 'package:travel_sharing/Pages/dashboard.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:travel_sharing/Pages/test.dart';
 
 
 class CreateRoute extends StatefulWidget {
@@ -22,6 +25,8 @@ class CreateRoute extends StatefulWidget {
 class _CreateRoutestate extends State<CreateRoute> {
   static final String api_key = "AIzaSyBQCf89JOkrq2ECa6Ko8LBQaMO8A7rJt9Q";
   final places = new p.GoogleMapsPlaces(apiKey: api_key);
+  final l.Distance distance = new l.Distance();
+  p.GoogleMapsPlaces _places = p.GoogleMapsPlaces(apiKey: api_key);
   GoogleMapController _mapController;
   List<LatLng> routes = List();
   Set<Polyline> lines = Set();
@@ -33,18 +38,22 @@ class _CreateRoutestate extends State<CreateRoute> {
   Location location = Location();
   bool isSet_Marker = false;
   LatLng current_Location ;
+  var bounds ;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+      setState(() {
+        getCurrentLocation();
+      });
       location.onLocationChanged.listen((LocationData currentLocations) {
       if(!isSet_Marker) {
         current_Location =
             LatLng(currentLocations.latitude, currentLocations.longitude);
-        _createMarkers();
+        _createMarkers(current_Location);
         isSet_Marker = true;
-        setState(() {});
+
       }
       });
   }
@@ -88,7 +97,7 @@ class _CreateRoutestate extends State<CreateRoute> {
           GoogleMap(
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(
-              target: LatLng(0,0),
+              target: current_Location,
               zoom: 15,
             ),
             markers: Markers,
@@ -96,6 +105,37 @@ class _CreateRoutestate extends State<CreateRoute> {
             zoomControlsEnabled: false,
             myLocationEnabled: true,
             myLocationButtonEnabled: true,
+          ),
+          Positioned(
+            top: 10,
+            right: 15,
+            left: 15,
+            child: Container(
+              color: Colors.white,
+              child: Row(
+                children: <Widget>[
+                  IconButton(
+                    splashColor: Colors.grey,
+                    icon: Icon(Icons.menu),
+                    onPressed: () {},
+                  ),
+                  Expanded(
+                    child: TextField(
+                      cursorColor: Colors.black,
+                      keyboardType: TextInputType.text,
+                      onTap: _Searchbar,
+                      textInputAction: TextInputAction.go,
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding:
+                          EdgeInsets.symmetric(horizontal: 15),
+                          hintText: "Search..."),
+                    ),
+                  ),
+
+                ],
+              ),
+            ),
           ),
           Container(
             padding: EdgeInsets.all(16.0),
@@ -122,32 +162,67 @@ class _CreateRoutestate extends State<CreateRoute> {
         ],
       ),
     );
+  }else{
+    setState(() {
+      getCurrentLocation();
+    });
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Create your route.'),
+      ),
+    );
   }
 
+  }
+
+  Future<void> _Searchbar() async {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (currentFocus.nextFocus()) {
+      currentFocus.unfocus();
+    }
+    // show input autocomplete with selected mode
+    // then get the Prediction selected
+    p.Prediction P = await PlacesAutocomplete.show(
+      context: context,
+      apiKey: api_key,
+      mode: Mode.overlay,
+      language: "th",
+      components: [p.Component(p.Component.country, "th")],
+    );
+
+    p.PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(P.placeId);
+    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    final lat = detail.result.geometry.location.lat;
+    final lng = detail.result.geometry.location.lng;
+    print(lat);
+    toPoint = LatLng(lat,lng);
+    _createMarkers(toPoint);
+    _nextplace();
   }
 
   _Fin() async{
-    p.PlacesSearchResponse response = await places.searchNearbyWithRadius(new p.Location(routes.last.latitude,routes.last.longitude),200);
-    print("444444");
-    print(response.results.first.name);
-    print(jsonEncode(routes));
-    setState(() {
-      Markers.clear();
-      Markers.add(
-          Marker(
-            markerId: MarkerId("St"),
-            position: routes.last,
-            infoWindow: InfoWindow(title: "Roca 123"),
-          )
-      );
-      Markers.add(
-          Marker(
-            markerId: MarkerId("Dst"),
-            position: routes.first,
-            infoWindow: InfoWindow(title: "Roca 123"),
-          )
-      );
-    });
+    Markers.clear();
+    Markers.add(
+        Marker(
+          markerId: MarkerId("St"),
+          position: routes.last,
+          infoWindow: InfoWindow(title: "Roca 123"),
+        )
+    );
+    Markers.add(
+        Marker(
+          markerId: MarkerId("Dst"),
+          position: routes.first,
+          infoWindow: InfoWindow(title: "Roca 123"),
+        )
+    );
+    Navigator.pushReplacement(context, MaterialPageRoute(
+        builder: (context) => Test(routes: routes, bounds:bounds,Markers :Markers,lines :lines )));
+
+
+
+
+
   }
 
   _stepBack() async {
@@ -167,18 +242,18 @@ class _CreateRoutestate extends State<CreateRoute> {
     fromPoint = toPoint;
   }
 
-  Set<Marker> _createMarkers() {
-    var tmp = Set<Marker>();
+   _createMarkers(LatLng x) {
+    Markers.clear();
     Markers.add(
       Marker(
         markerId: MarkerId("toPoint"),
-        position: current_Location,
+        position: x,
         draggable: true,
         onDragEnd: _onDragEnd,
         infoWindow: InfoWindow(title: "Roca 123"),
       ),
     );
-    return tmp;
+    setState(() {    });
   }
 
   void getCurrentLocation() async {
@@ -197,9 +272,24 @@ class _CreateRoutestate extends State<CreateRoute> {
 
   }
 
-  void _onDragEnd(LatLng new_point) {
-    toPoint = new_point;
-
+  void _onDragEnd(LatLng new_point) async{
+    p.PlacesSearchResponse response = await places.searchNearbyWithRadius(new p.Location(new_point.latitude,new_point.longitude), 10);
+    int min = 10; LatLng tmp = null;
+    response.results.forEach((element) {
+      l.LatLng to = new l.LatLng(element.geometry.location.lat,element.geometry.location.lng);
+      l.LatLng ori = new l.LatLng(new_point.latitude, new_point.longitude);
+      if(distance(to,ori) <= min){
+        tmp = LatLng(to.latitude,to.longitude);
+        print("${element.name} : ${distance(to,ori)} : $to");
+      }
+    });
+    if(tmp!=null){
+      toPoint = tmp;
+      _createMarkers(toPoint);
+      _centerView(false);
+    }else {
+      toPoint = new_point;
+    }
   }
 
   void _onMapCreated(GoogleMapController controller){
@@ -226,7 +316,7 @@ class _CreateRoutestate extends State<CreateRoute> {
       bottom = min(bottom, point.longitude);
     });
 
-    var bounds = LatLngBounds(
+    bounds = LatLngBounds(
       southwest: LatLng(left, bottom),
       northeast: LatLng(right, top),
     );

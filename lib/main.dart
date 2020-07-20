@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:travel_sharing/ChatFile/chatPage.dart';
 import 'package:travel_sharing/Pages/home.dart';
 import 'package:travel_sharing/Pages/signupPage.dart';
+import 'package:travel_sharing/Pages/test.dart';
 import 'Pages/loginPage.dart';
 import 'Pages/map.dart';
 import 'Pages/dashboard.dart';
@@ -34,7 +35,6 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(

@@ -24,10 +24,13 @@ class SignUpPageState extends State<SignUpPage> {
         automaticallyImplyLeading: false,
         title: Text('Sign Up to Travel Sharing'),
       ),
-      body: Center(
-          child: Container(
-            padding: EdgeInsets.all(24.0),
+      body: Stack(
+        children: <Widget>[Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.all(16.0),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 SizedBox(
                   width: 96.0,
@@ -40,13 +43,25 @@ class SignUpPageState extends State<SignUpPage> {
                   onPressed: widget.signOut,
                   child: Text('SIGN OUT'),
                 ),
+
+              ],
+            ),
+          ),
+          Container(
+            alignment: Alignment.bottomRight,
+            padding: EdgeInsets.all(24.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
                 FloatingActionButton(
-                  child: Icon(Icons.arrow_back),
+                  child: Icon(Icons.arrow_forward),
                   onPressed: _Nextpage,
                 ),
               ],
             ),
           ),
+        ],
 
       )
     );
