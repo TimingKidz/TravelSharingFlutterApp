@@ -147,14 +147,17 @@ class _CreateRoutestate extends State<CreateRoute> {
                 FloatingActionButton(
                   child: Icon(Icons.arrow_back),
                   onPressed: _stepBack,
+                  heroTag: null,
                 ),
                 FloatingActionButton.extended(
                     label: Text('Finish'),
-                    onPressed: _Fin
+                    onPressed: _Fin,
+                  heroTag: null,
                 ),
                 FloatingActionButton(
                     child: Icon(Icons.add),
-                    onPressed: _nextplace
+                    onPressed: _nextplace,
+                  heroTag: null,
                 ),
               ],
             ),

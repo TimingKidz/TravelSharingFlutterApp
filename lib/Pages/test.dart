@@ -79,6 +79,7 @@ class _Test extends State<Test> {
                           FloatingActionButton(
                             child: Icon(Icons.arrow_forward),
                             onPressed: _Nextpage,
+                            heroTag: null,
                           ),
                         ],
                       ),
