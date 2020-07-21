@@ -5,12 +5,12 @@ import 'package:travel_sharing/Pages/dashboard.dart';
 class HomeNavigation extends StatefulWidget {
   final List<BottomNavigationBarItem> barItems = [
     BottomNavigationBarItem(
-      icon: Icon(Icons.dashboard),
-      title: Text('Dashboard'),
+      icon: Icon(Icons.notifications_none),
+      title: Text('Notification'),
     ),
     BottomNavigationBarItem(
-      icon: Icon(Icons.map),
-      title: Text('Map'),
+      icon: Icon(Icons.dashboard),
+      title: Text('Dashboard'),
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.account_circle),
@@ -24,11 +24,11 @@ class HomeNavigation extends StatefulWidget {
 }
 
 class HomeNavigationState extends State<HomeNavigation> {
-  int selectedBarIndex = 0;
+  int selectedBarIndex = 1;
 
   final List<Widget> pageRoute = [
+    Center(child: Text('Notification')),
     Dashboard(),
-    Center(child: Text('Hello')),
     Center(child: Text('Account'))
   ];
 
