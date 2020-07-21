@@ -4,6 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:google_sign_in/widgets.dart';
 import 'package:travel_sharing/Pages/dashboard.dart';
 import 'package:travel_sharing/Pages/home.dart';
+import 'package:travel_sharing/Pages/homeNavigation.dart';
 import 'package:travel_sharing/Pages/map.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -69,7 +70,7 @@ class SignUpPageState extends State<SignUpPage> {
 
   _Nextpage(){
     Navigator.push(context,MaterialPageRoute(
-        builder : (context) => Dashboard()));
+        builder : (context) => HomeNavigation()));
   }
 }
 
