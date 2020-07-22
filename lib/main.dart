@@ -22,7 +22,7 @@ void main() {
     statusBarIconBrightness: Brightness.dark,
 
     // statusBarBrightness is used to set Status bar icon color in iOS.
-    statusBarBrightness: Brightness.light,
+    statusBarBrightness: Brightness.dark,
     // Here light means dark color Status bar icons.
 
     systemNavigationBarColor: Colors.transparent,
@@ -38,11 +38,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-        primaryColor: Colors.white,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        appBarTheme: AppBarTheme(
-          elevation: 0.0,
-          color: Colors.white
+          primaryColor: Colors.white,
+          accentColor: Colors.black,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          appBarTheme: AppBarTheme(
+            elevation: 0.0,
+            color: Colors.white
           )
         ),
         home: LoginPage(),

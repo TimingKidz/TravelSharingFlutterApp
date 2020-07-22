@@ -16,43 +16,37 @@ class Dashboard extends StatefulWidget {
 class _Dashboard extends State<Dashboard> {
   Location location = Location();
   LocationData Locations;
-  int _selectedIndex = 0;
-  Widget _widgetOptions(){
-    if(_selectedIndex == 0){
-      return Container(
-        padding: EdgeInsets.all(16.0),
-        alignment: Alignment.center,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            FloatingActionButton(
-              child: Icon(Icons.add),
-              onPressed: _newroute1,
-            ),
+  final _joinList = <String>['A', 'B', 'C', 'D'];
+  final _invitedList = <String>['E', 'F', 'G', 'H'];
+  bool isFirstPage = true;
 
-          ],
-        ),
+  Widget _widgetOptions(){
+    if((_joinList.isEmpty && isFirstPage) || (_invitedList.isEmpty && !isFirstPage)){
+      return Center(
+        child: Text('No List'),
       );
     }else{
-      return Container(
-        padding: EdgeInsets.all(16.0),
-        alignment: Alignment.center,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            FloatingActionButton(
-              child: Icon(Icons.add),
-              onPressed: _newroute,
-            ),
-          ],
-        ),
-      );
+      return _buildListView();
     }
   }
 
+  Widget _buildListView() {
+    return ListView.builder(
+        itemCount: isFirstPage ? _joinList.length : _invitedList.length,
+        itemBuilder: (context, i) {
+          return _buildRow(isFirstPage ? _joinList[i] : _invitedList[i]);
+        });
+  }
 
+  Widget _buildRow(String data) {
+    return Card(
+      margin: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
+      child: Container(
+        padding: EdgeInsets.all(16.0),
+        child: Text(data),
+      ),
+    );
+  }
 
   _newroute() async{
 //    try {
@@ -81,36 +75,69 @@ class _Dashboard extends State<Dashboard> {
 //    }
 
   }
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text('Dashboard'),
       ),
-      body: Center(
-        child: _widgetOptions(),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: isFirstPage ? _newroute1 : _newroute,
+        heroTag: null,
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            title: Text('ไปด้วย'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_add),
-            title: Text('ชวน'),
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
-        onTap: _onItemTapped,
+      body: Center(
+        child: Column(
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0, top: 8.0),
+              color: Theme.of(context).primaryColor,
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: RaisedButton(
+                      highlightElevation: 0.0,
+                      padding: EdgeInsets.all(16.0),
+                      color: isFirstPage ? Colors.black : Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      child: Text('ไปด้วย', style: TextStyle(color: isFirstPage ? Colors.white : Colors.black)),
+                      onPressed: () {
+                        setState(() {
+                          isFirstPage = true;
+                        });
+                      },
+                    ),
+                  ),
+                  SizedBox(width: 16.0),
+                  Expanded(
+                    child: RaisedButton(
+                      highlightElevation: 0.0,
+                      padding: EdgeInsets.all(16.0),
+                      color: isFirstPage ? Colors.white : Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      child: Text('ชวน', style: TextStyle(color: isFirstPage ? Colors.black : Colors.white)),
+                      onPressed: () {
+                        setState(() {
+                          isFirstPage = false;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: _widgetOptions(),
+            )
+          ],
+        ),
       ),
     );
   }
