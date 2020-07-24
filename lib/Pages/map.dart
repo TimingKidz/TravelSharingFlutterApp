@@ -14,7 +14,6 @@ import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:travel_sharing/Pages/test.dart';
 import 'package:travel_sharing/customAppbar.dart';
 
-
 class CreateRoute extends StatefulWidget {
 //  final LocationData gps;
 //  CreateRoute({this.gps}) ;
@@ -32,6 +31,7 @@ class _CreateRoutestate extends State<CreateRoute> {
   List<LatLng> routes = List();
   Set<Polyline> lines = Set();
   List<LatLng> temp = List();
+  Map<LatLng,String> Name_list = Map();
   LatLng fromPoint = null;
   LatLng toPoint = null;
   Set<Marker> Markers = Set();
@@ -39,22 +39,22 @@ class _CreateRoutestate extends State<CreateRoute> {
   Location location = Location();
   bool isSet_Marker = false;
   LatLng current_Location ;
-  var bounds ;
+  LatLngBounds bounds ;
+  p.PlacesSearchResult tmp = null;
+  LatLng src = null;
+  LatLng dst = null;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-      setState(() {
-        getCurrentLocation();
-      });
       location.onLocationChanged.listen((LocationData currentLocations) {
       if(!isSet_Marker) {
         current_Location =
             LatLng(currentLocations.latitude, currentLocations.longitude);
+        _mapController.animateCamera( CameraUpdate.newCameraPosition(CameraPosition(target: current_Location, zoom: 15,)));
         _createMarkers(current_Location);
         isSet_Marker = true;
-
       }
       });
   }
@@ -81,14 +81,12 @@ class _CreateRoutestate extends State<CreateRoute> {
     setState(() {
       lines.add(line);
     });
-
-
   }
 
   @override
   Widget build(BuildContext context) {
 //    getCurrentLocation();
-  if(current_Location != null){
+  print(current_Location);
     return Scaffold(
       appBar: AppBar(
         title: Text('Create your route.'),
@@ -98,14 +96,15 @@ class _CreateRoutestate extends State<CreateRoute> {
           GoogleMap(
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(
-              target: current_Location,
-              zoom: 15,
+              target: LatLng(16.294922,100.928026),
+              zoom: 5,
             ),
             markers: Markers,
             polylines: lines,
             zoomControlsEnabled: false,
             myLocationEnabled: true,
-            myLocationButtonEnabled: true,
+            myLocationButtonEnabled: false,
+//            onCameraMove: center,
           ),
           Positioned(
             top: 10,
@@ -133,7 +132,6 @@ class _CreateRoutestate extends State<CreateRoute> {
                           hintText: "Search..."),
                     ),
                   ),
-
                 ],
               ),
             ),
@@ -166,18 +164,11 @@ class _CreateRoutestate extends State<CreateRoute> {
         ],
       ),
     );
-  }else{
-    setState(() {
-      getCurrentLocation();
-    });
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Create your route.'),
-      ),
-    );
-  }
+
 
   }
+
+
 
   Future<void> _Searchbar() async {
     FocusScopeNode currentFocus = FocusScope.of(context);
@@ -195,20 +186,21 @@ class _CreateRoutestate extends State<CreateRoute> {
     );
 
     p.PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(P.placeId);
-    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     final lat = detail.result.geometry.location.lat;
     final lng = detail.result.geometry.location.lng;
-    print(lat);
     toPoint = LatLng(lat,lng);
+    Name_list.putIfAbsent(toPoint, () => detail.result.name);
+    print(Name_list);
     _createMarkers(toPoint);
     _nextplace();
   }
 
   _Fin() async{
+    print(Name_list);
     Markers.clear();
     Markers.add(
         Marker(
-          markerId: MarkerId("St"),
+          markerId: MarkerId("Src"),
           position: routes.last,
           infoWindow: InfoWindow(title: "Roca 123"),
         )
@@ -220,8 +212,13 @@ class _CreateRoutestate extends State<CreateRoute> {
           infoWindow: InfoWindow(title: "Roca 123"),
         )
     );
+
+    String Placename_dst = Name_list[dst] ;
+    String Placename_src = Name_list[src] ;
+    print(dst);
+    print(Placename_dst);
     Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => Test(routes: routes, bounds:bounds,Markers :Markers,lines :lines )));
+        builder: (context) => Test(routes: routes, bounds:bounds,Markers :Markers,lines :lines,src:Placename_src,dst: Placename_dst )));
 
 
 
@@ -235,19 +232,37 @@ class _CreateRoutestate extends State<CreateRoute> {
       routes.removeRange(index+1, routes.length);
       fromPoint = temp.removeLast();
       await _centerView(false);
+    }else {
+      routes.clear();
+      lines.clear();
+      src = null;
+      fromPoint = null;
     }
+
   }
+
 
   _nextplace() async{
-    if( toPoint == null ){
-      toPoint =  current_Location;
-    }
-    await _centerView(true);
-    fromPoint = toPoint;
+    print("before to : $toPoint from : $fromPoint src : $src dst : $dst");
+      if( toPoint == null ){
+        toPoint =  current_Location;
+      }
+      if(src == null) {
+        src = toPoint;
+      }
+      dst = toPoint;
+      await _centerView(true);
+      if(tmp != null){
+        Name_list.putIfAbsent(toPoint, () => tmp.name);
+      }
+      fromPoint = toPoint;
+      print("after to : $toPoint from : $fromPoint src : $src dst : $dst");
   }
 
+
+
    _createMarkers(LatLng x) {
-    Markers.clear();
+//    Markers.clear();
     Markers.add(
       Marker(
         markerId: MarkerId("toPoint"),
@@ -257,50 +272,47 @@ class _CreateRoutestate extends State<CreateRoute> {
         infoWindow: InfoWindow(title: "Roca 123"),
       ),
     );
-    setState(() {    });
+    setState(() {});
   }
 
-  void getCurrentLocation() async {
-    LocationData Locations;
-    try {
-      Locations = await location.getLocation();
-    } on PlatformException catch (e) {
-      if (e.code == 'PERMISSION_DENIED') {
-        Locations = null;
-      }
-    }
-    setState(() {
-      current_Location = LatLng(Locations.latitude,Locations.longitude);
-    });
-
-
-  }
+//  void getCurrentLocation() async {
+//    LocationData Locations;
+//    try {
+//      Locations = await location.getLocation();
+//    } on PlatformException catch (e) {
+//      if (e.code == 'PERMISSION_DENIED') {
+//        Locations = null;
+//      }
+//    }
+//    setState(() {
+//      current_Location = LatLng(Locations.latitude,Locations.longitude);
+//    });
+//  }
 
   void _onDragEnd(LatLng new_point) async{
+    tmp = null;
     p.PlacesSearchResponse response = await places.searchNearbyWithRadius(new p.Location(new_point.latitude,new_point.longitude), 10);
-    int min = 10; LatLng tmp = null;
+    int min = 10;
     response.results.forEach((element) {
       l.LatLng to = new l.LatLng(element.geometry.location.lat,element.geometry.location.lng);
       l.LatLng ori = new l.LatLng(new_point.latitude, new_point.longitude);
       if(distance(to,ori) <= min){
-        tmp = LatLng(to.latitude,to.longitude);
+        tmp = element;
         print("${element.name} : ${distance(to,ori)} : $to");
       }
     });
     if(tmp!=null){
-      toPoint = tmp;
+      toPoint = LatLng(tmp.geometry.location.lat,tmp.geometry.location.lng);
       _createMarkers(toPoint);
-      _centerView(false);
     }else {
       toPoint = new_point;
     }
   }
 
-  void _onMapCreated(GoogleMapController controller){
+  void _onMapCreated(GoogleMapController controller) async{
     _mapController = controller;
-    getCurrentLocation();
-    current_Location = LatLng(currentLocation.latitude,currentLocation.longitude);
-    _centerView(true);
+//    current_Location = LatLng(currentLocation.latitude,currentLocation.longitude);
+    await _centerView(true);
   }
 
   _centerView(bool isFind_Direction ) async {

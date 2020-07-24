@@ -42,9 +42,8 @@ class SignUpPageState extends State<SignUpPage> {
                 ),
                 RaisedButton(
                   onPressed: widget.signOut,
-                  child: Text('SIGN OUT'),
+                  child: Text(widget.currentUser.id),
                 ),
-
               ],
             ),
           ),
@@ -63,11 +62,9 @@ class SignUpPageState extends State<SignUpPage> {
             ),
           ),
         ],
-
       )
     );
   }
-
   _Nextpage(){
     Navigator.push(context,MaterialPageRoute(
         builder : (context) => HomeNavigation()));

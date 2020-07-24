@@ -8,11 +8,15 @@ import 'package:travel_sharing/Pages/map.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 class Test extends StatefulWidget {
   final List<LatLng> routes;
-  final bounds;
+  final LatLngBounds bounds;
   final Set<Polyline> lines;
   final Set<Marker> Markers;
+  final String src ;
+  final String dst;
 
-  const Test({Key key, this.routes, this.bounds, this.lines, this.Markers}) : super(key: key);
+  const Test({Key key, this.routes, this.bounds, this.lines, this.Markers, this.src, this.dst}) : super(key: key);
+
+
 
 
   _Test createState() => _Test();
@@ -20,6 +24,7 @@ class Test extends StatefulWidget {
 
 class _Test extends State<Test> {
   GoogleMapController _mapController;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,8 +51,7 @@ class _Test extends State<Test> {
                     GoogleMap(
                       onMapCreated: _onMapCreated,
                       initialCameraPosition: CameraPosition(
-
-                        target: LatLng(0,0),
+                        target: LatLng(widget.routes.last.latitude,widget.routes.last.longitude),
                         zoom: 15,
                       ),
                       markers: widget.Markers,
@@ -70,19 +74,65 @@ class _Test extends State<Test> {
                     ),
                     elevation: 8,
                     child: Container(
-                      alignment: Alignment.bottomRight,
-                      padding: EdgeInsets.all(10.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                      margin: EdgeInsets.all(5.0),
+                      child: Column(
                         children: <Widget>[
-                          FloatingActionButton(
-                            child: Icon(Icons.arrow_forward),
-                            onPressed: _Nextpage,
-                            heroTag: null,
+                          TextFormField(
+                            initialValue: widget.src ?? "",
+                            decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Source',
+
+
                           ),
+                          ),
+                          TextFormField(
+                            initialValue: widget.dst ?? "",
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Destination',
+
+
+                            ),
+                          ),
+                          TextFormField(
+                            keyboardType: TextInputType.datetime,
+                            initialValue: DateTime.now().toIso8601String(),
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Date',
+
+
+                            ),
+                          ),
+                          TextFormField(
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Amount',
+
+
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.all(5.0),
+                            alignment: Alignment.bottomRight,
+                            child: FloatingActionButton(
+                              child: Icon(Icons.arrow_forward),
+                              onPressed: _SavetoDB,
+                              heroTag: null,
+                            ),
+                          ),
+
+
+
+
+
+
+
                         ],
                       ),
+
                     ),
                   ),
                 ),
@@ -96,18 +146,17 @@ class _Test extends State<Test> {
 
         )
     );
-  }
-  void _onMapCreated(GoogleMapController controller){
-    _mapController = controller;
-    setState(() {
 
-    });
+
+  }
+  void _onMapCreated(GoogleMapController controller) async{
     var cameraUpdate = CameraUpdate.newLatLngBounds(widget.bounds, 50);
-    _mapController.animateCamera(cameraUpdate);
+    await controller.animateCamera(cameraUpdate);
+    _mapController = controller;
 
   }
 
-  _Nextpage(){
+  _SavetoDB(){
     Navigator.push(context,MaterialPageRoute(
         builder : (context) => Dashboard()));
   }

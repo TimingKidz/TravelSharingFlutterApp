@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:travel_sharing/ChatFile/chatPage.dart';
 import 'package:travel_sharing/Pages/home.dart';
+import 'package:travel_sharing/Pages/homeNavigation.dart';
 import 'package:travel_sharing/Pages/signupPage.dart';
 import 'package:travel_sharing/Pages/test.dart';
 import 'Pages/loginPage.dart';
@@ -46,7 +47,7 @@ class MyApp extends StatelessWidget {
             color: Colors.white
           )
         ),
-        home: LoginPage(),
+        home: HomeNavigation(),
 //      home: MyHomePage(title: 'Flutter Demo Home Page'),
       );
 

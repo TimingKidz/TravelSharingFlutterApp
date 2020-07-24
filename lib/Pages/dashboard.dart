@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:travel_sharing/Class/RouteJson.dart';
+import 'package:travel_sharing/Pages/JoinMap.dart';
 import 'package:travel_sharing/Pages/home.dart';
 import 'package:travel_sharing/Pages/map.dart';
 import 'package:location/location.dart' ;
@@ -63,16 +65,9 @@ class _Dashboard extends State<Dashboard> {
   }
 
   _newroute1() async{
-//    try {
-//      Locations = await location.getLocation();
-//      int x = 0;
     Navigator.push(context, MaterialPageRoute(
-        builder: (context) => CreateRoute()));
-//    } on PlatformException catch (e) {
-//      if (e.code == 'PERMISSION_DENIED') {
-//        Locations = null;
-//      }
-//    }
+        builder: (context) => CreateRoute_Join()));
+
 
   }
 
