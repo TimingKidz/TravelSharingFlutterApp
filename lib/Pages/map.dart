@@ -43,6 +43,7 @@ class _CreateRoutestate extends State<CreateRoute> {
   p.PlacesSearchResult tmp = null;
   LatLng src = null;
   LatLng dst = null;
+  static int Role = 1;
 
   @override
   void initState() {
@@ -218,7 +219,7 @@ class _CreateRoutestate extends State<CreateRoute> {
     print(dst);
     print(Placename_dst);
     Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => Test(routes: routes, bounds:bounds,Markers :Markers,lines :lines,src:Placename_src,dst: Placename_dst )));
+        builder: (context) => Test(routes: routes, bounds:bounds,Markers :Markers,lines :lines,src:Placename_src,dst: Placename_dst ,Role :Role)));
 
 
 

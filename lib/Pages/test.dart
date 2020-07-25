@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:google_sign_in/widgets.dart';
+import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Pages/dashboard.dart';
 import 'package:travel_sharing/Pages/home.dart';
 import 'package:travel_sharing/Pages/map.dart';
@@ -13,17 +14,26 @@ class Test extends StatefulWidget {
   final Set<Marker> Markers;
   final String src ;
   final String dst;
-
-  const Test({Key key, this.routes, this.bounds, this.lines, this.Markers, this.src, this.dst}) : super(key: key);
-
-
-
+  final int Role;
+  const Test({Key key, this.routes, this.bounds, this.lines, this.Markers, this.src, this.dst,this.Role}) : super(key: key);
 
   _Test createState() => _Test();
 }
 
 class _Test extends State<Test> {
+  final TextEditingController date_Textcontroller = new TextEditingController();
   GoogleMapController _mapController;
+  Routes Final_Data = new Routes();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Final_Data.src = widget.src;
+    Final_Data.dst = widget.dst;
+    date_Textcontroller.text =  DateTime.now().toIso8601String();
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +88,9 @@ class _Test extends State<Test> {
                       child: Column(
                         children: <Widget>[
                           TextFormField(
+                            onChanged: (text){
+                              Final_Data.src = text;
+                            },
                             initialValue: widget.src ?? "",
                             decoration: InputDecoration(
                             border: OutlineInputBorder(),
@@ -87,6 +100,9 @@ class _Test extends State<Test> {
                           ),
                           ),
                           TextFormField(
+                            onChanged: (text){
+                              Final_Data.dst = text;
+                            },
                             initialValue: widget.dst ?? "",
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
@@ -96,8 +112,11 @@ class _Test extends State<Test> {
                             ),
                           ),
                           TextFormField(
+                            controller: date_Textcontroller,
+                            onSaved: (text){
+                              Final_Data.date = text;
+                            },
                             keyboardType: TextInputType.datetime,
-                            initialValue: DateTime.now().toIso8601String(),
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: 'Date',
@@ -106,6 +125,10 @@ class _Test extends State<Test> {
                             ),
                           ),
                           TextFormField(
+                            onChanged: (text){
+                              Final_Data.amount = text;
+                            },
+
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
@@ -153,12 +176,15 @@ class _Test extends State<Test> {
     var cameraUpdate = CameraUpdate.newLatLngBounds(widget.bounds, 50);
     await controller.animateCamera(cameraUpdate);
     _mapController = controller;
-
   }
 
   _SavetoDB(){
-    Navigator.push(context,MaterialPageRoute(
-        builder : (context) => Dashboard()));
+
+    Final_Data.date = date_Textcontroller.text;
+    Final_Data.routes = widget.routes;
+    print(Final_Data.toJson());
+//    Navigator.push(context,MaterialPageRoute(
+//        builder : (context) => Dashboard()));
   }
 }
 

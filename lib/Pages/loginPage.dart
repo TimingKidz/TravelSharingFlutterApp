@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/signupPage.dart';
 
 GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['profile', 'email']);
@@ -67,8 +68,13 @@ class LoginPageState extends State<LoginPage> {
     try{
       var isDismiss = await _googleSignIn.signIn();
       if(isDismiss != null){
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => SignUpPage(currentUser: _currentUser, signOut: _handleSignOut)));
+        User user = new User(name:_currentUser.displayName,email:_currentUser.email,id:_currentUser.id);
+        if (await user.Register()){
+          Navigator.pushReplacement(context, MaterialPageRoute(
+              builder: (context) => SignUpPage(currentUser: _currentUser, signOut: _handleSignOut)));
+        }else{
+          throw("Plaese check your connection.");
+        }
       }
     }catch(error){
       print(error);

@@ -36,6 +36,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
   LatLng current_Location;
   LatLng Marker_Location;
   bool is_src = true;
+  static int Role = 1;
 
 
 
@@ -202,7 +203,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
       northeast: LatLng(right, top),
     );
     Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => Test(routes: routes, bounds:bounds,Markers :Markers,lines :null,src:Placename_src,dst: Placename_dst )));
+        builder: (context) => Test(routes: routes, bounds:bounds,Markers :Markers,lines :null,src:Placename_src,dst: Placename_dst ,Role: Role)));
   print("Latlng src: ${Map_Latlng["src"]} Dst: ${Map_Latlng["dst"]} Place src: ${Map_Placename["src"]} dst : ${Map_Placename["dst"]}");
 
   }

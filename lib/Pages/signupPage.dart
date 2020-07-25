@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:google_sign_in/widgets.dart';
+import 'package:travel_sharing/Class/User.dart';
+import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/dashboard.dart';
 import 'package:travel_sharing/Pages/home.dart';
 import 'package:travel_sharing/Pages/homeNavigation.dart';
@@ -17,6 +19,11 @@ class SignUpPage extends StatefulWidget {
 }
 
 class SignUpPageState extends State<SignUpPage> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

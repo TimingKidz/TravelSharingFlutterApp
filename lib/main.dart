@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
             color: Colors.white
           )
         ),
-        home: HomeNavigation(),
+        home: LoginPage(),
 //      home: MyHomePage(title: 'Flutter Demo Home Page'),
       );
 
