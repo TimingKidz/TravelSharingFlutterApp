@@ -175,8 +175,8 @@ class _Test extends State<Test> {
     Final_Data = new Routes(id: user.id,routes : widget.routes,src : Final_Data.src,dst : Final_Data.dst,amount : Final_Data.amount,date :date_Textcontroller.text);
 //    print(jsonEncode(Final_Data.toJson()));
     Final_Data.SaveRoute_toDB(widget.Role);
-//    Navigator.push(context,MaterialPageRoute(
-//        builder : (context) => HomeNavigation()));
+    Navigator.push(context,MaterialPageRoute(
+        builder : (context) => HomeNavigation()));
   }
 }
 

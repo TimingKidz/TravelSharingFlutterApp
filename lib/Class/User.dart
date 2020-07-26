@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as Http;
 import 'package:travel_sharing/Class/RouteJson.dart';
 
-final String localhost = "192.168.1.14";
+final String heroku = "http://vast-eyrie-74860.herokuapp.com";
+final String localhost = "http://192.168.1.14:3000";
 final Map<String,String> header = <String, String>{'Content-Type': 'application/json; charset=UTF-8'};
 
 class User {
@@ -29,7 +30,7 @@ class User {
 
   Future<User> getCurrentuser(String id) async{
     try{
-      var url = "http://$localhost:3000/api/user/isreg";
+      var url = "$heroku/api/user/isreg";
       Http.Response response = await Http.post(url,headers: header , body: jsonEncode(<String,String>{ "id":id }));
       if( response.statusCode == 400 ){
         return Future.value(null);
@@ -50,7 +51,7 @@ class User {
   Future<bool> Register() async {
     try{
       if(await getCurrentuser(this.id) == null){
-        var url = "http://$localhost:3000/api/user/register";
+        var url = "$heroku/api/user/register";
         Http.Response response = await Http.post(url, headers: header, body: jsonEncode(this.toJson()));
         if(response.statusCode == 400 ){
           return Future.value(false);
@@ -68,7 +69,8 @@ class User {
 
   Future<List<Routes>> getRoutes(int role) async {
     try{
-        var url = "http://$localhost:3000/api/routes/getRoutes";
+        Map<int,String> path = {0:'invite',1:'join'};
+        var url = "$heroku/api/routes/getRoutes";
         Map<String, dynamic> temp = this.toJson();
         temp['role'] = role;
         Http.Response response = await Http.post(url, headers: header, body: jsonEncode(temp));
@@ -80,7 +82,7 @@ class User {
           }else{
             Map<String, dynamic> data = jsonDecode(response.body);
             List<Routes> listroutes = List();
-            data['event']['join'].forEach((x) {
+            data['event'][path[role]].forEach((x) {
               listroutes.add(Routes.fromJson(x));
             });
             return Future.value(listroutes);

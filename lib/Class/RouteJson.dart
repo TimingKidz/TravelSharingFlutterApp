@@ -2,7 +2,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as Http;
 
-final String localhost = "192.168.1.14";
+final String heroku = "http://vast-eyrie-74860.herokuapp.com";
+final String localhost = "http://192.168.1.14:3000";
 final Map<String,String> header = <String, String>{'Content-Type': 'application/json; charset=UTF-8'};
 
 class Routes {
@@ -43,7 +44,7 @@ class Routes {
 
   Future<bool> SaveRoute_toDB(int role) async{
     try{
-      var url = "http://$localhost:3000/api/routes/SaveRoutes";
+      var url = "$heroku/api/routes/SaveRoutes";
       Map<String, dynamic> temp = this.toJson();
       temp['role'] = role;
       print(jsonEncode(temp));
