@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/signupPage.dart';
 
@@ -69,6 +71,8 @@ class LoginPageState extends State<LoginPage> {
       var isDismiss = await _googleSignIn.signIn();
       if(isDismiss != null){
         User user = new User(name:_currentUser.displayName,email:_currentUser.email,id:_currentUser.id);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString("CurrentUser_id", user.id);
         if (await user.Register()){
           Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) => SignUpPage(currentUser: _currentUser, signOut: _handleSignOut)));

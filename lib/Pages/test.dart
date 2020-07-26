@@ -1,10 +1,15 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:google_sign_in/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
+import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/dashboard.dart';
 import 'package:travel_sharing/Pages/home.dart';
+import 'package:travel_sharing/Pages/homeNavigation.dart';
+import 'package:travel_sharing/Pages/loginPage.dart';
 import 'package:travel_sharing/Pages/map.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 class Test extends StatefulWidget {
@@ -15,6 +20,7 @@ class Test extends StatefulWidget {
   final String src ;
   final String dst;
   final int Role;
+
   const Test({Key key, this.routes, this.bounds, this.lines, this.Markers, this.src, this.dst,this.Role}) : super(key: key);
 
   _Test createState() => _Test();
@@ -32,7 +38,6 @@ class _Test extends State<Test> {
     Final_Data.src = widget.src;
     Final_Data.dst = widget.dst;
     date_Textcontroller.text =  DateTime.now().toIso8601String();
-
   }
 
   @override
@@ -146,45 +151,32 @@ class _Test extends State<Test> {
                               heroTag: null,
                             ),
                           ),
-
-
-
-
-
-
-
                         ],
                       ),
-
                     ),
                   ),
                 ),
               ),
-
-
-
             ],
-
           ),
-
         )
-    );
-
-
+      );
   }
+
   void _onMapCreated(GoogleMapController controller) async{
     var cameraUpdate = CameraUpdate.newLatLngBounds(widget.bounds, 50);
     await controller.animateCamera(cameraUpdate);
     _mapController = controller;
   }
 
-  _SavetoDB(){
-
-    Final_Data.date = date_Textcontroller.text;
-    Final_Data.routes = widget.routes;
-    print(Final_Data.toJson());
+  _SavetoDB()async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    User user = await User().getCurrentuser(prefs.getString("CurrentUser_id"));
+    Final_Data = new Routes(id: user.id,routes : widget.routes,src : Final_Data.src,dst : Final_Data.dst,amount : Final_Data.amount,date :date_Textcontroller.text);
+//    print(jsonEncode(Final_Data.toJson()));
+    Final_Data.SaveRoute_toDB(widget.Role);
 //    Navigator.push(context,MaterialPageRoute(
-//        builder : (context) => Dashboard()));
+//        builder : (context) => HomeNavigation()));
   }
 }
 

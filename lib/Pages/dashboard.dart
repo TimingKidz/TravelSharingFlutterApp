@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
+import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/JoinMap.dart';
 import 'package:travel_sharing/Pages/home.dart';
 import 'package:travel_sharing/Pages/map.dart';
@@ -18,9 +20,35 @@ class Dashboard extends StatefulWidget {
 class _Dashboard extends State<Dashboard> {
   Location location = Location();
   LocationData Locations;
-  final _joinList = <String>['A', 'B', 'C', 'D'];
-  final _invitedList = <String>['E', 'F', 'G', 'H'];
+
+//  final _joinList = <String>['A', 'B', 'C', 'D'];
+//  final _invitedList = <String>['E', 'F', 'G', 'H'];
+  List<Routes> _joinList  = List();
+  List<Routes> _invitedList = List();
   bool isFirstPage = true;
+
+  Future<bool> getData() async {
+    try{
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      User user = await User().getCurrentuser(prefs.getString("CurrentUser_id"));
+      _invitedList =  await user.getRoutes(0) ?? [];
+      _joinList =  await user.getRoutes(1) ?? [];
+      return Future.value(true);
+    }catch(error){
+      print(error);
+      return Future.value(false);
+    }
+
+  }
+
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData().then((value) {
+      setState(() {});
+    });
+
+  }
 
   Widget _widgetOptions(){
     if((_joinList.isEmpty && isFirstPage) || (_invitedList.isEmpty && !isFirstPage)){
@@ -36,7 +64,7 @@ class _Dashboard extends State<Dashboard> {
     return ListView.builder(
         itemCount: isFirstPage ? _joinList.length : _invitedList.length,
         itemBuilder: (context, i) {
-          return _buildRow(isFirstPage ? _joinList[i] : _invitedList[i]);
+          return _buildRow(isFirstPage ? _joinList[i].src : _invitedList[i].src);
         });
   }
 

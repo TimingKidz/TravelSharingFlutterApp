@@ -43,7 +43,7 @@ class _CreateRoutestate extends State<CreateRoute> {
   p.PlacesSearchResult tmp = null;
   LatLng src = null;
   LatLng dst = null;
-  static int Role = 1;
+  static int Role = 0;
 
   @override
   void initState() {

@@ -12,9 +12,7 @@ import 'package:travel_sharing/Pages/map.dart';
 class SignUpPage extends StatefulWidget {
   final GoogleSignInAccount currentUser;
   final Function signOut;
-
   SignUpPage({this.currentUser, this.signOut});
-
   SignUpPageState createState() => SignUpPageState();
 }
 
