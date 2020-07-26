@@ -69,8 +69,9 @@ class LoginPageState extends State<LoginPage> {
   Future<void> _handleSignIn() async {
     try{
       var isDismiss = await _googleSignIn.signIn();
+      debugPrint('$isDismiss');
       if(isDismiss != null){
-        User user = new User(name:_currentUser.displayName,email:_currentUser.email,id:_currentUser.id);
+        User user = new User(name: isDismiss.displayName,email: isDismiss.email,id: isDismiss.id);
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString("CurrentUser_id", user.id);
         if (await user.Register()){

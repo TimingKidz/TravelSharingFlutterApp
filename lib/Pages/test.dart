@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/dashboard.dart';
-import 'package:travel_sharing/Pages/home.dart';
 import 'package:travel_sharing/Pages/homeNavigation.dart';
 import 'package:travel_sharing/Pages/loginPage.dart';
 import 'package:travel_sharing/Pages/map.dart';
@@ -175,8 +174,9 @@ class _Test extends State<Test> {
     Final_Data = new Routes(id: user.id,routes : widget.routes,src : Final_Data.src,dst : Final_Data.dst,amount : Final_Data.amount,date :date_Textcontroller.text);
 //    print(jsonEncode(Final_Data.toJson()));
     Final_Data.SaveRoute_toDB(widget.Role);
-    Navigator.push(context,MaterialPageRoute(
-        builder : (context) => HomeNavigation()));
+    Navigator.of(context).pop();
+    Navigator.of(context).pop();
+//    Navigator.of(context).popUntil(ModalRoute.withName('/homeNavigation'));
   }
 }
 

@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:travel_sharing/ChatFile/chatPage.dart';
-import 'package:travel_sharing/Pages/home.dart';
+import 'package:travel_sharing/Pages/JoinMap.dart';
 import 'package:travel_sharing/Pages/homeNavigation.dart';
 import 'package:travel_sharing/Pages/signupPage.dart';
 import 'package:travel_sharing/Pages/test.dart';
@@ -47,8 +47,15 @@ class MyApp extends StatelessWidget {
             color: Colors.white
           )
         ),
-        home: LoginPage(),
-//      home: MyHomePage(title: 'Flutter Demo Home Page'),
+        initialRoute: '/login',
+        routes: {
+          '/login' : (context) => LoginPage(),
+          '/homeNavigation' : (context) => HomeNavigation(),
+          '/dashboard' : (context) => Dashboard(),
+          '/joinMap' : (context) => CreateRoute_Join(),
+          '/inviteMap' : (context) => CreateRoute(),
+          '/tripInfo' : (context) => Test()
+        },
       );
 
   }

@@ -218,7 +218,7 @@ class _CreateRoutestate extends State<CreateRoute> {
     String Placename_src = Name_list[src] ;
     print(dst);
     print(Placename_dst);
-    Navigator.pushReplacement(context, MaterialPageRoute(
+    Navigator.push(context, MaterialPageRoute(
         builder: (context) => Test(routes: routes, bounds:bounds,Markers :Markers,lines :lines,src:Placename_src,dst: Placename_dst ,Role :Role)));
 
 

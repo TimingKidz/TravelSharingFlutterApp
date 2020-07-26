@@ -4,14 +4,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/JoinMap.dart';
-import 'package:travel_sharing/Pages/home.dart';
 import 'package:travel_sharing/Pages/map.dart';
 import 'package:location/location.dart' ;
+import 'package:travel_sharing/buttons/cardTileWithTap.dart';
 /// This Widget is the main application widget.
 
 
 class Dashboard extends StatefulWidget {
+  static final GlobalKey<_Dashboard> dashboardKey = GlobalKey<_Dashboard>();
 
+  Dashboard() : super(key: dashboardKey);
 
   @override
   _Dashboard createState() => _Dashboard();
@@ -64,17 +66,13 @@ class _Dashboard extends State<Dashboard> {
     return ListView.builder(
         itemCount: isFirstPage ? _joinList.length : _invitedList.length,
         itemBuilder: (context, i) {
-          return _buildRow(isFirstPage ? _joinList[i].src : _invitedList[i].src);
+          return _buildRow(isFirstPage ? _joinList[i] : _invitedList[i]);
         });
   }
 
-  Widget _buildRow(String data) {
-    return Card(
-      margin: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
-      child: Container(
-        padding: EdgeInsets.all(16.0),
-        child: Text(data),
-      ),
+  Widget _buildRow(Routes data) {
+    return CardTileWithTap(
+      data: data,
     );
   }
 
@@ -83,7 +81,11 @@ class _Dashboard extends State<Dashboard> {
 //      Locations = await location.getLocation();
 //      int x = 0;
       Navigator.push(context, MaterialPageRoute(
-          builder: (context) => CreateRoute()));
+          builder: (context) => CreateRoute())).then((value) {
+        getData().then((value) {
+          setState(() {});
+        });
+      });
 //    } on PlatformException catch (e) {
 //      if (e.code == 'PERMISSION_DENIED') {
 //        Locations = null;
@@ -94,7 +96,11 @@ class _Dashboard extends State<Dashboard> {
 
   _newroute1() async{
     Navigator.push(context, MaterialPageRoute(
-        builder: (context) => CreateRoute_Join()));
+        builder: (context) => CreateRoute_Join())).then((value) {
+      getData().then((value) {
+        setState(() {});
+      });
+    });
 
 
   }
