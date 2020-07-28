@@ -8,6 +8,7 @@ import 'package:travel_sharing/ChatFile/chatPage.dart';
 import 'package:travel_sharing/Pages/JoinMap.dart';
 import 'package:travel_sharing/Pages/homeNavigation.dart';
 import 'package:travel_sharing/Pages/signupPage.dart';
+import 'package:travel_sharing/Pages/splashscreen.dart';
 import 'package:travel_sharing/Pages/test.dart';
 import 'Pages/loginPage.dart';
 import 'Pages/map.dart';
@@ -47,8 +48,9 @@ class MyApp extends StatelessWidget {
             color: Colors.white
           )
         ),
-        initialRoute: '/login',
+        initialRoute: '/',
         routes: {
+          '/' : (context) => Splashscreen(),
           '/login' : (context) => LoginPage(),
           '/homeNavigation' : (context) => HomeNavigation(),
           '/dashboard' : (context) => Dashboard(),
@@ -57,7 +59,6 @@ class MyApp extends StatelessWidget {
           '/tripInfo' : (context) => Test()
         },
       );
-
   }
 }
 

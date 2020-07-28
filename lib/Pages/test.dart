@@ -177,6 +177,8 @@ class _Test extends State<Test> {
     Navigator.of(context).pop();
     Navigator.of(context).pop();
 //    Navigator.of(context).popUntil(ModalRoute.withName('/homeNavigation'));
+//    Navigator.of(context)
+//        .pushNamedAndRemoveUntil('/homeNavigation', (Route<dynamic> route) => false);
   }
 }
 

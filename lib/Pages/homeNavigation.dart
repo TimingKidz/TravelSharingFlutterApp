@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:travel_sharing/Pages/Account.dart';
 import 'package:travel_sharing/Pages/dashboard.dart';
 
 class HomeNavigation extends StatefulWidget {
@@ -18,6 +19,9 @@ class HomeNavigation extends StatefulWidget {
     ),
   ];
 
+  final Function signOut;
+  HomeNavigation({this.signOut});
+
   @override
   HomeNavigationState createState() =>
       HomeNavigationState();
@@ -25,34 +29,37 @@ class HomeNavigation extends StatefulWidget {
 
 class HomeNavigationState extends State<HomeNavigation> {
   int selectedBarIndex = 1;
-
-  final List<Widget> pageRoute = [
-    Center(child: Text('Notification')),
-    Dashboard(),
-    Center(child: Text('Account'))
-  ];
+  List<Widget> pageRoute;
 
   @override
   void initState() {
     super.initState();
+    pageRoute = [
+      Center(child: Text('Notification')),
+      Dashboard(),
+      Account(signOut: widget.signOut)
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: pageRoute[selectedBarIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        items: widget.barItems,
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        selectedItemColor: Theme.of(context).accentColor,
-        selectedFontSize: 12.0,
-        currentIndex: selectedBarIndex,
-        onTap: (index) {
-          setState(() {
-            selectedBarIndex = index;
-          });
-        },
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: pageRoute[selectedBarIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          items: widget.barItems,
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.white,
+          selectedItemColor: Theme.of(context).accentColor,
+          selectedFontSize: 12.0,
+          currentIndex: selectedBarIndex,
+          onTap: (index) {
+            setState(() {
+              selectedBarIndex = index;
+            });
+          },
+        ),
       ),
     );
   }

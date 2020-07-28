@@ -35,21 +35,18 @@ class _Dashboard extends State<Dashboard> {
       User user = await User().getCurrentuser(prefs.getString("CurrentUser_id"));
       _invitedList =  await user.getRoutes(0) ?? [];
       _joinList =  await user.getRoutes(1) ?? [];
+      setState(() {});
       return Future.value(true);
     }catch(error){
       print(error);
       return Future.value(false);
     }
-
   }
 
   void initState() {
     // TODO: implement initState
     super.initState();
-    getData().then((value) {
-      setState(() {});
-    });
-
+    getData();
   }
 
   Widget _widgetOptions(){
@@ -82,9 +79,7 @@ class _Dashboard extends State<Dashboard> {
 //      int x = 0;
       Navigator.push(context, MaterialPageRoute(
           builder: (context) => CreateRoute())).then((value) {
-        getData().then((value) {
-          setState(() {});
-        });
+        getData();
       });
 //    } on PlatformException catch (e) {
 //      if (e.code == 'PERMISSION_DENIED') {
@@ -97,9 +92,7 @@ class _Dashboard extends State<Dashboard> {
   _newroute1() async{
     Navigator.push(context, MaterialPageRoute(
         builder: (context) => CreateRoute_Join())).then((value) {
-      getData().then((value) {
-        setState(() {});
-      });
+      getData();
     });
 
 
