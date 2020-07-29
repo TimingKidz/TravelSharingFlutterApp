@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travel_sharing/Pages/Account.dart';
 import 'package:travel_sharing/Pages/dashboard.dart';
 
@@ -19,8 +20,8 @@ class HomeNavigation extends StatefulWidget {
     ),
   ];
 
-  final Function signOut;
-  HomeNavigation({this.signOut});
+  final GoogleSignIn googleSignIn;
+  HomeNavigation({this.googleSignIn});
 
   @override
   HomeNavigationState createState() =>
@@ -37,7 +38,7 @@ class HomeNavigationState extends State<HomeNavigation> {
     pageRoute = [
       Center(child: Text('Notification')),
       Dashboard(),
-      Account(signOut: widget.signOut)
+      Account(googleSignIn: widget.googleSignIn)
     ];
   }
 

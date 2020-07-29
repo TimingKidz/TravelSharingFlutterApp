@@ -1,19 +1,28 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/signupPage.dart';
 
 class LoginPage extends StatefulWidget {
-  final Function signIn;
-  LoginPage({this.signIn});
+  final GoogleSignIn googleSignIn;
+  LoginPage({this.googleSignIn});
   LoginPageState createState() => LoginPageState();
 }
 
 class LoginPageState extends State<LoginPage> {
+  GoogleSignInAccount _currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account){
+      _currentUser = account;
+    });
+    widget.googleSignIn.signInSilently();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,12 +58,56 @@ class LoginPageState extends State<LoginPage> {
                     Text('SIGN IN WITH GOOGLE', style: TextStyle(color: Colors.black54, fontSize: 14.0, fontFamily: 'Roboto'))
                   ],
                 ),
-                onPressed: widget.signIn,
+                onPressed: _handleSignIn,
               ),
             )
           ],
         ),
       ),
     );
+  }
+
+  void _loadingDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            margin: EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(width: 16.0),
+                Text("Signing in..."),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _handleSignIn() async {
+    try{
+      var isDismiss = await widget.googleSignIn.signIn();
+      debugPrint('$isDismiss');
+      if(isDismiss != null){
+        _loadingDialog();
+        User user = new User(name: isDismiss.displayName,email: isDismiss.email,id: isDismiss.id);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString("CurrentUser_id", user.id);
+        if (await user.Register()){
+          Navigator.of(context).pop(); //Pop Loading Dialog
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => SignUpPage(currentUser: _currentUser, googleSignIn: widget.googleSignIn)));
+        }else{
+          throw("Please check your connection.");
+        }
+      }
+    }catch(error){
+      print(error);
+    }
   }
 }

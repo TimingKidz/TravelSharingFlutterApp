@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/User.dart';
@@ -11,10 +10,6 @@ import 'package:travel_sharing/buttons/cardTileWithTap.dart';
 
 
 class Dashboard extends StatefulWidget {
-  static final GlobalKey<_Dashboard> dashboardKey = GlobalKey<_Dashboard>();
-
-  Dashboard() : super(key: dashboardKey);
-
   @override
   _Dashboard createState() => _Dashboard();
 }
