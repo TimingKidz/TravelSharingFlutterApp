@@ -1,22 +1,15 @@
-import 'dart:convert';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:latlong/latlong.dart' as l;
 import 'package:location/location.dart' ;
 import "package:google_maps_webservice/places.dart" as p;
-import 'package:google_maps_webservice/directions.dart' as d;
 import 'package:flutter_polyline_points/flutter_polyline_points.dart' ;
-import 'package:travel_sharing/Pages/dashboard.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:travel_sharing/Pages/test.dart';
-import 'package:travel_sharing/customAppbar.dart';
 
 class CreateRoute extends StatefulWidget {
-//  final LocationData gps;
-//  CreateRoute({this.gps}) ;
 
   @override
   _CreateRoutestate createState() => _CreateRoutestate();
@@ -49,6 +42,7 @@ class _CreateRoutestate extends State<CreateRoute> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    // callback currentLocation for first time
       location.onLocationChanged.listen((LocationData currentLocations) {
       if(!isSet_Marker) {
         current_Location =
@@ -60,10 +54,12 @@ class _CreateRoutestate extends State<CreateRoute> {
       });
   }
 
+  // find direction to destination
   findDirections(bool isFind_Direction ) async {
     var origin = PointLatLng(fromPoint.latitude, fromPoint.longitude);
     var destination = PointLatLng(toPoint.latitude, toPoint.longitude);
-    if( isFind_Direction ){
+
+    if( isFind_Direction ){ // find new direction
       PolylinePoints polylinePoints = PolylinePoints();
       PolylineResult result = await polylinePoints.getRouteBetweenCoordinates("AIzaSyBQCf89JOkrq2ECa6Ko8LBQaMO8A7rJt9Q", origin,destination);
       PointLatLng Ll = result.points.first;
@@ -72,6 +68,8 @@ class _CreateRoutestate extends State<CreateRoute> {
         routes.add(LatLng(step.latitude, step.longitude));
       });
     }
+
+    // create line of routes on map
     var line = Polyline(
       points: routes,
       geodesic: true,
@@ -79,14 +77,15 @@ class _CreateRoutestate extends State<CreateRoute> {
       color: Colors.blue,
       width: 4,
     );
+
     setState(() {
+      lines.clear();
       lines.add(line);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-//    getCurrentLocation();
   print(current_Location);
     return Scaffold(
       appBar: AppBar(
@@ -165,11 +164,7 @@ class _CreateRoutestate extends State<CreateRoute> {
         ],
       ),
     );
-
-
   }
-
-
 
   Future<void> _Searchbar() async {
     FocusScopeNode currentFocus = FocusScope.of(context);
@@ -239,12 +234,10 @@ class _CreateRoutestate extends State<CreateRoute> {
       src = null;
       fromPoint = null;
     }
-
   }
 
 
   _nextplace() async{
-    print("before to : $toPoint from : $fromPoint src : $src dst : $dst");
       if( toPoint == null ){
         toPoint =  current_Location;
       }
@@ -257,7 +250,6 @@ class _CreateRoutestate extends State<CreateRoute> {
         Name_list.putIfAbsent(toPoint, () => tmp.name);
       }
       fromPoint = toPoint;
-      print("after to : $toPoint from : $fromPoint src : $src dst : $dst");
   }
 
 
@@ -276,20 +268,6 @@ class _CreateRoutestate extends State<CreateRoute> {
     setState(() {});
   }
 
-//  void getCurrentLocation() async {
-//    LocationData Locations;
-//    try {
-//      Locations = await location.getLocation();
-//    } on PlatformException catch (e) {
-//      if (e.code == 'PERMISSION_DENIED') {
-//        Locations = null;
-//      }
-//    }
-//    setState(() {
-//      current_Location = LatLng(Locations.latitude,Locations.longitude);
-//    });
-//  }
-
   void _onDragEnd(LatLng new_point) async{
     tmp = null;
     p.PlacesSearchResponse response = await places.searchNearbyWithRadius(new p.Location(new_point.latitude,new_point.longitude), 10);
@@ -299,7 +277,6 @@ class _CreateRoutestate extends State<CreateRoute> {
       l.LatLng ori = new l.LatLng(new_point.latitude, new_point.longitude);
       if(distance(to,ori) <= min){
         tmp = element;
-        print("${element.name} : ${distance(to,ori)} : $to");
       }
     });
     if(tmp!=null){
@@ -312,7 +289,6 @@ class _CreateRoutestate extends State<CreateRoute> {
 
   void _onMapCreated(GoogleMapController controller) async{
     _mapController = controller;
-//    current_Location = LatLng(currentLocation.latitude,currentLocation.longitude);
     await _centerView(true);
   }
 

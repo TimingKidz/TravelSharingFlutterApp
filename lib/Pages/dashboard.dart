@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/JoinMap.dart';
+import 'package:travel_sharing/Pages/MatchList.dart';
+import 'package:travel_sharing/Pages/ReqList.dart';
 import 'package:travel_sharing/Pages/map.dart';
 import 'package:location/location.dart' ;
 import 'package:travel_sharing/buttons/cardTileWithTap.dart';
@@ -20,21 +22,20 @@ class _Dashboard extends State<Dashboard> {
 
 //  final _joinList = <String>['A', 'B', 'C', 'D'];
 //  final _invitedList = <String>['E', 'F', 'G', 'H'];
-  List<Routes> _joinList  = List();
-  List<Routes> _invitedList = List();
+  List<Map<String, dynamic>> _joinList  = List();
+  List<Map<String, dynamic>> _invitedList = List();
   bool isFirstPage = true;
 
-  Future<bool> getData() async {
+  Future<void> getData() async {
     try{
       SharedPreferences prefs = await SharedPreferences.getInstance();
       User user = await User().getCurrentuser(prefs.getString("CurrentUser_id"));
       _invitedList =  await user.getRoutes(0) ?? [];
       _joinList =  await user.getRoutes(1) ?? [];
+      print(_joinList);
       setState(() {});
-      return Future.value(true);
     }catch(error){
-      print(error);
-      return Future.value(false);
+      print("$error lll");
     }
   }
 
@@ -62,11 +63,40 @@ class _Dashboard extends State<Dashboard> {
         });
   }
 
-  Widget _buildRow(Routes data) {
+  Widget _buildRow(Map<String, dynamic> data) {
+    print(data);
     return CardTileWithTap(
-      data: data,
+      data: data['detail'],
+      onCardPressed: () => _onCardPressed(data),
     );
   }
+
+  _onCardPressed(Map<String, dynamic> data){
+    if( isFirstPage ){
+      if( data['detail'].match != "" ){
+// information
+      }else{
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => MatchList(data: data))).then((value) {
+          getData();
+        });
+
+      }
+    }else{
+      if( data['detail'].match != "" ){
+// information
+      }else{
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => ReqList(data: data))).then((value) {
+          getData();
+        });
+
+      }
+    }
+
+  }
+
+
 
   _newroute() async{
 //    try {

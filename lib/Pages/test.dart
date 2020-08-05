@@ -1,15 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:google_sign_in/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/User.dart';
-import 'package:travel_sharing/Pages/dashboard.dart';
-import 'package:travel_sharing/Pages/homeNavigation.dart';
-import 'package:travel_sharing/Pages/loginPage.dart';
-import 'package:travel_sharing/Pages/map.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 class Test extends StatefulWidget {
   final List<LatLng> routes;
@@ -99,8 +92,6 @@ class _Test extends State<Test> {
                             decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'Source',
-
-
                           ),
                           ),
                           TextFormField(
@@ -111,8 +102,6 @@ class _Test extends State<Test> {
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: 'Destination',
-
-
                             ),
                           ),
                           TextFormField(
@@ -124,21 +113,16 @@ class _Test extends State<Test> {
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: 'Date',
-
-
                             ),
                           ),
                           TextFormField(
                             onChanged: (text){
                               Final_Data.amount = text;
                             },
-
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: 'Amount',
-
-
                             ),
                           ),
                           Container(
@@ -162,6 +146,7 @@ class _Test extends State<Test> {
       );
   }
 
+  // set camera to cover all routes in map
   void _onMapCreated(GoogleMapController controller) async{
     var cameraUpdate = CameraUpdate.newLatLngBounds(widget.bounds, 50);
     await controller.animateCamera(cameraUpdate);
@@ -169,16 +154,14 @@ class _Test extends State<Test> {
   }
 
   _SavetoDB()async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    User user = await User().getCurrentuser(prefs.getString("CurrentUser_id"));
-    Final_Data = new Routes(id: user.id,routes : widget.routes,src : Final_Data.src,dst : Final_Data.dst,amount : Final_Data.amount,date :date_Textcontroller.text);
-//    print(jsonEncode(Final_Data.toJson()));
-    Final_Data.SaveRoute_toDB(widget.Role);
+    SharedPreferences prefs = await SharedPreferences.getInstance();  // get id of current user from local
+    User user = await User().getCurrentuser(prefs.getString("CurrentUser_id")); // get user data of current user from DB
+    // prepare Route data for save to DB
+    Final_Data = new Routes(id: user.id,routes : widget.routes,src : Final_Data.src,dst : Final_Data.dst,amount : Final_Data.amount,date :date_Textcontroller.text,match: "");
+    Final_Data.SaveRoute_toDB(widget.Role,user); // save to DB
+    // go to dashboard
     Navigator.of(context).pop();
     Navigator.of(context).pop();
-//    Navigator.of(context).popUntil(ModalRoute.withName('/homeNavigation'));
-//    Navigator.of(context)
-//        .pushNamedAndRemoveUntil('/homeNavigation', (Route<dynamic> route) => false);
   }
 }
 

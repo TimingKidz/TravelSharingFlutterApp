@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as Http;
 import 'package:travel_sharing/Class/RouteJson.dart';
 
-final String heroku = "http://vast-eyrie-74860.herokuapp.com";
+//final String heroku = "http://vast-eyrie-74860.herokuapp.com";
+final String heroku = "http://10.10.10.60:3000";
 final String localhost = "http://192.168.1.14:3000";
 final Map<String,String> header = <String, String>{'Content-Type': 'application/json; charset=UTF-8'};
 
@@ -28,6 +29,7 @@ class User {
     return data;
   }
 
+ // get current user data
   Future<User> getCurrentuser(String id) async{
     try{
       var url = "$heroku/api/user/isreg";
@@ -47,7 +49,7 @@ class User {
   }
 
 
-
+  // register for new user
   Future<bool> Register() async {
     try{
       if(await getCurrentuser(this.id) == null){
@@ -67,7 +69,8 @@ class User {
     }
   }
 
-  Future<List<Routes>> getRoutes(int role) async {
+  // get all routes in each role of current user
+  Future<List<Map<String, dynamic>>> getRoutes(int role) async {
     try{
         Map<int,String> path = {0:'invite',1:'join'};
         var url = "$heroku/api/routes/getRoutes";
@@ -81,9 +84,14 @@ class User {
             return Future.value(null);
           }else{
             Map<String, dynamic> data = jsonDecode(response.body);
-            List<Routes> listroutes = List();
+            List<Map<String, dynamic>> listroutes = List();
             data['event'][path[role]].forEach((x) {
-              listroutes.add(Routes.fromJson(x));
+              Map<String,dynamic> tmp = Map();
+              tmp['detail'] = Routes.fromJson(x['detail']);
+              tmp['id'] = x['detail']['id'];
+              tmp['_id'] = x['_id'];
+              print(tmp['detail'].src);
+              listroutes.add(tmp);
             });
             return Future.value(listroutes);
           }
@@ -93,6 +101,5 @@ class User {
       throw("can't connect");
     }
   }
-
 
 }
