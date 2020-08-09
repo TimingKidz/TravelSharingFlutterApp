@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -9,6 +10,7 @@ import 'package:location/location.dart' ;
 import "package:google_maps_webservice/places.dart" as p;
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:travel_sharing/Pages/test.dart';
+import 'package:travel_sharing/buttons/borderTextField.dart';
 
 class CreateRoute_Join extends StatefulWidget {
 
@@ -57,9 +59,6 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
   Widget build(BuildContext context) {
     print(current_Location);
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Create your route.'),
-      ),
       body: Stack(
         children: <Widget>[
           GoogleMap(
@@ -75,73 +74,92 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
             onCameraIdle: OnMove_End,
             onCameraMove: center,
           ),
-          Positioned(
-            top: 10,
-            right: 15,
-            left: 15,
-            child: Container(
+          Container(
+              padding: EdgeInsets.all(8.0),
               color: Colors.white,
-              child: Row(
+              child: Wrap(
                 children: <Widget>[
-                  IconButton(
-                    splashColor: Colors.grey,
-                    icon: Icon(Icons.menu),
-                    onPressed: () {},
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: src_Textcontroller,
-                      cursorColor: Colors.black,
-                      keyboardType: TextInputType.text,
-                      onTap: (){
-                        is_src = true;
-                        _Searchbar();
-                      },
-                      textInputAction: TextInputAction.go,
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding:
-                          EdgeInsets.symmetric(horizontal: 15),
-                          hintText: "Source..."),
+                  SafeArea(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(Icons.arrow_back),
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                        SizedBox(width: 8.0),
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Icon(Icons.location_searching),
+                                  Expanded(
+                                    child: Card(
+                                      margin: EdgeInsets.only(left: 8.0, right: 8.0),
+                                      elevation: 2.0,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(20.0)
+                                      ),
+                                      child: TextFormField(
+                                        controller: src_Textcontroller,
+                                        cursorColor: Colors.black,
+                                        keyboardType: TextInputType.text,
+                                        onTap: (){
+                                          is_src = true;
+                                          _Searchbar();
+                                        },
+                                        textInputAction: TextInputAction.go,
+                                        decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            contentPadding:
+                                            EdgeInsets.symmetric(horizontal: 15),
+                                            hintText: "จุดเริ่มต้น ..."),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 10.0),
+                              Row(
+                                children: <Widget>[
+                                  Icon(Icons.location_on),
+                                  Expanded(
+                                    child: Card(
+                                      margin: EdgeInsets.only(left: 8.0, right: 8.0),
+                                      elevation: 2.0,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(20.0)
+                                      ),
+                                      child: TextFormField(
+                                        controller: dst_Textcontroller,
+                                        cursorColor: Colors.black,
+                                        keyboardType: TextInputType.text,
+                                        onTap: (){
+                                          is_src = false;
+                                          _Searchbar();
+                                        },
+                                        textInputAction: TextInputAction.go,
+                                        decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            contentPadding:
+                                            EdgeInsets.symmetric(horizontal: 15),
+                                            hintText: "จุดปลายทาง ..."),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 2.0),
+                            ],
+                          ),
+                        )
+                      ],
                     ),
-                  ),
+                  )
                 ],
-              ),
-            ),
-          ),
-          Positioned(
-            top: 60,
-            right: 15,
-            left: 15,
-            child: Container(
-              color: Colors.white,
-              child: Row(
-                children: <Widget>[
-                  IconButton(
-                    splashColor: Colors.grey,
-                    icon: Icon(Icons.menu),
-                    onPressed: () {},
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: dst_Textcontroller,
-                      cursorColor: Colors.black,
-                      keyboardType: TextInputType.text,
-                      onTap: (){
-                        is_src = false;
-                        _Searchbar();
-                      },
-                      textInputAction: TextInputAction.go,
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding:
-                          EdgeInsets.symmetric(horizontal: 15),
-                          hintText: "Destination...."),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+              )
           ),
           Container(
             padding: EdgeInsets.all(16.0),

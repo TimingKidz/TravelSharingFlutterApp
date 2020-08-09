@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as Http;
 import 'package:travel_sharing/Class/User.dart';
 
-//final String heroku = "http://vast-eyrie-74860.herokuapp.com";
-final String heroku = "http://10.10.10.60:3000";
+final String heroku = "http://vast-eyrie-74860.herokuapp.com";
+//final String heroku = "http://10.10.10.60:3000";
 final String localhost = "http://192.168.1.14:3000";
 final Map<String,String> header = <String, String>{'Content-Type': 'application/json; charset=UTF-8'};
 

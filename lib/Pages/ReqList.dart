@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/buttons/cardTileWithTapMatch.dart';
+import 'package:travel_sharing/buttons/cardTileWithTapReq.dart';
 /// This Widget is the main application widget.
 
 
@@ -53,7 +54,7 @@ class _ReqListstate extends State<ReqList> {
   }
 
   Widget _buildRow( Map<String,dynamic> data) {
-    return CardTileWithTapMatch(
+    return CardTileWithTapReq(
       data: data,
       onCardPressed:() => _onCardPressed(data),
     );
@@ -63,21 +64,28 @@ class _ReqListstate extends State<ReqList> {
 
   }
 
+  _onAcceptPressed(Map<String,dynamic> data) async{
+
+  }
+
+  _onDeclinePressed(Map<String,dynamic> data) async{
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('Dashboard'),
+        title: const Text('ตอบรับคำขอของคนที่จะไปด้วย'),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.dashboard),
-        onPressed: (){
-          Navigator.of(context).pop();
-        },
-        heroTag: null,
-      ),
+//      floatingActionButton: FloatingActionButton(
+//        child: Icon(Icons.dashboard),
+//        onPressed: (){
+//          Navigator.of(context).pop();
+//        },
+//        heroTag: null,
+//      ),
       body: Center(
         child: Column(
           children: <Widget>[

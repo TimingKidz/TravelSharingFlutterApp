@@ -27,18 +27,53 @@ class CardTileWithTapState extends State<CardTileWithTap> {
     return Card(
         margin: EdgeInsets.all(10.0),
         elevation: 2.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0)
+        ),
         child: FlatButton(
-          padding: EdgeInsets.only(top: 16.0, bottom: 20.0, left: 20.0, right: 8.0),
+          padding: EdgeInsets.only(top: 16.0),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0)
+          ),
           onPressed: () {
             widget.onCardPressed();
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(widget.data.src, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-              SizedBox(height: 10.0),
-              Text(widget.data.dst, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-              SizedBox(height: 10.0),
+              Container(
+                padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 48.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('ปลายทาง', style: TextStyle(fontSize: 10.0)),
+                    SizedBox(height: 5.0),
+                    Text(widget.data.dst, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 16.0),
+                    Text('ต้นทาง', style: TextStyle(fontSize: 10.0, color: Colors.black54)),
+                    SizedBox(height: 5.0),
+                    Text(widget.data.src, style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold, color: Colors.black54)),
+                  ],
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).accentColor,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20.0),
+                    bottomRight: Radius.circular(20.0)
+                  )
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text('${datetimeFormat('date')} | ${datetimeFormat('time')}', style: TextStyle(color: Colors.white)),
+                    Text('0/${widget.data.amount}', style: TextStyle(color: Colors.white)),
+                  ],
+                )
+              )
 //              Row(
 //                children: <Widget>[
 //                  ClipRRect(
@@ -117,12 +152,12 @@ class CardTileWithTapState extends State<CardTileWithTap> {
 //    );
 //  }
 
-//  String dateFormat() {
-//    var dateFromDB = widget.data[DatabaseHelper.columnBuyDate].split('-');
-//    Map<String, String> date = {};
-//    date['day'] = dateFromDB[2];
-//    date['month'] = dateFromDB[1];
-//    date['year'] = dateFromDB[0];
-//    return '${date['day']}/${date['month']}/${date['year']}';
-//  }
+  String datetimeFormat(String check) {
+    var datetimeFromDB = DateTime.parse(widget.data.date);
+    if(check == 'date'){
+      return DateFormat('d MMM yyyy').format(datetimeFromDB);
+    }else{
+      return DateFormat('HH:mm').format(datetimeFromDB);
+    }
+  }
 }

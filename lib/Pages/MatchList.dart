@@ -64,30 +64,32 @@ class _MatchListstate extends State<MatchList> {
     return CardTileWithTapMatch(
       data: data,
       onCardPressed:() => _onCardPressed(data),
+      onButtonPressed: () => _onButtonPressed(data),
     );
   }
 
   _onCardPressed(Map<String,dynamic> data) {
+  }
+
+  _onButtonPressed(Map<String,dynamic> data) {
     Routes().Request(data,widget.data);
 
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('Dashboard'),
+        title: const Text('ส่งคำขอให้คนที่คุณจะไปด้วย'),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.dashboard),
-        onPressed: (){
-          Navigator.of(context).pop();
-        },
-        heroTag: null,
-      ),
+//      floatingActionButton: FloatingActionButton(
+//        child: Icon(Icons.dashboard),
+//        onPressed: (){
+//          Navigator.of(context).pop();
+//        },
+//        heroTag: null,
+//      ),
 
       body: Center(
         child: Column(

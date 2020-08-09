@@ -8,15 +8,18 @@ class HomeNavigation extends StatefulWidget {
   final List<BottomNavigationBarItem> barItems = [
     BottomNavigationBarItem(
       icon: Icon(Icons.notifications_none),
-      title: Text('Notification'),
+//      title: Text('Notification'),
+      title: Text('การแจ้งเตือน'),
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.dashboard),
-      title: Text('Dashboard'),
+//      title: Text('Dashboard'),
+      title: Text('แดชบอร์ด'),
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.account_circle),
-      title: Text('Account'),
+//      title: Text('Account'),
+      title: Text('บัญชี'),
     ),
   ];
 
@@ -54,6 +57,7 @@ class HomeNavigationState extends State<HomeNavigation> {
           backgroundColor: Colors.white,
           selectedItemColor: Theme.of(context).accentColor,
           selectedFontSize: 12.0,
+          selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
           currentIndex: selectedBarIndex,
           onTap: (index) {
             setState(() {

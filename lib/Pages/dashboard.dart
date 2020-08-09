@@ -32,7 +32,9 @@ class _Dashboard extends State<Dashboard> {
       User user = await User().getCurrentuser(prefs.getString("CurrentUser_id"));
       _invitedList =  await user.getRoutes(0) ?? [];
       _joinList =  await user.getRoutes(1) ?? [];
-      print(_joinList);
+      _invitedList.sort((a,b) => b['detail'].date.compareTo(a['detail'].date));
+      _joinList.sort((a,b) => b['detail'].date.compareTo(a['detail'].date));
+      debugPrint('$_joinList');
       setState(() {});
     }catch(error){
       print("$error lll");
@@ -129,7 +131,7 @@ class _Dashboard extends State<Dashboard> {
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Dashboard'),
+        title: const Text('แดชบอร์ด'),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
@@ -148,7 +150,7 @@ class _Dashboard extends State<Dashboard> {
                     child: RaisedButton(
                       highlightElevation: 0.0,
                       padding: EdgeInsets.all(16.0),
-                      color: isFirstPage ? Colors.black : Colors.white,
+                      color: isFirstPage ? Theme.of(context).accentColor : Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
                       ),
@@ -165,7 +167,7 @@ class _Dashboard extends State<Dashboard> {
                     child: RaisedButton(
                       highlightElevation: 0.0,
                       padding: EdgeInsets.all(16.0),
-                      color: isFirstPage ? Colors.white : Colors.black,
+                      color: isFirstPage ? Colors.white : Theme.of(context).accentColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
                       ),

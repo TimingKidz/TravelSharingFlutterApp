@@ -7,11 +7,13 @@ class CardTileWithTapMatch extends StatefulWidget {
   final Map<String,dynamic> data;
   final IconData iconData;
   final Function onCardPressed;
+  final Function onButtonPressed;
 
   CardTileWithTapMatch({
     this.data,
     this.iconData,
-    this.onCardPressed
+    this.onCardPressed,
+    this.onButtonPressed
   });
 
 
@@ -27,22 +29,91 @@ class CardTileWithTapMatchState extends State<CardTileWithTapMatch> {
     return Card(
         margin: EdgeInsets.all(10.0),
         elevation: 2.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0)
+        ),
         child: FlatButton(
-          padding: EdgeInsets.only(top: 16.0, bottom: 20.0, left: 20.0, right: 8.0),
+          padding: EdgeInsets.only(top: 16.0, bottom: 16.0, left: 16.0, right: 16.0),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0)
+          ),
           onPressed: () {
             widget.onCardPressed();
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(widget.data['name'], style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-              SizedBox(height: 10.0),
-              Text("src : ${widget.data['detail'].src}", style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-              SizedBox(height: 10.0),
-              Text("dst : ${widget.data['detail'].dst}", style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-              SizedBox(height: 10.0),
-              Text("_id : ${widget.data['_id']}", style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-              SizedBox(height: 10.0),
+              Container(
+                padding: EdgeInsets.only(bottom: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('ปลายทาง', style: TextStyle(fontSize: 10.0)),
+                    SizedBox(height: 5.0),
+                    Text(widget.data['detail'].dst, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 16.0),
+                    Text('ต้นทาง', style: TextStyle(fontSize: 10.0)),
+                    SizedBox(height: 5.0),
+                    Text(widget.data['detail'].src, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 16.0),
+                    Row(
+                      children: <Widget>[
+                        Icon(Icons.account_circle, size: 32.0),
+                        SizedBox(width: 8.0),
+                        Text(widget.data['name'], style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                child: RaisedButton(
+                  highlightElevation: 0.0,
+                  padding: EdgeInsets.all(16.0),
+                  color: Colors.green,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Text('ส่งคำขอ', style: TextStyle(color: Colors.white,)),
+                  onPressed: () {
+                    widget.onButtonPressed();
+                  },
+                ),
+              ),
+//              Row(
+//                children: <Widget>[
+//                  Expanded(
+//                    child: RaisedButton(
+//                      highlightElevation: 0.0,
+//                      padding: EdgeInsets.all(16.0),
+//                      color: Theme.of(context).primaryColor,
+//                      shape: RoundedRectangleBorder(
+//                        borderRadius: BorderRadius.circular(30.0),
+//                      ),
+//                      child: Text('ดูโปรไฟล์', style: TextStyle(color: Theme.of(context).accentColor,)),
+//                      onPressed: () {
+//
+//                      },
+//                    ),
+//                  ),
+//                  SizedBox(width: 16.0),
+//                  Expanded(
+//                    child: RaisedButton(
+//                      highlightElevation: 0.0,
+//                      padding: EdgeInsets.all(16.0),
+//                      color: Colors.green,
+//                      shape: RoundedRectangleBorder(
+//                        borderRadius: BorderRadius.circular(30.0),
+//                      ),
+//                      child: Text('ส่งคำขอ', style: TextStyle(color: Colors.white,)),
+//                      onPressed: () {
+//
+//                      },
+//                    ),
+//                  ),
+//                ],
+//              ),
 
 //              Row(
 //                children: <Widget>[
