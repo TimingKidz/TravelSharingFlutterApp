@@ -79,9 +79,9 @@ class _MatchListstate extends State<MatchList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         title: const Text('ส่งคำขอให้คนที่คุณจะไปด้วย'),
+        elevation: 2.0,
       ),
 //      floatingActionButton: FloatingActionButton(
 //        child: Icon(Icons.dashboard),

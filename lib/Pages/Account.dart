@@ -12,7 +12,6 @@ class AccountState extends State<Account> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Center(
         child: RaisedButton(
           onPressed: _handleSignOut,

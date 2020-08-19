@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
@@ -8,6 +9,7 @@ import 'package:travel_sharing/Pages/ReqList.dart';
 import 'package:travel_sharing/Pages/map.dart';
 import 'package:location/location.dart' ;
 import 'package:travel_sharing/buttons/cardTileWithTap.dart';
+import 'package:travel_sharing/custom_color_scheme.dart';
 /// This Widget is the main application widget.
 
 
@@ -128,7 +130,7 @@ class _Dashboard extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+//      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text('แดชบอร์ด'),
@@ -141,45 +143,62 @@ class _Dashboard extends State<Dashboard> {
       body: Center(
         child: Column(
           children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0, top: 8.0),
-              color: Theme.of(context).primaryColor,
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: RaisedButton(
-                      highlightElevation: 0.0,
-                      padding: EdgeInsets.all(16.0),
-                      color: isFirstPage ? Theme.of(context).accentColor : Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+            Card(
+              elevation: 2.0,
+              margin: EdgeInsets.all(0.0),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(30.0),
+                      bottomRight: Radius.circular(30.0)
+                  )
+              ),
+              child: Container(
+                padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 20.0, top: 8.0),
+//              color: Theme.of(context).primaryColor,
+                decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.orange,
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(30.0),
+                        bottomRight: Radius.circular(30.0)
+                    )
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: RaisedButton(
+                        highlightElevation: 0.0,
+                        padding: EdgeInsets.all(16.0),
+                        color: isFirstPage ? Colors.white : Theme.of(context).accentColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        child: Text('ไปด้วย', style: TextStyle(color: isFirstPage ? Colors.black : Colors.white)),
+                        onPressed: () {
+                          setState(() {
+                            isFirstPage = true;
+                          });
+                        },
                       ),
-                      child: Text('ไปด้วย', style: TextStyle(color: isFirstPage ? Colors.white : Colors.black)),
-                      onPressed: () {
-                        setState(() {
-                          isFirstPage = true;
-                        });
-                      },
                     ),
-                  ),
-                  SizedBox(width: 16.0),
-                  Expanded(
-                    child: RaisedButton(
-                      highlightElevation: 0.0,
-                      padding: EdgeInsets.all(16.0),
-                      color: isFirstPage ? Colors.white : Theme.of(context).accentColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                    SizedBox(width: 16.0),
+                    Expanded(
+                      child: RaisedButton(
+                        highlightElevation: 0.0,
+                        padding: EdgeInsets.all(16.0),
+                        color: isFirstPage ? Theme.of(context).accentColor : Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        child: Text('ชวน', style: TextStyle(color: isFirstPage ? Colors.white : Colors.black)),
+                        onPressed: () {
+                          setState(() {
+                            isFirstPage = false;
+                          });
+                        },
                       ),
-                      child: Text('ชวน', style: TextStyle(color: isFirstPage ? Colors.black : Colors.white)),
-                      onPressed: () {
-                        setState(() {
-                          isFirstPage = false;
-                        });
-                      },
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             Expanded(

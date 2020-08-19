@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
+import 'package:travel_sharing/custom_color_scheme.dart';
 
 class CardTileWithTap extends StatefulWidget {
   final Routes data;
@@ -25,6 +26,7 @@ class CardTileWithTapState extends State<CardTileWithTap> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Theme.of(context).colorScheme.card,
         margin: EdgeInsets.all(10.0),
         elevation: 2.0,
         shape: RoundedRectangleBorder(
@@ -60,7 +62,7 @@ class CardTileWithTapState extends State<CardTileWithTap> {
                 width: double.infinity,
                 padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).accentColor,
+                  color: Theme.of(context).colorScheme.cardFlag,
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(20.0),
                     bottomRight: Radius.circular(20.0)

@@ -75,9 +75,9 @@ class _ReqListstate extends State<ReqList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         title: const Text('ตอบรับคำขอของคนที่จะไปด้วย'),
+        elevation: 2.0,
       ),
 //      floatingActionButton: FloatingActionButton(
 //        child: Icon(Icons.dashboard),
