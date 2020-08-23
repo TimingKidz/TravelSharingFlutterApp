@@ -9,6 +9,7 @@ import 'package:latlong/latlong.dart' as l;
 import 'package:location/location.dart' ;
 import "package:google_maps_webservice/places.dart" as p;
 import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:travel_sharing/Pages/LocationSearchBar.dart';
 import 'package:travel_sharing/Pages/test.dart';
 import 'package:travel_sharing/buttons/borderTextField.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
@@ -121,19 +122,27 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
                                             borderRadius: BorderRadius.circular(20.0)
                                         ),
                                         child: TextFormField(
+                                          readOnly: true,
                                           controller: src_Textcontroller,
                                           cursorColor: Colors.black,
                                           keyboardType: TextInputType.text,
                                           onTap: (){
                                             is_src = true;
-                                            _Searchbar();
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) => LocationSearch(currentLocation: current_Location)
+                                                )
+                                            ).then((result) {
+                                              if(result != null) _Searchbar(result);
+                                            });
                                           },
                                           textInputAction: TextInputAction.go,
                                           decoration: InputDecoration(
                                               border: InputBorder.none,
                                               contentPadding:
                                               EdgeInsets.symmetric(horizontal: 15),
-                                              hintText: "จุดเริ่มต้น ..."),
+                                              hintText: "จุดเริ่มต้น ..."
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -151,19 +160,27 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
                                             borderRadius: BorderRadius.circular(20.0)
                                         ),
                                         child: TextFormField(
+                                          readOnly: true,
                                           controller: dst_Textcontroller,
                                           cursorColor: Colors.black,
                                           keyboardType: TextInputType.text,
                                           onTap: (){
                                             is_src = false;
-                                            _Searchbar();
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) => LocationSearch(currentLocation: current_Location)
+                                                )
+                                            ).then((result) {
+                                              if(result != null) _Searchbar(result);
+                                            });
                                           },
                                           textInputAction: TextInputAction.go,
                                           decoration: InputDecoration(
                                               border: InputBorder.none,
                                               contentPadding:
                                               EdgeInsets.symmetric(horizontal: 15),
-                                              hintText: "จุดปลายทาง ..."),
+                                              hintText: "จุดปลายทาง ..."
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -263,23 +280,18 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
     _createMarkers(Marker_Location);
   }
 
-  Future<void> _Searchbar() async {
-    // get app current focus (search bar)
-    FocusScopeNode currentFocus = FocusScope.of(context);
-    if (currentFocus.nextFocus()) {
-      // set search bar to unfocus
-      currentFocus.unfocus();
-    }
+  Future<void> _Searchbar(Map<String, dynamic> result) async {
     // show input autocomplete with selected mode
     // then get the Prediction selected
-    p.Prediction P = await PlacesAutocomplete.show(
-      context: context,
-      apiKey: api_key,
-      mode: Mode.fullscreen,
-      language: "th",
-      components: [p.Component(p.Component.country, "th")],
-    );
-    p.PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(P.placeId);
+//    p.Prediction P = await PlacesAutocomplete.show(
+//      context: context,
+//      apiKey: api_key,
+//      mode: Mode.fullscreen,
+//      language: "th",
+//      components: [p.Component(p.Component.country, "th")],
+//    );
+    p.PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(result['place_id']);
+    debugPrint(result['place_id']);
 
     final lat = detail.result.geometry.location.lat;
     final lng = detail.result.geometry.location.lng;
