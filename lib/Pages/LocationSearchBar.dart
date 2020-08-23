@@ -121,7 +121,8 @@ const API_KEY = "AIzaSyBQCf89JOkrq2ECa6Ko8LBQaMO8A7rJt9Q";
 
 class LocationSearch extends StatefulWidget {
   final LatLng currentLocation;
-  LocationSearch({Key key, @required this.currentLocation}) : super(key: key);
+  final String hintText;
+  LocationSearch({Key key, @required this.currentLocation, @required this.hintText}) : super(key: key);
 
   @override
   _LocationSearchState createState() => _LocationSearchState();
@@ -216,7 +217,7 @@ class _LocationSearchState extends State<LocationSearch> {
                             border: InputBorder.none,
                             contentPadding:
                             EdgeInsets.symmetric(horizontal: 15),
-                            hintText: "จุดเริ่มต้น ..."
+                            hintText: widget.hintText
                         ),
                       ),
                     )

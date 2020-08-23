@@ -130,7 +130,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
                                             is_src = true;
                                             Navigator.of(context).push(
                                                 MaterialPageRoute(
-                                                    builder: (context) => LocationSearch(currentLocation: current_Location)
+                                                    builder: (context) => LocationSearch(currentLocation: current_Location, hintText: "จุดเริ่มต้น ...")
                                                 )
                                             ).then((result) {
                                               if(result != null) _Searchbar(result);
@@ -168,7 +168,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
                                             is_src = false;
                                             Navigator.of(context).push(
                                                 MaterialPageRoute(
-                                                    builder: (context) => LocationSearch(currentLocation: current_Location)
+                                                    builder: (context) => LocationSearch(currentLocation: current_Location, hintText: "จุดปลายทาง ...")
                                                 )
                                             ).then((result) {
                                               if(result != null) _Searchbar(result);
