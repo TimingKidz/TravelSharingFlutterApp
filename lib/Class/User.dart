@@ -76,6 +76,7 @@ class User {
         var url = "$heroku/api/routes/getRoutes";
         Map<String, dynamic> temp = this.toJson();
         temp['role'] = role;
+        print(jsonEncode(temp));
         Http.Response response = await Http.post(url, headers: header, body: jsonEncode(temp));
         if(response.statusCode == 400 ){
           return Future.value(null);
@@ -90,7 +91,13 @@ class User {
               tmp['detail'] = Routes.fromJson(x['detail']);
               tmp['id'] = x['detail']['id'];
               tmp['_id'] = x['_id'];
-              print(tmp['detail'].src);
+//              if(role == 1){
+//                List<String> isreq = List();
+//                x['isreq'].forEach((y) {
+//                  isreq.add(y);
+//                });
+//                tmp['isreq'] = isreq;
+//              }
               listroutes.add(tmp);
             });
             return Future.value(listroutes);
@@ -98,6 +105,82 @@ class User {
         }
     }catch(error){
       print(error);
+      throw("can't connect");
+    }
+  }
+
+  Future<List<String>> getisReq(String id ,String _id) async {
+    try{
+      var url = "$heroku/api/routes/getisReq";
+      Map<String, dynamic> temp = Map();
+      temp['id'] = id;
+      temp['_id'] = _id;
+      print(jsonEncode(temp));
+      Http.Response response = await Http.post(url, headers: header, body: jsonEncode(temp));
+      if(response.statusCode == 400 ){
+        return Future.value(null);
+      }else{
+        if(response.statusCode == 404){
+          return Future.value(null);
+        }else{
+          Map<String, dynamic> data = jsonDecode(response.body);
+          List<String> temp = List();
+          data['event']['join'][0]['isreq'].forEach((x){
+            temp.add(x);
+          });
+          return Future.value(temp);
+        }
+      }
+    }catch(error){
+      print(error);
+      throw("can't connect");
+    }
+  }
+
+
+  Future<bool> AcceptReq(String Reqid,String Currentid,String Current_id) async {
+    try{
+      var url = "$heroku/api/routes/AcceptRequest";
+      Map<String, dynamic> temp = Map();
+      temp['Reqid'] = Reqid;
+      temp['userid'] = Currentid;
+      temp['userRoute_id'] = Current_id;
+      print(jsonEncode(temp));
+      Http.Response response = await Http.post(url, headers: header, body: jsonEncode(temp));
+      if(response.statusCode == 400 ){
+        return Future.value(false);
+      }else{
+        if(response.statusCode == 404){
+          return Future.value(false);
+        }else{
+          return Future.value(true);
+        }
+      }
+
+    }catch(error){
+      throw("can't connect");
+    }
+  }
+
+  Future<bool> DeclineReq(String Reqid,String Currentid,String Current_id) async {
+    try{
+      var url = "$heroku/api/routes/DeclineRequest";
+      Map<String, dynamic> temp = Map();
+      temp['Reqid'] = Reqid;
+      temp['userid'] = Currentid;
+      temp['userRoute_id'] = Current_id;
+      print(jsonEncode(temp));
+      Http.Response response = await Http.post(url, headers: header, body: jsonEncode(temp));
+      if(response.statusCode == 400 ){
+        return Future.value(false);
+      }else{
+        if(response.statusCode == 404){
+          return Future.value(false);
+        }else{
+          return Future.value(true);
+        }
+      }
+    }catch(error){
       throw("can't connect");
     }
   }

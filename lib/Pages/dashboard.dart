@@ -5,6 +5,7 @@ import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/JoinMap.dart';
 import 'package:travel_sharing/Pages/MatchList.dart';
+import 'package:travel_sharing/Pages/Matchinformation.dart';
 import 'package:travel_sharing/Pages/ReqList.dart';
 import 'package:travel_sharing/Pages/map.dart';
 import 'package:location/location.dart' ;
@@ -70,6 +71,7 @@ class _Dashboard extends State<Dashboard> {
   Widget _buildRow(Map<String, dynamic> data) {
     print(data);
     return CardTileWithTap(
+      isFirstPage: isFirstPage,
       data: data['detail'],
       onCardPressed: () => _onCardPressed(data),
     );
@@ -77,23 +79,23 @@ class _Dashboard extends State<Dashboard> {
 
   _onCardPressed(Map<String, dynamic> data){
     if( isFirstPage ){
-      if( data['detail'].match != "" ){
+      if( data['detail'].isMatch ){
 // information
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => Matchinformation()));
       }else{
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => MatchList(data: data))).then((value) {
-          getData();
-        });
+            builder: (context) => MatchList(data: data)));
 
       }
     }else{
-      if( data['detail'].match != "" ){
+      if( data['detail'].isMatch){
 // information
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => Matchinformation()));
       }else{
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => ReqList(data: data))).then((value) {
-          getData();
-        });
+            builder: (context) => ReqList(data: data)));
 
       }
     }

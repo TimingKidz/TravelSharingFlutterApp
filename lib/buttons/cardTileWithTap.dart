@@ -5,11 +5,13 @@ import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 
 class CardTileWithTap extends StatefulWidget {
+  final bool isFirstPage;
   final Routes data;
   final IconData iconData;
   final Function onCardPressed;
 
   CardTileWithTap({
+    this.isFirstPage,
     this.data,
     this.iconData,
     this.onCardPressed
@@ -25,57 +27,58 @@ class CardTileWithTapState extends State<CardTileWithTap> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).colorScheme.card,
-        margin: EdgeInsets.all(10.0),
-        elevation: 2.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0)
-        ),
-        child: FlatButton(
-          padding: EdgeInsets.only(top: 16.0),
+    if(widget.isFirstPage){
+      return Card(
+          color: Theme.of(context).colorScheme.card,
+          margin: EdgeInsets.all(10.0),
+          elevation: 2.0,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0)
           ),
-          onPressed: () {
-            widget.onCardPressed();
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 48.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text('ปลายทาง', style: TextStyle(fontSize: 10.0)),
-                    SizedBox(height: 5.0),
-                    Text(widget.data.dst, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-                    SizedBox(height: 16.0),
-                    Text('ต้นทาง', style: TextStyle(fontSize: 10.0, color: Colors.black54)),
-                    SizedBox(height: 5.0),
-                    Text(widget.data.src, style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold, color: Colors.black54)),
-                  ],
+          child: FlatButton(
+            padding: EdgeInsets.only(top: 16.0),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)
+            ),
+            onPressed: () {
+              widget.onCardPressed();
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 48.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text('ปลายทาง', style: TextStyle(fontSize: 10.0)),
+                      SizedBox(height: 5.0),
+                      Text(widget.data.dst, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                      SizedBox(height: 16.0),
+                      Text('ต้นทาง', style: TextStyle(fontSize: 10.0, color: Colors.black54)),
+                      SizedBox(height: 5.0),
+                      Text(widget.data.src, style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold, color: Colors.black54)),
+                    ],
+                  ),
                 ),
-              ),
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.cardFlag,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(20.0),
-                    bottomRight: Radius.circular(20.0)
-                  )
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text('${datetimeFormat('date')} | ${datetimeFormat('time')}', style: TextStyle(color: Colors.white)),
-                    Text('0/${widget.data.amount}', style: TextStyle(color: Colors.white)),
-                  ],
+                Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).accentColor,
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(20.0),
+                            bottomRight: Radius.circular(20.0)
+                        )
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text('${datetimeFormat('date')} | ${datetimeFormat('time')}', style: TextStyle(color: Colors.white)),
+                        Text('${widget.data.amount}', style: TextStyle(color: Colors.white)),
+                      ],
+                    )
                 )
-              )
 //              Row(
 //                children: <Widget>[
 //                  ClipRRect(
@@ -116,10 +119,68 @@ class CardTileWithTapState extends State<CardTileWithTap> {
 //                alignment: Alignment.centerLeft,
 //                child: Text('Purchase Date : ${dateFormat()}', style: TextStyle(color: Colors.grey.shade700)),
 //              ),
-            ],
+              ],
+            ),
+          )
+      );
+    }else{
+      return Card(
+          color: Theme.of(context).colorScheme.card,
+          margin: EdgeInsets.all(10.0),
+          elevation: 2.0,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0)
           ),
-        )
-    );
+          child: FlatButton(
+            padding: EdgeInsets.only(top: 16.0),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)
+            ),
+            onPressed: () {
+              widget.onCardPressed();
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 48.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text('ปลายทาง', style: TextStyle(fontSize: 10.0)),
+                      SizedBox(height: 5.0),
+                      Text(widget.data.dst, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                      SizedBox(height: 16.0),
+                      Text('ต้นทาง', style: TextStyle(fontSize: 10.0, color: Colors.black54)),
+                      SizedBox(height: 5.0),
+                      Text(widget.data.src, style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold, color: Colors.black54)),
+                    ],
+                  ),
+                ),
+                Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).accentColor,
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(20.0),
+                            bottomRight: Radius.circular(20.0)
+                        )
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text('${datetimeFormat('date')} | ${datetimeFormat('time')}', style: TextStyle(color: Colors.white)),
+                        Text('${widget.data.match.length}/${widget.data.amount}', style: TextStyle(color: Colors.white)),
+                      ],
+                    )
+                )
+              ],
+            ),
+          )
+      );
+    }
+
   }
 
 //  String warrantyText() {

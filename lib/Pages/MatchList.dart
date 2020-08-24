@@ -6,6 +6,7 @@ import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/JoinMap.dart';
 import 'package:travel_sharing/Pages/map.dart';
 import 'package:location/location.dart' ;
+import 'package:travel_sharing/Pages/mapview.dart';
 import 'package:travel_sharing/buttons/cardTileWithTap.dart';
 import 'package:travel_sharing/buttons/cardTileWithTapMatch.dart';
 /// This Widget is the main application widget.
@@ -25,11 +26,13 @@ class _MatchListstate extends State<MatchList> {
   LocationData Locations;
   List< Map<String,dynamic>> _MatchList = List();
   bool isFirstPage = true;
+  List<String> isreq = List();
 
   // get Match list of current routes
   Future<void> getData() async {
     try{
       _MatchList =  await widget.data['detail'].getNearRoutes() ?? [];
+      isreq = await User().getisReq(widget.data['id'], widget.data['_id']) ?? [];
       setState(() {});
     }catch(error){
       print(error);
@@ -61,20 +64,39 @@ class _MatchListstate extends State<MatchList> {
   }
 
   Widget _buildRow( Map<String,dynamic> data) {
-    return CardTileWithTapMatch(
-      data: data,
-      onCardPressed:() => _onCardPressed(data),
-      onButtonPressed: () => _onButtonPressed(data),
-    );
+    if(isreq.contains(data['_id'])){
+      return CardTileWithTapMatch(
+        data: data,
+        isreq: true,
+        onCardPressed:() => _onCardPressed(data),
+        onButtonPressed: () => _onButtonPressed(data),
+      );
+    }else{
+      return CardTileWithTapMatch(
+        data: data,
+        isreq: false,
+        onCardPressed:() => _onCardPressed(data),
+        onButtonPressed: () => _onButtonPressed(data),
+      );
+    }
+
   }
 
+//  _onButtonPressed(Map<String,dynamic> data){
+//
+//
+//  }
   _onCardPressed(Map<String,dynamic> data) {
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context) => mapview(from:widget.data,to:data)));
   }
 
   _onButtonPressed(Map<String,dynamic> data) {
     Routes().Request(data,widget.data);
+    getData();
 
   }
+
 
   @override
   Widget build(BuildContext context) {

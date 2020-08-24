@@ -15,10 +15,11 @@ class Routes {
   String dst;
   String amount;
   String date;
-  String match;
+  bool isMatch;
+  List<String> match;
 
 
-  Routes({this.id,this.routes, this.src,this.dst,this.amount,this.date,this.match});
+  Routes({this.id,this.routes, this.src,this.dst,this.amount,this.date,this.isMatch,this.match});
 
   Routes.fromJson(Map<String, dynamic> json) {
     if(json['routes'] != null){
@@ -28,12 +29,21 @@ class Routes {
       });
     routes = temp;
     }
+    if(json['match'] != null){
+      List<String> temp = List();
+      json['match'].forEach((x){
+        temp.add(x);
+      });
+      match = temp;
+    }else{
+      match = List();
+    }
     src = json['src'];
     dst = json['dst'];
     amount = json['amount'];
     date = json['date'];
     id = json['id'];
-    match = json['match'];
+    isMatch = json['isMatch'];
   }
 
   Map<String, dynamic> toJson() {
@@ -67,11 +77,13 @@ class Routes {
     }
   }
 
+
  // get routes that close to your destination place
   Future< List< Map<String,dynamic>>> getNearRoutes() async {
     try{
       var url = "$heroku/api/routes/getNearRoutes";
       Map<String, dynamic> temp = this.toJson();
+      print(jsonEncode(temp));
       Http.Response response = await Http.post(url, headers: header, body: jsonEncode(temp));
       if(response.statusCode == 400 ){
         return Future.value(null);
@@ -139,14 +151,15 @@ class Routes {
           return Future.value(null);
         }else{
           print(jsonDecode(response.body));
-          List<dynamic> data = jsonDecode(response.body);
+          List<dynamic> Data = jsonDecode(response.body);
           List<Map<String, dynamic>> listroutes = List();
-          data.forEach((x) {
+          Data.forEach((x) {
             Map<String,dynamic> tmp = Map();
             tmp['detail'] = Routes.fromJson(x['detail']);
             tmp['id'] = x['id'];
             tmp['_id'] = x['_id'];
             tmp['name'] = x['name'];
+            tmp['reqid'] = x['reqid'];
             listroutes.add(tmp);
           });
           return Future.value(listroutes);

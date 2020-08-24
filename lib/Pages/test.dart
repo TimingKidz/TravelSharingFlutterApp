@@ -157,11 +157,13 @@ class _Test extends State<Test> {
     SharedPreferences prefs = await SharedPreferences.getInstance();  // get id of current user from local
     User user = await User().getCurrentuser(prefs.getString("CurrentUser_id")); // get user data of current user from DB
     // prepare Route data for save to DB
-    Final_Data = new Routes(id: user.id,routes : widget.routes,src : Final_Data.src,dst : Final_Data.dst,amount : Final_Data.amount,date :date_Textcontroller.text,match: "");
-    Final_Data.SaveRoute_toDB(widget.Role,user); // save to DB
+    Final_Data = new Routes(id: user.id,routes : widget.routes,src : Final_Data.src,dst : Final_Data.dst,amount : Final_Data.amount,date :date_Textcontroller.text,isMatch: false,match: List());
+    Final_Data.SaveRoute_toDB(widget.Role,user).then((x){
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+    }); // save to DB
     // go to dashboard
-    Navigator.of(context).pop();
-    Navigator.of(context).pop();
+
   }
 }
 

@@ -78,9 +78,9 @@ class CardTileWithTapReqState extends State<CardTileWithTapReq> {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: Text('ปฏิเสธ', style: TextStyle(color: Colors.white)),
-                      onPressed: () {
+                      onPressed: () => widget.onDeclinePressed()
 
-                      },
+                      ,
                     ),
                   ),
                   SizedBox(width: 16.0),
@@ -94,7 +94,7 @@ class CardTileWithTapReqState extends State<CardTileWithTapReq> {
                       ),
                       child: Text('ยอมรับ', style: TextStyle(color: Colors.white)),
                       onPressed: () {
-
+                        widget.onAcceptPressed();
                       },
                     ),
                   ),

@@ -255,7 +255,7 @@ class _CreateRoutestate extends State<CreateRoute> {
 
 
    _createMarkers(LatLng x) {
-//    Markers.clear();
+    Markers.clear();
     Markers.add(
       Marker(
         markerId: MarkerId("toPoint"),
