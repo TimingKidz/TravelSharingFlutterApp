@@ -62,6 +62,7 @@ class _Dashboard extends State<Dashboard> {
 
   Widget _buildListView() {
     return ListView.builder(
+      physics: BouncingScrollPhysics(),
         itemCount: isFirstPage ? _joinList.length : _invitedList.length,
         itemBuilder: (context, i) {
           return _buildRow(isFirstPage ? _joinList[i] : _invitedList[i]);
@@ -134,12 +135,14 @@ class _Dashboard extends State<Dashboard> {
     return Scaffold(
 //      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
+        backgroundColor: isFirstPage ? Theme.of(context).colorScheme.orange : Theme.of(context).colorScheme.cardFlag,
         automaticallyImplyLeading: false,
         title: const Text('แดชบอร์ด'),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: isFirstPage ? _newroute1 : _newroute,
+        backgroundColor: isFirstPage ? Theme.of(context).colorScheme.redOrange : Theme.of(context).colorScheme.info,
         heroTag: null,
       ),
       body: Center(
@@ -158,7 +161,7 @@ class _Dashboard extends State<Dashboard> {
                 padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 20.0, top: 8.0),
 //              color: Theme.of(context).primaryColor,
                 decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.orange,
+                    color: isFirstPage ? Theme.of(context).colorScheme.orange : Theme.of(context).colorScheme.cardFlag,
                     borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(30.0),
                         bottomRight: Radius.circular(30.0)
@@ -170,7 +173,7 @@ class _Dashboard extends State<Dashboard> {
                       child: RaisedButton(
                         highlightElevation: 0.0,
                         padding: EdgeInsets.all(16.0),
-                        color: isFirstPage ? Colors.white : Theme.of(context).accentColor,
+                        color: isFirstPage ? Colors.white : Theme.of(context).colorScheme.info,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0),
                         ),

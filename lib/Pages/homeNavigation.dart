@@ -55,7 +55,7 @@ class HomeNavigationState extends State<HomeNavigation> {
           items: widget.barItems,
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.white,
-          selectedItemColor: Theme.of(context).accentColor,
+          selectedItemColor: Colors.black,
           selectedFontSize: 12.0,
           selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
           currentIndex: selectedBarIndex,

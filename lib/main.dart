@@ -3,7 +3,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/services.dart';
 import 'package:travel_sharing/Pages/JoinMap.dart';
 import 'package:travel_sharing/Pages/homeNavigation.dart';
-import 'package:travel_sharing/Pages/test.dart';
+import 'package:travel_sharing/Pages/InfoFill.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 import 'Pages/loginPage.dart';
 import 'Pages/map.dart';
@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
           '/dashboard' : (context) => Dashboard(),
           '/joinMap' : (context) => CreateRoute_Join(),
           '/inviteMap' : (context) => CreateRoute(),
-          '/tripInfo' : (context) => Test()
+          '/tripInfo' : (context) => InfoFill()
         },
       );
   }

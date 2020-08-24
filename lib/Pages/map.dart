@@ -7,7 +7,7 @@ import 'package:location/location.dart' ;
 import "package:google_maps_webservice/places.dart" as p;
 import 'package:flutter_polyline_points/flutter_polyline_points.dart' ;
 import 'package:flutter_google_places/flutter_google_places.dart';
-import 'package:travel_sharing/Pages/test.dart';
+import 'package:travel_sharing/Pages/InfoFill.dart';
 
 class CreateRoute extends StatefulWidget {
 
@@ -214,7 +214,7 @@ class _CreateRoutestate extends State<CreateRoute> {
     print(dst);
     print(Placename_dst);
     Navigator.push(context, MaterialPageRoute(
-        builder: (context) => Test(routes: routes, bounds:bounds,Markers :Markers,lines :lines,src:Placename_src,dst: Placename_dst ,Role :Role)));
+        builder: (context) => InfoFill(routes: routes, bounds:bounds,Markers :Markers,lines :lines,src:Placename_src,dst: Placename_dst ,Role :Role)));
 
 
 

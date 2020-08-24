@@ -8,7 +8,7 @@ import "package:google_maps_webservice/places.dart" as p;
 import 'package:flutter_polyline_points/flutter_polyline_points.dart' ;
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
-import 'package:travel_sharing/Pages/test.dart';
+import 'package:travel_sharing/Pages/InfoFill.dart';
 
 class mapview extends StatefulWidget {
   final Map<String,dynamic> from;

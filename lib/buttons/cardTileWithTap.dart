@@ -29,7 +29,7 @@ class CardTileWithTapState extends State<CardTileWithTap> {
   Widget build(BuildContext context) {
     if(widget.isFirstPage){
       return Card(
-          color: Theme.of(context).colorScheme.card,
+          color: Colors.white,
           margin: EdgeInsets.all(10.0),
           elevation: 2.0,
           shape: RoundedRectangleBorder(
