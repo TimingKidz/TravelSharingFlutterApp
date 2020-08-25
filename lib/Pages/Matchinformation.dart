@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
-import 'package:travel_sharing/Class/User.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 class Matchinformation extends StatefulWidget {
 
 
@@ -14,46 +13,204 @@ class _Matchinformation extends State<Matchinformation> {
   final TextEditingController date_Textcontroller = new TextEditingController();
   GoogleMapController _mapController;
   Routes Final_Data = new Routes();
+  List<Map<String, dynamic>> passengerList = [];
 
   @override
   void initState() {
-    // TODO: implement initState
+    Map<String, dynamic> test = {
+      'name' : 'Thut Chayasatit'
+    };
+    passengerList.add(test);
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
         appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Text('Sign Up to Travel Sharing'),
+//          automaticallyImplyLeading: false,
+          title: Text('Trip Details'),
         ),
-        body: Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Container(
-                height: MediaQuery.of(context).size.height * 0.48,
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-
-                  child: Card(
+        body: Stack(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Column(
+                children: <Widget>[
+                  Card(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.0),
+                        borderRadius: BorderRadius.circular(20.0)
                     ),
-                    elevation: 8,
-
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          CircleAvatar(
+                            radius: 32,
+                          ),
+                          SizedBox(width: 16.0),
+                          Text(
+                            'Thanakrit Tatsamakorn',
+                            style: TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                   ),
-                ),
+                  SizedBox(height: 4.0),
+                  Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0)
+                    ),
+                    child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Icon(Icons.motorcycle),
+                                SizedBox(width: 8.0),
+                                Text(
+                                  'Motorcycle',
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                  ),
+                                )
+                              ],
+                            ),
+                            SizedBox(height: 4.0),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: <Widget>[
+                                Column(
+                                  children: <Widget>[
+                                    Text('ทะเบียน', style: TextStyle(color: Colors.black.withOpacity(0.7)),),
+                                    Text('1กณ 8698 ชร.')
+                                  ],
+                                ),
+                                Column(
+                                  children: <Widget>[
+                                    Text('ยี่ห้อ', style: TextStyle(color: Colors.black.withOpacity(0.7)),),
+                                    Text('Honda')
+                                  ],
+                                ),
+                                Column(
+                                  children: <Widget>[
+                                    Text('รุ่น', style: TextStyle(color: Colors.black.withOpacity(0.7)),),
+                                    Text('Moove')
+                                  ],
+                                ),
+                                Column(
+                                  children: <Widget>[
+                                    Text('สี', style: TextStyle(color: Colors.black.withOpacity(0.7)),),
+                                    Text('ส้ม-ดำ')
+                                  ],
+                                )
+                              ],
+                            ),
+                          ],
+                        )
+                    ),
+                  ),
+                  SizedBox(height: 8.0),
+                  Expanded(
+                    child: Card(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0)
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                'Passenger List',
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                              SizedBox(height: 16.0),
+                              Expanded(
+                                child: _buildListView(),
+                              )
+                            ],
+                          ),
+                        )
+                    ),
+                  )
+                ],
               ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: FloatingActionButton(
+                      heroTag: null,
+                      child: Icon(Icons.add),
+                      tooltip: 'Request List',
+                      onPressed: () {
 
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 8.0),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: FloatingActionButton(
+                      heroTag: null,
+                      child: Icon(Icons.map),
+                      tooltip: 'Route Map',
+                      onPressed: () {
 
-            ],
-          ),
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
         )
     );
   }
 
+  Widget _buildListView() {
+    return ListView.builder(
+        physics: BouncingScrollPhysics(),
+        itemCount: passengerList.length,
+        itemBuilder: (context, i) {
+          return _buildRow(passengerList[i]);
+        }
+    );
+  }
+
+  Widget _buildRow(Map<String, dynamic> data) {
+    print(data);
+    return Container(
+      padding: EdgeInsets.all(8.0),
+      child: Row(
+        children: <Widget>[
+          CircleAvatar(
+            radius: 28,
+          ),
+          SizedBox(width: 16.0),
+          Text(
+            data['name'],
+            style: TextStyle(
+                fontSize: 18.0,
+            ),
+          )
+        ],
+      ),
+    );
+  }
 
 }

@@ -125,7 +125,7 @@ class CardTileWithTapState extends State<CardTileWithTap> {
       );
     }else{
       return Card(
-          color: Theme.of(context).colorScheme.card,
+          color: Colors.white,
           margin: EdgeInsets.all(10.0),
           elevation: 2.0,
           shape: RoundedRectangleBorder(
@@ -161,7 +161,7 @@ class CardTileWithTapState extends State<CardTileWithTap> {
                     width: double.infinity,
                     padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
                     decoration: BoxDecoration(
-                        color: Theme.of(context).accentColor,
+                        color: Theme.of(context).colorScheme.info,
                         borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(20.0),
                             bottomRight: Radius.circular(20.0)

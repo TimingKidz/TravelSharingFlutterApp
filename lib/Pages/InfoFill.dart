@@ -22,7 +22,6 @@ class InfoFill extends StatefulWidget {
 }
 
 class _InfoFillState extends State<InfoFill> {
-  final TextEditingController date_Textcontroller = new TextEditingController();
   GoogleMapController _mapController;
   Routes Final_Data = new Routes();
 
@@ -31,7 +30,6 @@ class _InfoFillState extends State<InfoFill> {
     super.initState();
     Final_Data.src = widget.src;
     Final_Data.dst = widget.dst;
-    date_Textcontroller.text =  DateTime.now().toIso8601String();
   }
 
   @override

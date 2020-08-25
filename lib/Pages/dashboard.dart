@@ -63,10 +63,11 @@ class _Dashboard extends State<Dashboard> {
   Widget _buildListView() {
     return ListView.builder(
       physics: BouncingScrollPhysics(),
-        itemCount: isFirstPage ? _joinList.length : _invitedList.length,
-        itemBuilder: (context, i) {
-          return _buildRow(isFirstPage ? _joinList[i] : _invitedList[i]);
-        });
+      itemCount: isFirstPage ? _joinList.length : _invitedList.length,
+      itemBuilder: (context, i) {
+        return _buildRow(isFirstPage ? _joinList[i] : _invitedList[i]);
+      }
+    );
   }
 
   Widget _buildRow(Map<String, dynamic> data) {
@@ -90,15 +91,15 @@ class _Dashboard extends State<Dashboard> {
 
       }
     }else{
-      if( data['detail'].isMatch){
+//      if( data['detail'].isMatch){
 // information
         Navigator.push(context, MaterialPageRoute(
             builder: (context) => Matchinformation()));
-      }else{
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) => ReqList(data: data)));
-
-      }
+//      }else{
+//        Navigator.push(context, MaterialPageRoute(
+//            builder: (context) => ReqList(data: data)));
+//
+//      }
     }
 
   }
