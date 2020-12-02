@@ -2,74 +2,52 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:travel_sharing/customAppbar.dart';
-import 'package:flutter_socket_io/flutter_socket_io.dart';
-import 'package:flutter_socket_io/socket_io_manager.dart';
+import 'package:flutter/rendering.dart';
 
 class ChatPage extends StatefulWidget {
   ChatPageState createState() => ChatPageState();
 }
 
 class ChatPageState extends State<ChatPage> {
-  SocketIO socketIO;
-  List<String> messages;
-  TextEditingController textController;
+  // Chat messages List { "message": "**USER MESSAGE**", "isReceiver": true/false }
+  // PAST -> PRESENT
+  List<Map<String, dynamic>> messages = [{"message":"Hello.", "isReceiver":false}, {"message":"Hi.", "isReceiver":true}];
+  List<Map<String, dynamic>> messagesReverseList;
+
+  final textController = TextEditingController();
   ScrollController scrollController;
 
   @override
   void initState() {
-    //Initializing the message list
-    messages = List<String>();
-    //Initializing the TextEditingController and ScrollController
-    textController = TextEditingController();
-    scrollController = ScrollController();
-    //Creating the socket
-    socketIO = SocketIOManager().createSocketIO(
-      'http://10.0.2.2:3000/',
-      '/',
-    );
-    //Call init before doing anything with socket
-    socketIO.init();
-    //Subscribe to an event to listen to
-    socketIO.subscribe('receive_message', (jsonData) {
-      //Convert the JSON data received into a Map
-      Map<String, dynamic> data = json.decode(jsonData);
-      this.setState(() => messages.add(data['message']));
-      scrollController.animateTo(
-        scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 600),
-        curve: Curves.ease,
-      );
-    });
-    //Connect to the socket
-    socketIO.connect();
     super.initState();
+    messagesReverseList = messages.reversed.toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: <Widget>[
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              _chatListView(),
-              _chatBottomBar()
-            ],
-          ),
-          CustomAppbar(
-            title: 'TimingKidz',
-          ),
-        ],
+      appBar: AppBar(
+        title: Text("TKZ"),
+        automaticallyImplyLeading: true,
       ),
+      backgroundColor: Colors.white,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Expanded(
+            child: _chatListView(),
+          ),
+          _chatBottomBar()
+        ],
+      )
     );
   }
   
   Widget _chatListView() {
     return Container(
       child: ListView.builder(
+        physics: BouncingScrollPhysics(),
+        reverse: true,
         controller: scrollController,
         itemCount: messages.length,
         itemBuilder: (BuildContext context, int index) {
@@ -81,16 +59,16 @@ class ChatPageState extends State<ChatPage> {
 
   Widget buildSingleMessage(int index) {
     return Container(
-      alignment: Alignment.centerLeft,
+      alignment: messagesReverseList[index]["isReceiver"] ? Alignment.centerLeft : Alignment.centerRight,
       child: Container(
-        padding: const EdgeInsets.all(20.0),
-        margin: const EdgeInsets.only(bottom: 20.0, left: 20.0),
+        padding: const EdgeInsets.all(16.0),
+        margin: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
         decoration: BoxDecoration(
-          color: Colors.deepPurple,
+          color: Colors.deepOrange,
           borderRadius: BorderRadius.circular(20.0),
         ),
         child: Text(
-          messages[index],
+          messagesReverseList[index]["message"],
           style: TextStyle(color: Colors.white, fontSize: 15.0),
         ),
       ),
@@ -101,7 +79,7 @@ class ChatPageState extends State<ChatPage> {
     return Material(
       child: Container(
         padding: EdgeInsets.only(left: 16.0, right: 16.0),
-        alignment: Alignment.center,
+        alignment: Alignment.bottomCenter,
         decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [
@@ -114,19 +92,19 @@ class ChatPageState extends State<ChatPage> {
         ),
         child: Row(
           children: <Widget>[
-            InkWell(
-              child: Icon(Icons.image),
-              onTap: () {
-                debugPrint('Image');
-              },
-            ),
-            SizedBox(width: 10.0),
-            InkWell(
-              child: Icon(Icons.insert_emoticon),
-              onTap: () {
-                debugPrint('Sticker');
-              },
-            ),
+            // InkWell(
+            //   child: Icon(Icons.image),
+            //   onTap: () {
+            //     debugPrint('Image');
+            //   },
+            // ),
+            // SizedBox(width: 10.0),
+            // InkWell(
+            //   child: Icon(Icons.insert_emoticon),
+            //   onTap: () {
+            //     debugPrint('Sticker');
+            //   },
+            // ),
             Expanded(
                 child: _chatTextField()
             ),
@@ -134,21 +112,11 @@ class ChatPageState extends State<ChatPage> {
               child: Icon(Icons.send),
               onTap: () {
                 debugPrint('Send');
-                //Check if the textfield has text or not
-                if (textController.text.isNotEmpty) {
-                  //Send the message as JSON data to send_message event
-                  socketIO.sendMessage(
-                      'send_message', json.encode({'name': 'Time', 'message': textController.text}));
-                  //Add the message to the list
-                  this.setState(() => messages.add(textController.text));
-                  textController.text = '';
-                  //Scrolldown the list to show the latest message
-                  scrollController.animateTo(
-                    scrollController.position.maxScrollExtent,
-                    duration: Duration(milliseconds: 600),
-                    curve: Curves.ease,
-                  );
-                }
+                setState(() {
+                  messages.add({"message":textController.text, "isReceiver":false});
+                  messagesReverseList = messages.reversed.toList();
+                  textController.clear();
+                });
               },
             )
           ],

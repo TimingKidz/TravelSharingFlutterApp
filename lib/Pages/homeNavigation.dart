@@ -1,3 +1,4 @@
+import 'package:adhara_socket_io/adhara_socket_io.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -24,7 +25,8 @@ class HomeNavigation extends StatefulWidget {
   ];
 
   final GoogleSignIn googleSignIn;
-  HomeNavigation({this.googleSignIn});
+  SocketIO socket;
+  HomeNavigation({this.googleSignIn, this.socket});
 
   @override
   HomeNavigationState createState() =>
@@ -40,7 +42,7 @@ class HomeNavigationState extends State<HomeNavigation> {
     super.initState();
     pageRoute = [
       Center(child: Text('Notification')),
-      Dashboard(),
+      Dashboard(socket: widget.socket),
       Account(googleSignIn: widget.googleSignIn)
     ];
   }

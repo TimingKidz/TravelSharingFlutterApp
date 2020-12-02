@@ -1,3 +1,4 @@
+import 'package:adhara_socket_io/adhara_socket_io.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,7 +16,8 @@ import 'package:travel_sharing/custom_color_scheme.dart';
 
 
 class Dashboard extends StatefulWidget {
-  @override
+  SocketIO socket;
+  Dashboard({this.socket});
   _Dashboard createState() => _Dashboard();
 }
 
