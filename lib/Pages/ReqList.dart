@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/User.dart';
@@ -5,28 +7,77 @@ import 'package:travel_sharing/Pages/Matchinformation.dart';
 import 'package:travel_sharing/Pages/mapview.dart';
 import 'package:travel_sharing/buttons/cardTileWithTapMatch.dart';
 import 'package:travel_sharing/buttons/cardTileWithTapReq.dart';
-/// This Widget is the main application widget.
+import 'package:http/http.dart' as Http;
+import 'package:travel_sharing/main.dart';
 
+import 'dashboard.dart';
+
+// ==================================== CLASS ========================================
+class Req_Info {
+  Routes routes;
+  String id;
+  String uid;
+  String name;
+  String reqid;
+
+  Req_Info({this.routes, this.id,this.uid,this.name,this.reqid});
+
+  Req_Info.fromJson(Map<String, dynamic> json) {
+    routes = Routes.fromJson(json['detail']);
+    id = json['id'];
+    uid = json['_id'];
+    name = json['name'];
+    reqid = json['reqid'];
+  }
+
+  Future<List<Req_Info>> getReq(Travel_Info data) async {
+    try{
+      var url = "${HTTP().API_IP}/api/user/getReqList";
+      Http.Response response = await Http.post(url, headers: HTTP().header , body: jsonEncode({'id':data.id,'to_id':data.uid}));
+      if(response.statusCode == 400 ){
+        return Future.value(null);
+      }else{
+        if(response.statusCode == 404){
+          return Future.value(null);
+        }else{
+          List<dynamic> Data = jsonDecode(response.body);
+          List<Req_Info> Req_Info_List = List();
+          Data.forEach((x) {
+            Req_Info tmp = Req_Info.fromJson(x);
+            Req_Info_List.add(tmp);
+          });
+          return Future.value(Req_Info_List);
+        }
+      }
+    }catch(error){
+      print(error);
+      throw("can't connect Req");
+    }
+  }
+}
+// ==================================== END CLASS ========================================
 
 class ReqList extends StatefulWidget {
-  final Map<String, dynamic> data; // current routes
+  final Travel_Info data; // current routes
+  final User currentUser;
   static final GlobalKey<_ReqListstate> dashboardKey = GlobalKey<_ReqListstate>();
 
-  ReqList({Key key, this.data}) : super(key: dashboardKey);
+  ReqList({Key key, this.data,this.currentUser}) : super(key: dashboardKey);
 
   @override
   _ReqListstate createState() => _ReqListstate();
 }
 
+
+
 class _ReqListstate extends State<ReqList> {
-  List< Map<String,dynamic>> _ReqList = List();
+  List<Req_Info> _ReqList = List();
   bool isFirstPage = true;
-  User user = new User(name: "",email: "",id: "");
 
   // get request list of current routes
   Future<void> getData() async {
     try{
-      _ReqList =  await Routes().getReq(widget.data) ?? [];
+      _ReqList =  await Req_Info().getReq(widget.data) ?? [];
       setState(() {});
     }catch(error){
       print(error);
@@ -57,7 +108,7 @@ class _ReqListstate extends State<ReqList> {
         });
   }
 
-  Widget _buildRow( Map<String,dynamic> data) {
+  Widget _buildRow( Req_Info data) {
     return CardTileWithTapReq(
       data: data,
       onCardPressed:() => _onCardPressed(data),
@@ -66,19 +117,19 @@ class _ReqListstate extends State<ReqList> {
     );
   }
 
-  _onCardPressed(Map<String,dynamic> data) async{
+  _onCardPressed(Req_Info data) async{
     Navigator.push(context, MaterialPageRoute(
-        builder: (context) => mapview(from:data,to:widget.data)));
+        builder: (context) => mapview(from:data.routes,to:widget.data.routes)));
   }
 
-  _onAcceptPressed(Map<String,dynamic> data) async{
-    user.AcceptReq(data['reqid'],widget.data['id'],widget.data['_id']);
+  _onAcceptPressed(Req_Info data) async{
+    widget.currentUser.AcceptReq(data.reqid,widget.data.id,widget.data.uid);
     Navigator.pushReplacement(context, MaterialPageRoute(
         builder: (context) => Matchinformation()));
   }
 
-  _onDeclinePressed(Map<String,dynamic> data) async{
-    user.DeclineReq(data['reqid'],widget.data['id'],widget.data['_id']);
+  _onDeclinePressed(Req_Info data) async{
+    widget.currentUser.DeclineReq(data.reqid,widget.data.id,widget.data.uid);
     getData();
 
   }

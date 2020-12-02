@@ -2,10 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
+import 'package:travel_sharing/Pages/MatchList.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 
 class CardTileWithTapMatch extends StatefulWidget {
-  final Map<String,dynamic> data;
+  final Match_Info data;
   final bool isreq;
   final IconData iconData;
   final Function onCardPressed;
@@ -32,7 +33,7 @@ class CardTileWithTapMatchState extends State<CardTileWithTapMatch> {
 
     if(widget.isreq){
       return Card(
-          color: Theme.of(context).colorScheme.card,
+          color: Colors.white,
           margin: EdgeInsets.all(10.0),
           elevation: 2.0,
           shape: RoundedRectangleBorder(
@@ -56,17 +57,17 @@ class CardTileWithTapMatchState extends State<CardTileWithTapMatch> {
                     children: <Widget>[
                       Text('ปลายทาง', style: TextStyle(fontSize: 10.0)),
                       SizedBox(height: 5.0),
-                      Text(widget.data['detail'].dst, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                      Text(widget.data.routes.dst, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
                       SizedBox(height: 16.0),
                       Text('ต้นทาง', style: TextStyle(fontSize: 10.0)),
                       SizedBox(height: 5.0),
-                      Text(widget.data['detail'].src, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                      Text(widget.data.routes.src, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
                       SizedBox(height: 16.0),
                       Row(
                         children: <Widget>[
                           Icon(Icons.account_circle, size: 32.0),
                           SizedBox(width: 8.0),
-                          Text(widget.data['name'], style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                          Text(widget.data.name, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
                         ],
                       )
                     ],
@@ -79,7 +80,7 @@ class CardTileWithTapMatchState extends State<CardTileWithTapMatch> {
       );
     }else{
       return Card(
-          color: Theme.of(context).colorScheme.card,
+          color: Colors.white,
           margin: EdgeInsets.all(10.0),
           elevation: 2.0,
           shape: RoundedRectangleBorder(
@@ -103,17 +104,17 @@ class CardTileWithTapMatchState extends State<CardTileWithTapMatch> {
                     children: <Widget>[
                       Text('ปลายทาง', style: TextStyle(fontSize: 10.0)),
                       SizedBox(height: 5.0),
-                      Text(widget.data['detail'].dst, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                      Text(widget.data.routes.dst, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
                       SizedBox(height: 16.0),
                       Text('ต้นทาง', style: TextStyle(fontSize: 10.0)),
                       SizedBox(height: 5.0),
-                      Text(widget.data['detail'].src, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                      Text(widget.data.routes.src, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
                       SizedBox(height: 16.0),
                       Row(
                         children: <Widget>[
                           Icon(Icons.account_circle, size: 32.0),
                           SizedBox(width: 8.0),
-                          Text(widget.data['name'], style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                          Text(widget.data.name, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
                         ],
                       )
                     ],

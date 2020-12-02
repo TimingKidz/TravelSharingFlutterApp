@@ -179,6 +179,7 @@ class _LocationSearchState extends State<LocationSearch> {
     final predictions = response.data['predictions'];
 
     List<Map<String, dynamic>> _displayResults = [];
+    print(predictions);
 
     for (var i=0; i < predictions.length; i++) {
       String name = predictions[i]['description'];

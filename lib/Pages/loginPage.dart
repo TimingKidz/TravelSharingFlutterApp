@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -13,6 +14,7 @@ class LoginPage extends StatefulWidget {
 
 class LoginPageState extends State<LoginPage> {
   GoogleSignInAccount _currentUser;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   @override
   void initState() {
@@ -95,13 +97,12 @@ class LoginPageState extends State<LoginPage> {
       debugPrint('$isDismiss');
       if(isDismiss != null){
         _loadingDialog();
-        User user = new User(name: isDismiss.displayName,email: isDismiss.email,id: isDismiss.id);
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString("CurrentUser_id", user.id);
+        User user = new User(name: isDismiss.displayName,email: isDismiss.email,id: isDismiss.id,token: await _firebaseMessaging.getToken());
         if (await user.Register()){
+          User Current_user = await user.getCurrentuser(user.id);
           Navigator.of(context).pop(); //Pop Loading Dialog
           Navigator.push(context, MaterialPageRoute(
-              builder: (context) => SignUpPage(currentUser: _currentUser, googleSignIn: widget.googleSignIn)));
+              builder: (context) => SignUpPage(currentUser: Current_user, googleSignIn: widget.googleSignIn)));
         }else{
           throw("Please check your connection.");
         }

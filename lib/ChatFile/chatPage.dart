@@ -1,18 +1,98 @@
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:travel_sharing/Class/User.dart';
+import 'package:travel_sharing/main.dart';
+import 'package:http/http.dart' as Http;
 
 class ChatPage extends StatefulWidget {
+  String tripid = "5fc5e891c458d3368cb31b26";
+  User currentUser = new User(name: "thut",email: "thut@gmail.com",uid: "5fc5e3f582e7d3372c4ca60a",token: "5545");
   ChatPageState createState() => ChatPageState();
 }
 
-class ChatPageState extends State<ChatPage> {
+class Message{
+  String sender;
+  String content;
+  String timestamp;
+
+
+  Message({this.sender, this.content ,this.timestamp});
+
+  Message.fromJson(Map<String, dynamic> json) {
+    sender = json['sender'];
+    content = json['content'];
+    timestamp = json['timestamp'];
+  }
+
+  Future< List<Message>> getMessage(String tripid) async {
+    try{
+      var url = "${HTTP().API_IP}/api/routes/getMessage";
+      Http.Response response = await Http.post(url, headers: HTTP().header, body: jsonEncode({"tripid":tripid }));
+      if(response.statusCode == 400 ){
+        return Future.value(null);
+      }else{
+        if(response.statusCode == 404){
+          return Future.value(null);
+        }else{
+          print(jsonDecode(response.body));
+          Map<String,dynamic> data = jsonDecode(response.body);
+          print(data);
+          List< Message > Message_List = List();
+          data['messages'].forEach((x) {
+            Message tmp = Message.fromJson(x);
+            Message_List.add(tmp);
+          });
+          return Future.value(Message_List);
+        }
+      }
+    }catch(error){
+      print(error);
+      throw("can't connect Match");
+    }
+  }
+
+  Future<bool> sendMessage(String tripid,String message,String form_id) async {
+    try{
+      var url = "${HTTP().API_IP}/api/routes/sendMessage";
+      Map<String,dynamic> tmp = {
+        "title": "Chat",
+        "message" : message,
+        "formid" : form_id,
+        "tripid" : tripid
+      };
+      Http.Response response = await Http.post(url, headers: HTTP().header, body: jsonEncode(tmp));
+      if(response.statusCode == 400 ){
+        return Future.value(false);
+      }else{
+        if(response.statusCode == 404){
+          return Future.value(false);
+        }else{
+          print(jsonDecode(response.body));
+          return Future.value(true);
+        }
+      }
+    }catch(error){
+      print(error);
+      throw("can't send");
+    }
+  }
+
+
+}
+
+class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
   // Chat messages List { "message": "**USER MESSAGE**", "isReceiver": true/false }
   // PAST -> PRESENT
-  List<Map<String, dynamic>> messages = [{"message":"Hello.", "isReceiver":false}, {"message":"Hi.", "isReceiver":true}];
-  List<Map<String, dynamic>> messagesReverseList;
+  List<Message> messages = List() ;
+  List<Message> messagesReverseList;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+//  List<Message> Message_list;
+
+
 
   final textController = TextEditingController();
   ScrollController scrollController;
@@ -20,7 +100,44 @@ class ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    a();
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        a();
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+        print(message['notification']);
+      },
+      onLaunch: (Map<String, dynamic> message) async{
+        print(message);
+      },
+      onBackgroundMessage: myBackgroundMessageHandler,
+    );
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed){
+      a();
+    }
+  }
+
+  a()async{
+    messages = await Message().getMessage(widget.tripid);
+    print(messages.first);
     messagesReverseList = messages.reversed.toList();
+    setState(() {
+
+    });
   }
 
   @override
@@ -59,7 +176,7 @@ class ChatPageState extends State<ChatPage> {
 
   Widget buildSingleMessage(int index) {
     return Container(
-      alignment: messagesReverseList[index]["isReceiver"] ? Alignment.centerLeft : Alignment.centerRight,
+      alignment: messagesReverseList[index].sender != widget.currentUser.uid ? Alignment.centerLeft : Alignment.centerRight,
       child: Container(
         padding: const EdgeInsets.all(16.0),
         margin: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
@@ -68,7 +185,7 @@ class ChatPageState extends State<ChatPage> {
           borderRadius: BorderRadius.circular(20.0),
         ),
         child: Text(
-          messagesReverseList[index]["message"],
+          messagesReverseList[index].content,
           style: TextStyle(color: Colors.white, fontSize: 15.0),
         ),
       ),
@@ -112,11 +229,9 @@ class ChatPageState extends State<ChatPage> {
               child: Icon(Icons.send),
               onTap: () {
                 debugPrint('Send');
-                setState(() {
-                  messages.add({"message":textController.text, "isReceiver":false});
-                  messagesReverseList = messages.reversed.toList();
-                  textController.clear();
-                });
+                Message().sendMessage(widget.tripid,textController.text, widget.currentUser.uid);
+                textController.clear();
+
               },
             )
           ],

@@ -1,9 +1,10 @@
-import 'package:adhara_socket_io/adhara_socket_io.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/Account.dart';
 import 'package:travel_sharing/Pages/dashboard.dart';
+import 'package:travel_sharing/custom_color_scheme.dart';
 
 class HomeNavigation extends StatefulWidget {
   final List<BottomNavigationBarItem> barItems = [
@@ -25,8 +26,8 @@ class HomeNavigation extends StatefulWidget {
   ];
 
   final GoogleSignIn googleSignIn;
-  SocketIO socket;
-  HomeNavigation({this.googleSignIn, this.socket});
+  final User currentUser;
+  HomeNavigation({this.currentUser,this.googleSignIn});
 
   @override
   HomeNavigationState createState() =>
@@ -42,8 +43,8 @@ class HomeNavigationState extends State<HomeNavigation> {
     super.initState();
     pageRoute = [
       Center(child: Text('Notification')),
-      Dashboard(socket: widget.socket),
-      Account(googleSignIn: widget.googleSignIn)
+      Dashboard(currentUser : widget.currentUser),
+      Account(currentUser : widget.currentUser,googleSignIn: widget.googleSignIn)
     ];
   }
 

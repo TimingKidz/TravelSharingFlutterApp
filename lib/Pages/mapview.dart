@@ -9,13 +9,12 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart' ;
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Pages/InfoFill.dart';
+import 'package:travel_sharing/Pages/dashboard.dart';
 
 class mapview extends StatefulWidget {
-  final Map<String,dynamic> from;
-  final Map<String,dynamic> to;
-
+  final Routes from;
+  final Routes to;
   const mapview({Key key, this.from, this.to}) : super(key: key);
-
   @override
   _mapview createState() => _mapview();
 }
@@ -58,7 +57,7 @@ class _mapview extends State<mapview> {
 
     // create line of routes on map
     var line = Polyline(
-      points: widget.to['detail'].routes,
+      points: widget.to.routes,
       geodesic: true,
       polylineId: PolylineId("mejor ruta"),
       color: Colors.blue,
@@ -114,7 +113,7 @@ class _mapview extends State<mapview> {
     Markers.add(
       Marker(
         markerId: MarkerId("1"),
-        position: widget.from['detail'].routes.first,
+        position: widget.from.routes.first,
         infoWindow: InfoWindow(title: "Roca 123"),
 
       ),
@@ -122,7 +121,7 @@ class _mapview extends State<mapview> {
     Markers.add(
       Marker(
         markerId: MarkerId("2"),
-        position: widget.from['detail'].routes.last,
+        position: widget.from.routes.last,
         infoWindow: InfoWindow(title: "Roca 123"),
       ),
     );
@@ -141,7 +140,7 @@ class _mapview extends State<mapview> {
       await _mapController.getVisibleRegion();
       await findDirections(isFind_Direction);
 
-      Routes temp = widget.from['detail'];
+      Routes temp = widget.from;
       var left = min(temp.routes.first.latitude, temp.routes.last.latitude);
       var right = max(temp.routes.first.latitude, temp.routes.last.latitude);
       var top = max(temp.routes.first.longitude, temp.routes.last.longitude);

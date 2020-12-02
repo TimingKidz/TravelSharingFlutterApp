@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:travel_sharing/Class/User.dart';
 
 class Account extends StatefulWidget {
+  final User currentUser;
   final GoogleSignIn googleSignIn;
-  Account({this.googleSignIn});
+
+  Account({this.currentUser,this.googleSignIn});
   AccountState createState() => AccountState();
 }
 

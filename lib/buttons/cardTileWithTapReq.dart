@@ -2,10 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
+import 'package:travel_sharing/Pages/ReqList.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 
 class CardTileWithTapReq extends StatefulWidget {
-  final Map<String,dynamic> data;
+  final Req_Info data;
   final IconData iconData;
   final Function onCardPressed;
   final Function onAcceptPressed;
@@ -30,7 +31,7 @@ class CardTileWithTapReqState extends State<CardTileWithTapReq> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Theme.of(context).colorScheme.card,
+      color: Colors.white,
         margin: EdgeInsets.all(10.0),
         elevation: 2.0,
         shape: RoundedRectangleBorder(
@@ -51,17 +52,17 @@ class CardTileWithTapReqState extends State<CardTileWithTapReq> {
                   children: <Widget>[
                     Text('ปลายทาง', style: TextStyle(fontSize: 10.0)),
                     SizedBox(height: 5.0),
-                    Text(widget.data['detail'].dst, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                    Text(widget.data.routes.dst, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
                     SizedBox(height: 16.0),
                     Text('ต้นทาง', style: TextStyle(fontSize: 10.0)),
                     SizedBox(height: 5.0),
-                    Text(widget.data['detail'].src, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                    Text(widget.data.routes.src, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
                     SizedBox(height: 16.0),
                     Row(
                       children: <Widget>[
                         Icon(Icons.account_circle, size: 32.0),
                         SizedBox(width: 8.0),
-                        Text(widget.data['name'], style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                        Text(widget.data.name, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
                       ],
                     )
                   ],

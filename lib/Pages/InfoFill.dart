@@ -8,6 +8,7 @@ import 'package:travel_sharing/buttons/cardDatePicker.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
 
 class InfoFill extends StatefulWidget {
+  final User currentUser;
   final List<LatLng> routes;
   final LatLngBounds bounds;
   final Set<Polyline> lines;
@@ -16,7 +17,7 @@ class InfoFill extends StatefulWidget {
   final String dst;
   final int Role;
 
-  const InfoFill({Key key, this.routes, this.bounds, this.lines, this.Markers, this.src, this.dst,this.Role}) : super(key: key);
+  const InfoFill({Key key, this.currentUser,this.routes, this.bounds, this.lines, this.Markers, this.src, this.dst,this.Role}) : super(key: key);
 
   _InfoFillState createState() => _InfoFillState();
 }
@@ -28,6 +29,7 @@ class _InfoFillState extends State<InfoFill> {
   @override
   void initState() {
     super.initState();
+    Final_Data.date =  DateTime.now().toString();
     Final_Data.src = widget.src;
     Final_Data.dst = widget.dst;
   }
@@ -80,6 +82,7 @@ class _InfoFillState extends State<InfoFill> {
               labelText: 'วันเดินทาง',
               onDatePick: (date) {
                 Final_Data.date = date;
+                print(date);
               },
             ),
             CardTextField(
@@ -103,9 +106,9 @@ class _InfoFillState extends State<InfoFill> {
 
   _SavetoDB()async{
     SharedPreferences prefs = await SharedPreferences.getInstance();  // get id of current user from local
-    User user = await User().getCurrentuser(prefs.getString("CurrentUser_id")); // get user data of current user from DB
+    User user = widget.currentUser ; // get user data of current user from DB
     // prepare Route data for save to DB
-    Final_Data = new Routes(id: user.id, routes : widget.routes, src : Final_Data.src, dst : Final_Data.dst, amount : Final_Data.amount, date :Final_Data.date, isMatch: false,match: List());
+    Final_Data = new Routes(id: user.uid, routes : widget.routes, src : Final_Data.src, dst : Final_Data.dst, amount : Final_Data.amount, date :Final_Data.date, isMatch: false,match: List());
     Final_Data.SaveRoute_toDB(widget.Role,user).then((x){
       Navigator.of(context).pop();
       Navigator.of(context).pop();

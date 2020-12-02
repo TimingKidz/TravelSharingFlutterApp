@@ -9,13 +9,16 @@ import 'package:latlong/latlong.dart' as l;
 import 'package:location/location.dart' ;
 import "package:google_maps_webservice/places.dart" as p;
 import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/LocationSearchBar.dart';
 import 'package:travel_sharing/Pages/InfoFill.dart';
 import 'package:travel_sharing/buttons/borderTextField.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 
 class CreateRoute_Join extends StatefulWidget {
+  final User currentUser;
 
+  const CreateRoute_Join({Key key, this.currentUser}) : super(key: key);
   @override
   _CreateRoutestate_Join createState() => _CreateRoutestate_Join();
 }
@@ -250,7 +253,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
 
     // go to fill all information in next page before save to DB
     Navigator.push(context, MaterialPageRoute(
-        builder: (context) => InfoFill(routes: routes, bounds:bounds,Markers :Markers,lines :null,src:Placename_src,dst: Placename_dst ,Role: Role)));
+        builder: (context) => InfoFill(currentUser:widget.currentUser,routes: routes, bounds:bounds,Markers :Markers,lines :null,src:Placename_src,dst: Placename_dst ,Role: Role)));
 
   }
 

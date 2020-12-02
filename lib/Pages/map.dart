@@ -7,10 +7,12 @@ import 'package:location/location.dart' ;
 import "package:google_maps_webservice/places.dart" as p;
 import 'package:flutter_polyline_points/flutter_polyline_points.dart' ;
 import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/InfoFill.dart';
 
 class CreateRoute extends StatefulWidget {
-
+  final User currentUser;
+  const CreateRoute({Key key, this.currentUser}) : super(key: key);
   @override
   _CreateRoutestate createState() => _CreateRoutestate();
 }
@@ -214,12 +216,7 @@ class _CreateRoutestate extends State<CreateRoute> {
     print(dst);
     print(Placename_dst);
     Navigator.push(context, MaterialPageRoute(
-        builder: (context) => InfoFill(routes: routes, bounds:bounds,Markers :Markers,lines :lines,src:Placename_src,dst: Placename_dst ,Role :Role)));
-
-
-
-
-
+        builder: (context) => InfoFill(currentUser:widget.currentUser,routes: routes, bounds:bounds,Markers :Markers,lines :lines,src:Placename_src,dst: Placename_dst ,Role :Role)));
   }
 
   _stepBack() async {
@@ -236,7 +233,6 @@ class _CreateRoutestate extends State<CreateRoute> {
     }
   }
 
-
   _nextplace() async{
       if( toPoint == null ){
         toPoint =  current_Location;
@@ -251,8 +247,6 @@ class _CreateRoutestate extends State<CreateRoute> {
       }
       fromPoint = toPoint;
   }
-
-
 
    _createMarkers(LatLng x) {
     Markers.clear();
