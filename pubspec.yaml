@@ -27,10 +27,9 @@ dependencies:
   flutter_auth_buttons:
   google_maps_flutter:
   location:
-  adhara_socket_io:
-  socket_io_client:
   firebase_messaging:
   flutter_local_notifications:
+  flutter_rating_bar:
   dio:
 
   # The following adds the Cupertino Icons font to your application.

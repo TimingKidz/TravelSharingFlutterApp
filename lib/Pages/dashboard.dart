@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/User.dart';
@@ -17,6 +18,8 @@ import 'package:travel_sharing/custom_color_scheme.dart';
 
 import 'package:http/http.dart' as Http;
 import 'package:travel_sharing/main.dart';
+
+import '../firebase_messaging.dart';
 /// This Widget is the main application widget.
 ///
 ///
@@ -117,8 +120,6 @@ class _Dashboard extends State<Dashboard> {
     }
   }
 
-
-
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -178,7 +179,7 @@ class _Dashboard extends State<Dashboard> {
     if( isFirstPage ){
       if( data.routes.isMatch ){
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => Matchinformation()));
+            builder: (context) => Matchinformation(uid: data.routes.match.first, currentUser: widget.currentUser)));
       }else{
         Navigator.push(context, MaterialPageRoute(
             builder: (context) => MatchList(data: data)));
@@ -186,7 +187,7 @@ class _Dashboard extends State<Dashboard> {
     }else{
       if( data.routes.isMatch){
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => Matchinformation()));
+            builder: (context) => Matchinformation(uid: data.uid, currentUser: widget.currentUser)));
       }else{
         Navigator.push(context, MaterialPageRoute(
             builder: (context) => ReqList(data: data,currentUser : widget.currentUser)));

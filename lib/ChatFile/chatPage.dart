@@ -9,8 +9,10 @@ import 'package:travel_sharing/main.dart';
 import 'package:http/http.dart' as Http;
 
 class ChatPage extends StatefulWidget {
-  String tripid = "5fc5e891c458d3368cb31b26";
-  User currentUser = new User(name: "thut",email: "thut@gmail.com",uid: "5fc5e3f582e7d3372c4ca60a",token: "5545");
+  final String tripid;
+  User currentUser;
+
+  ChatPage({this.tripid, this.currentUser});
   ChatPageState createState() => ChatPageState();
 }
 
@@ -55,11 +57,11 @@ class Message{
     }
   }
 
-  Future<bool> sendMessage(String tripid,String message,String form_id) async {
+  Future<bool> sendMessage(String tripid,String message,String form_id, String name) async {
     try{
       var url = "${HTTP().API_IP}/api/routes/sendMessage";
       Map<String,dynamic> tmp = {
-        "title": "Chat",
+        "title": name,
         "message" : message,
         "formid" : form_id,
         "tripid" : tripid
@@ -229,7 +231,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
               child: Icon(Icons.send),
               onTap: () {
                 debugPrint('Send');
-                Message().sendMessage(widget.tripid,textController.text, widget.currentUser.uid);
+                Message().sendMessage(widget.tripid,textController.text, widget.currentUser.uid, widget.currentUser.name);
                 textController.clear();
 
               },

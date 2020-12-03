@@ -125,7 +125,7 @@ class _ReqListstate extends State<ReqList> {
   _onAcceptPressed(Req_Info data) async{
     widget.currentUser.AcceptReq(data.reqid,widget.data.id,widget.data.uid);
     Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => Matchinformation()));
+        builder: (context) => Matchinformation(uid: widget.data.uid, currentUser: widget.currentUser)));
   }
 
   _onDeclinePressed(Req_Info data) async{

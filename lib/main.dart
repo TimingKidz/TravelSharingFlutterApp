@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:adhara_socket_io/adhara_socket_io.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -11,10 +10,12 @@ import 'package:http/http.dart';
 import 'package:http/io_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_sharing/Pages/JoinMap.dart';
+import 'package:travel_sharing/Pages/Matchinformation.dart';
 import 'package:travel_sharing/Pages/homeNavigation.dart';
 import 'package:travel_sharing/Pages/InfoFill.dart';
 import 'package:travel_sharing/Pages/signupPage.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
+import 'package:http/http.dart' as Http;
 import 'ChatFile/chatPage.dart';
 import 'Class/User.dart';
 import 'Pages/loginPage.dart';
@@ -73,7 +74,7 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: '/',
         routes: {
-          '/' : (context) => ChatPage(),
+          '/' : (context) => Splashscreen(),
           '/login' : (context) => LoginPage(googleSignIn: _googleSignIn),
           '/homeNavigation' : (context) => HomeNavigation(),
           '/dashboard' : (context) => Dashboard(),
@@ -137,12 +138,7 @@ class SplashscreenState extends State<Splashscreen> {
         .listen((IosNotificationSettings settings) {
       print("Settings registered: $settings");
     });
-    Get_token();
     _signInCheck();
-  }
-
-  Get_token() async {
-    print(await _firebaseMessaging.getToken());
   }
 
   @override
@@ -155,6 +151,31 @@ class SplashscreenState extends State<Splashscreen> {
     );
   }
 
+  Future<void> Get_token(String id) async {
+    print(await _firebaseMessaging.getToken());
+    String token = await _firebaseMessaging.getToken();
+    try{
+      var url = "${HTTP().API_IP}/api/routes/updateToken";
+      Http.Response response = await Http.post(url, headers: HTTP().header, body: jsonEncode({"id":id, "token_id": token}));
+      if(response.statusCode == 400 ){
+        return Future.value(null);
+      }else{
+        if(response.statusCode == 404){
+          return Future.value(null);
+        }else{
+          print(jsonDecode(response.body));
+          // Map<String,dynamic> data = jsonDecode(response.body);
+          // print(data);
+          // TripDetails tmp = TripDetails.fromJson(data);
+          // return Future.value(tmp);
+        }
+      }
+    }catch(err){
+      print(err);
+      throw("can't connect Match");
+    }
+  }
+
   Future<void> _signInCheck() async {
     var isSignedIn = await _googleSignIn.isSignedIn();
     debugPrint('isSignedIn = $isSignedIn');
@@ -163,7 +184,8 @@ class SplashscreenState extends State<Splashscreen> {
         GoogleSignInAccount G_user = await _googleSignIn.signIn();
         print(G_user.id);
         User Current_user =  await User().getCurrentuser(G_user.id);
-
+        await Get_token(Current_user.uid);
+        Current_user =  await User().getCurrentuser(G_user.id);
         Navigator.push(context, MaterialPageRoute(
             builder: (context) => HomeNavigation(currentUser: Current_user,googleSignIn: _googleSignIn)));
       }else{
