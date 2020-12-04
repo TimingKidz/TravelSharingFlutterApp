@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -7,11 +8,18 @@ class Account extends StatefulWidget {
   final User currentUser;
   final GoogleSignIn googleSignIn;
 
-  Account({this.currentUser,this.googleSignIn});
+  Account({this.currentUser, this.googleSignIn});
   AccountState createState() => AccountState();
 }
 
 class AccountState extends State<Account> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

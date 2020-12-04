@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -129,6 +130,7 @@ class LocationSearch extends StatefulWidget {
 }
 
 class _LocationSearchState extends State<LocationSearch> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   TextEditingController _searchController = new TextEditingController();
   Timer _throttle;
 

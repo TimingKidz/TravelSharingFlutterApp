@@ -20,25 +20,6 @@ import 'package:http/http.dart' as Http;
 import 'package:travel_sharing/main.dart';
 
 import '../firebase_messaging.dart';
-/// This Widget is the main application widget.
-///
-///
-Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
-  print('44444');
-  print(message);
-  if (message.containsKey('data')) {
-    final dynamic data = message['data'];
-    print(data);
-  }
-
-  if (message.containsKey('notification')) {
-    // Handle notification message
-    final dynamic notification = message['notification'];
-    print(message);
-  }
-
-  // Or do other work.
-}
 
 class Travel_Info{
   Routes routes;
@@ -82,13 +63,12 @@ class Travel_Info{
   }
 }
 
-
-
-
 class Dashboard extends StatefulWidget {
-
   final User currentUser;
-  Dashboard({this.currentUser}) ;
+  final Function showNoti;
+
+  Dashboard({this.currentUser, this.showNoti});
+
   @override
   _Dashboard createState() => _Dashboard();
 }
@@ -125,23 +105,6 @@ class _Dashboard extends State<Dashboard> {
     super.initState();
     getData();
     print("aaaaaa");
-
-    _firebaseMessaging.configure(
-        onMessage: (Map<String, dynamic> message) async {
-          print("onMessage Dashboard : $message");
-        },
-        onResume: (Map<String, dynamic> message) async {
-          print("onResume: $message");
-          print(message['notification']);
-        },
-        onLaunch: (Map<String, dynamic> message) async{
-          print(message);
-        },
-      onBackgroundMessage: myBackgroundMessageHandler,
-
-
-
-    );
   }
 
 
@@ -190,7 +153,7 @@ class _Dashboard extends State<Dashboard> {
             builder: (context) => Matchinformation(uid: data.uid, currentUser: widget.currentUser)));
       }else{
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => ReqList(data: data,currentUser : widget.currentUser)));
+            builder: (context) => ReqList(data: data, currentUser : widget.currentUser)));
       }
     }
   }

@@ -23,24 +23,6 @@ class _FireBase_MessagingState extends State<FireBase_Messaging>{
   void initState() {
     super.initState();
     configureCallbacks();
-    try{
-      var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
-      var initializationSettingsIOS = IOSInitializationSettings(
-        requestAlertPermission: true,
-        requestBadgePermission: true,
-        requestSoundPermission: false,
-        onDidReceiveLocalNotification: (id, title, body, payload) async {
-          // your call back to the UI
-          print("onDidReceiveLocalNotification called.");
-        },
-      );
-      initializationSettings = InitializationSettings(
-          android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
-      flutterLocalNotificationsPlugin.initialize(initializationSettings,
-          onSelectNotification: onSelectNotification);
-    }catch(e){
-      print(e.toString());
-    }
   }
 
   void configureCallbacks(){

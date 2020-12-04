@@ -22,7 +22,7 @@ import 'Pages/loginPage.dart';
 import 'Pages/map.dart';
 import 'Pages/dashboard.dart';
 
-GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['profile', 'email']);
+GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['profile', 'email']);
 void main() {
   //  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
 //
@@ -44,21 +44,6 @@ void main() {
   runApp(MyApp());
 }
 
-Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
-  print('44');
-  if (message.containsKey('data')) {
-    // Handle data message
-    final dynamic data = message['data'];
-    print(data);
-  }
-  if (message.containsKey('notification')) {
-    // Handle notification message
-    final dynamic notification = message['notification'];
-    print(message);
-  }
-}
-
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -75,12 +60,13 @@ class MyApp extends StatelessWidget {
         initialRoute: '/',
         routes: {
           '/' : (context) => Splashscreen(),
-          '/login' : (context) => LoginPage(googleSignIn: _googleSignIn),
+          '/login' : (context) => LoginPage(googleSignIn: googleSignIn),
           '/homeNavigation' : (context) => HomeNavigation(),
           '/dashboard' : (context) => Dashboard(),
           '/joinMap' : (context) => CreateRoute_Join(),
           '/inviteMap' : (context) => CreateRoute(),
-          '/tripInfo' : (context) => InfoFill()
+          '/tripInfo' : (context) => InfoFill(),
+          '/chatPage' : (context) => ChatPage()
         },
       );
   }
@@ -93,7 +79,6 @@ class HTTP{
 
 class Splashscreen extends StatefulWidget {
   SplashscreenState createState() => SplashscreenState();
-
 }
 
 class MyHttpOverrides extends HttpOverrides{
@@ -104,32 +89,45 @@ class MyHttpOverrides extends HttpOverrides{
   }
 }
 
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+Future<void> showNotification(Map<String, dynamic> message) async {
+  var androidChannelSpecifics = AndroidNotificationDetails(
+    'CHANNEL_ID',
+    'CHANNEL_NAME',
+    "CHANNEL_DESCRIPTION",
+    importance: Importance.max,
+    priority: Priority.high,
+    playSound: true,
+    // timeoutAfter: 5000,
+    styleInformation: DefaultStyleInformation(true, true),
+  );
+  var iosChannelSpecifics = IOSNotificationDetails();
+  var platformChannelSpecifics =
+  NotificationDetails(android: androidChannelSpecifics, iOS: iosChannelSpecifics);
+  await flutterLocalNotificationsPlugin.show(
+    0,
+    message['data']['title'],
+    message['data']['body'], //null
+    platformChannelSpecifics,
+    payload: 'New Payload',
+  );
+}
+
 class SplashscreenState extends State<Splashscreen> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
-
-
+  var initializationSettings;
 
   @override
   void initState() {
     super.initState();
 
-
+    // Firebase Notification Init
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print("onResume: $message");
-        print(message['notification']);
-      },
-      onLaunch: (Map<String, dynamic> message) async{
-        print(message);
-      },
-      onBackgroundMessage: myBackgroundMessageHandler,
-
-
+        showNotification(message);
+      }
     );
     _firebaseMessaging.requestNotificationPermissions(
         const IosNotificationSettings(
@@ -138,8 +136,37 @@ class SplashscreenState extends State<Splashscreen> {
         .listen((IosNotificationSettings settings) {
       print("Settings registered: $settings");
     });
+
+    // Local Notification Init
+    try{
+      var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
+      var initializationSettingsIOS = IOSInitializationSettings(
+        requestAlertPermission: true,
+        requestBadgePermission: true,
+        requestSoundPermission: false,
+        onDidReceiveLocalNotification: (id, title, body, payload) async {
+          // your call back to the UI
+          print("onDidReceiveLocalNotification called.");
+        },
+      );
+      initializationSettings = InitializationSettings(
+          android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+      flutterLocalNotificationsPlugin.initialize(initializationSettings,
+          onSelectNotification: onSelectNotification);
+    }catch(e){
+      print(e.toString());
+    }
+
     _signInCheck();
   }
+
+  Future<void> onSelectNotification(String payload) async {
+    if (payload != null) {
+      debugPrint('notification payload: ' + payload);
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -177,20 +204,20 @@ class SplashscreenState extends State<Splashscreen> {
   }
 
   Future<void> _signInCheck() async {
-    var isSignedIn = await _googleSignIn.isSignedIn();
+    var isSignedIn = await googleSignIn.isSignedIn();
     debugPrint('isSignedIn = $isSignedIn');
     Future.delayed(Duration(seconds: 1), () async {
       if(isSignedIn){
-        GoogleSignInAccount G_user = await _googleSignIn.signIn();
+        GoogleSignInAccount G_user = await googleSignIn.signIn();
         print(G_user.id);
         User Current_user =  await User().getCurrentuser(G_user.id);
         await Get_token(Current_user.uid);
         Current_user =  await User().getCurrentuser(G_user.id);
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => HomeNavigation(currentUser: Current_user,googleSignIn: _googleSignIn)));
+            builder: (context) => HomeNavigation(currentUser: Current_user, googleSignIn: googleSignIn)));
       }else{
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => LoginPage(googleSignIn: _googleSignIn)));
+            builder: (context) => LoginPage(googleSignIn: googleSignIn)));
       }
     });
   }

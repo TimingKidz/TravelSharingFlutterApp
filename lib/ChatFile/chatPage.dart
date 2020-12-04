@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:http/http.dart' as Http;
@@ -108,15 +109,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
         a();
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print("onResume: $message");
-        print(message['notification']);
-      },
-      onLaunch: (Map<String, dynamic> message) async{
-        print(message);
-      },
-      onBackgroundMessage: myBackgroundMessageHandler,
+      }
     );
   }
 
@@ -137,28 +130,37 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
     messages = await Message().getMessage(widget.tripid);
     print(messages.first);
     messagesReverseList = messages.reversed.toList();
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("TKZ"),
-        automaticallyImplyLeading: true,
-      ),
-      backgroundColor: Colors.white,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          Expanded(
-            child: _chatListView(),
+    return WillPopScope(
+      onWillPop: () async {
+        _firebaseMessaging.configure(
+          onMessage: (Map<String, dynamic> message) async {
+            print("onMessage: $message");
+            showNotification(message);
+          }
+        );
+        return true;
+      },
+      child: Scaffold(
+          appBar: AppBar(
+            title: Text("TKZ"),
+            automaticallyImplyLeading: true,
           ),
-          _chatBottomBar()
-        ],
-      )
+          backgroundColor: Colors.white,
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Expanded(
+                child: _chatListView(),
+              ),
+              _chatBottomBar()
+            ],
+          )
+      ),
     );
   }
   

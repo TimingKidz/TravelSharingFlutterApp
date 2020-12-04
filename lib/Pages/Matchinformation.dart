@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/ChatFile/chatPage.dart';
@@ -69,6 +70,7 @@ class Matchinformation extends StatefulWidget {
 }
 
 class _Matchinformation extends State<Matchinformation> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   final TextEditingController date_Textcontroller = new TextEditingController();
   GoogleMapController _mapController;
   Routes Final_Data = new Routes();
@@ -86,13 +88,13 @@ class _Matchinformation extends State<Matchinformation> {
 
   @override
   void initState() {
+    super.initState();
     Map<String, dynamic> test = {
       'name' : 'Thut Chayasatit'
     };
     passengerList.add(test);
     print(widget.uid);
     getData();
-    super.initState();
   }
 
   @override

@@ -27,7 +27,8 @@ class HomeNavigation extends StatefulWidget {
 
   final GoogleSignIn googleSignIn;
   final User currentUser;
-  HomeNavigation({this.currentUser,this.googleSignIn});
+
+  HomeNavigation({this.currentUser, this.googleSignIn});
 
   @override
   HomeNavigationState createState() =>
@@ -44,7 +45,7 @@ class HomeNavigationState extends State<HomeNavigation> {
     pageRoute = [
       Center(child: Text('Notification')),
       Dashboard(currentUser : widget.currentUser),
-      Account(currentUser : widget.currentUser,googleSignIn: widget.googleSignIn)
+      Account(currentUser : widget.currentUser, googleSignIn: widget.googleSignIn)
     ];
   }
 

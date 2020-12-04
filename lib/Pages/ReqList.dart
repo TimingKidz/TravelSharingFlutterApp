@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/User.dart';
@@ -71,6 +72,7 @@ class ReqList extends StatefulWidget {
 
 
 class _ReqListstate extends State<ReqList> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   List<Req_Info> _ReqList = List();
   bool isFirstPage = true;
 
@@ -85,7 +87,6 @@ class _ReqListstate extends State<ReqList> {
   }
 
   void initState() {
-    // TODO: implement initState
     super.initState();
     getData();
   }
