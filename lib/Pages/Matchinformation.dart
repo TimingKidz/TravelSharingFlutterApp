@@ -1,78 +1,17 @@
-import 'dart:convert';
-
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/ChatFile/chatPage.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:travel_sharing/Class/User.dart';
-import 'package:http/http.dart' as Http;
-
-import '../main.dart';
-
-class TripDetails{
-  String name;
-  String src;
-  String dst;
-  String routes;
-  String match;
-  String amount;
-  String date;
-  String isMatch;
-  String Room;
-
-  TripDetails({this.amount, this.date, this.dst, this.isMatch, this.match, this.name, this.Room, this.routes, this.src});
-
-  TripDetails.fromJson(Map<String, dynamic> json){
-    name = json['name'];
-    src = json['src'];
-    dst = json['dst'];
-    routes = json['routes'];
-    match = json['match'];
-    amount = json['amount'];
-    date = json['date'];
-    isMatch = json['isMatch'];
-    Room = json['Room'];
-  }
-
-  Future<TripDetails> getDetails(String uid) async {
-    try{
-      var url = "${HTTP().API_IP}/api/routes/Tripinformation";
-      Http.Response response = await Http.post(url, headers: HTTP().header, body: jsonEncode({"_id":uid}));
-      if(response.statusCode == 400 ){
-        return Future.value(null);
-      }else{
-        if(response.statusCode == 404){
-          return Future.value(null);
-        }else{
-          print(jsonDecode(response.body));
-          // Map<String,dynamic> data = jsonDecode(response.body);
-          // print(data);
-          // TripDetails tmp = TripDetails.fromJson(data);
-          // return Future.value(tmp);
-        }
-      }
-    }catch(err){
-      print(err);
-      throw("can't connect Match");
-    }
-  }
-}
+import 'package:travel_sharing/Class/TripDetails.dart';
 
 class Matchinformation extends StatefulWidget {
-  final User currentUser;
   final String uid;
-
-  const Matchinformation({Key key, this.currentUser, this.uid}) : super(key: key);
-
+  const Matchinformation({Key key,this.uid}) : super(key: key);
  _Matchinformation createState() => _Matchinformation();
 }
 
 class _Matchinformation extends State<Matchinformation> {
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   final TextEditingController date_Textcontroller = new TextEditingController();
-  GoogleMapController _mapController;
   Routes Final_Data = new Routes();
   List<Map<String, dynamic>> passengerList = [];
   TripDetails tripDetails;
@@ -255,7 +194,7 @@ class _Matchinformation extends State<Matchinformation> {
                       tooltip: 'Chat',
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => ChatPage(tripid: widget.uid, currentUser: widget.currentUser)));
+                            builder: (context) => ChatPage(tripid: widget.uid)));
                       },
                     ),
                   ),

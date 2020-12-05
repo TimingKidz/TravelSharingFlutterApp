@@ -1,9 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:travel_sharing/Class/RouteJson.dart';
-import 'package:travel_sharing/Pages/ReqList.dart';
-import 'package:travel_sharing/custom_color_scheme.dart';
+import 'package:travel_sharing/Class/Req_Info.dart';
 
 class CardTileWithTapReq extends StatefulWidget {
   final Req_Info data;

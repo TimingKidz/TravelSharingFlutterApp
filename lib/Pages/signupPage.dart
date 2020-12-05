@@ -4,11 +4,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:google_sign_in/widgets.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/homeNavigation.dart';
+import 'package:travel_sharing/main.dart';
 
 class SignUpPage extends StatefulWidget {
-  final User currentUser;
-  final GoogleSignIn googleSignIn;
-  SignUpPage({this.currentUser, this.googleSignIn});
   SignUpPageState createState() => SignUpPageState();
 }
 
@@ -45,7 +43,7 @@ class SignUpPageState extends State<SignUpPage> {
 //                    ),
                   ),
                   SizedBox(height: 8.0),
-                  Text(widget.currentUser.id)
+                  Text(currentUser.id)
                 ],
               ),
             ),
@@ -70,7 +68,7 @@ class SignUpPageState extends State<SignUpPage> {
   }
   _Nextpage(){
     Navigator.pushReplacement(context,MaterialPageRoute(
-        builder : (context) => HomeNavigation(currentUser : widget.currentUser,googleSignIn: widget.googleSignIn,)));
+        builder : (context) => HomeNavigation()));
   }
 }
 

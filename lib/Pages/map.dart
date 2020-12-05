@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -8,19 +7,16 @@ import 'package:location/location.dart' ;
 import "package:google_maps_webservice/places.dart" as p;
 import 'package:flutter_polyline_points/flutter_polyline_points.dart' ;
 import 'package:flutter_google_places/flutter_google_places.dart';
-import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/InfoFill.dart';
 import 'package:travel_sharing/main.dart';
 
 class CreateRoute extends StatefulWidget {
-  final User currentUser;
-  const CreateRoute({Key key, this.currentUser}) : super(key: key);
+  const CreateRoute({Key key}) : super(key: key);
   @override
   _CreateRoutestate createState() => _CreateRoutestate();
 }
 
 class _CreateRoutestate extends State<CreateRoute> {
-  static final String api_key = "AIzaSyBQCf89JOkrq2ECa6Ko8LBQaMO8A7rJt9Q";
   final places = new p.GoogleMapsPlaces(apiKey: api_key);
   final l.Distance distance = new l.Distance();
   p.GoogleMapsPlaces _places = p.GoogleMapsPlaces(apiKey: api_key);
@@ -56,36 +52,6 @@ class _CreateRoutestate extends State<CreateRoute> {
         isSet_Marker = true;
       }
       });
-  }
-
-  // find direction to destination
-  findDirections(bool isFind_Direction ) async {
-    var origin = PointLatLng(fromPoint.latitude, fromPoint.longitude);
-    var destination = PointLatLng(toPoint.latitude, toPoint.longitude);
-
-    if( isFind_Direction ){ // find new direction
-      PolylinePoints polylinePoints = PolylinePoints();
-      PolylineResult result = await polylinePoints.getRouteBetweenCoordinates("AIzaSyBQCf89JOkrq2ECa6Ko8LBQaMO8A7rJt9Q", origin,destination);
-      PointLatLng Ll = result.points.first;
-      temp.add(LatLng(Ll.latitude,Ll.longitude));
-      result.points.forEach((step) {
-        routes.add(LatLng(step.latitude, step.longitude));
-      });
-    }
-
-    // create line of routes on map
-    var line = Polyline(
-      points: routes,
-      geodesic: true,
-      polylineId: PolylineId("mejor ruta"),
-      color: Colors.blue,
-      width: 4,
-    );
-
-    setState(() {
-      lines.clear();
-      lines.add(line);
-    });
   }
 
   @override
@@ -218,7 +184,7 @@ class _CreateRoutestate extends State<CreateRoute> {
     print(dst);
     print(Placename_dst);
     Navigator.push(context, MaterialPageRoute(
-        builder: (context) => InfoFill(currentUser:widget.currentUser,routes: routes, bounds:bounds,Markers :Markers,lines :lines,src:Placename_src,dst: Placename_dst ,Role :Role)));
+        builder: (context) => InfoFill(routes: routes, bounds:bounds,Markers :Markers,lines :lines,src:Placename_src,dst: Placename_dst ,Role :Role)));
   }
 
   _stepBack() async {
@@ -311,6 +277,36 @@ class _CreateRoutestate extends State<CreateRoute> {
     );
     var cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 50);
     _mapController.animateCamera(cameraUpdate);
+    }
   }
-}
+
+  // find direction to destination
+  findDirections(bool isFind_Direction ) async {
+    var origin = PointLatLng(fromPoint.latitude, fromPoint.longitude);
+    var destination = PointLatLng(toPoint.latitude, toPoint.longitude);
+
+    if( isFind_Direction ){ // find new direction
+      PolylinePoints polylinePoints = PolylinePoints();
+      PolylineResult result = await polylinePoints.getRouteBetweenCoordinates("AIzaSyBQCf89JOkrq2ECa6Ko8LBQaMO8A7rJt9Q", origin,destination);
+      PointLatLng Ll = result.points.first;
+      temp.add(LatLng(Ll.latitude,Ll.longitude));
+      result.points.forEach((step) {
+        routes.add(LatLng(step.latitude, step.longitude));
+      });
+    }
+
+    // create line of routes on map
+    var line = Polyline(
+      points: routes,
+      geodesic: true,
+      polylineId: PolylineId("mejor ruta"),
+      color: Colors.blue,
+      width: 4,
+    );
+
+    setState(() {
+      lines.clear();
+      lines.add(line);
+    });
+  }
 }
