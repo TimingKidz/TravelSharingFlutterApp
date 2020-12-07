@@ -1,7 +1,5 @@
-import 'dart:async';
 import 'dart:io';
 
-import 'package:firebase_auth/firebase_auth.dart' as u;
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -32,32 +30,31 @@ class MyHttpOverrides extends HttpOverrides{
 }
 
 class HTTP{
-  final String API_IP = "http://10.80.27.182:3000";
+  final String API_IP = "https://68.183.226.229";
 
   Future<Map<String,String>> header() async {
     return {'Content-Type': 'application/json; charset=UTF-8','auth' : await firebaseAuth.user.getIdToken()};
   }
+
 }
 
 void main() {
+   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
 
+   // statusBarColor is used to set Status bar color in Android devices.
+   statusBarColor: Colors.transparent,
 
-  //  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-//
-//    // statusBarColor is used to set Status bar color in Android devices.
-//    statusBarColor: Colors.transparent,
-//
-//    // To make Status bar icons color white in Android devices.
-//    statusBarIconBrightness: Brightness.dark,
-//
-//    // statusBarBrightness is used to set Status bar icon color in iOS.
-//    statusBarBrightness: Brightness.dark,
-//    // Here light means dark color Status bar icons.
-//
-//    systemNavigationBarColor: Colors.transparent,
-//    systemNavigationBarIconBrightness: Brightness.dark
-//
-//  ));
+   // To make Status bar icons color white in Android devices.
+   statusBarIconBrightness: Brightness.dark,
+
+   // statusBarBrightness is used to set Status bar icon color in iOS.
+   statusBarBrightness: Brightness.dark,
+   // Here light means dark color Status bar icons.
+
+   systemNavigationBarColor: Colors.transparent,
+   systemNavigationBarIconBrightness: Brightness.dark
+
+ ));
   HttpOverrides.global = new MyHttpOverrides();
   runApp(MyApp());
 }

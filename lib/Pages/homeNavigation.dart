@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/Pages/Account.dart';
+import 'package:travel_sharing/Pages/NotificationsPage.dart';
 import 'package:travel_sharing/Pages/dashboard.dart';
 
 class HomeNavigation extends StatefulWidget {
@@ -42,7 +43,7 @@ class HomeNavigationState extends State<HomeNavigation> {
   void initState() {
     super.initState();
     pageRoute = [
-      Center(child: Text('Notification')),
+      NotificationsPage(),
       Dashboard(),
       Account()
     ];
