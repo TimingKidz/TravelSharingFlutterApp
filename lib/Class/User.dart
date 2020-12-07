@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:google_directions_api/google_directions_api.dart';
 import 'package:http/http.dart' as Http;
-import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/main.dart';
 
 
@@ -49,7 +48,7 @@ class User {
     try{
       var url = "${HTTP().API_IP}/api/user/isreg";
       print(url);
-      Http.Response response = await Http.post(url,headers: HTTP().header , body: jsonEncode(<String,String>{ "id":id }));
+      Http.Response response = await Http.post(url,headers: await HTTP().header() , body: jsonEncode(<String,String>{ "id":id }));
       print("aaaa");
       if(response.statusCode == 400){
         return Future.value(null);
@@ -71,7 +70,7 @@ class User {
     try{
       if(await getCurrentuser(this.id) == null){
         var url = "${HTTP().API_IP}/api/user/register";
-        Http.Response response = await Http.post(url, headers: HTTP().header , body: jsonEncode(this.toJson()));
+        Http.Response response = await Http.post(url, headers: await HTTP().header() , body: jsonEncode(this.toJson()));
         if(response.statusCode == 400 ){
           return Future.value(false);
         }else{
@@ -89,9 +88,9 @@ class User {
   Future<List<String>> getisReq(String id ,String _id) async {
     try{
       var url = "${HTTP().API_IP}/api/routes/getisReq";
-      Http.Response response = await Http.post(url, headers: HTTP().header, body: jsonEncode({'id': id ,'_id' : _id}));
+      Http.Response response = await Http.post(url, headers: await HTTP().header() , body: jsonEncode({'id': id ,'_id' : _id}));
       if(response.statusCode == 400 ){
-        return Future.value(null);
+          return Future.value(null);
       }else{
         if(response.statusCode == 404){
           return Future.value(null);
@@ -118,7 +117,7 @@ class User {
         'Reqid' : Reqid,
         'userid' : Currentid,
         'userRoute_id' : Current_id };
-      Http.Response response = await Http.post(url, headers: HTTP().header , body: jsonEncode(temp));
+      Http.Response response = await Http.post(url, headers: await HTTP().header() , body: jsonEncode(temp));
       if(response.statusCode == 400 ){
         return Future.value(false);
       }else{
@@ -140,7 +139,7 @@ class User {
         'Reqid' : Reqid,
         'userid' : Currentid,
         'userRoute_id' : Current_id };
-      Http.Response response = await Http.post(url, headers: HTTP().header , body: jsonEncode(temp));
+      Http.Response response = await Http.post(url, headers: await HTTP().header() , body: jsonEncode(temp));
       if(response.statusCode == 400 ){
         return Future.value(false);
       }else{
@@ -152,6 +151,25 @@ class User {
       }
     }catch(error){
       throw("can't connect");
+    }
+  }
+
+  Future<void> updateToken(String tokenID) async {
+    try{
+      var url = "${HTTP().API_IP}/api/routes/updateToken";
+      Http.Response response = await Http.post(url, headers: await HTTP().header(), body: jsonEncode({"id":this.uid, "token_id": tokenID}));
+      if(response.statusCode == 400 ){
+        return Future.value(null);
+      }else{
+        if(response.statusCode == 404){
+          return Future.value(null);
+        }else{
+          print(jsonDecode(response.body));
+        }
+      }
+    }catch(err){
+      print(err);
+      throw("can't connect Match");
     }
   }
 

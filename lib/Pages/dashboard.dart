@@ -1,12 +1,6 @@
-import 'dart:convert';
-
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:travel_sharing/Class/RouteJson.dart';
-import 'package:travel_sharing/Class/User.dart';
+import 'package:travel_sharing/Class/Travel_Info.dart';
 import 'package:travel_sharing/Pages/JoinMap.dart';
 import 'package:travel_sharing/Pages/MatchList.dart';
 import 'package:travel_sharing/Pages/Matchinformation.dart';
@@ -15,60 +9,10 @@ import 'package:travel_sharing/Pages/map.dart';
 import 'package:location/location.dart' ;
 import 'package:travel_sharing/buttons/cardTileWithTap.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
-
-import 'package:http/http.dart' as Http;
 import 'package:travel_sharing/main.dart';
 
-import '../firebase_messaging.dart';
-
-class Travel_Info{
-  Routes routes;
-  String id;
-  String uid;
-
-  Travel_Info({this.routes, this.id});
-
-  Travel_Info.fromJson(Map<String, dynamic> json) {
-    routes = Routes.fromJson(json['detail']);
-    id = json['detail']['id'];
-    uid = json['_id'];
-  }
-
-  Future<List<Travel_Info>> getRoutes(String id,int role) async {
-    try{
-      Map<int,String> path = {0:'invite',1:'join'};
-      var url = "${HTTP().API_IP}/api/routes/getRoutes";
-      print("getroutesssssss");
-      Http.Response response = await Http.post(url, headers: HTTP().header, body: jsonEncode({'id':id,'role':role}));
-      if(response.statusCode == 400 ){
-        return Future.value(null);
-      }else{
-        if(response.statusCode == 404){
-          return Future.value(null);
-        }else{
-          Map<String, dynamic> data = jsonDecode(response.body);
-          print(data);
-          List<Travel_Info> travel_info_list = List();
-          data['event'][path[role]].forEach((x) {
-            Travel_Info tmp = Travel_Info.fromJson(x);
-            travel_info_list.add(tmp);
-          });
-          return Future.value(travel_info_list);
-        }
-      }
-    }catch(error){
-      print(error);
-      throw("can't connect");
-    }
-  }
-}
 
 class Dashboard extends StatefulWidget {
-  final User currentUser;
-  final Function showNoti;
-
-  Dashboard({this.currentUser, this.showNoti});
-
   @override
   _Dashboard createState() => _Dashboard();
 }
@@ -76,102 +20,14 @@ class Dashboard extends StatefulWidget {
 class _Dashboard extends State<Dashboard> {
   Location location = Location();
   LocationData Locations;
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-
-//  final _joinList = <String>['A', 'B', 'C', 'D'];
-//  final _invitedList = <String>['E', 'F', 'G', 'H'];
   List<Travel_Info> _joinList  = List();
   List<Travel_Info> _invitedList = List();
   bool isFirstPage = true;
 
-  Future<void> getData() async {
-    try{
-    User user = widget.currentUser;
-    print("45555");
-    print(user.id);
-      _invitedList =  await Travel_Info().getRoutes(user.uid,0) ?? [];
-      _joinList =  await Travel_Info().getRoutes(user.uid,1) ?? [];
-      _invitedList.sort((a,b) => b.routes.date.compareTo(a.routes.date));
-      _joinList.sort((a,b) => b.routes.date.compareTo(a.routes.date));
-      debugPrint('$_joinList');
-      setState(() {});
-    }catch(error){
-      print("$error lll");
-    }
-  }
-
+  @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getData();
-    print("aaaaaa");
-  }
-
-
-
-  Widget _widgetOptions(){
-    if((_joinList.isEmpty && isFirstPage) || (_invitedList.isEmpty && !isFirstPage)){
-      return Center(
-        child: Text('No List'),
-      );
-    }else{
-      return _buildListView();
-    }
-  }
-
-  Widget _buildListView() {
-    return ListView.builder(
-      physics: BouncingScrollPhysics(),
-      itemCount: isFirstPage ? _joinList.length : _invitedList.length,
-      itemBuilder: (context, i) {
-        return _buildRow(isFirstPage ? _joinList[i] : _invitedList[i]);
-      }
-    );
-  }
-
-  Widget _buildRow(Travel_Info data) {
-    print(data);
-    return CardTileWithTap(
-      isFirstPage: isFirstPage,
-      data: data.routes,
-      onCardPressed: () => _onCardPressed(data),
-    );
-  }
-
-  _onCardPressed(Travel_Info data){
-    if( isFirstPage ){
-      if( data.routes.isMatch ){
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) => Matchinformation(uid: data.routes.match.first, currentUser: widget.currentUser)));
-      }else{
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) => MatchList(data: data)));
-      }
-    }else{
-      if( data.routes.isMatch){
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) => Matchinformation(uid: data.uid, currentUser: widget.currentUser)));
-      }else{
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) => ReqList(data: data, currentUser : widget.currentUser)));
-      }
-    }
-  }
-
-
-
-  _newroute() async{
-      Navigator.push(context, MaterialPageRoute(
-          builder: (context) => CreateRoute(currentUser:widget.currentUser))).then((value) {
-        getData();
-      });
-  }
-
-  _newroute1() async{
-    Navigator.push(context, MaterialPageRoute(
-        builder: (context) => CreateRoute_Join(currentUser: widget.currentUser))).then((value) {
-      getData();
-    });
   }
 
   @override
@@ -257,6 +113,82 @@ class _Dashboard extends State<Dashboard> {
         ),
       ),
     );
+  }
+
+  Future<void> getData() async {
+    try{
+      _invitedList =  await Travel_Info().getRoutes(currentUser.uid,0) ?? [];
+      _joinList =  await Travel_Info().getRoutes(currentUser.uid,1) ?? [];
+      _invitedList.sort((a,b) => b.routes.date.compareTo(a.routes.date));
+      _joinList.sort((a,b) => b.routes.date.compareTo(a.routes.date));
+      debugPrint('$_joinList');
+      setState(() {});
+    }catch(error){
+      print("$error lll");
+    }
+  }
+
+  Widget _widgetOptions(){
+    if((_joinList.isEmpty && isFirstPage) || (_invitedList.isEmpty && !isFirstPage)){
+      return Center(
+        child: Text('No List'),
+      );
+    }else{
+      return _buildListView();
+    }
+  }
+
+  Widget _buildListView() {
+    return ListView.builder(
+        physics: BouncingScrollPhysics(),
+        itemCount: isFirstPage ? _joinList.length : _invitedList.length,
+        itemBuilder: (context, i) {
+          return _buildRow(isFirstPage ? _joinList[i] : _invitedList[i]);
+        }
+    );
+  }
+
+  Widget _buildRow(Travel_Info data) {
+    print(data);
+    return CardTileWithTap(
+      isFirstPage: isFirstPage,
+      data: data.routes,
+      onCardPressed: () => _onCardPressed(data),
+    );
+  }
+
+  _onCardPressed(Travel_Info data){
+    if( isFirstPage ){
+      if( data.routes.isMatch ){
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => Matchinformation(uid: data.routes.match.first)));
+      }else{
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => MatchList(data: data)));
+      }
+    }else{
+      if( data.routes.isMatch){
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => Matchinformation(uid: data.uid)));
+      }else{
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => ReqList(data: data)));
+      }
+    }
+  }
+
+  _newroute() async{
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context) => CreateRoute())).then((value) {
+      getData();
+    });
+  }
+
+  _newroute1() async{
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context) => CreateRoute_Join())).then((value) {
+      getData();
+    });
   }
 
 }

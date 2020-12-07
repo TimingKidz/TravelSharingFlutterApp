@@ -4,15 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_webservice/places.dart';
-import 'package:flutter_google_places/flutter_google_places.dart';
-import "package:google_maps_webservice/places.dart" as places;
 import 'package:flutter/material.dart';
-import 'dart:math';
+import 'package:travel_sharing/main.dart';
 
-import 'package:travel_sharing/Pages/InfoFill.dart';
-
-const API_KEY = "AIzaSyBQCf89JOkrq2ECa6Ko8LBQaMO8A7rJt9Q";
 //GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: API_KEY);
 //
 //final searchScaffoldKey = GlobalKey<ScaffoldState>();
@@ -130,7 +124,6 @@ class LocationSearch extends StatefulWidget {
 }
 
 class _LocationSearchState extends State<LocationSearch> {
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   TextEditingController _searchController = new TextEditingController();
   Timer _throttle;
 
@@ -174,7 +167,7 @@ class _LocationSearchState extends State<LocationSearch> {
     String radius = '20000';
     // TODO Add session token
 
-    String request = '$baseURL?input=$input&key=$API_KEY&components=country:$country'
+    String request = '$baseURL?input=$input&key=$api_key&components=country:$country'
         '&location=${widget.currentLocation.longitude},${widget.currentLocation.latitude}&radius=$radius';
     Response response = await Dio().get(request);
 

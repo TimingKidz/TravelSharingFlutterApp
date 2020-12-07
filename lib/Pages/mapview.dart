@@ -10,6 +10,7 @@ import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Pages/InfoFill.dart';
 import 'package:travel_sharing/Pages/dashboard.dart';
+import 'package:travel_sharing/main.dart';
 
 class mapview extends StatefulWidget {
   final Routes from;
@@ -20,7 +21,6 @@ class mapview extends StatefulWidget {
 }
 
 class _mapview extends State<mapview> {
-  static final String api_key = "AIzaSyBQCf89JOkrq2ECa6Ko8LBQaMO8A7rJt9Q";
   final places = new p.GoogleMapsPlaces(apiKey: api_key);
   final l.Distance distance = new l.Distance();
   p.GoogleMapsPlaces _places = p.GoogleMapsPlaces(apiKey: api_key);
@@ -47,14 +47,10 @@ class _mapview extends State<mapview> {
     // TODO: implement initState
     super.initState();
     _createMarkers();
-    // callback currentLocation for first time
-
   }
 
   // find direction to destination
   findDirections(bool isFind_Direction ) async {
-
-
     // create line of routes on map
     var line = Polyline(
       points: widget.to.routes,
@@ -63,7 +59,6 @@ class _mapview extends State<mapview> {
       color: Colors.blue,
       width: 4,
     );
-
     setState(() {
       lines.clear();
       lines.add(line);
@@ -97,17 +92,6 @@ class _mapview extends State<mapview> {
       ),
     );
   }
-
-
-
-
-
-
-
-
-
-
-
   _createMarkers() {
     Markers.clear();
     Markers.add(
@@ -115,7 +99,6 @@ class _mapview extends State<mapview> {
         markerId: MarkerId("1"),
         position: widget.from.routes.first,
         infoWindow: InfoWindow(title: "Roca 123"),
-
       ),
     );
     Markers.add(
@@ -127,9 +110,6 @@ class _mapview extends State<mapview> {
     );
     setState(() {});
   }
-
-
-
 
   void _onMapCreated(GoogleMapController controller) async{
     _mapController = controller;

@@ -2,13 +2,11 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/signupPage.dart';
+import 'package:travel_sharing/main.dart';
 
 class LoginPage extends StatefulWidget {
-  final GoogleSignIn googleSignIn;
-  LoginPage({this.googleSignIn});
   LoginPageState createState() => LoginPageState();
 }
 
@@ -19,10 +17,10 @@ class LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    widget.googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account){
+    googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account){
       _currentUser = account;
     });
-    widget.googleSignIn.signInSilently();
+    googleSignIn.signInSilently();
   }
 
   @override
@@ -93,16 +91,15 @@ class LoginPageState extends State<LoginPage> {
 
   Future<void> _handleSignIn() async {
     try{
-      var isDismiss = await widget.googleSignIn.signIn();
-      debugPrint('$isDismiss');
-      if(isDismiss != null){
+      googleUser = await googleSignIn.signIn();
+      if(googleUser != null){
         _loadingDialog();
-        User user = new User(name: isDismiss.displayName,email: isDismiss.email,id: isDismiss.id,token: await _firebaseMessaging.getToken());
+        User user = new User(name: googleUser.displayName,email: googleUser.email,id: googleUser.id,token: await _firebaseMessaging.getToken());
         if (await user.Register()){
-          User Current_user = await user.getCurrentuser(user.id);
+          currentUser = await user.getCurrentuser(user.id);
           Navigator.of(context).pop(); //Pop Loading Dialog
           Navigator.push(context, MaterialPageRoute(
-              builder: (context) => SignUpPage(currentUser: Current_user, googleSignIn: widget.googleSignIn)));
+              builder: (context) => SignUpPage()));
         }else{
           throw("Please check your connection.");
         }
