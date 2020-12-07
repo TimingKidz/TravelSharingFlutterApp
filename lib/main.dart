@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart' as u;
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -17,6 +19,7 @@ import 'Pages/dashboard.dart';
 final String api_key = "AIzaSyBQCf89JOkrq2ECa6Ko8LBQaMO8A7rJt9Q";
 GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['profile', 'email']);
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+u.UserCredential firebaseAuth;
 GoogleSignInAccount googleUser;
 User currentUser;
 
@@ -29,16 +32,16 @@ class MyHttpOverrides extends HttpOverrides{
 }
 
 class HTTP{
-  final String API_IP = "http://10.80.25.240:3000";
+  final String API_IP = "http://10.80.27.182:3000";
 
   Future<Map<String,String>> header() async {
-    GoogleSignInAuthentication Auth = await googleUser.authentication;
-    return {'Content-Type': 'application/json; charset=UTF-8','token_id' : Auth.idToken};
+    return {'Content-Type': 'application/json; charset=UTF-8','auth' : await firebaseAuth.user.getIdToken()};
   }
-
 }
 
 void main() {
+
+
   //  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
 //
 //    // statusBarColor is used to set Status bar color in Android devices.

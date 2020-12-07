@@ -47,9 +47,7 @@ class User {
   Future<User> getCurrentuser(String id) async{
     try{
       var url = "${HTTP().API_IP}/api/user/isreg";
-      print(url);
       Http.Response response = await Http.post(url,headers: await HTTP().header() , body: jsonEncode(<String,String>{ "id":id }));
-      print("aaaa");
       if(response.statusCode == 400){
         return Future.value(null);
       }else{

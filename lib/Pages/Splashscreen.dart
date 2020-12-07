@@ -1,6 +1,11 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart' as u;
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/homeNavigation.dart';
 import 'package:travel_sharing/main.dart';
@@ -13,11 +18,13 @@ class Splashscreen extends StatefulWidget {
 
 class SplashscreenState extends State<Splashscreen> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   var initializationSettings;
 
   @override
   void initState() {
     super.initState();
+
     // Firebase Notification Init
     _firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
@@ -75,6 +82,12 @@ class SplashscreenState extends State<Splashscreen> {
     Future.delayed(Duration(seconds: 1), () async {
       if(isSignedIn){
         googleUser = await googleSignIn.signIn();
+        GoogleSignInAuthentication Auth = await googleUser.authentication;
+        u.GoogleAuthCredential a =  u.GoogleAuthProvider.credential(
+          accessToken: Auth.accessToken,
+          idToken: Auth.idToken,
+        );
+        firebaseAuth = await u.FirebaseAuth.instance.signInWithCredential(a);
         String tokenID = await _firebaseMessaging.getToken();
         currentUser =  await User().getCurrentuser(googleUser.id);
         await currentUser.updateToken(tokenID);

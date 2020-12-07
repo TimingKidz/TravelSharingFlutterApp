@@ -13,6 +13,13 @@ class SignUpPage extends StatefulWidget {
 class SignUpPageState extends State<SignUpPage> {
 
   @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
   }

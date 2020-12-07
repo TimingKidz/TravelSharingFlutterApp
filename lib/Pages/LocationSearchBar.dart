@@ -130,6 +130,14 @@ class _LocationSearchState extends State<LocationSearch> {
   String _heading;
   List<Map<String, dynamic>> _placesList;
   List<Map<String, dynamic>> _historyList = [];
+
+  @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+  }
+
   @override
   void initState() {
     super.initState();

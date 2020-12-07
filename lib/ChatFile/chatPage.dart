@@ -20,6 +20,13 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
   ScrollController scrollController;
 
   @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);

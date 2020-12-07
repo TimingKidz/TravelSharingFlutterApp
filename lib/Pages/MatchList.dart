@@ -7,6 +7,7 @@ import 'package:travel_sharing/Class/User.dart';
 import 'package:location/location.dart' ;
 import 'package:travel_sharing/Pages/mapview.dart';
 import 'package:travel_sharing/buttons/cardTileWithTapMatch.dart';
+import 'package:travel_sharing/main.dart';
 
 
 class MatchList extends StatefulWidget {
@@ -27,20 +28,41 @@ class _MatchListstate extends State<MatchList> {
   List<String> isreq = List();
 
   @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   void initState(){
     super.initState();
     getData();
     _firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
           print("onMessage: $message");
-          getData();
+          if(message['data']['body'] != null){
+            getData();
+          }else{
+            showNotification(message);
+          }
         }
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+        onWillPop: () async {
+          _firebaseMessaging.configure(
+              onMessage: (Map<String, dynamic> message) async {
+                print("onMessage: $message");
+                showNotification(message);
+              }
+          );
+          return true;
+        },
+    child : Scaffold(
       appBar: AppBar(
         title: const Text('ส่งคำขอให้คนที่คุณจะไปด้วย'),
         elevation: 2.0,
@@ -54,6 +76,7 @@ class _MatchListstate extends State<MatchList> {
           ],
         ),
       ),
+    )
     );
   }
 

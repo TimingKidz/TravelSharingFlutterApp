@@ -28,6 +28,13 @@ class _InfoFillState extends State<InfoFill> {
   Routes Final_Data = new Routes();
 
   @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
     Final_Data.date =  DateTime.now().toString();

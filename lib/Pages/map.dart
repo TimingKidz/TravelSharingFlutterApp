@@ -39,19 +39,36 @@ class _CreateRoutestate extends State<CreateRoute> {
   static int Role = 0;
 
   @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getLocation();
     // callback currentLocation for first time
-      location.onLocationChanged.listen((LocationData currentLocations) {
-      if(!isSet_Marker) {
-        current_Location =
-            LatLng(currentLocations.latitude, currentLocations.longitude);
-        _mapController.animateCamera( CameraUpdate.newCameraPosition(CameraPosition(target: current_Location, zoom: 15,)));
-        _createMarkers(current_Location);
-        isSet_Marker = true;
-      }
-      });
+//      location.onLocationChanged.listen((LocationData currentLocations) {
+//      if(!isSet_Marker) {
+//        current_Location =
+//            LatLng(currentLocations.latitude, currentLocations.longitude);
+//        _mapController.animateCamera( CameraUpdate.newCameraPosition(CameraPosition(target: current_Location, zoom: 15,)));
+//        _createMarkers(current_Location);
+//        isSet_Marker = true;
+//      }
+//      });
+  }
+
+  getLocation() async{
+    LocationData currentLoc = await Location().getLocation();
+    current_Location =
+        LatLng(currentLoc.latitude, currentLoc.longitude);
+    _mapController.animateCamera( CameraUpdate.newCameraPosition(CameraPosition(target: current_Location, zoom: 15,)));
+    _createMarkers(current_Location);
+    isSet_Marker = true;
   }
 
   @override
