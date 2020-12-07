@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/signupPage.dart';
 import 'package:travel_sharing/main.dart';
+import 'package:firebase_auth/firebase_auth.dart' as u;
 
 class LoginPage extends StatefulWidget {
   LoginPageState createState() => LoginPageState();
@@ -13,6 +14,13 @@ class LoginPage extends StatefulWidget {
 class LoginPageState extends State<LoginPage> {
   GoogleSignInAccount _currentUser;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+  @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+  }
 
   @override
   void initState() {
@@ -94,9 +102,19 @@ class LoginPageState extends State<LoginPage> {
       googleUser = await googleSignIn.signIn();
       if(googleUser != null){
         _loadingDialog();
+        GoogleSignInAuthentication Auth = await googleUser.authentication;
+        u.GoogleAuthCredential a =  u.GoogleAuthProvider.credential(
+          accessToken: Auth.accessToken,
+          idToken: Auth.idToken,
+        );
+
+        firebaseAuth = await u.FirebaseAuth.instance.signInWithCredential(a);
         User user = new User(name: googleUser.displayName,email: googleUser.email,id: googleUser.id,token: await _firebaseMessaging.getToken());
         if (await user.Register()){
-          currentUser = await user.getCurrentuser(user.id);
+          String tokenID = await _firebaseMessaging.getToken();
+          currentUser =  await User().getCurrentuser(googleUser.id);
+          await currentUser.updateToken(tokenID);
+          currentUser =  await User().getCurrentuser(googleUser.id);
           Navigator.of(context).pop(); //Pop Loading Dialog
           Navigator.push(context, MaterialPageRoute(
               builder: (context) => SignUpPage()));

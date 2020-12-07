@@ -18,6 +18,7 @@ import 'Pages/dashboard.dart';
 final String api_key = "AIzaSyBQCf89JOkrq2ECa6Ko8LBQaMO8A7rJt9Q";
 GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['profile', 'email']);
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+u.UserCredential firebaseAuth;
 GoogleSignInAccount googleUser;
 User currentUser;
 
@@ -33,8 +34,7 @@ class HTTP{
   final String API_IP = "https://68.183.226.229";
 
   Future<Map<String,String>> header() async {
-    GoogleSignInAuthentication Auth = await googleUser.authentication;
-    return {'Content-Type': 'application/json; charset=UTF-8','auth' : Auth.idToken};
+    return {'Content-Type': 'application/json; charset=UTF-8','auth' : await firebaseAuth.user.getIdToken()};
   }
 
 }

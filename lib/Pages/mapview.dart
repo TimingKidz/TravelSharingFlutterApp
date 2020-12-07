@@ -43,6 +43,13 @@ class _mapview extends State<mapview> {
   static int Role = 0;
 
   @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();

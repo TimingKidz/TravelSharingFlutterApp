@@ -20,6 +20,13 @@ class _ReqListstate extends State<ReqList> {
   bool isFirstPage = true;
 
   @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
     getData();

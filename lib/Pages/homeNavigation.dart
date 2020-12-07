@@ -39,6 +39,13 @@ class HomeNavigationState extends State<HomeNavigation> {
   List<Widget> pageRoute;
 
   @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
     pageRoute = [

@@ -13,6 +13,14 @@ class Account extends StatefulWidget {
 }
 
 class AccountState extends State<Account> {
+
+  @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

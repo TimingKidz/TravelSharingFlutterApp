@@ -37,22 +37,38 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
   Map<String,String> Map_Placename = <String,String>{};
 
   @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getLocation();
     // callback currentLocation for first time
-    location.onLocationChanged.listen((LocationData currentLocations) {
-      if (!isSet_Marker) {
-        current_Location = LatLng(currentLocations.latitude, currentLocations.longitude);
-        // animate camera to currentLocation
-        _mapController.animateCamera(CameraUpdate.newCameraPosition(
-            CameraPosition(target: current_Location, zoom: 18,)));
-        _createMarkers(current_Location);
-        isSet_Marker = true;
-      }
-    });
+//    location.onLocationChanged.listen((LocationData currentLocations) {
+//      if (!isSet_Marker) {
+//        current_Location = LatLng(currentLocations.latitude, currentLocations.longitude);
+//        // animate camera to currentLocation
+//        _mapController.animateCamera(CameraUpdate.newCameraPosition(
+//            CameraPosition(target: current_Location, zoom: 18,)));
+//        _createMarkers(current_Location);
+//        isSet_Marker = true;
+//      }
+//    });
   }
 
+  getLocation() async{
+    LocationData currentLoc = await Location().getLocation();
+    current_Location =
+        LatLng(currentLoc.latitude, currentLoc.longitude);
+    _mapController.animateCamera( CameraUpdate.newCameraPosition(CameraPosition(target: current_Location, zoom: 15,)));
+    _createMarkers(current_Location);
+    isSet_Marker = true;
+  }
 //------------------------------------ UI---------------------------------------
   @override
   Widget build(BuildContext context) {

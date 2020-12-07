@@ -25,6 +25,13 @@ class _Dashboard extends State<Dashboard> {
   bool isFirstPage = true;
 
   @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
     getData();
@@ -159,7 +166,7 @@ class _Dashboard extends State<Dashboard> {
 
   _onCardPressed(Travel_Info data){
     if( isFirstPage ){
-      if( data.routes.isMatch ){
+      if( data.routes.match.isNotEmpty ){
         Navigator.push(context, MaterialPageRoute(
             builder: (context) => Matchinformation(uid: data.routes.match.first)));
       }else{
@@ -167,7 +174,7 @@ class _Dashboard extends State<Dashboard> {
             builder: (context) => MatchList(data: data)));
       }
     }else{
-      if( data.routes.isMatch){
+      if( data.routes.match.isNotEmpty){
         Navigator.push(context, MaterialPageRoute(
             builder: (context) => Matchinformation(uid: data.uid)));
       }else{

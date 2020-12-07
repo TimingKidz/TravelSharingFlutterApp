@@ -32,7 +32,11 @@ class Routes {
     if(json['match'] != null){
       List<String> temp = List();
       json['match'].forEach((x){
-        temp.add(x);
+        if(x is String){
+          temp.add(x);
+        }else{
+          temp.add(x['_id']);
+        }
       });
       match = temp;
     }else{
@@ -42,7 +46,11 @@ class Routes {
     dst = json['dst'];
     amount = json['amount'];
     date = json['date'];
-    id = json['id'];
+    if ( json['id'] is String){
+      id = json['id'];
+    }else{
+      id = json['id']['_id'];
+    }
     isMatch = json['isMatch'];
   }
 
