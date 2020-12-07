@@ -10,7 +10,7 @@ class VehicleManagePageState extends State<VehicleManagePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Vehicle Manager"),
+        title: Text("Vehicle Management"),
       ),
       body: _buildListView(),
     );

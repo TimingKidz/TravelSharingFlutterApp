@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travel_sharing/Pages/JoinMap.dart';
@@ -29,11 +30,11 @@ class MyHttpOverrides extends HttpOverrides{
 }
 
 class HTTP{
-  final String API_IP = "http://10.80.25.240:3000";
+  final String API_IP = "https://68.183.226.229";
 
   Future<Map<String,String>> header() async {
     GoogleSignInAuthentication Auth = await googleUser.authentication;
-    return {'Content-Type': 'application/json; charset=UTF-8','token_id' : Auth.idToken};
+    return {'Content-Type': 'application/json; charset=UTF-8','auth' : Auth.idToken};
   }
 
 }

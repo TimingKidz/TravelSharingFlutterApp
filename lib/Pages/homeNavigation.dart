@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/Pages/Account.dart';
+import 'package:travel_sharing/Pages/Feed.dart';
 import 'package:travel_sharing/Pages/NotificationsPage.dart';
 import 'package:travel_sharing/Pages/dashboard.dart';
 
@@ -12,9 +13,14 @@ class HomeNavigation extends StatefulWidget {
       title: Text('การแจ้งเตือน'),
     ),
     BottomNavigationBarItem(
-      icon: Icon(Icons.dashboard),
-//      title: Text('Dashboard'),
-      title: Text('แดชบอร์ด'),
+      icon: Icon(Icons.view_agenda),
+//      title: Text('Feed'),
+      title: Text('ฟีด'),
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.adjust),
+//      title: Text('On going'),
+      title: Text('การเดินทาง'),
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.account_circle),
@@ -37,6 +43,7 @@ class HomeNavigationState extends State<HomeNavigation> {
     super.initState();
     pageRoute = [
       NotificationsPage(),
+      Feed(),
       Dashboard(),
       Account()
     ];
