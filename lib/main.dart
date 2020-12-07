@@ -24,22 +24,22 @@ import 'Pages/dashboard.dart';
 
 GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['profile', 'email']);
 void main() {
-  //  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-//
-//    // statusBarColor is used to set Status bar color in Android devices.
-//    statusBarColor: Colors.transparent,
-//
-//    // To make Status bar icons color white in Android devices.
-//    statusBarIconBrightness: Brightness.dark,
-//
-//    // statusBarBrightness is used to set Status bar icon color in iOS.
-//    statusBarBrightness: Brightness.dark,
-//    // Here light means dark color Status bar icons.
-//
-//    systemNavigationBarColor: Colors.transparent,
-//    systemNavigationBarIconBrightness: Brightness.dark
-//
-//  ));
+   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+
+   // statusBarColor is used to set Status bar color in Android devices.
+   statusBarColor: Colors.transparent,
+
+   // To make Status bar icons color white in Android devices.
+   statusBarIconBrightness: Brightness.dark,
+
+   // statusBarBrightness is used to set Status bar icon color in iOS.
+   statusBarBrightness: Brightness.dark,
+   // Here light means dark color Status bar icons.
+
+   systemNavigationBarColor: Colors.transparent,
+   systemNavigationBarIconBrightness: Brightness.dark
+
+ ));
   HttpOverrides.global = new MyHttpOverrides();
   runApp(MyApp());
 }
