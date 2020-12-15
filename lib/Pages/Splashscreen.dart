@@ -8,6 +8,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/homeNavigation.dart';
+import 'package:travel_sharing/Pages/signupPage.dart';
 import 'package:travel_sharing/main.dart';
 import 'loginPage.dart';
 
@@ -17,7 +18,6 @@ class Splashscreen extends StatefulWidget {
 }
 
 class SplashscreenState extends State<Splashscreen> {
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   var initializationSettings;
 
@@ -25,16 +25,17 @@ class SplashscreenState extends State<Splashscreen> {
   void initState() {
     super.initState();
 
-    _firebaseMessaging.configure(
+    // Firebase Notification Init
+    firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
           print("onMessage: $message");
           showNotification(message);
         }
     );
-    _firebaseMessaging.requestNotificationPermissions(
+    firebaseMessaging.requestNotificationPermissions(
         const IosNotificationSettings(
             sound: true, badge: true, alert: true, provisional: true));
-    _firebaseMessaging.onIosSettingsRegistered
+    firebaseMessaging.onIosSettingsRegistered
         .listen((IosNotificationSettings settings) {
       print("Settings registered: $settings");
     });
@@ -78,26 +79,32 @@ class SplashscreenState extends State<Splashscreen> {
 
   Future<void> _signInCheck() async {
     var isSignedIn = await googleSignIn.isSignedIn();
-    Future.delayed(Duration(seconds: 1), () async {
+    // Future.delayed(Duration(seconds: 1), () async {
       if(isSignedIn){
-        googleUser = await googleSignIn.signIn();
+        googleUser = await googleSignIn.signInSilently();
         GoogleSignInAuthentication Auth = await googleUser.authentication;
         u.GoogleAuthCredential a =  u.GoogleAuthProvider.credential(
           accessToken: Auth.accessToken,
           idToken: Auth.idToken,
         );
         firebaseAuth = await u.FirebaseAuth.instance.signInWithCredential(a);
-        String tokenID = await _firebaseMessaging.getToken();
-        print(tokenID);
-        currentUser =  await User().getCurrentuser(googleUser.id);
-        await currentUser.updateToken(tokenID);
-        currentUser =  await User().getCurrentuser(googleUser.id);
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) => HomeNavigation()));
+        bool isRegister = await User().getCurrentuser(googleUser.id) != null ? true : false;
+        if (isRegister){
+          String tokenID = await firebaseMessaging.getToken();
+          currentUser =  await User().getCurrentuser(googleUser.id);
+          await currentUser.updateToken(tokenID);
+          currentUser =  await User().getCurrentuser(googleUser.id);
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => HomeNavigation()));
+        }else{
+          Navigator.of(context).pop(); //Pop Loading Dialog
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => SignUpPage()));
+        }
       }else{
         Navigator.push(context, MaterialPageRoute(
             builder: (context) => LoginPage()));
       }
-    });
+    // });
   }
 }

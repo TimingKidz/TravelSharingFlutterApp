@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travel_sharing/Class/User.dart';
-import 'package:travel_sharing/Pages/VehicleManagePage.dart';
-import 'package:travel_sharing/buttons/VehicleCardTile.dart';
+import 'package:travel_sharing/Class/Vehicle.dart';
+import 'package:travel_sharing/Pages/ProfileManagePage.dart';
+import 'file:///C:/Users/timin/AndroidStudioProjects/TravelSharingFlutterApp/lib/Pages/VehicleManagement/VehicleManagePage.dart';
+import 'package:travel_sharing/buttons/VehicleCardTileMin.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 
@@ -29,7 +32,7 @@ class AccountState extends State<Account> {
           Card(
             elevation: 2.0,
             margin: EdgeInsets.all(0.0),
-            color: Theme.of(context).colorScheme.orange,
+            color: Theme.of(context).colorScheme.darkBlue,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(30.0),
@@ -38,18 +41,35 @@ class AccountState extends State<Account> {
             ),
             child: Container(
               alignment: Alignment.center,
-              padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0, top: 8.0),
+              padding: EdgeInsets.all(16.0),
               child: SafeArea(
                 child: Column(
                   children: <Widget>[
-                    CircleAvatar(
-                      radius: 64.0,
+                    // CircleAvatar(
+                    //   radius: 64.0,
+                    // ),
+                    SizedBox(
+                      width: 128.0,
+                      height: 128.0,
+                      child: GoogleUserCircleAvatar(
+                        identity: googleUser,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 16.0,
+                    ),
+                    Text(
+                      currentUser.name,
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.white
+                      ),
                     ),
                     SizedBox(
                       height: 16.0,
                     ),
                     RatingBarIndicator(
-                      rating: 3.5,
+                      rating: 4.75,
                       itemBuilder: (context, index) => Icon(
                         Icons.star,
                         color: Colors.amber,
@@ -61,7 +81,8 @@ class AccountState extends State<Account> {
                     SizedBox(
                       height: 16.0,
                     ),
-                    VehicleCardTile()
+                    if(defaultVehicle() != null)
+                      VehicleCardTileMin(data: defaultVehicle())
                   ],
                 ),
               ),
@@ -86,21 +107,33 @@ class AccountState extends State<Account> {
     );
   }
 
+  Vehicle defaultVehicle(){
+    for(Vehicle each in currentUser.vehicle){
+      if(each.isDefault){
+        return each;
+      }
+    }
+    return null;
+  }
+
   List<Widget> menuList(){
     return [
       ListTile(
         title: Text(
-          "Edit profile"
+          "Profile"
         ),
-        onTap: (){},
+        onTap: (){
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => ProfileManagePage())).then((v) => setState((){}));
+        },
       ),
       ListTile(
         title: Text(
           "Vehicle Management"
         ),
-        onTap: (){
-          Navigator.push(context, MaterialPageRoute(
-              builder: (context) => VehicleManagePage()));
+        onTap: () async {
+          await Navigator.push(context, MaterialPageRoute(
+              builder: (context) => VehicleManagePage())).then((v) => setState((){}));
         },
       ),
       ListTile(

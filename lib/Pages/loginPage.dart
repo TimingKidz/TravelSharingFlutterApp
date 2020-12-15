@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travel_sharing/Class/User.dart';
+import 'package:travel_sharing/Pages/homeNavigation.dart';
 import 'package:travel_sharing/Pages/signupPage.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:firebase_auth/firebase_auth.dart' as u;
@@ -13,7 +14,6 @@ class LoginPage extends StatefulWidget {
 
 class LoginPageState extends State<LoginPage> {
   GoogleSignInAccount _currentUser;
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   @override
   void setState(fn) {
@@ -108,17 +108,19 @@ class LoginPageState extends State<LoginPage> {
           idToken: Auth.idToken,
         );
         firebaseAuth = await u.FirebaseAuth.instance.signInWithCredential(a);
-        User user = new User(name: googleUser.displayName,email: googleUser.email,id: googleUser.id,token: await _firebaseMessaging.getToken());
-        if (await user.Register()){
-          String tokenID = await _firebaseMessaging.getToken();
+        bool isRegister = await User().getCurrentuser(googleUser.id) != null ? true : false;
+        if (isRegister){
+          String tokenID = await firebaseMessaging.getToken();
           currentUser =  await User().getCurrentuser(googleUser.id);
           await currentUser.updateToken(tokenID);
           currentUser =  await User().getCurrentuser(googleUser.id);
           Navigator.of(context).pop(); //Pop Loading Dialog
           Navigator.push(context, MaterialPageRoute(
-              builder: (context) => SignUpPage()));
+              builder: (context) => HomeNavigation()));
         }else{
-          throw("Please check your connection.");
+          Navigator.of(context).pop(); //Pop Loading Dialog
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => SignUpPage()));
         }
       }
     }catch(error){

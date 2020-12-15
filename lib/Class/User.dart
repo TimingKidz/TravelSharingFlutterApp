@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:google_directions_api/google_directions_api.dart';
 import 'package:http/http.dart' as Http;
+import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/main.dart';
 
 
@@ -12,7 +12,7 @@ class User {
   String img_url;
   String faculty;
   String gender;
-  Vehicle vehicle;
+  List<Vehicle> vehicle;
   String token;
 
   User({this.name, this.email,this.id,this.uid,this.img_url,this.faculty,this.gender,this.vehicle,this.token});
@@ -25,7 +25,11 @@ class User {
     img_url = json['img_url'];
     faculty = json['faculty'];
     gender = json['gender'];
-    vehicle = json['vehicle'];
+    vehicle = List();
+    json['vehicle'].forEach((data) {
+      if (!(data is String))
+        vehicle.add(Vehicle.fromJson(data));
+    });
     token = json['token'];
   }
 
@@ -54,6 +58,7 @@ class User {
         if(response.statusCode == 404 ){
           return Future.value(null);
         }else{
+          print(jsonDecode(response.body));
           return Future.value(User.fromJson(jsonDecode(response.body)));
         }
       }
@@ -189,5 +194,20 @@ class User {
   }
 
 
+
+  Future<bool> editUser() async {
+    try{
+      var url = "${HTTP().API_IP}/api/routes/editUser";
+      Http.Response response = await Http.post(url, headers: await HTTP().header() , body: jsonEncode(this.toJson()));
+      if(response.statusCode == 400){
+        return Future.value(false);
+      }else{
+        print("Edit user : ${response.body}");
+        return Future.value(true);
+      }
+    }catch (err){
+      throw("can't connect" + err);
+    }
+  }
 
 }

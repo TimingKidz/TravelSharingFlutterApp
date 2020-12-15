@@ -41,11 +41,11 @@ class _Dashboard extends State<Dashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
 //      backgroundColor: Theme.of(context).primaryColor,
-      appBar: AppBar(
-        backgroundColor: isFirstPage ? Theme.of(context).colorScheme.orange : Theme.of(context).colorScheme.orange,
-        automaticallyImplyLeading: false,
-        title: const Text('แดชบอร์ด'),
-      ),
+//       appBar: AppBar(
+//         backgroundColor: isFirstPage ? Theme.of(context).colorScheme.orange : Theme.of(context).colorScheme.orange,
+//         automaticallyImplyLeading: false,
+//         title: const Text('แดชบอร์ด'),
+//       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: isFirstPage ? _newroute1 : _newroute,
@@ -58,6 +58,7 @@ class _Dashboard extends State<Dashboard> {
             Card(
               elevation: 2.0,
               margin: EdgeInsets.all(0.0),
+              color: isFirstPage ? Theme.of(context).colorScheme.amber : Theme.of(context).colorScheme.darkBlue,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(30.0),
@@ -66,51 +67,45 @@ class _Dashboard extends State<Dashboard> {
               ),
               child: Container(
                 padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 20.0, top: 8.0),
-//              color: Theme.of(context).primaryColor,
-                decoration: BoxDecoration(
-                    color: isFirstPage ? Theme.of(context).colorScheme.orange : Theme.of(context).colorScheme.orange,
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(30.0),
-                        bottomRight: Radius.circular(30.0)
-                    )
-                ),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: RaisedButton(
-                        highlightElevation: 0.0,
-                        padding: EdgeInsets.all(16.0),
-                        color: isFirstPage ? Colors.white : Theme.of(context).accentColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
+                child: SafeArea(
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: RaisedButton(
+                          highlightElevation: 0.0,
+                          padding: EdgeInsets.all(16.0),
+                          color: isFirstPage ? Colors.white : Theme.of(context).colorScheme.peach,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          child: Text('ไปด้วย', style: TextStyle(color: isFirstPage ? Colors.black : Colors.white)),
+                          onPressed: () {
+                            setState(() {
+                              isFirstPage = true;
+                            });
+                          },
                         ),
-                        child: Text('ไปด้วย', style: TextStyle(color: isFirstPage ? Colors.black : Colors.white)),
-                        onPressed: () {
-                          setState(() {
-                            isFirstPage = true;
-                          });
-                        },
                       ),
-                    ),
-                    SizedBox(width: 16.0),
-                    Expanded(
-                      child: RaisedButton(
-                        highlightElevation: 0.0,
-                        padding: EdgeInsets.all(16.0),
-                        color: isFirstPage ? Theme.of(context).accentColor : Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
+                      SizedBox(width: 16.0),
+                      Expanded(
+                        child: RaisedButton(
+                          highlightElevation: 0.0,
+                          padding: EdgeInsets.all(16.0),
+                          color: isFirstPage ? Theme.of(context).colorScheme.peach : Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          child: Text('ชวน', style: TextStyle(color: isFirstPage ? Colors.white : Colors.black)),
+                          onPressed: () {
+                            setState(() {
+                              isFirstPage = false;
+                            });
+                          },
                         ),
-                        child: Text('ชวน', style: TextStyle(color: isFirstPage ? Colors.white : Colors.black)),
-                        onPressed: () {
-                          setState(() {
-                            isFirstPage = false;
-                          });
-                        },
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                )
               ),
             ),
             Expanded(
@@ -179,7 +174,7 @@ class _Dashboard extends State<Dashboard> {
     }else{
       if( data.routes.match.isNotEmpty){
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => Matchinformation(uid: data.uid))).then((value) {
+            builder: (context) => Matchinformation(uid: data.uid, data: data))).then((value) {
           getData();
         });
       }else{

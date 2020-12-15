@@ -4,29 +4,86 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as Http;
 import 'package:travel_sharing/Class/RouteJson.dart';
 
+import '../main.dart';
+
+
 class Vehicle {
+  String vid;
   String brand;
   String license;
   String model;
   String color;
   String type;
-
-  Vehicle({this.brand,this.license,this.model,this.color,this.type});
-
-//  Vehicle.fromJson(Map<String, dynamic> json) {
-//    name = json['name'];
-//    email = json['email'];
-//    id = json['id'];
-//  }
-//
-//  Map<String, dynamic> toJson() {
-//    final Map<String, dynamic> data = new Map<String, dynamic>();
-//    data['name'] = this.name;
-//    data['email'] = this.email;
-//    data['id']= this.id;
-//    return data;
-//  }
+  bool isDefault;
 
 
+  Vehicle({this.vid,this.brand,this.license,this.model,this.color,this.type,this.isDefault});
 
+ Vehicle.fromJson(Map<String, dynamic> json) {
+   vid = json['_id'];
+   type = json['type'];
+   license = json['license'];
+   brand = json['brand'];
+   model = json['model'];
+   color = json['color'];
+   isDefault = json['isDefault'];
+ }
+
+ Map<String, dynamic> toJson() {
+   final Map<String, dynamic> data = new Map<String, dynamic>();
+   data['id'] = currentUser.uid;
+   data['_id'] = this.vid;
+   data['type'] = this.type;
+   data['license'] = this.license;
+   data['brand']= this.brand;
+   data['model']= this.model;
+   data['color']= this.color;
+   data['isDefault'] = this.isDefault;
+   return data;
+ }
+
+ Future<bool> addVehicle() async {
+   try{
+     var url = "${HTTP().API_IP}/api/vehicle_manage/addVehicle";
+     Http.Response response = await Http.post(url, headers: await HTTP().header() , body: jsonEncode(this.toJson()));
+     if(response.statusCode == 400){
+       return Future.value(false);
+     }else{
+       print("Add vehicle successful : ${response.body}");
+       return Future.value(true);
+     }
+   }catch(err){
+     throw("can't connect" + err);
+   }
+ }
+
+ Future<bool> editVehicle() async {
+   try{
+     var url = "${HTTP().API_IP}/api/vehicle_manage/editVehicle";
+     Http.Response response = await Http.post(url, headers: await HTTP().header() , body: jsonEncode(this.toJson()));
+     if(response.statusCode == 400){
+       return Future.value(false);
+     }else{
+       print("Edit vehicle : ${response.body}");
+       return Future.value(true);
+     }
+   }catch (err){
+     throw("can't connect" + err);
+   }
+ }
+
+ Future<bool> deleteVehicle() async {
+   try{
+     var url = "${HTTP().API_IP}/api/vehicle_manage/deleteVehicle";
+     Http.Response response = await Http.post(url, headers: await HTTP().header() , body: jsonEncode({"uid": currentUser.uid, "vid": this.vid}));
+     if(response.statusCode == 400){
+       return Future.value(false);
+     }else{
+       print("Delete vehicle : ${response.body}");
+       return Future.value(true);
+     }
+   }catch(err){
+     throw("can't connect" + err);
+   }
+ }
 }

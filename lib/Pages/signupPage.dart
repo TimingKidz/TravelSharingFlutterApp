@@ -4,6 +4,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:google_sign_in/widgets.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/homeNavigation.dart';
+import 'package:travel_sharing/buttons/borderTextField.dart';
+import 'package:travel_sharing/buttons/cardTextField.dart';
 import 'package:travel_sharing/main.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -11,6 +13,8 @@ class SignUpPage extends StatefulWidget {
 }
 
 class SignUpPageState extends State<SignUpPage> {
+  // User user = new User(name: googleUser.displayName,email: googleUser.email,id: googleUser.id,token: await firebaseMessaging.getToken());
+  User userData = new User(name: googleUser.displayName,email: googleUser.email,id: googleUser.id);
 
   @override
   void setState(fn) {
@@ -41,16 +45,12 @@ class SignUpPageState extends State<SignUpPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  SizedBox(
-                    width: 96.0,
-                    height: 96.0,
-//                    add photo
-//                    child: GoogleUserCircleAvatar(
-//                      identity: widget.currentUser,
-//                    ),
-                  ),
-                  SizedBox(height: 8.0),
-                  Text(currentUser.id)
+                  Expanded(
+                    child: ListView(
+                      physics: BouncingScrollPhysics(),
+                      children: fieldList(),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -73,7 +73,42 @@ class SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
-  _Nextpage(){
+
+  List<Widget> fieldList(){
+    return [
+      SizedBox(
+        width: 96.0,
+        height: 96.0,
+//                    add photo
+//                    child: GoogleUserCircleAvatar(
+//                      identity: googleUser,
+//                    ),
+      ),
+      SizedBox(height: 8.0),
+      Text(googleUser.id),
+      SizedBox(height: 8.0),
+      CardTextField(
+        initValue: googleUser.displayName,
+        labelText: "Full Name",
+        onChanged: (data) => userData.name = data,
+      ),
+      SizedBox(height: 8.0),
+      CardTextField(
+        labelText: "Gender",
+        onChanged: (data) => userData.gender = data,
+      ),
+      SizedBox(height: 8.0),
+      CardTextField(
+        labelText: "Faculty",
+        onChanged: (data) => userData.faculty = data,
+      ),
+    ];
+  }
+
+  _Nextpage() async {
+    userData.token = await firebaseMessaging.getToken();
+    await userData.Register();
+    currentUser = await currentUser.getCurrentuser(googleUser.id);
     Navigator.pushReplacement(context,MaterialPageRoute(
         builder : (context) => HomeNavigation()));
   }

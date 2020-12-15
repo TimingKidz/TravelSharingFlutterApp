@@ -32,6 +32,7 @@ dependencies:
   firebase_messaging:
   flutter_local_notifications:
   flutter_rating_bar:
+  permission_handler:
   dio:
 
   # The following adds the Cupertino Icons font to your application.

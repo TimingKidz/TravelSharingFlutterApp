@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart' as u;
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -18,6 +19,7 @@ import 'Pages/dashboard.dart';
 
 final String api_key = "AIzaSyBQCf89JOkrq2ECa6Ko8LBQaMO8A7rJt9Q";
 GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['profile', 'email']);
+final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 u.UserCredential firebaseAuth;
 GoogleSignInAccount googleUser;
@@ -32,7 +34,9 @@ class MyHttpOverrides extends HttpOverrides{
 }
 
 class HTTP{
-  final String API_IP = "http://10.10.10.47:3000";
+  // final String API_IP = "https://68.183.226.229";
+  final String API_IP = "http://10.80.26.32:3000";
+
   Future<Map<String,String>> header() async {
     return {'Content-Type': 'application/json; charset=UTF-8','auth' : await firebaseAuth.user.getIdToken()};
   }
@@ -55,7 +59,7 @@ void main() {
    systemNavigationBarColor: Colors.transparent,
    systemNavigationBarIconBrightness: Brightness.dark
 
-   ));
+ ));
   HttpOverrides.global = new MyHttpOverrides();
   runApp(MyApp());
 }
@@ -68,7 +72,6 @@ Future<void> showNotification(Map<String, dynamic> message) async {
     importance: Importance.max,
     priority: Priority.high,
     playSound: true,
-
     // timeoutAfter: 5000,
     styleInformation: DefaultStyleInformation(true, true),
   );
@@ -81,9 +84,9 @@ Future<void> showNotification(Map<String, dynamic> message) async {
     message['notification']['body'], //null
     platformChannelSpecifics,
     payload: 'New Payload',
-
   );
 }
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -108,7 +111,7 @@ class MyApp extends StatelessWidget {
           '/tripInfo' : (context) => InfoFill(),
           '/chatPage' : (context) => ChatPage()
         },
-    );
+      );
   }
 }
 
