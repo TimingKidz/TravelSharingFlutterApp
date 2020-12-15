@@ -32,8 +32,7 @@ class MyHttpOverrides extends HttpOverrides{
 }
 
 class HTTP{
-  final String API_IP = "https://68.183.226.229";
-
+  final String API_IP = "http://10.10.10.47:3000";
   Future<Map<String,String>> header() async {
     return {'Content-Type': 'application/json; charset=UTF-8','auth' : await firebaseAuth.user.getIdToken()};
   }
@@ -56,7 +55,7 @@ void main() {
    systemNavigationBarColor: Colors.transparent,
    systemNavigationBarIconBrightness: Brightness.dark
 
- ));
+   ));
   HttpOverrides.global = new MyHttpOverrides();
   runApp(MyApp());
 }
@@ -69,6 +68,7 @@ Future<void> showNotification(Map<String, dynamic> message) async {
     importance: Importance.max,
     priority: Priority.high,
     playSound: true,
+
     // timeoutAfter: 5000,
     styleInformation: DefaultStyleInformation(true, true),
   );
@@ -77,15 +77,14 @@ Future<void> showNotification(Map<String, dynamic> message) async {
   NotificationDetails(android: androidChannelSpecifics, iOS: iosChannelSpecifics);
   await flutterLocalNotificationsPlugin.show(
     0,
-    message['data']['title'],
-    message['data']['body'], //null
+    message['notification']['title'],
+    message['notification']['body'], //null
     platformChannelSpecifics,
     payload: 'New Payload',
+
   );
 }
-
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -109,7 +108,7 @@ class MyApp extends StatelessWidget {
           '/tripInfo' : (context) => InfoFill(),
           '/chatPage' : (context) => ChatPage()
         },
-      );
+    );
   }
 }
 

@@ -107,7 +107,6 @@ class LoginPageState extends State<LoginPage> {
           accessToken: Auth.accessToken,
           idToken: Auth.idToken,
         );
-
         firebaseAuth = await u.FirebaseAuth.instance.signInWithCredential(a);
         User user = new User(name: googleUser.displayName,email: googleUser.email,id: googleUser.id,token: await _firebaseMessaging.getToken());
         if (await user.Register()){

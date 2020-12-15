@@ -1,20 +1,50 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:travel_sharing/Class/Notifications.dart';
+import 'package:travel_sharing/main.dart';
 
 class NotificationsPage extends StatefulWidget{
   NotificationsPageState createState() => NotificationsPageState();
 }
 
 class NotificationsPageState extends State<NotificationsPage>{
+  List<Notifications> notifications = List();
+
+  @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  getData() async {
+    try{
+      notifications = await Notifications().getNotification(currentUser.uid);
+      setState(() { });
+    }catch(error){
+      print(error );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Notifications"),
-        automaticallyImplyLeading: false,
-      ),
-      body: _buildListView(),
-    );
+    if( notifications.isEmpty ){
+      return Scaffold();
+    }else{
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Notifications"),
+          automaticallyImplyLeading: false,
+        ),
+        body: _buildListView(),
+      );
+    }
   }
 
   Widget _buildListView() {
@@ -23,16 +53,16 @@ class NotificationsPageState extends State<NotificationsPage>{
         color: Colors.grey,
       ),
         physics: BouncingScrollPhysics(),
-        itemCount: 10,
+        itemCount: notifications.length,
         itemBuilder: (context, i) {
-          return _buildRow(i.toString());
+          return _buildRow(notifications[i]);
         }
     );
   }
 
-  Widget _buildRow(String data) {
+  Widget _buildRow(Notifications data) {
     return ListTile(
-      title: Text(data),
+      title: Text(data.Title),
 
     );
   }

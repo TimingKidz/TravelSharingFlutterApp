@@ -128,10 +128,9 @@ class _Dashboard extends State<Dashboard> {
       _joinList =  await Travel_Info().getRoutes(currentUser.uid,1) ?? [];
       _invitedList.sort((a,b) => b.routes.date.compareTo(a.routes.date));
       _joinList.sort((a,b) => b.routes.date.compareTo(a.routes.date));
-      debugPrint('$_joinList');
       setState(() {});
     }catch(error){
-      print("$error lll");
+      print("$error lllLLLL");
     }
   }
 
@@ -168,18 +167,26 @@ class _Dashboard extends State<Dashboard> {
     if( isFirstPage ){
       if( data.routes.match.isNotEmpty ){
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => Matchinformation(uid: data.routes.match.first)));
+            builder: (context) => Matchinformation(uid: data.routes.match.first))).then((value) {
+          getData();
+        });
       }else{
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => MatchList(data: data)));
+            builder: (context) => MatchList(data: data))).then((value) {
+          getData();
+        });
       }
     }else{
       if( data.routes.match.isNotEmpty){
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => Matchinformation(uid: data.uid)));
+            builder: (context) => Matchinformation(uid: data.uid))).then((value) {
+          getData();
+        });
       }else{
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => ReqList(data: data)));
+            builder: (context) => ReqList(data: data))).then((value) {
+          getData();
+        });
       }
     }
   }

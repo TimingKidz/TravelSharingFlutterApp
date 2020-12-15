@@ -48,6 +48,7 @@ class _FireBase_MessagingState extends State<FireBase_Messaging>{
       importance: Importance.max,
       priority: Priority.high,
       playSound: true,
+
       // timeoutAfter: 5000,
       styleInformation: DefaultStyleInformation(true, true),
     );
@@ -55,11 +56,12 @@ class _FireBase_MessagingState extends State<FireBase_Messaging>{
     var platformChannelSpecifics =
     NotificationDetails(android: androidChannelSpecifics, iOS: iosChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
-      0,
+      message['notification']['tag'],
       message['notification']['title'],
       message['notification']['body'], //null
       platformChannelSpecifics,
       payload: 'New Payload',
+
     );
   }
 

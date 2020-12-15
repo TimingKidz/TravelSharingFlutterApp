@@ -50,7 +50,7 @@ class HomeNavigationState extends State<HomeNavigation> {
     super.initState();
     pageRoute = [
       NotificationsPage(),
-      Feed(),
+      FeedPage(),
       Dashboard(),
       Account()
     ];

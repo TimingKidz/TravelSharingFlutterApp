@@ -38,31 +38,12 @@ class _MatchListstate extends State<MatchList> {
   void initState(){
     super.initState();
     getData();
-    _firebaseMessaging.configure(
-        onMessage: (Map<String, dynamic> message) async {
-          print("onMessage: $message");
-          if(message['data']['body'] != null){
-            getData();
-          }else{
-            showNotification(message);
-          }
-        }
-    );
+
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: () async {
-          _firebaseMessaging.configure(
-              onMessage: (Map<String, dynamic> message) async {
-                print("onMessage: $message");
-                showNotification(message);
-              }
-          );
-          return true;
-        },
-    child : Scaffold(
+    return  Scaffold(
       appBar: AppBar(
         title: const Text('ส่งคำขอให้คนที่คุณจะไปด้วย'),
         elevation: 2.0,
@@ -76,7 +57,6 @@ class _MatchListstate extends State<MatchList> {
           ],
         ),
       ),
-    )
     );
   }
 

@@ -62,7 +62,6 @@ class User {
     }
   }
 
-
   // register for new user
   Future<bool> Register() async {
     try{
@@ -106,7 +105,6 @@ class User {
       throw("can't connect");
     }
   }
-
 
   Future<bool> AcceptReq(String Reqid,String Currentid,String Current_id) async {
     try{
@@ -170,5 +168,26 @@ class User {
       throw("can't connect Match");
     }
   }
+
+  Future<bool> endTrip(Map<String,dynamic> tmp) async {
+    try{
+      var url = "${HTTP().API_IP}/api/routes/EndTrip";
+      Http.Response response = await Http.post(url, headers: await HTTP().header(), body: jsonEncode(tmp));
+      if(response.statusCode == 400 ){
+        return Future.value(false);
+      }else{
+        if(response.statusCode == 404){
+          return Future.value(false);
+        }else{
+          return Future.value(true);
+        }
+      }
+    }catch(err){
+      print(err);
+      throw("can't connect Match");
+    }
+  }
+
+
 
 }

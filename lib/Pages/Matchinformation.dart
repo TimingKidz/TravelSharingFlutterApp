@@ -4,6 +4,7 @@ import 'package:travel_sharing/ChatFile/chatPage.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/TripDetails.dart';
 import 'package:travel_sharing/Class/User.dart';
+import 'package:travel_sharing/main.dart';
 
 class Matchinformation extends StatefulWidget {
   final String uid;
@@ -210,7 +211,7 @@ class _Matchinformation extends State<Matchinformation> {
                         child: Icon(Icons.map),
                         tooltip: 'Route Map',
                         onPressed: () {
-
+                            endTrip();
                         },
                       ),
                     ),
@@ -234,6 +235,22 @@ class _Matchinformation extends State<Matchinformation> {
           )
       );
     }
+  }
+
+  endTrip() async {
+    List<Map<String,dynamic>> subuser = List();
+    for(int i = 0 ; i<tripDetails.subUser.length ;i++){
+      subuser.add({"user_id":tripDetails.subUser[i].uid,"trip_id":tripDetails.subRoutes[i].uid});
+    }
+    Map<String,dynamic> tmp = {
+      "hostuser_trip_id" : widget.uid,
+      "hostuser_id" : tripDetails.hostUser.uid
+    };
+    tmp['subuser'] = subuser;
+    User().endTrip(tmp).then((value){
+      print(value);
+      Navigator.of(context).pop();
+    });
   }
 
   Widget _buildListView() {

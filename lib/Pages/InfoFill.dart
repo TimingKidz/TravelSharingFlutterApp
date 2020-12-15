@@ -114,8 +114,8 @@ class _InfoFillState extends State<InfoFill> {
   _SavetoDB()async{
     User user = currentUser ;
     Final_Data = new Routes(id: user.uid, routes : widget.routes, src : Final_Data.src, dst : Final_Data.dst,
-        amount : Final_Data.amount, date :Final_Data.date, isMatch: false,match: List());
-    Final_Data.SaveRoute_toDB(widget.Role,user).then((x){
+        amount : Final_Data.amount, date :Final_Data.date, isMatch: false,match: List(),role : widget.Role.toString());
+    Final_Data.SaveRoute_toDB(user).then((x){
       Navigator.of(context).pop();
       Navigator.of(context).pop();
     });

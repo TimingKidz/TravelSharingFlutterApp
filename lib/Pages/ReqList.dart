@@ -101,13 +101,17 @@ class _ReqListstate extends State<ReqList> {
   }
 
   _onAcceptPressed(Req_Info data) async{
-    currentUser.AcceptReq(data.reqid,widget.data.id,widget.data.uid);
-    Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => Matchinformation(uid: widget.data.uid)));
+    currentUser.AcceptReq(data.reqid,widget.data.id,widget.data.uid).then((value){
+      print(value);
+      print("555555555555");
+      Navigator.pushReplacement(context, MaterialPageRoute(
+          builder: (context) => Matchinformation(uid: widget.data.uid)));
+    });
+
   }
 
   _onDeclinePressed(Req_Info data) async{
-    currentUser.DeclineReq(data.reqid,widget.data.id,widget.data.uid);
+    await currentUser.DeclineReq(data.reqid,widget.data.id,widget.data.uid);
     getData();
   }
 

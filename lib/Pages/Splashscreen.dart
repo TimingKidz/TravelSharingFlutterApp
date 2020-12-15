@@ -25,7 +25,6 @@ class SplashscreenState extends State<Splashscreen> {
   void initState() {
     super.initState();
 
-    // Firebase Notification Init
     _firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
           print("onMessage: $message");
@@ -89,6 +88,7 @@ class SplashscreenState extends State<Splashscreen> {
         );
         firebaseAuth = await u.FirebaseAuth.instance.signInWithCredential(a);
         String tokenID = await _firebaseMessaging.getToken();
+        print(tokenID);
         currentUser =  await User().getCurrentuser(googleUser.id);
         await currentUser.updateToken(tokenID);
         currentUser =  await User().getCurrentuser(googleUser.id);

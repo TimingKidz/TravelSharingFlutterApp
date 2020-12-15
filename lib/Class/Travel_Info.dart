@@ -19,7 +19,7 @@ class Travel_Info{
   }
 
   Future<List<Travel_Info>> getRoutes(String id,int role) async {
-    try{
+//    try{
       Map<int,String> path = {0:'invite',1:'join'};
       var url = "${HTTP().API_IP}/api/routes/getRoutes";
       Http.Response response = await Http.post(url,headers:await HTTP().header(), body: jsonEncode({'id':id,'role':role}));
@@ -29,19 +29,21 @@ class Travel_Info{
         if(response.statusCode == 404){
           return Future.value(null);
         }else{
+          print(role);
           Map<String, dynamic> data = jsonDecode(response.body);
-          print(data);
+//          print(data);
           List<Travel_Info> travel_info_list = List();
           data['event'][path[role]].forEach((x) {
             Travel_Info tmp = Travel_Info.fromJson(x);
             travel_info_list.add(tmp);
+            print(tmp.routes.src);
           });
           return Future.value(travel_info_list);
         }
       }
-    }catch(error){
-      print(error);
-      throw("can't connect");
-    }
+//    }catch(error){
+//      print(error);
+//      throw("can't connect");
+//    }
   }
 }

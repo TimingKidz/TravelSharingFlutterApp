@@ -10,6 +10,7 @@ import '../main.dart';
 
 
 class Routes {
+  String uid;
   String id;
   List<LatLng> routes;
   String src;
@@ -18,10 +19,12 @@ class Routes {
   String date;
   bool isMatch;
   List<String> match;
+  String role;
 
-  Routes({this.id,this.routes, this.src,this.dst,this.amount,this.date,this.isMatch,this.match});
+  Routes({this.uid,this.id,this.routes, this.src,this.dst,this.amount,this.date,this.isMatch,this.match,this.role});
 
   Routes.fromJson(Map<String, dynamic> json) {
+    uid = json['_id'];
     if(json['routes'] != null){
       List<LatLng> temp = List();
       json['routes'].forEach((x){
@@ -52,6 +55,7 @@ class Routes {
       id = json['id']['_id'];
     }
     isMatch = json['isMatch'];
+    role = json['role'];
   }
 
   Map<String, dynamic> toJson() {
@@ -63,16 +67,16 @@ class Routes {
     data['date']=this.date;
     data['id'] = this.id;
     data['match'] = this.match;
+    data['role'] = this.role;
     return data;
   }
 
   // save routes information to DB
-  Future<bool> SaveRoute_toDB(int role,User user) async{
+  Future<bool> SaveRoute_toDB(User user) async{
     try{
       var url = "${HTTP().API_IP}/api/routes/SaveRoutes";
       Map<String, dynamic> temp = user.toJson();
       temp['detail'] = this.toJson();
-      temp['role'] = role;
       print(jsonEncode(temp));
       Http.Response response = await Http.post(url, headers : await HTTP().header() , body: jsonEncode(temp));
       if( response.statusCode == 400 ){

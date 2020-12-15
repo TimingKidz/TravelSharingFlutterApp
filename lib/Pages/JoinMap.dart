@@ -65,41 +65,42 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
     LocationData currentLoc = await Location().getLocation();
     current_Location =
         LatLng(currentLoc.latitude, currentLoc.longitude);
-    _mapController.animateCamera( CameraUpdate.newCameraPosition(CameraPosition(target: current_Location, zoom: 15,)));
+    print(current_Location.longitude);
+//    _mapController.animateCamera( CameraUpdate.newCameraPosition(CameraPosition(target: current_Location, zoom: 15,)));
     _createMarkers(current_Location);
     isSet_Marker = true;
   }
 //------------------------------------ UI---------------------------------------
   @override
   Widget build(BuildContext context) {
-    print(current_Location);
-    return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          GoogleMap(
-            onMapCreated: _onMapCreated,
-            initialCameraPosition: CameraPosition(
-              target: LatLng(16.294922, 100.928026),
-              zoom: 5,
+    if (current_Location != null){
+      return Scaffold(
+        body: Stack(
+          children: <Widget>[
+            GoogleMap(
+              onMapCreated: _onMapCreated,
+              initialCameraPosition: CameraPosition(
+                target:current_Location,
+                zoom: 15,
+              ),
+              markers: Set<Marker>.of(_markers.values),
+              zoomControlsEnabled: false,
+              myLocationEnabled: true,
+              myLocationButtonEnabled: false,
+              onCameraIdle: OnMove_End,
+              onCameraMove: center,
             ),
-            markers: Set<Marker>.of(_markers.values),
-            zoomControlsEnabled: false,
-            myLocationEnabled: true,
-            myLocationButtonEnabled: false,
-            onCameraIdle: OnMove_End,
-            onCameraMove: center,
-          ),
-          Card(
-            elevation: 2.0,
-            margin: EdgeInsets.all(0.0),
+            Card(
+              elevation: 2.0,
+              margin: EdgeInsets.all(0.0),
 //            shape: RoundedRectangleBorder(
 //                borderRadius: BorderRadius.only(
 //                    bottomLeft: Radius.circular(30.0),
 //                    bottomRight: Radius.circular(30.0)
 //                )
 //            ),
-            child: Container(
-                padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0, bottom: 16.0),
+              child: Container(
+                  padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0, bottom: 16.0),
 //                decoration: BoxDecoration(
 //                    color: Theme.of(context).colorScheme.orange,
 //                    borderRadius: BorderRadius.only(
@@ -107,126 +108,270 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
 //                        bottomRight: Radius.circular(30.0)
 //                    )
 //                ),
-                color: Theme.of(context).colorScheme.orange,
-                child: Wrap(
-                  children: <Widget>[
-                    SafeArea(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          IconButton(
-                            icon: Icon(Icons.arrow_back),
-                            color: Colors.white,
-                            onPressed: () => Navigator.of(context).pop(),
-                          ),
-                          SizedBox(width: 8.0),
-                          Expanded(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Icon(Icons.location_searching, color: Colors.white),
-                                    Expanded(
-                                      child: Card(
-                                        margin: EdgeInsets.only(left: 8.0, right: 8.0),
-                                        elevation: 2.0,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(20.0)
-                                        ),
-                                        child: TextFormField(
-                                          readOnly: true,
-                                          controller: src_Textcontroller,
-                                          cursorColor: Colors.black,
-                                          keyboardType: TextInputType.text,
-                                          onTap: (){
-                                            is_src = true;
-                                            Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                    builder: (context) => LocationSearch(currentLocation: current_Location, hintText: "จุดเริ่มต้น ...")
-                                                )
-                                            ).then((result) {
-                                              if(result != null) _Searchbar(result);
-                                            });
-                                          },
-                                          textInputAction: TextInputAction.go,
-                                          decoration: InputDecoration(
-                                              border: InputBorder.none,
-                                              contentPadding:
-                                              EdgeInsets.symmetric(horizontal: 15),
-                                              hintText: "จุดเริ่มต้น ..."
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 10.0),
-                                Row(
-                                  children: <Widget>[
-                                    Icon(Icons.location_on, color: Colors.white),
-                                    Expanded(
-                                      child: Card(
-                                        margin: EdgeInsets.only(left: 8.0, right: 8.0),
-                                        elevation: 2.0,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(20.0)
-                                        ),
-                                        child: TextFormField(
-                                          readOnly: true,
-                                          controller: dst_Textcontroller,
-                                          cursorColor: Colors.black,
-                                          keyboardType: TextInputType.text,
-                                          onTap: (){
-                                            is_src = false;
-                                            Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                    builder: (context) => LocationSearch(currentLocation: current_Location, hintText: "จุดปลายทาง ...")
-                                                )
-                                            ).then((result) {
-                                              if(result != null) _Searchbar(result);
-                                            });
-                                          },
-                                          textInputAction: TextInputAction.go,
-                                          decoration: InputDecoration(
-                                              border: InputBorder.none,
-                                              contentPadding:
-                                              EdgeInsets.symmetric(horizontal: 15),
-                                              hintText: "จุดปลายทาง ..."
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 2.0),
-                              ],
+                  color: Theme.of(context).colorScheme.orange,
+                  child: Wrap(
+                    children: <Widget>[
+                      SafeArea(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            IconButton(
+                              icon: Icon(Icons.arrow_back),
+                              color: Colors.white,
+                              onPressed: () => Navigator.of(context).pop(),
                             ),
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                )
+                            SizedBox(width: 8.0),
+                            Expanded(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Icon(Icons.location_searching, color: Colors.white),
+                                      Expanded(
+                                        child: Card(
+                                          margin: EdgeInsets.only(left: 8.0, right: 8.0),
+                                          elevation: 2.0,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(20.0)
+                                          ),
+                                          child: TextFormField(
+                                            readOnly: true,
+                                            controller: src_Textcontroller,
+                                            cursorColor: Colors.black,
+                                            keyboardType: TextInputType.text,
+                                            onTap: (){
+                                              is_src = true;
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (context) => LocationSearch(currentLocation: current_Location, hintText: "จุดเริ่มต้น ...")
+                                                  )
+                                              ).then((result) {
+                                                if(result != null) _Searchbar(result);
+                                              });
+                                            },
+                                            textInputAction: TextInputAction.go,
+                                            decoration: InputDecoration(
+                                                border: InputBorder.none,
+                                                contentPadding:
+                                                EdgeInsets.symmetric(horizontal: 15),
+                                                hintText: "จุดเริ่มต้น ..."
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10.0),
+                                  Row(
+                                    children: <Widget>[
+                                      Icon(Icons.location_on, color: Colors.white),
+                                      Expanded(
+                                        child: Card(
+                                          margin: EdgeInsets.only(left: 8.0, right: 8.0),
+                                          elevation: 2.0,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(20.0)
+                                          ),
+                                          child: TextFormField(
+                                            readOnly: true,
+                                            controller: dst_Textcontroller,
+                                            cursorColor: Colors.black,
+                                            keyboardType: TextInputType.text,
+                                            onTap: (){
+                                              is_src = false;
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (context) => LocationSearch(currentLocation: current_Location, hintText: "จุดปลายทาง ...")
+                                                  )
+                                              ).then((result) {
+                                                if(result != null) _Searchbar(result);
+                                              });
+                                            },
+                                            textInputAction: TextInputAction.go,
+                                            decoration: InputDecoration(
+                                                border: InputBorder.none,
+                                                contentPadding:
+                                                EdgeInsets.symmetric(horizontal: 15),
+                                                hintText: "จุดปลายทาง ..."
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 2.0),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  )
+              ),
             ),
-          ),
-          Container(
-            padding: EdgeInsets.all(16.0),
-            alignment: Alignment.bottomCenter,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                FloatingActionButton.extended(
-                  label: Text('Finish'),
-                  onPressed: _Fin,
-                  heroTag: null,
-                ),
-            ]),
-          ),
-        ],
-      ),
-    );
+            Container(
+              padding: EdgeInsets.all(16.0),
+              alignment: Alignment.bottomCenter,
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    FloatingActionButton.extended(
+                      label: Text('Finish'),
+                      onPressed: _Fin,
+                      heroTag: null,
+                    ),
+                  ]),
+            ),
+          ],
+        ),
+      );
+    }else{
+      return Scaffold(
+        body: Stack(
+          children: <Widget>[
+            Card(
+              elevation: 2.0,
+              margin: EdgeInsets.all(0.0),
+//            shape: RoundedRectangleBorder(
+//                borderRadius: BorderRadius.only(
+//                    bottomLeft: Radius.circular(30.0),
+//                    bottomRight: Radius.circular(30.0)
+//                )
+//            ),
+              child: Container(
+                  padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0, bottom: 16.0),
+//                decoration: BoxDecoration(
+//                    color: Theme.of(context).colorScheme.orange,
+//                    borderRadius: BorderRadius.only(
+//                        bottomLeft: Radius.circular(30.0),
+//                        bottomRight: Radius.circular(30.0)
+//                    )
+//                ),
+                  color: Theme.of(context).colorScheme.orange,
+                  child: Wrap(
+                    children: <Widget>[
+                      SafeArea(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            IconButton(
+                              icon: Icon(Icons.arrow_back),
+                              color: Colors.white,
+                              onPressed: () => Navigator.of(context).pop(),
+                            ),
+                            SizedBox(width: 8.0),
+                            Expanded(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Icon(Icons.location_searching, color: Colors.white),
+                                      Expanded(
+                                        child: Card(
+                                          margin: EdgeInsets.only(left: 8.0, right: 8.0),
+                                          elevation: 2.0,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(20.0)
+                                          ),
+                                          child: TextFormField(
+                                            readOnly: true,
+                                            controller: src_Textcontroller,
+                                            cursorColor: Colors.black,
+                                            keyboardType: TextInputType.text,
+                                            onTap: (){
+                                              is_src = true;
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (context) => LocationSearch(currentLocation: current_Location, hintText: "จุดเริ่มต้น ...")
+                                                  )
+                                              ).then((result) {
+                                                if(result != null) _Searchbar(result);
+                                              });
+                                            },
+                                            textInputAction: TextInputAction.go,
+                                            decoration: InputDecoration(
+                                                border: InputBorder.none,
+                                                contentPadding:
+                                                EdgeInsets.symmetric(horizontal: 15),
+                                                hintText: "จุดเริ่มต้น ..."
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10.0),
+                                  Row(
+                                    children: <Widget>[
+                                      Icon(Icons.location_on, color: Colors.white),
+                                      Expanded(
+                                        child: Card(
+                                          margin: EdgeInsets.only(left: 8.0, right: 8.0),
+                                          elevation: 2.0,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(20.0)
+                                          ),
+                                          child: TextFormField(
+                                            readOnly: true,
+                                            controller: dst_Textcontroller,
+                                            cursorColor: Colors.black,
+                                            keyboardType: TextInputType.text,
+                                            onTap: (){
+                                              is_src = false;
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (context) => LocationSearch(currentLocation: current_Location, hintText: "จุดปลายทาง ...")
+                                                  )
+                                              ).then((result) {
+                                                if(result != null) _Searchbar(result);
+                                              });
+                                            },
+                                            textInputAction: TextInputAction.go,
+                                            decoration: InputDecoration(
+                                                border: InputBorder.none,
+                                                contentPadding:
+                                                EdgeInsets.symmetric(horizontal: 15),
+                                                hintText: "จุดปลายทาง ..."
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 2.0),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  )
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.all(16.0),
+              alignment: Alignment.bottomCenter,
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    FloatingActionButton.extended(
+                      label: Text('Finish'),
+                      onPressed: _Fin,
+                      heroTag: null,
+                    ),
+                  ]),
+            ),
+          ],
+        ),
+      );
+    }
+
   }
  // ----------------------------------------------------------------------------
   _Fin() {
@@ -268,24 +413,26 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
   }
 
   OnMove_End() async {
-    p.PlacesSearchResult tmp = null;
-    int min = 10; // max distance (metre)
-    // search for nearby place in 10 metre
-    p.PlacesSearchResponse response = await places.searchNearbyWithRadius(new p.Location(Marker_Location.latitude,Marker_Location.longitude), 10);
-    response.results.forEach((element) {
-      l.LatLng NearPlace_Loc = new l.LatLng(element.geometry.location.lat,element.geometry.location.lng);
-      l.LatLng Marker_Loc = new l.LatLng(Marker_Location.latitude, Marker_Location.longitude);
-      if(distance(NearPlace_Loc,Marker_Loc) <= min){
-        tmp = element;
+    if( isSet_Marker && Marker_Location != null){
+      p.PlacesSearchResult tmp = null;
+      int min = 10; // max distance (metre)
+      // search for nearby place in 10 metre
+      p.PlacesSearchResponse response = await places.searchNearbyWithRadius(new p.Location(Marker_Location.latitude,Marker_Location.longitude), 10);
+      response.results.forEach((element) {
+        l.LatLng NearPlace_Loc = new l.LatLng(element.geometry.location.lat,element.geometry.location.lng);
+        l.LatLng Marker_Loc = new l.LatLng(Marker_Location.latitude, Marker_Location.longitude);
+        if(distance(NearPlace_Loc,Marker_Loc) <= min){
+          tmp = element;
+        }
+      });
+      if(tmp!=null) {
+        // set marker snap to nearby place
+        Marker_Location = LatLng(tmp.geometry.location.lat, tmp.geometry.location.lng);
+        _createMarkers(Marker_Location);
       }
-    });
-    if(tmp!=null) {
-      // set marker snap to nearby place
-      Marker_Location = LatLng(tmp.geometry.location.lat, tmp.geometry.location.lng);
-      _createMarkers(Marker_Location);
+      // check state function
+      Src_OR_Dst(Marker_Location, tmp != null ? tmp.name : "");
     }
-    // check state function
-    Src_OR_Dst(Marker_Location, tmp != null ? tmp.name : "");
   }
 
   center(CameraPosition pos) {

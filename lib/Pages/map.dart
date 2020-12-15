@@ -66,7 +66,7 @@ class _CreateRoutestate extends State<CreateRoute> {
     LocationData currentLoc = await Location().getLocation();
     current_Location =
         LatLng(currentLoc.latitude, currentLoc.longitude);
-    _mapController.animateCamera( CameraUpdate.newCameraPosition(CameraPosition(target: current_Location, zoom: 15,)));
+//    _mapController.animateCamera( CameraUpdate.newCameraPosition(CameraPosition(target: current_Location, zoom: 15,)));
     _createMarkers(current_Location);
     isSet_Marker = true;
   }

@@ -4,14 +4,12 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as Http;
 import 'package:travel_sharing/Class/RouteJson.dart';
 
-
 class Vehicle {
   String brand;
   String license;
   String model;
   String color;
   String type;
-
 
   Vehicle({this.brand,this.license,this.model,this.color,this.type});
 
