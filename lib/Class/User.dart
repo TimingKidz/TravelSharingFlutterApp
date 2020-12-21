@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as Http;
+import 'package:travel_sharing/Class/Status.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/main.dart';
 
@@ -14,8 +15,9 @@ class User {
   String gender;
   List<Vehicle> vehicle;
   String token;
+  Status status;
 
-  User({this.name, this.email,this.id,this.uid,this.img_url,this.faculty,this.gender,this.vehicle,this.token});
+  User({this.name, this.email,this.id,this.uid,this.img_url,this.faculty,this.gender,this.vehicle,this.token,this.status});
 
   User.fromJson(Map<String, dynamic> json) {
     name = json['name'];
@@ -31,6 +33,7 @@ class User {
         vehicle.add(Vehicle.fromJson(data));
     });
     token = json['token'];
+    status = Status.fromJson(json['status']);
   }
 
   Map<String, dynamic> toJson() {
@@ -58,7 +61,6 @@ class User {
         if(response.statusCode == 404 ){
           return Future.value(null);
         }else{
-          print(jsonDecode(response.body));
           return Future.value(User.fromJson(jsonDecode(response.body)));
         }
       }
@@ -157,6 +159,7 @@ class User {
 
   Future<void> updateToken(String tokenID) async {
     try{
+      this.token = tokenID;
       var url = "${HTTP().API_IP}/api/routes/updateToken";
       Http.Response response = await Http.post(url, headers: await HTTP().header(), body: jsonEncode({"id":this.uid, "token_id": tokenID}));
       if(response.statusCode == 400 ){

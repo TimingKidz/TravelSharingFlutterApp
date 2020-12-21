@@ -7,6 +7,7 @@ import 'package:travel_sharing/Pages/homeNavigation.dart';
 import 'package:travel_sharing/Pages/signupPage.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:firebase_auth/firebase_auth.dart' as u;
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class LoginPage extends StatefulWidget {
   LoginPageState createState() => LoginPageState();
@@ -97,6 +98,19 @@ class LoginPageState extends State<LoginPage> {
     );
   }
 
+  initsocket(){
+    socket = IO.io(HTTP().API_IP,
+        IO.OptionBuilder()
+            .setTransports(['websocket']) // for Flutter or Dart VM
+            .disableAutoConnect()
+            .setExtraHeaders({'uid': currentUser.uid}) // optional // disable auto-connection
+            .build());
+    socket = socket.connect();
+    socket.onConnect((_) {
+      print('connect');
+    });
+  }
+
   Future<void> _handleSignIn() async {
     try{
       googleUser = await googleSignIn.signIn();
@@ -113,7 +127,8 @@ class LoginPageState extends State<LoginPage> {
           String tokenID = await firebaseMessaging.getToken();
           currentUser =  await User().getCurrentuser(googleUser.id);
           await currentUser.updateToken(tokenID);
-          currentUser =  await User().getCurrentuser(googleUser.id);
+          initsocket();
+
           Navigator.of(context).pop(); //Pop Loading Dialog
           Navigator.push(context, MaterialPageRoute(
               builder: (context) => HomeNavigation()));

@@ -19,6 +19,7 @@ class ProfileManagePageState extends State<ProfileManagePage> {
   @override
   void initState() {
     super.initState();
+    _pageConfig();
     setEditDataDefault();
   }
 
@@ -87,6 +88,19 @@ class ProfileManagePageState extends State<ProfileManagePage> {
           ),
         ),
       )
+    );
+  }
+
+  _pageConfig(){
+    socket.off('onNewNotification');
+    socket.on('onNewNotification', (data) {
+      currentUser.status.navbarNoti = true;
+    });
+    firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          print("onMessage: $message");
+          showNotification(message);
+        }
     );
   }
 

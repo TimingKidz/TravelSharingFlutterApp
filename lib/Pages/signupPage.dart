@@ -7,6 +7,7 @@ import 'package:travel_sharing/Pages/homeNavigation.dart';
 import 'package:travel_sharing/buttons/borderTextField.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
 import 'package:travel_sharing/main.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SignUpPage extends StatefulWidget {
   SignUpPageState createState() => SignUpPageState();
@@ -105,10 +106,24 @@ class SignUpPageState extends State<SignUpPage> {
     ];
   }
 
+  initsocket(){
+    socket = IO.io(HTTP().API_IP,
+        IO.OptionBuilder()
+            .setTransports(['websocket']) // for Flutter or Dart VM
+            .disableAutoConnect()
+            .setExtraHeaders({'uid': currentUser.uid}) // optional // disable auto-connection
+            .build());
+    socket = socket.connect();
+    socket.onConnect((_) {
+      print('connect');
+    });
+  }
+
   _Nextpage() async {
     userData.token = await firebaseMessaging.getToken();
     await userData.Register();
     currentUser = await currentUser.getCurrentuser(googleUser.id);
+    initsocket();
     Navigator.pushReplacement(context,MaterialPageRoute(
         builder : (context) => HomeNavigation()));
   }

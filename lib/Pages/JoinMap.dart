@@ -48,28 +48,11 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
     // TODO: implement initState
     super.initState();
     getLocation();
-    // callback currentLocation for first time
-//    location.onLocationChanged.listen((LocationData currentLocations) {
-//      if (!isSet_Marker) {
-//        current_Location = LatLng(currentLocations.latitude, currentLocations.longitude);
-//        // animate camera to currentLocation
-//        _mapController.animateCamera(CameraUpdate.newCameraPosition(
-//            CameraPosition(target: current_Location, zoom: 18,)));
-//        _createMarkers(current_Location);
-//        isSet_Marker = true;
-//      }
-//    });
+    _pageConfig();
   }
 
-  getLocation() async{
-    LocationData currentLoc = await Location().getLocation();
-    current_Location =
-        LatLng(currentLoc.latitude, currentLoc.longitude);
-    print(current_Location.longitude);
-//    _mapController.animateCamera( CameraUpdate.newCameraPosition(CameraPosition(target: current_Location, zoom: 15,)));
-    _createMarkers(current_Location);
-    isSet_Marker = true;
-  }
+
+
 //------------------------------------ UI---------------------------------------
   @override
   Widget build(BuildContext context) {
@@ -374,6 +357,30 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
 
   }
  // ----------------------------------------------------------------------------
+
+  _pageConfig(){
+    socket.off('onNewNotification');
+    socket.on('onNewNotification', (data) {
+      currentUser.status.navbarNoti = true;
+    });
+    firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          print("onMessage: $message");
+          showNotification(message);
+        }
+    );
+  }
+
+  getLocation() async{
+    LocationData currentLoc = await Location().getLocation();
+    current_Location =
+        LatLng(currentLoc.latitude, currentLoc.longitude);
+    print(current_Location.longitude);
+//    _mapController.animateCamera( CameraUpdate.newCameraPosition(CameraPosition(target: current_Location, zoom: 15,)));
+    _createMarkers(current_Location);
+    isSet_Marker = true;
+  }
+
   _Fin() {
     List<LatLng> routes = [Map_Latlng["src"],Map_Latlng["dst"]];
     String Placename_src = Map_Placename["src"];

@@ -144,7 +144,20 @@ class _LocationSearchState extends State<LocationSearch> {
     _heading = "History";
     _placesList = _historyList;
     _searchController.addListener(_onSearchChanged);
-    debugPrint('${widget.currentLocation}');
+    _pageConfig();
+  }
+
+  _pageConfig(){
+    socket.off('onNewNotification');
+    socket.on('onNewNotification', (data) {
+      currentUser.status.navbarNoti = true;
+    });
+    firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          print("onMessage: $message");
+          showNotification(message);
+        }
+    );
   }
 
   @override

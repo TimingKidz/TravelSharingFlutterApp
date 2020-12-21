@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
+import 'package:travel_sharing/Pages/VehicleManagement/VehicleAddForm.dart';
 import 'package:travel_sharing/buttons/VehicleCardTileFull.dart';
-import 'file:///C:/Users/timin/AndroidStudioProjects/TravelSharingFlutterApp/lib/Pages/VehicleManagement/VehicleAddForm.dart';
-import 'package:travel_sharing/buttons/VehicleCardTileMin.dart';
 import 'package:travel_sharing/main.dart';
 
 class VehicleManagePage extends StatefulWidget {
@@ -11,6 +10,14 @@ class VehicleManagePage extends StatefulWidget {
 }
 
 class VehicleManagePageState extends State<VehicleManagePage> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _pageConfig();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,6 +34,19 @@ class VehicleManagePageState extends State<VehicleManagePage> {
         ],
       ),
       body: _buildListView(),
+    );
+  }
+
+  _pageConfig(){
+    socket.off('onNewNotification');
+    socket.on('onNewNotification', (data) {
+      currentUser.status.navbarNoti = true;
+    });
+    firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          print("onMessage: $message");
+          showNotification(message);
+        }
     );
   }
 

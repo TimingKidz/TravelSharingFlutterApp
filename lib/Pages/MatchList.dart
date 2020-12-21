@@ -5,6 +5,7 @@ import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/Travel_Info.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:location/location.dart' ;
+import 'package:travel_sharing/Pages/Matchinformation.dart';
 import 'package:travel_sharing/Pages/mapview.dart';
 import 'package:travel_sharing/buttons/cardTileWithTapMatch.dart';
 import 'package:travel_sharing/main.dart';
@@ -20,7 +21,6 @@ class MatchList extends StatefulWidget {
 }
 
 class _MatchListstate extends State<MatchList> {
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   Location location = Location();
   LocationData Locations;
   List<Match_Info> _MatchList = List();
@@ -35,10 +35,35 @@ class _MatchListstate extends State<MatchList> {
   }
 
   @override
+  void dispose() {
+    socket.off('onAccept');
+    socket.off('onNewMatch');
+    super.dispose();
+  }
+
+  @override
   void initState(){
     super.initState();
-    getData();
+    _pageConfig();
+  }
 
+  _pageConfig(){
+    getData();
+    socket.off('onNewNotification');
+    socket.on('onNewNotification', (data) {
+      currentUser.status.navbarNoti = true;
+    });
+    socket.on('onNewMatch', (data) => getData());
+    socket.on('onAccept', (data) =>  Navigator.pushReplacement(context, MaterialPageRoute(
+        builder: (context) => Matchinformation(uid: data))));
+    firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          if( message['data']['page'] != '/MatchList' ){
+            print("onMessage: $message");
+            showNotification(message);
+          }
+        }
+    );
   }
 
   @override

@@ -13,6 +13,9 @@ import 'package:travel_sharing/main.dart';
 
 
 class Dashboard extends StatefulWidget {
+  final Function setSate;
+
+  const Dashboard({Key key, this.setSate}) : super(key: key);
   @override
   _Dashboard createState() => _Dashboard();
 }
@@ -34,8 +37,24 @@ class _Dashboard extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
-    getData();
+    _pageConfig();
   }
+
+  _pageConfig(){
+    getData();
+    socket.off('onNewNotification');
+    socket.on('onNewNotification', (data) {
+      currentUser.status.navbarNoti = true;
+      widget.setSate();
+    });
+    firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          print("onMessage: $message");
+          showNotification(message);
+        }
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -118,6 +137,7 @@ class _Dashboard extends State<Dashboard> {
   }
 
   Future<void> getData() async {
+    print("get");
     try{
       _invitedList =  await Travel_Info().getRoutes(currentUser.uid,0) ?? [];
       _joinList =  await Travel_Info().getRoutes(currentUser.uid,1) ?? [];
@@ -158,29 +178,33 @@ class _Dashboard extends State<Dashboard> {
     );
   }
 
-  _onCardPressed(Travel_Info data){
+  _onCardPressed(Travel_Info data) async {
     if( isFirstPage ){
       if( data.routes.match.isNotEmpty ){
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => Matchinformation(uid: data.routes.match.first))).then((value) {
-          getData();
+            builder: (context) => Matchinformation(uid: data.routes.match.first))).then((value) async {
+          await widget.setSate();
+          await getData();
         });
       }else{
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => MatchList(data: data))).then((value) {
-          getData();
+            builder: (context) => MatchList(data: data))).then((value) async {
+          await widget.setSate();
+          await getData();
         });
       }
     }else{
       if( data.routes.match.isNotEmpty){
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => Matchinformation(uid: data.uid, data: data))).then((value) {
-          getData();
+            builder: (context) => Matchinformation(uid: data.uid, data: data))).then((value) async {
+          await widget.setSate();
+          await getData();
         });
       }else{
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => ReqList(data: data))).then((value) {
-          getData();
+            builder: (context) => ReqList(data: data))).then((value) async {
+          await widget.setSate();
+          await getData();
         });
       }
     }
@@ -188,15 +212,17 @@ class _Dashboard extends State<Dashboard> {
 
   _newroute() async{
     Navigator.push(context, MaterialPageRoute(
-        builder: (context) => CreateRoute())).then((value) {
-      getData();
+        builder: (context) => CreateRoute())).then((value) async {
+      await widget.setSate();
+      await getData();
     });
   }
 
   _newroute1() async{
     Navigator.push(context, MaterialPageRoute(
-        builder: (context) => CreateRoute_Join())).then((value) {
-      getData();
+        builder: (context) => CreateRoute_Join())).then((value) async {
+      await widget.setSate();
+      await getData();
     });
   }
 

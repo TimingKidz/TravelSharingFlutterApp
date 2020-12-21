@@ -2,10 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/Feed.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
+import 'package:travel_sharing/main.dart';
 
 
 
 class FeedPage extends StatefulWidget {
+  final Function setSate;
+
+  const FeedPage({Key key, this.setSate}) : super(key: key);
+
   FeedPageState createState() => FeedPageState();
 }
 
@@ -13,6 +18,7 @@ class FeedPageState extends State<FeedPage> {
   Feed feed;
   int currentI = 0;
   List<Routes> list = List();
+
   @override
   void setState(fn) {
     if(mounted) {
@@ -23,7 +29,7 @@ class FeedPageState extends State<FeedPage> {
   @override
   void initState() {
     super.initState();
-    getData(0);
+    _pageConfig();
   }
 
   @override
@@ -35,6 +41,21 @@ class FeedPageState extends State<FeedPage> {
         body: _buildListView(),
       );
     }
+  }
+
+  _pageConfig(){
+    getData(0);
+    socket.off('onNewNotification');
+    socket.on('onNewNotification', (data) {
+      currentUser.status.navbarNoti = true;
+      widget.setSate();
+    });
+    firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+            print("onMessage: $message");
+            showNotification(message);
+        }
+    );
   }
 
   getData(int offset) async {

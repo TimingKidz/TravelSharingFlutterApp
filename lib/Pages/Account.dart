@@ -5,12 +5,15 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/Pages/ProfileManagePage.dart';
-import 'file:///C:/Users/timin/AndroidStudioProjects/TravelSharingFlutterApp/lib/Pages/VehicleManagement/VehicleManagePage.dart';
+import 'package:travel_sharing/Pages/VehicleManagement/VehicleManagePage.dart';
 import 'package:travel_sharing/buttons/VehicleCardTileMin.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 
 class Account extends StatefulWidget {
+  final Function setSate;
+
+  const Account({Key key, this.setSate}) : super(key: key);
 
   AccountState createState() => AccountState();
 }
@@ -22,6 +25,12 @@ class AccountState extends State<Account> {
     if(mounted) {
       super.setState(fn);
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _pageConfig();
   }
 
   @override
@@ -105,6 +114,19 @@ class AccountState extends State<Account> {
         ),
       ),
     );
+  }
+
+
+  _pageConfig(){
+    socket.off('onNewNotification');
+    socket.on('onNewNotification', (data) {
+      currentUser.status.navbarNoti = true;
+    });
+    socket.off('onNewNotification');
+    socket.on('onNewNotification', (data) {
+      currentUser.status.navbarNoti = true;
+      widget.setSate();
+    });
   }
 
   Vehicle defaultVehicle(){

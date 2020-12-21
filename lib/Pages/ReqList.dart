@@ -27,9 +27,16 @@ class _ReqListstate extends State<ReqList> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    socket.off('onRequest');
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
-    getData();
+    _pageConfig();
   }
 
   @override
@@ -55,6 +62,23 @@ class _ReqListstate extends State<ReqList> {
           ],
         ),
       ),
+    );
+  }
+
+  _pageConfig(){
+    getData();
+    socket.off('onNewNotification');
+    socket.on('onNewNotification', (data) {
+      currentUser.status.navbarNoti = true;
+    });
+    socket.on('onRequest', (data) => getData());
+    firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          if( message['data']['page'] != '/ReqList' ){
+            print("onMessage: $message");
+            showNotification(message);
+          }
+        }
     );
   }
 

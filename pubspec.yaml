@@ -47,6 +47,9 @@ dependencies:
   latlong: ^0.6.1
   flutter_google_places: ^0.2.5
   shared_preferences: ^0.5.8
+  adhara_socket_io: ^0.4.2+1
+  socket_io_client: ^0.9.12
+  flutter_socket_io: ^0.6.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

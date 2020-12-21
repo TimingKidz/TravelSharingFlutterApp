@@ -53,6 +53,7 @@ class _mapview extends State<mapview> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _pageConfig();
     _createMarkers();
   }
 
@@ -99,6 +100,20 @@ class _mapview extends State<mapview> {
       ),
     );
   }
+
+  _pageConfig(){
+    socket.off('onNewNotification');
+    socket.on('onNewNotification', (data) {
+      currentUser.status.navbarNoti = true;
+    });
+    firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          print("onMessage: $message");
+          showNotification(message);
+        }
+    );
+  }
+
   _createMarkers() {
     Markers.clear();
     Markers.add(

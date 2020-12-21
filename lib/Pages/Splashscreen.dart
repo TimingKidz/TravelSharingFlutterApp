@@ -12,6 +12,7 @@ import 'package:travel_sharing/Pages/signupPage.dart';
 import 'package:travel_sharing/main.dart';
 import 'loginPage.dart';
 
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class Splashscreen extends StatefulWidget {
   SplashscreenState createState() => SplashscreenState();
@@ -21,11 +22,10 @@ class SplashscreenState extends State<Splashscreen> {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   var initializationSettings;
 
+
   @override
   void initState() {
     super.initState();
-
-    // Firebase Notification Init
     firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
           print("onMessage: $message");
@@ -58,6 +58,7 @@ class SplashscreenState extends State<Splashscreen> {
     }catch(e){
       print(e.toString());
     }
+
     _signInCheck();
   }
 
@@ -71,11 +72,26 @@ class SplashscreenState extends State<Splashscreen> {
     );
   }
 
+  initsocket(){
+    socket = IO.io(HTTP().API_IP,
+        IO.OptionBuilder()
+            .setTransports(['websocket']) // for Flutter or Dart VM
+            .disableAutoConnect()
+            .setExtraHeaders({'uid': currentUser.uid}) // optional // disable auto-connection
+            .build());
+    socket = socket.connect();
+    socket.onConnect((_) {
+      print('connect');
+    });
+  }
+
   Future<void> onSelectNotification(String payload) async {
     if (payload != null) {
       debugPrint('notification payload: ' + payload);
     }
   }
+
+
 
   Future<void> _signInCheck() async {
     var isSignedIn = await googleSignIn.isSignedIn();
@@ -93,7 +109,8 @@ class SplashscreenState extends State<Splashscreen> {
           String tokenID = await firebaseMessaging.getToken();
           currentUser =  await User().getCurrentuser(googleUser.id);
           await currentUser.updateToken(tokenID);
-          currentUser =  await User().getCurrentuser(googleUser.id);
+
+          initsocket();
           Navigator.push(context, MaterialPageRoute(
               builder: (context) => HomeNavigation()));
         }else{

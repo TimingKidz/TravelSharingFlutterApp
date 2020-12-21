@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
+import 'package:travel_sharing/main.dart';
 
 class VehicleAddForm extends StatefulWidget {
   VehicleAddFormState createState() => VehicleAddFormState();
@@ -15,6 +16,7 @@ class VehicleAddFormState extends State<VehicleAddForm> {
   void initState() {
     super.initState();
     vehicleData.isDefault = false;
+    _pageConfig();
   }
 
   @override
@@ -36,6 +38,19 @@ class VehicleAddFormState extends State<VehicleAddForm> {
         physics: BouncingScrollPhysics(),
         children: formList(),
       ),
+    );
+  }
+
+  _pageConfig(){
+    socket.off('onNewNotification');
+    socket.on('onNewNotification', (data) {
+      currentUser.status.navbarNoti = true;
+    });
+    firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          print("onMessage: $message");
+          showNotification(message);
+        }
     );
   }
 

@@ -1,12 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:travel_sharing/main.dart';
 
 class RatingPage extends StatefulWidget {
   RatingPageState createState() => RatingPageState();
 }
 
 class RatingPageState extends State<RatingPage> {
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -18,10 +18,10 @@ class Notifications{
     date = json['date'];
   }
 
-  Future<List<Notifications>> getNotification(String id) async {
+  Future<List<Notifications>> getNotification(String id,bool isNeed2Update) async {
     try{
       var url = "${HTTP().API_IP}/api/routes/getNotification";
-      Http.Response response = await Http.post(url, headers: await HTTP().header(), body: jsonEncode({ "id" : id }));
+      Http.Response response = await Http.post(url, headers: await HTTP().header(), body: jsonEncode({ "id" : id , "isNeed2Update" : isNeed2Update}));
       if(response.statusCode == 400 ){
         return Future.value(null);
       }else{

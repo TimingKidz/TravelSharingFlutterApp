@@ -14,7 +14,6 @@ class ChatPage extends StatefulWidget {
 class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
   List<Message> messages = List() ;
   List<Message> messagesReverseList;
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   final textController = TextEditingController();
   ScrollController scrollController;
@@ -30,17 +29,32 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _pageConfig();
+  }
+
+  _pageConfig(){
     getData();
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-        getData();
-      }
+    socket.off('onNewNotification');
+    socket.on('onNewNotification', (data) {
+      currentUser.status.navbarNoti = true;
+    });
+    socket.on('onNewMessage', (data) {
+      messages.add(Message.fromJson(data));
+      setState(() { });
+    });
+    firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          if( message['data']['page'] != '/chatPage' ){
+            print("onMessage: $message");
+            showNotification(message);
+          }
+        }
     );
   }
 
   @override
   void dispose() {
+    socket.off('onNewMessage');
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -54,17 +68,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        _firebaseMessaging.configure(
-          onMessage: (Map<String, dynamic> message) async {
-            print("onMessage: $message");
-            showNotification(message);
-          }
-        );
-        return true;
-      },
-      child: Scaffold(
+    return
+      Scaffold(
           appBar: AppBar(
             title: Text("TKZ"),
             automaticallyImplyLeading: true,
@@ -79,9 +84,10 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
               _chatBottomBar()
             ],
           )
-      ),
-    );
+        );
   }
+
+
   
   Widget _chatListView() {
     return Container(

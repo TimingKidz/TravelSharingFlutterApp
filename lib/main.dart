@@ -6,16 +6,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:travel_sharing/Class/Status.dart';
+import 'package:travel_sharing/Pages/Account.dart';
 import 'package:travel_sharing/Pages/JoinMap.dart';
+import 'package:travel_sharing/Pages/LocationSearchBar.dart';
+import 'package:travel_sharing/Pages/MatchList.dart';
+import 'package:travel_sharing/Pages/Matchinformation.dart';
+import 'package:travel_sharing/Pages/NotificationsPage.dart';
+import 'package:travel_sharing/Pages/ProfileManagePage.dart';
+import 'package:travel_sharing/Pages/ReqList.dart';
 import 'package:travel_sharing/Pages/homeNavigation.dart';
 import 'package:travel_sharing/Pages/InfoFill.dart';
+import 'package:travel_sharing/Pages/mapview.dart';
+import 'package:travel_sharing/Pages/ratingPage.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 import 'ChatFile/chatPage.dart';
 import 'Class/User.dart';
+import 'Pages/Feed.dart';
 import 'Pages/Splashscreen.dart';
 import 'Pages/loginPage.dart';
 import 'Pages/map.dart';
 import 'Pages/dashboard.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 final String api_key = "AIzaSyBQCf89JOkrq2ECa6Ko8LBQaMO8A7rJt9Q";
 GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['profile', 'email']);
@@ -24,6 +36,8 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNo
 u.UserCredential firebaseAuth;
 GoogleSignInAccount googleUser;
 User currentUser;
+IO.Socket socket;
+Status status;
 
 class MyHttpOverrides extends HttpOverrides{
   @override
@@ -34,8 +48,8 @@ class MyHttpOverrides extends HttpOverrides{
 }
 
 class HTTP{
-  // final String API_IP = "https://68.183.226.229";
-  final String API_IP = "http://10.80.26.32:3000";
+   final String API_IP = "https://68.183.226.229";
+//  final String API_IP = "http://192.168.137.1:3000";
 
   Future<Map<String,String>> header() async {
     return {'Content-Type': 'application/json; charset=UTF-8','auth' : await firebaseAuth.user.getIdToken()};
@@ -109,7 +123,19 @@ class MyApp extends StatelessWidget {
           '/joinMap' : (context) => CreateRoute_Join(),
           '/inviteMap' : (context) => CreateRoute(),
           '/tripInfo' : (context) => InfoFill(),
-          '/chatPage' : (context) => ChatPage()
+          '/chatPage' : (context) => ChatPage(),
+          '/feedPage' : (context) => FeedPage(),
+          '/MatchInfo' : (context) => Matchinformation(),
+          '/Account' : (context) => Account(),
+          '/inviteMap' : (context) => CreateRoute(),
+          '/Map' : (context) => mapview(),
+          '/LocationSerch' : (context) => LocationSearch(),
+          '/MatchList' : (context) => MatchList(),
+          '/NotificationPage' : (context) => NotificationsPage(),
+          '/Profile' : (context) => ProfileManagePage(),
+          '/ratingPage' : (context) => RatingPage(),
+          '/ReqList' : (context) => ReqList(),
+
         },
       );
   }

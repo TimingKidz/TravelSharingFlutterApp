@@ -34,17 +34,39 @@ class _Matchinformation extends State<Matchinformation> {
       print(tripDetails.hostUser.vehicle.first.toJson());
       setState(() {});
     }catch(error){
-      print("$error ttt");
+      print("$error tttashgahsdajsdadkajdak");
     }
   }
 
   @override
   void initState() {
     super.initState();
+    _pageConfig();
+  }
+
+  _pageConfig(){
     getData();
+    socket.off('onNewNotification');
+    socket.on('onNewNotification', (data) {
+      currentUser.status.navbarNoti = true;
+    });
+    socket.on('onNewAccept', (data) async => await getData());
+    firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          if( message['data']['page'] != '/MatchInformation' ){
+            print("onMessage: $message");
+            showNotification(message);
+          }
+        }
+    );
   }
 
 
+  @override
+  void dispose() {
+    socket.off('onNewAccept');
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +85,7 @@ class _Matchinformation extends State<Matchinformation> {
                   children: [
                     CircularProgressIndicator(),
                     SizedBox(width: 16.0),
-                    Text("Signing in..."),
+                    Text("Loading..."),
                   ],
                 ),
               ),

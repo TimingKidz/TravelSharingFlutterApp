@@ -45,30 +45,19 @@ class _CreateRoutestate extends State<CreateRoute> {
     }
   }
 
+
+@override
+  void dispose() {
+    _mapController.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getLocation();
-    // callback currentLocation for first time
-//      location.onLocationChanged.listen((LocationData currentLocations) {
-//      if(!isSet_Marker) {
-//        current_Location =
-//            LatLng(currentLocations.latitude, currentLocations.longitude);
-//        _mapController.animateCamera( CameraUpdate.newCameraPosition(CameraPosition(target: current_Location, zoom: 15,)));
-//        _createMarkers(current_Location);
-//        isSet_Marker = true;
-//      }
-//      });
-  }
-
-  getLocation() async{
-    LocationData currentLoc = await Location().getLocation();
-    current_Location =
-        LatLng(currentLoc.latitude, currentLoc.longitude);
-//    _mapController.animateCamera( CameraUpdate.newCameraPosition(CameraPosition(target: current_Location, zoom: 15,)));
-    _createMarkers(current_Location);
-    isSet_Marker = true;
+    _pageConfig();
   }
 
   @override
@@ -151,6 +140,28 @@ class _CreateRoutestate extends State<CreateRoute> {
         ],
       ),
     );
+  }
+
+  _pageConfig(){
+    socket.off('onNewNotification');
+    socket.on('onNewNotification', (data) {
+      currentUser.status.navbarNoti = true;
+    });
+    firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          print("onMessage: $message");
+          showNotification(message);
+        }
+    );
+  }
+
+  getLocation() async{
+    LocationData currentLoc = await Location().getLocation();
+    current_Location =
+        LatLng(currentLoc.latitude, currentLoc.longitude);
+//    _mapController.animateCamera( CameraUpdate.newCameraPosition(CameraPosition(target: current_Location, zoom: 15,)));
+    _createMarkers(current_Location);
+    isSet_Marker = true;
   }
 
   Future<void> _Searchbar() async {

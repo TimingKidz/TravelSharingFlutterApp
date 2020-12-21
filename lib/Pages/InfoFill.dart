@@ -37,6 +37,7 @@ class _InfoFillState extends State<InfoFill> {
   @override
   void initState() {
     super.initState();
+    _pageConfig();
     Final_Data.date =  DateTime.now().toString();
     Final_Data.src = widget.src;
     Final_Data.dst = widget.dst;
@@ -104,6 +105,20 @@ class _InfoFillState extends State<InfoFill> {
         )
       );
   }
+
+  _pageConfig(){
+    socket.off('onNewNotification');
+    socket.on('onNewNotification', (data) {
+      currentUser.status.navbarNoti = true;
+    });
+    firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          print("onMessage: $message");
+          showNotification(message);
+        }
+    );
+  }
+
   // set camera to cover all routes in map
   void _onMapCreated(GoogleMapController controller) async{
     var cameraUpdate = CameraUpdate.newLatLngBounds(widget.bounds, 50);
