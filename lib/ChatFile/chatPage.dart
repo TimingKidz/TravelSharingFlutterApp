@@ -13,7 +13,7 @@ class ChatPage extends StatefulWidget {
 
 class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
   List<Message> messages = List() ;
-  List<Message> messagesReverseList;
+  List<Message> messagesReverseList = List();
 
   final textController = TextEditingController();
   ScrollController scrollController;
@@ -39,7 +39,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
       currentUser.status.navbarNoti = true;
     });
     socket.on('onNewMessage', (data) {
-      messages.add(Message.fromJson(data));
+      messagesReverseList.insert(0, Message.fromJson(data));
       setState(() { });
     });
     firebaseMessaging.configure(
@@ -78,6 +78,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
           body: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
+              if(messagesReverseList.isNotEmpty)
               Expanded(
                 child: _chatListView(),
               ),
@@ -95,7 +96,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
         physics: BouncingScrollPhysics(),
         reverse: true,
         controller: scrollController,
-        itemCount: messages.length,
+        itemCount: messagesReverseList.length,
         itemBuilder: (BuildContext context, int index) {
           return buildSingleMessage(index);
         },

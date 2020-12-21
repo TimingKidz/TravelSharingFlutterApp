@@ -95,7 +95,6 @@ class _mapview extends State<mapview> {
 //            onCameraMove: center,
           ),
 
-
         ],
       ),
     );

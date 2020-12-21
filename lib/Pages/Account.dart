@@ -146,7 +146,10 @@ class AccountState extends State<Account> {
         ),
         onTap: (){
           Navigator.push(context, MaterialPageRoute(
-              builder: (context) => ProfileManagePage())).then((v) => setState((){}));
+              builder: (context) => ProfileManagePage())).then((v){
+            _pageConfig();
+            setState((){});
+          });
         },
       ),
       ListTile(
@@ -154,8 +157,11 @@ class AccountState extends State<Account> {
           "Vehicle Management"
         ),
         onTap: () async {
-          await Navigator.push(context, MaterialPageRoute(
-              builder: (context) => VehicleManagePage())).then((v) => setState((){}));
+              Navigator.push(context, MaterialPageRoute(
+              builder: (context) => VehicleManagePage())).then((v){
+                _pageConfig();
+                setState((){});
+              });
         },
       ),
       ListTile(
@@ -184,6 +190,7 @@ class AccountState extends State<Account> {
 
   Future<void> _handleSignOut() async {
     await googleSignIn.disconnect();
+    // set user.token_id in DB to " "
     Navigator.of(context)
         .pushNamedAndRemoveUntil('/login', ModalRoute.withName('/'));
   }

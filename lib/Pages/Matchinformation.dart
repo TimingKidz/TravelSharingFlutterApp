@@ -44,6 +44,8 @@ class _Matchinformation extends State<Matchinformation> {
     _pageConfig();
   }
 
+
+
   _pageConfig(){
     getData();
     socket.off('onNewNotification');
@@ -101,7 +103,9 @@ class _Matchinformation extends State<Matchinformation> {
                 icon: Icon(Icons.chat),
                 onPressed: (){
                   Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => ChatPage(tripid: widget.uid)));
+                      builder: (context) => ChatPage(tripid: widget.uid))).then((value){
+                        _pageConfig();
+                  });
                 },
               )
             ],
@@ -216,7 +220,9 @@ class _Matchinformation extends State<Matchinformation> {
                                         child: SizedBox(width: 32, height: 32, child: Icon(Icons.add)),
                                         onTap: () {
                                           Navigator.push(context, MaterialPageRoute(
-                                              builder: (context) => ReqList(data: widget.data)));
+                                              builder: (context) => ReqList(data: widget.data))).then((value){
+                                                _pageConfig();
+                                          });
                                         },
                                       ),
                                     ),
@@ -233,7 +239,7 @@ class _Matchinformation extends State<Matchinformation> {
                   ),
                 ),
                 SizedBox(height: 8.0),
-                if(currentUser.uid == tripDetails.hostUser.uid)
+                if(currentUser.uid == tripDetails.hostUser.uid && tripDetails.routes.isMatch == false )
                   Container(
                     width: double.infinity,
                     child: RaisedButton(

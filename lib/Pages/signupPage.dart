@@ -129,7 +129,7 @@ class SignUpPageState extends State<SignUpPage> {
   _Nextpage() async {
     userData.token = await firebaseMessaging.getToken();
     await userData.Register();
-    currentUser = await currentUser.getCurrentuser(googleUser.id);
+    currentUser = await User().getCurrentuser(googleUser.id);
     initsocket();
     Navigator.pushReplacement(context,MaterialPageRoute(
         builder : (context) => HomeNavigation()));

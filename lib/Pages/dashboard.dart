@@ -40,8 +40,8 @@ class _Dashboard extends State<Dashboard> {
     _pageConfig();
   }
 
-  _pageConfig(){
-    getData();
+  _pageConfig() async {
+    await getData();
     socket.off('onNewNotification');
     socket.on('onNewNotification', (data) {
       currentUser.status.navbarNoti = true;
@@ -182,28 +182,28 @@ class _Dashboard extends State<Dashboard> {
       if( data.routes.match.isNotEmpty ){
         Navigator.push(context, MaterialPageRoute(
             builder: (context) => Matchinformation(uid: data.routes.match.first))).then((value) async {
+              _pageConfig();
           await widget.setSate();
-          await getData();
         });
       }else{
         Navigator.push(context, MaterialPageRoute(
             builder: (context) => MatchList(data: data))).then((value) async {
+              _pageConfig();
           await widget.setSate();
-          await getData();
         });
       }
     }else{
       if( data.routes.match.isNotEmpty){
         Navigator.push(context, MaterialPageRoute(
             builder: (context) => Matchinformation(uid: data.uid, data: data))).then((value) async {
+              _pageConfig();
           await widget.setSate();
-          await getData();
         });
       }else{
         Navigator.push(context, MaterialPageRoute(
             builder: (context) => ReqList(data: data))).then((value) async {
+              _pageConfig();
           await widget.setSate();
-          await getData();
         });
       }
     }
@@ -212,16 +212,16 @@ class _Dashboard extends State<Dashboard> {
   _newroute() async{
     Navigator.push(context, MaterialPageRoute(
         builder: (context) => CreateRoute())).then((value) async {
+          _pageConfig();
       await widget.setSate();
-      await getData();
     });
   }
 
   _newroute1() async{
     Navigator.push(context, MaterialPageRoute(
         builder: (context) => CreateRoute_Join())).then((value) async {
+          _pageConfig();
       await widget.setSate();
-      await getData();
     });
   }
 

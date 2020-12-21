@@ -27,8 +27,11 @@ class VehicleManagePageState extends State<VehicleManagePage> {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () async {
-              await Navigator.push(context,MaterialPageRoute(
-                  builder : (context) => VehicleAddForm())).then((value) => getData());
+                  Navigator.push(context,MaterialPageRoute(
+                  builder : (context) => VehicleAddForm())).then((value){
+                _pageConfig();
+                setState((){});
+              });
             },
           )
         ],
