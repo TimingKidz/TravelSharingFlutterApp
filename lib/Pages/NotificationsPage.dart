@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/Notifications.dart';
 import 'package:travel_sharing/main.dart';
+import 'package:travel_sharing/custom_color_scheme.dart';
 
 class NotificationsPage extends StatefulWidget{
  final bool isNeed2Update;
@@ -53,6 +54,43 @@ class NotificationsPageState extends State<NotificationsPage>{
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+        body: Column(
+          children: <Widget>[
+            Card(
+              elevation: 2.0,
+              margin: EdgeInsets.all(0.0),
+              color: Theme.of(context).colorScheme.darkBlue,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(30.0),
+                      bottomRight: Radius.circular(30.0)
+                  )
+              ),
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.only(left: 24.0, top: 16.0, bottom: 30.0, right: 24.0),
+                child: SafeArea(
+                  child: Text(
+                    "Notifications",
+                    style: TextStyle(
+                      // fontWeight: FontWeight.bold,
+                        fontSize: 20.0,
+                        color: Colors.white
+                    ),
+                    // textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: notifications.isNotEmpty ? _buildListView() : Center(
+                child: Text("Nothing in notifications yet."),
+              ),
+            )
+          ],
+        )
+    );
     if( notifications.isEmpty ){
       return Scaffold(
         appBar: AppBar(

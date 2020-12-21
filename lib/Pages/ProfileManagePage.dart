@@ -26,68 +26,90 @@ class ProfileManagePageState extends State<ProfileManagePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        // title: Text("Your Profile"),
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        iconTheme: IconThemeData(
-            color: Colors.black
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: (){
-              setState(() {
-                isEdit = true;
-              });
-            },
+      body: Column(
+        children: <Widget>[
+          Card(
+            elevation: 2.0,
+            margin: EdgeInsets.all(0.0),
+            color: Theme.of(context).primaryColor,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(30.0),
+                    bottomRight: Radius.circular(30.0)
+                )
+            ),
+            child: Container(
+              width: double.infinity,
+              padding: EdgeInsets.only(left: 4.0, top: 4.0, bottom: 16.0, right: 4.0),
+              child: SafeArea(
+                child: Stack(
+                  children: <Widget>[
+                    Center(
+                      child: Column(
+                        children: <Widget>[
+                          SizedBox(
+                            height: 16.0,
+                          ),
+                          // CircleAvatar(
+                          //   radius: 64.0,
+                          // ),
+                          SizedBox(
+                            width: 128.0,
+                            height: 128.0,
+                            child: GoogleUserCircleAvatar(
+                              identity: googleUser,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 16.0,
+                          ),
+                          RatingBarIndicator(
+                            rating: 4.75,
+                            itemBuilder: (context, index) => Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
+                            itemCount: 5,
+                            itemSize: 30.0,
+                            direction: Axis.horizontal,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(Icons.arrow_back),
+                          iconSize: 26.0,
+                          color: Colors.white,
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          color: Colors.white,
+                          onPressed: (){
+                            setState(() {
+                              isEdit = true;
+                            });
+                          },
+                        ),
+                      ],
+                    )
+                  ],
+                )
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView(
+              physics: BouncingScrollPhysics(),
+              children: infoField(),
+            ),
           )
         ],
       ),
-      body: Container(
-        // padding: EdgeInsets.all(16.0),
-        alignment: Alignment.center,
-        child: SafeArea(
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: 16.0,
-              ),
-              // CircleAvatar(
-              //   radius: 64.0,
-              // ),
-              SizedBox(
-                width: 128.0,
-                height: 128.0,
-                child: GoogleUserCircleAvatar(
-                  identity: googleUser,
-                ),
-              ),
-              SizedBox(
-                height: 16.0,
-              ),
-              RatingBarIndicator(
-                rating: 4.75,
-                itemBuilder: (context, index) => Icon(
-                  Icons.star,
-                  color: Colors.amber,
-                ),
-                itemCount: 5,
-                itemSize: 30.0,
-                direction: Axis.horizontal,
-              ),
-              SizedBox(
-                height: 16.0,
-              ),
-              Expanded(
-                child: ListView(
-                  physics: BouncingScrollPhysics(),
-                  children: infoField(),
-                ),
-              )
-            ],
-          ),
-        ),
-      )
     );
   }
 

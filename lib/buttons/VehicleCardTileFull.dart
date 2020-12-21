@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
+import 'package:travel_sharing/buttons/PlainBGTextField.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
 import 'package:travel_sharing/main.dart';
 
@@ -16,7 +17,7 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
   Vehicle editData;
   double fieldPadding = 16.0;
   TextStyle fieldTextStyle = TextStyle(
-    color: Colors.black.withOpacity(0.7)
+    color: Colors.black.withOpacity(0.6)
   );
   bool isEdit = false;
 
@@ -151,7 +152,7 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Expanded(
-              child: CardTextField(
+              child: PlainBGTextField(
                 labelText: "ทะเบียน",
                 initValue: editData.license,
                 onChanged: (val){
@@ -161,7 +162,7 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
             ),
             SizedBox(width: 16.0),
             Expanded(
-              child: CardTextField(
+              child: PlainBGTextField(
                 labelText: "ยี่ห้อ",
                 initValue: editData.brand,
                 onChanged: (val){
@@ -175,7 +176,7 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
         Row(
           children: <Widget>[
             Expanded(
-              child: CardTextField(
+              child: PlainBGTextField(
                 labelText: "รุ่น",
                 initValue: editData.model,
                 onChanged: (val){
@@ -185,7 +186,7 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
             ),
             SizedBox(width: 16.0),
             Expanded(
-              child: CardTextField(
+              child: PlainBGTextField(
                 labelText: "สี",
                 initValue: editData.color,
                 onChanged: (val){
@@ -200,7 +201,6 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
           children: <Widget>[
             Checkbox(
               // title: const Text("Set to default vehicle"),
-
               value: editData.isDefault,
               onChanged: (val){
                 setState(() {
@@ -208,31 +208,52 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
                 });
               },
             ),
+            Text(
+              "Set this to default vehicle"
+            )
           ],
         ),
-        SizedBox(height: 16.0),
+        SizedBox(height: 8.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
-            FlatButton(
-              child: Text("cancel"),
-              onPressed: (){
-                setState(() {
-                  setEditDataDefault();
-                  isEdit = false;
-                });
-              },
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: Material(
+                child: InkWell(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
+                    child: Text("cancel"),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      setEditDataDefault();
+                      isEdit = false;
+                    });
+                  },
+                ),
+              ),
             ),
-            FlatButton(
-              child: Text("ok"),
-              onPressed: () async {
-                // print(editData.toJson());
-                isEdit = false;
-                await editData.editVehicle();
-                setState(() {});
-                widget.setState();
-              },
-            )
+            SizedBox(width: 16.0),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: Material(
+                color: Colors.green,
+                child: InkWell(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
+                    child: Text("ok"),
+                  ),
+                  onTap: () async {
+                    // print(editData.toJson());
+                    isEdit = false;
+                    await editData.editVehicle();
+                    setState(() {});
+                    widget.setState();
+                  },
+                ),
+              ),
+            ),
           ],
         ),
       ];
@@ -241,85 +262,41 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  color: Theme
-                      .of(context)
-                      .canvasColor,
-                  padding: EdgeInsets.all(fieldPadding),
-                  child: Column(
-                    children: <Widget>[
-                      Text('ทะเบียน', style: fieldTextStyle),
-                      Text(widget.data.license)
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            eachInfo("ทะเบียน", widget.data.license),
             SizedBox(width: 16.0),
-            Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  color: Theme
-                      .of(context)
-                      .canvasColor,
-                  padding: EdgeInsets.all(fieldPadding),
-                  child: Column(
-                    children: <Widget>[
-                      Text('ยี่ห้อ', style: fieldTextStyle),
-                      Text(widget.data.brand)
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            eachInfo("ยี่ห้อ", widget.data.brand)
           ],
         ),
         SizedBox(height: 16.0),
         Row(
           children: <Widget>[
-            Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  color: Theme
-                      .of(context)
-                      .canvasColor,
-                  padding: EdgeInsets.all(fieldPadding),
-                  child: Column(
-                    children: <Widget>[
-                      Text('รุ่น', style: fieldTextStyle),
-                      Text(widget.data.model)
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            eachInfo("รุ่น", widget.data.model),
             SizedBox(width: 16.0),
-            Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                    color: Theme
-                        .of(context)
-                        .canvasColor,
-                    padding: EdgeInsets.all(fieldPadding),
-                    child: Column(
-                      children: <Widget>[
-                        Text('สี', style: fieldTextStyle),
-                        Text(widget.data.color)
-                      ],
-                    )
-                ),
-              ),
-            ),
+            eachInfo("สี", widget.data.color)
           ],
         )
       ];
     }
+  }
+
+  Widget eachInfo(String label, String info){
+    return Expanded(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          color: Theme.of(context).canvasColor,
+          padding: EdgeInsets.all(fieldPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(label, style: fieldTextStyle),
+              SizedBox(height: 14.0),
+              Text(info, style: TextStyle(fontSize: 16.0))
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
 }

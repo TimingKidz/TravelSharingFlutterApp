@@ -39,15 +39,15 @@ class VehicleCardTileMinState extends State<VehicleCardTileMin> {
                     SizedBox(width: 8.0),
                   ],
                 ),
-                InkWell(
-                  child: Text(
-                    "Change Default",
-                    style: TextStyle(color: Colors.red),
-                  ),
-                  onTap: (){
-
-                  },
-                )
+                // InkWell(
+                //   child: Text(
+                //     "Change Default",
+                //     style: TextStyle(color: Colors.red),
+                //   ),
+                //   onTap: (){
+                //
+                //   },
+                // )
               ],
             ),
             SizedBox(height: 4.0),

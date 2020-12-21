@@ -129,7 +129,7 @@ class _ReqListstate extends State<ReqList> {
       print(value);
       print("555555555555");
       Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (context) => Matchinformation(uid: widget.data.uid)));
+          builder: (context) => Matchinformation(uid: widget.data.uid, data: widget.data)));
     });
 
   }

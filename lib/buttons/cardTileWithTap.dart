@@ -5,13 +5,11 @@ import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 
 class CardTileWithTap extends StatefulWidget {
-  final bool isFirstPage;
   final Routes data;
   final IconData iconData;
   final Function onCardPressed;
 
   CardTileWithTap({
-    this.isFirstPage,
     this.data,
     this.iconData,
     this.onCardPressed
@@ -27,7 +25,7 @@ class CardTileWithTapState extends State<CardTileWithTap> {
 
   @override
   Widget build(BuildContext context) {
-    if(widget.isFirstPage){
+    if(widget.data.role == "1"){
       return Card(
           color: Colors.white,
           margin: EdgeInsets.all(10.0),
@@ -65,7 +63,7 @@ class CardTileWithTapState extends State<CardTileWithTap> {
                     width: double.infinity,
                     padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
                     decoration: BoxDecoration(
-                        color: Theme.of(context).accentColor,
+                        color: Theme.of(context).primaryColor,
                         borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(20.0),
                             bottomRight: Radius.circular(20.0)
@@ -161,7 +159,7 @@ class CardTileWithTapState extends State<CardTileWithTap> {
                     width: double.infinity,
                     padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
                     decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.info,
+                        color: Theme.of(context).accentColor,
                         borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(20.0),
                             bottomRight: Radius.circular(20.0)

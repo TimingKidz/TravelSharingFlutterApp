@@ -41,7 +41,7 @@ class AccountState extends State<Account> {
           Card(
             elevation: 2.0,
             margin: EdgeInsets.all(0.0),
-            color: Theme.of(context).colorScheme.darkBlue,
+            color: Theme.of(context).primaryColor,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(30.0),

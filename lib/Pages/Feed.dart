@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/Feed.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/main.dart';
-
+import 'package:travel_sharing/buttons/cardTileWithTap.dart';
+import 'package:travel_sharing/custom_color_scheme.dart';
 
 
 class FeedPage extends StatefulWidget {
@@ -34,13 +35,43 @@ class FeedPageState extends State<FeedPage> {
 
   @override
   Widget build(BuildContext context) {
-    if( feed == null){
-      return Scaffold();
-    }else{
-      return Scaffold(
-        body: _buildListView(),
-      );
-    }
+    return Scaffold(
+        body: Column(
+          children: <Widget>[
+            Card(
+              elevation: 2.0,
+              margin: EdgeInsets.all(0.0),
+              color: Theme.of(context).primaryColor,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(30.0),
+                      bottomRight: Radius.circular(30.0)
+                  )
+              ),
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.only(left: 24.0, top: 16.0, bottom: 30.0, right: 24.0),
+                child: SafeArea(
+                  child: Text(
+                    "Feed",
+                    style: TextStyle(
+                      // fontWeight: FontWeight.bold,
+                        fontSize: 20.0,
+                        color: Colors.white
+                    ),
+                    // textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: list.isNotEmpty ? _buildListView() : Center(
+                child: Text("Nothing in feed yet."),
+              ),
+            )
+          ],
+        )
+    );
   }
 
   _pageConfig(){
@@ -71,10 +102,7 @@ class FeedPageState extends State<FeedPage> {
   }
 
   Widget _buildListView() {
-    return ListView.separated(
-        separatorBuilder: (context, i) => Divider(
-          color: Colors.grey,
-        ),
+    return ListView.builder(
         physics: BouncingScrollPhysics(),
         itemCount: feed.isMore ? currentI + 1: currentI,
         itemBuilder: (context, i) {
@@ -89,16 +117,15 @@ class FeedPageState extends State<FeedPage> {
               ),
             );
           }else{
-            return _buildRow(list[i].src);
+            return _buildRow(list[i]);
           }
         }
     );
   }
 
-  Widget _buildRow(String data) {
-    return Container(
-      child: Text(data),
-      height: 600,
+  Widget _buildRow(Routes data) {
+    return CardTileWithTap(
+      data: data,
     );
   }
 

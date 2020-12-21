@@ -58,16 +58,16 @@ class HTTP{
 }
 
 void main() {
-   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
 
    // statusBarColor is used to set Status bar color in Android devices.
    statusBarColor: Colors.transparent,
 
    // To make Status bar icons color white in Android devices.
-   statusBarIconBrightness: Brightness.dark,
+   statusBarIconBrightness: Brightness.light,
 
    // statusBarBrightness is used to set Status bar icon color in iOS.
-   statusBarBrightness: Brightness.dark,
+   statusBarBrightness: Brightness.light,
    // Here light means dark color Status bar icons.
 
    systemNavigationBarColor: Colors.transparent,
@@ -107,8 +107,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          primaryColor: Theme.of(context).colorScheme.orange,
-          accentColor: Theme.of(context).colorScheme.redOrange,
+          primaryColor: Theme.of(context).colorScheme.darkBlue,
+          accentColor: Theme.of(context).colorScheme.amber,
           visualDensity: VisualDensity.adaptivePlatformDensity,
           appBarTheme: AppBarTheme(
             elevation: 0.0,

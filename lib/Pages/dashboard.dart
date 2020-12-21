@@ -59,16 +59,16 @@ class _Dashboard extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-//      backgroundColor: Theme.of(context).primaryColor,
-//       appBar: AppBar(
-//         backgroundColor: isFirstPage ? Theme.of(context).colorScheme.orange : Theme.of(context).colorScheme.orange,
-//         automaticallyImplyLeading: false,
-//         title: const Text('แดชบอร์ด'),
-//       ),
+     // backgroundColor: Theme.of(context).primaryColor,
+     //  appBar: AppBar(
+     //    backgroundColor: isFirstPage ? Theme.of(context).accentColor : Theme.of(context).colorScheme.orange,
+     //    automaticallyImplyLeading: false,
+     //    title: const Text('แดชบอร์ด'),
+     //  ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: isFirstPage ? _newroute1 : _newroute,
-        backgroundColor: isFirstPage ? Theme.of(context).colorScheme.redOrange : Theme.of(context).colorScheme.redOrange,
+        backgroundColor: isFirstPage ? Theme.of(context).accentColor : Theme.of(context).accentColor,
         heroTag: null,
       ),
       body: Center(
@@ -77,7 +77,7 @@ class _Dashboard extends State<Dashboard> {
             Card(
               elevation: 2.0,
               margin: EdgeInsets.all(0.0),
-              color: isFirstPage ? Theme.of(context).colorScheme.amber : Theme.of(context).colorScheme.darkBlue,
+              color: isFirstPage ? Theme.of(context).colorScheme.darkBlue : Theme.of(context).colorScheme.amber,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(30.0),
@@ -93,11 +93,11 @@ class _Dashboard extends State<Dashboard> {
                         child: RaisedButton(
                           highlightElevation: 0.0,
                           padding: EdgeInsets.all(16.0),
-                          color: isFirstPage ? Colors.white : Theme.of(context).colorScheme.peach,
+                          color: isFirstPage ? Theme.of(context).colorScheme.orange : Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
-                          child: Text('ไปด้วย', style: TextStyle(color: isFirstPage ? Colors.black : Colors.white)),
+                          child: Text('ไปด้วย', style: TextStyle(color: isFirstPage ? Colors.white : Colors.black)),
                           onPressed: () {
                             setState(() {
                               isFirstPage = true;
@@ -110,11 +110,11 @@ class _Dashboard extends State<Dashboard> {
                         child: RaisedButton(
                           highlightElevation: 0.0,
                           padding: EdgeInsets.all(16.0),
-                          color: isFirstPage ? Theme.of(context).colorScheme.peach : Colors.white,
+                          color: isFirstPage ? Colors.white : Theme.of(context).colorScheme.orange,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
-                          child: Text('ชวน', style: TextStyle(color: isFirstPage ? Colors.white : Colors.black)),
+                          child: Text('ชวน', style: TextStyle(color: isFirstPage ? Colors.black : Colors.white)),
                           onPressed: () {
                             setState(() {
                               isFirstPage = false;
@@ -172,7 +172,6 @@ class _Dashboard extends State<Dashboard> {
   Widget _buildRow(Travel_Info data) {
     print(data);
     return CardTileWithTap(
-      isFirstPage: isFirstPage,
       data: data.routes,
       onCardPressed: () => _onCardPressed(data),
     );
