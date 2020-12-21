@@ -11,6 +11,7 @@ class VehicleAddForm extends StatefulWidget {
 class VehicleAddFormState extends State<VehicleAddForm> {
   Vehicle vehicleData = Vehicle();
   bool isChecked = true;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -28,16 +29,21 @@ class VehicleAddFormState extends State<VehicleAddForm> {
           IconButton(
             icon: Icon(Icons.check),
             onPressed: () async {
-              await vehicleData.addVehicle();
-              Navigator.of(context).pop();
+              if(_formKey.currentState.validate()){
+                await vehicleData.addVehicle();
+                Navigator.of(context).pop();
+              }
             },
           )
         ],
       ),
-      body: ListView(
-        physics: BouncingScrollPhysics(),
-        children: formList(),
-      ),
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          physics: BouncingScrollPhysics(),
+          children: formList(),
+        ),
+      )
     );
   }
 
@@ -57,22 +63,27 @@ class VehicleAddFormState extends State<VehicleAddForm> {
   List<Widget> formList(){
     return [
       CardTextField(
+        notNull: true,
         labelText: "Type",
         onChanged: (data) => vehicleData.type = data,
       ),
       CardTextField(
+        notNull: true,
         labelText: "License",
         onChanged: (data) => vehicleData.license = data,
       ),
       CardTextField(
+        notNull: true,
         labelText: "Brand",
         onChanged: (data) => vehicleData.brand = data,
       ),
       CardTextField(
+        notNull: true,
         labelText: "Model",
         onChanged: (data) => vehicleData.model = data,
       ),
       CardTextField(
+        notNull: true,
         labelText: "Color",
         onChanged: (data) => vehicleData.color = data,
       ),

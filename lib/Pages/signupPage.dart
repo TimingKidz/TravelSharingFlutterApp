@@ -16,6 +16,7 @@ class SignUpPage extends StatefulWidget {
 class SignUpPageState extends State<SignUpPage> {
   // User user = new User(name: googleUser.displayName,email: googleUser.email,id: googleUser.id,token: await firebaseMessaging.getToken());
   User userData = new User(name: googleUser.displayName,email: googleUser.email,id: googleUser.id);
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void setState(fn) {
@@ -39,22 +40,26 @@ class SignUpPageState extends State<SignUpPage> {
             title: Text('Sign Up to Travel Sharing'),
           ),
           body: Stack(
-            children: <Widget>[Container(
-              alignment: Alignment.center,
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: ListView(
-                      physics: BouncingScrollPhysics(),
-                      children: fieldList(),
-                    ),
-                  )
-                ],
+            children: <Widget>[
+              Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                        child: Form(
+                          key: _formKey,
+                          child: ListView(
+                            physics: BouncingScrollPhysics(),
+                            children: fieldList(),
+                          ),
+                        )
+                    )
+                  ],
+                ),
               ),
-            ),
               Container(
                 alignment: Alignment.bottomRight,
                 padding: EdgeInsets.all(24.0),
@@ -64,7 +69,9 @@ class SignUpPageState extends State<SignUpPage> {
                   children: <Widget>[
                     FloatingActionButton(
                       child: Icon(Icons.arrow_forward),
-                      onPressed: _Nextpage,
+                      onPressed: (){
+                        if(_formKey.currentState.validate()) _Nextpage();
+                      }
                     ),
                   ],
                 ),
@@ -89,17 +96,20 @@ class SignUpPageState extends State<SignUpPage> {
       Text(googleUser.id),
       SizedBox(height: 8.0),
       CardTextField(
+        notNull: true,
         initValue: googleUser.displayName,
         labelText: "Full Name",
         onChanged: (data) => userData.name = data,
       ),
       SizedBox(height: 8.0),
       CardTextField(
+        notNull: true,
         labelText: "Gender",
         onChanged: (data) => userData.gender = data,
       ),
       SizedBox(height: 8.0),
       CardTextField(
+        notNull: true,
         labelText: "Faculty",
         onChanged: (data) => userData.faculty = data,
       ),

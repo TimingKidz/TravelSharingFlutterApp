@@ -26,6 +26,7 @@ class InfoFill extends StatefulWidget {
 class _InfoFillState extends State<InfoFill> {
   GoogleMapController _mapController;
   Routes Final_Data = new Routes();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void setState(fn) {
@@ -52,56 +53,64 @@ class _InfoFillState extends State<InfoFill> {
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.arrow_forward),
-          onPressed: _SavetoDB,
+          onPressed: (){
+            if(_formKey.currentState.validate()) _SavetoDB();
+          },
           heroTag: null,
         ),
-        body: ListView(
-          physics: BouncingScrollPhysics(),
-          children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height * 0.3,
-              child: GoogleMap(
-                onMapCreated: _onMapCreated,
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(widget.routes.last.latitude,widget.routes.last.longitude),
-                  zoom: 14,
+        body: Form(
+          key: _formKey,
+          child: ListView(
+            physics: BouncingScrollPhysics(),
+            children: <Widget>[
+              Container(
+                height: MediaQuery.of(context).size.height * 0.3,
+                child: GoogleMap(
+                  onMapCreated: _onMapCreated,
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(widget.routes.last.latitude,widget.routes.last.longitude),
+                    zoom: 14,
+                  ),
+                  markers: widget.Markers,
+                  polylines: widget.lines,
+                  zoomControlsEnabled: false,
+                  myLocationEnabled: false,
+                  myLocationButtonEnabled: false,
                 ),
-                markers: widget.Markers,
-                polylines: widget.lines,
-                zoomControlsEnabled: false,
-                myLocationEnabled: false,
-                myLocationButtonEnabled: false,
               ),
-            ),
-            CardTextField(
-              initValue: widget.src,
-              labelText: 'ต้นทาง',
-              onChanged: (text) {
-                Final_Data.src = text;
-              },
-            ),
-            CardTextField(
-              initValue: widget.dst,
-              labelText: 'ปลายทาง',
-              onChanged: (text) {
-                Final_Data.dst = text;
-              },
-            ),
-            CardDatePicker(
-              labelText: 'วันเดินทาง',
-              onDatePick: (date) {
-                Final_Data.date = date;
-                print(date);
-              },
-            ),
-            CardTextField(
-              labelText: 'จำนวนคนไปด้วย',
-              type: TextInputType.number,
-              onChanged: (text) {
-                Final_Data.amount = text;
-              },
-            )
-          ],
+              CardTextField(
+                notNull: true,
+                initValue: widget.src,
+                labelText: 'ต้นทาง',
+                onChanged: (text) {
+                  Final_Data.src = text;
+                },
+              ),
+              CardTextField(
+                notNull: true,
+                initValue: widget.dst,
+                labelText: 'ปลายทาง',
+                onChanged: (text) {
+                  Final_Data.dst = text;
+                },
+              ),
+              CardDatePicker(
+                labelText: 'วันเดินทาง',
+                onDatePick: (date) {
+                  Final_Data.date = date;
+                  print(date);
+                },
+              ),
+              CardTextField(
+                notNull: true,
+                labelText: 'จำนวนคนไปด้วย',
+                type: TextInputType.number,
+                onChanged: (text) {
+                  Final_Data.amount = text;
+                },
+              )
+            ],
+          ),
         )
       );
   }

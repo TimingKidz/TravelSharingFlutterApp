@@ -16,6 +16,7 @@ class VehicleCardTileFull extends StatefulWidget {
 class VehicleCardTileFullState extends State<VehicleCardTileFull> {
   Vehicle editData;
   double fieldPadding = 16.0;
+  final _formKey = GlobalKey<FormState>();
   TextStyle fieldTextStyle = TextStyle(
     color: Colors.black.withOpacity(0.6)
   );
@@ -98,7 +99,12 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
                 ],
               ),
               SizedBox(height: 16.0),
-              for(Widget w in infoField()) w
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: infoField(),
+                ),
+              )
             ],
           )
       ),
@@ -153,6 +159,7 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
           children: <Widget>[
             Expanded(
               child: PlainBGTextField(
+                notNull: true,
                 labelText: "ทะเบียน",
                 initValue: editData.license,
                 onChanged: (val){
@@ -163,6 +170,7 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
             SizedBox(width: 16.0),
             Expanded(
               child: PlainBGTextField(
+                notNull: true,
                 labelText: "ยี่ห้อ",
                 initValue: editData.brand,
                 onChanged: (val){
@@ -177,6 +185,7 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
           children: <Widget>[
             Expanded(
               child: PlainBGTextField(
+                notNull: true,
                 labelText: "รุ่น",
                 initValue: editData.model,
                 onChanged: (val){
@@ -187,6 +196,7 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
             SizedBox(width: 16.0),
             Expanded(
               child: PlainBGTextField(
+                notNull: true,
                 labelText: "สี",
                 initValue: editData.color,
                 onChanged: (val){
@@ -245,11 +255,13 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
                     child: Text("ok"),
                   ),
                   onTap: () async {
-                    // print(editData.toJson());
-                    isEdit = false;
-                    await editData.editVehicle();
-                    setState(() {});
-                    widget.setState();
+                    if(_formKey.currentState.validate()){
+                      // print(editData.toJson());
+                      isEdit = false;
+                      await editData.editVehicle();
+                      setState(() {});
+                      widget.setState();
+                    }
                   },
                 ),
               ),

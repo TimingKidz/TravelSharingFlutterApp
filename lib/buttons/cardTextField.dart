@@ -1,17 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:travel_sharing/custom_color_scheme.dart';
 
 class CardTextField extends StatefulWidget {
   final String labelText;
   final String initValue;
   final TextInputType type;
   final Function onChanged;
+  final bool notNull;
 
-  const CardTextField({Key key, this.labelText, this.initValue, this.onChanged, this.type}) : super(key: key);
+  const CardTextField({Key key, this.labelText, this.initValue, this.onChanged, this.type, @required this.notNull}) : super(key: key);
   CardTextFieldState createState() => CardTextFieldState();
 }
 
 class CardTextFieldState extends State<CardTextField> {
+  bool isEmpty = false;
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -25,9 +29,25 @@ class CardTextFieldState extends State<CardTextField> {
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(left: 16.0, top: 12.0),
-              child: Text(widget.labelText, style: TextStyle(color: Colors.black.withOpacity(0.6))),
+              child: Text(widget.labelText, style: TextStyle(color: isEmpty ? Colors.red : Colors.black.withOpacity(0.6))),
             ),
             TextFormField(
+              validator: (val){
+                if(widget.notNull){
+                  if(val.isEmpty){
+                    setState(() {
+                      isEmpty = true;
+                    });
+                    return "";
+                  }else{
+                    setState(() {
+                      isEmpty = false;
+                    });
+                    return null;
+                  }
+                }
+                return null;
+              },
               keyboardType: widget.type,
               onChanged: (text){
                 widget.onChanged(text);
@@ -37,6 +57,7 @@ class CardTextFieldState extends State<CardTextField> {
                 border: InputBorder.none,
                 contentPadding:
                 EdgeInsets.symmetric(horizontal: 15),
+                errorStyle: TextStyle(height: 0),
 //                hintText: 'Source',
               ),
             ),
