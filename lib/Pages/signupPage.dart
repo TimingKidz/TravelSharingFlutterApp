@@ -31,54 +31,51 @@ class SignUpPageState extends State<SignUpPage> {
   }
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            title: Text('Sign Up to Travel Sharing'),
-          ),
-          body: Stack(
-            children: <Widget>[
-              Container(
-                alignment: Alignment.center,
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                        child: Form(
-                          key: _formKey,
-                          child: ListView(
-                            physics: BouncingScrollPhysics(),
-                            children: fieldList(),
-                          ),
-                        )
-                    )
-                  ],
-                ),
+    return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text('Sign Up to Travel Sharing'),
+        ),
+        body: Stack(
+          children: <Widget>[
+            Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                      child: Form(
+                        key: _formKey,
+                        child: ListView(
+                          physics: BouncingScrollPhysics(),
+                          children: fieldList(),
+                        ),
+                      )
+                  )
+                ],
               ),
-              Container(
-                alignment: Alignment.bottomRight,
-                padding: EdgeInsets.all(24.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    FloatingActionButton(
+            ),
+            Container(
+              alignment: Alignment.bottomRight,
+              padding: EdgeInsets.all(24.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  FloatingActionButton(
                       child: Icon(Icons.arrow_forward),
                       onPressed: (){
                         if(_formKey.currentState.validate()) _Nextpage();
                       }
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          )
-      ),
+            ),
+          ],
+        )
     );
   }
 

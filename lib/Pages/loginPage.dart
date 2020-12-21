@@ -41,37 +41,34 @@ class LoginPageState extends State<LoginPage> {
   }
 
   Widget buildBody () {
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Container(
-        padding: EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            FlutterLogo(size: 150.0),
-            SizedBox(height: 150.0),
-            Container(
-              width: 300.0,
-              child: RaisedButton(
-                highlightElevation: 0.0,
-                padding: EdgeInsets.all(16.0),
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0),
+    return Container(
+      padding: EdgeInsets.all(24.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          FlutterLogo(size: 150.0),
+          SizedBox(height: 150.0),
+          Container(
+            width: 300.0,
+            child: RaisedButton(
+              highlightElevation: 0.0,
+              padding: EdgeInsets.all(16.0),
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
 //              side: BorderSide(color: Colors.grey.shade200, width: 4.0)
-                ),
-                child: Row(
-                  children: <Widget>[
-                    Image(image: AssetImage("assets/icons/google_logo.png"), height: 18.0),
-                    SizedBox(width: 24.0),
-                    Text('SIGN IN WITH GOOGLE', style: TextStyle(color: Colors.black54, fontSize: 14.0, fontFamily: 'Roboto'))
-                  ],
-                ),
-                onPressed: _handleSignIn,
               ),
-            )
-          ],
-        ),
+              child: Row(
+                children: <Widget>[
+                  Image(image: AssetImage("assets/icons/google_logo.png"), height: 18.0),
+                  SizedBox(width: 24.0),
+                  Text('SIGN IN WITH GOOGLE', style: TextStyle(color: Colors.black54, fontSize: 14.0, fontFamily: 'Roboto'))
+                ],
+              ),
+              onPressed: _handleSignIn,
+            ),
+          )
+        ],
       ),
     );
   }
@@ -130,11 +127,11 @@ class LoginPageState extends State<LoginPage> {
           initsocket();
 
           Navigator.of(context).pop(); //Pop Loading Dialog
-          Navigator.push(context, MaterialPageRoute(
+          Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) => HomeNavigation()));
         }else{
           Navigator.of(context).pop(); //Pop Loading Dialog
-          Navigator.push(context, MaterialPageRoute(
+          Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) => SignUpPage()));
         }
       }

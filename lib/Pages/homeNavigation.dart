@@ -92,29 +92,26 @@ class HomeNavigationState extends State<HomeNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
-        body: pageRoute()[selectedBarIndex],
-        bottomNavigationBar: BottomNavigationBar(
-          items: widget.barItems(),
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.white,
-          selectedItemColor:  Colors.black,
-          selectedFontSize: 12.0,
-          selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-          currentIndex: selectedBarIndex,
-          onTap: (index) {
-            if ( index == 0 ){
-              isNeed2Update = currentUser.status.navbarNoti;
-              currentUser.status.navbarNoti = false;
-              print(currentUser.status.navbarNoti);
-            }
-            setState(() {
-              selectedBarIndex = index;
-            });
-          },
-        ),
+    return Scaffold(
+      body: pageRoute()[selectedBarIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        items: widget.barItems(),
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.white,
+        selectedItemColor:  Colors.black,
+        selectedFontSize: 12.0,
+        selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+        currentIndex: selectedBarIndex,
+        onTap: (index) {
+          if ( index == 0 ){
+            isNeed2Update = currentUser.status.navbarNoti;
+            currentUser.status.navbarNoti = false;
+            print(currentUser.status.navbarNoti);
+          }
+          setState(() {
+            selectedBarIndex = index;
+          });
+        },
       ),
     );
   }

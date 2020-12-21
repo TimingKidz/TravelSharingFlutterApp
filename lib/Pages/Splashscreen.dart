@@ -64,10 +64,13 @@ class SplashscreenState extends State<Splashscreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: FlutterLogo(size: 180.0),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: FlutterLogo(size: 180.0),
+        ),
       ),
     );
   }
@@ -111,15 +114,15 @@ class SplashscreenState extends State<Splashscreen> {
           await currentUser.updateToken(tokenID);
 
           initsocket();
-          Navigator.push(context, MaterialPageRoute(
+          Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) => HomeNavigation()));
         }else{
           Navigator.of(context).pop(); //Pop Loading Dialog
-          Navigator.push(context, MaterialPageRoute(
+          Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) => SignUpPage()));
         }
       }else{
-        Navigator.push(context, MaterialPageRoute(
+        Navigator.pushReplacement(context, MaterialPageRoute(
             builder: (context) => LoginPage()));
       }
     // });
