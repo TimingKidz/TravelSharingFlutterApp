@@ -9,6 +9,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/homeNavigation.dart';
 import 'package:travel_sharing/Pages/signupPage.dart';
+import 'package:travel_sharing/buttons/CardDropdown.dart';
 import 'package:travel_sharing/main.dart';
 import 'loginPage.dart';
 
@@ -64,6 +65,16 @@ class SplashscreenState extends State<Splashscreen> {
 
   @override
   Widget build(BuildContext context) {
+    // return Scaffold(
+    //   body: Center(
+    //     child: Padding(
+    //       padding: EdgeInsets.all(16.0),
+    //       child: CardDropdown(
+    //         text: "GG",
+    //       ),
+    //     ),
+    //   ),
+    // );
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(

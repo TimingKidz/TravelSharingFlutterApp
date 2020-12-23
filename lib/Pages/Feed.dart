@@ -32,7 +32,6 @@ class FeedPageState extends State<FeedPage> {
   void initState() {
     super.initState();
     _pageConfig();
-    print(currentUser.uid);
   }
 
   @override
@@ -50,21 +49,47 @@ class FeedPageState extends State<FeedPage> {
                       bottomRight: Radius.circular(30.0)
                   )
               ),
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.only(left: 24.0, top: 16.0, bottom: 30.0, right: 24.0),
-                child: SafeArea(
-                  child: Text(
-                    "Feed",
-                    style: TextStyle(
-                      // fontWeight: FontWeight.bold,
-                        fontSize: 20.0,
-                        color: Colors.white
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.only(left: 24.0, top: 16.0, right: 24.0),
+                    child: SafeArea(
+                      child: Text(
+                        "Feed",
+                        style: TextStyle(
+                          // fontWeight: FontWeight.bold,
+                            fontSize: 20.0,
+                            color: Colors.white
+                        ),
+                        // textAlign: TextAlign.center,
+                      ),
                     ),
-                    // textAlign: TextAlign.center,
                   ),
-                ),
-              ),
+                  Card(
+                    elevation: 2,
+                    margin: EdgeInsets.all(16.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0)
+                    ),
+                    child: Container(
+                      width: double.infinity,
+                      child: Row(
+                        children: <Widget>[
+                          // Text("Search"),
+                          Spacer(),
+                          IconButton(
+                            icon: Icon(Icons.filter_list),
+                            onPressed: (){
+
+                            },
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              )
             ),
             Expanded(
               child: list.isNotEmpty ? _buildListView() : Center(
@@ -116,11 +141,14 @@ class FeedPageState extends State<FeedPage> {
           print(i);
           if(i >= currentI ){
             getData(feed.Offset);
-            return Center(
-              child: SizedBox(
-                child: CircularProgressIndicator(),
-                height: 24,
-                width: 24,
+            return Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Center(
+                child: SizedBox(
+                  child: CircularProgressIndicator(),
+                  height: 24,
+                  width: 24,
+                ),
               ),
             );
           }else{
@@ -133,6 +161,7 @@ class FeedPageState extends State<FeedPage> {
   Widget _buildRow(Feed data) {
     return CardTileWithTap(
       data: data.routes,
+      isFeed: true,
     );
   }
 

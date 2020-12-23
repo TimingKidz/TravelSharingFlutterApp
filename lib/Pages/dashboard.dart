@@ -204,6 +204,7 @@ class _Dashboard extends State<Dashboard> {
   Widget _buildRow(Travel_Info data) {
     print(data);
     return CardTileWithTap(
+      isFeed: false,
       data: data.routes,
       onCardPressed: () => _onCardPressed(data),
     );
