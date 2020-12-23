@@ -101,6 +101,9 @@ class HomeNavigationState extends State<HomeNavigation> {
         selectedItemColor:  Colors.black,
         selectedFontSize: 12.0,
         selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        iconSize: 26,
         currentIndex: selectedBarIndex,
         onTap: (index) {
           if ( index == 0 ){
