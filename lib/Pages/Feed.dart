@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/Feed.dart';
 import 'package:travel_sharing/Class/Feeds.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
+import 'package:travel_sharing/buttons/FeedCardTile.dart';
 import 'package:travel_sharing/main.dart';
-import 'package:travel_sharing/buttons/cardTileWithTap.dart';
+import 'package:travel_sharing/buttons/DashboardCardTile.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 
 
@@ -159,9 +160,8 @@ class FeedPageState extends State<FeedPage> {
   }
 
   Widget _buildRow(Feed data) {
-    return CardTileWithTap(
-      data: data.routes,
-      isFeed: true,
+    return FeedCardTile(
+      data: data,
     );
   }
 

@@ -7,7 +7,7 @@ import 'package:travel_sharing/Pages/Matchinformation.dart';
 import 'package:travel_sharing/Pages/ReqList.dart';
 import 'package:travel_sharing/Pages/map.dart';
 import 'package:location/location.dart' ;
-import 'package:travel_sharing/buttons/cardTileWithTap.dart';
+import 'package:travel_sharing/buttons/DashboardCardTile.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 import 'package:travel_sharing/main.dart';
 
@@ -203,8 +203,7 @@ class _Dashboard extends State<Dashboard> {
 
   Widget _buildRow(Travel_Info data) {
     print(data);
-    return CardTileWithTap(
-      isFeed: false,
+    return DashboardCardTile(
       data: data.routes,
       onCardPressed: () => _onCardPressed(data),
     );
