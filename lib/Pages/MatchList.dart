@@ -88,7 +88,7 @@ class _MatchListstate extends State<MatchList> {
   // get Match list of current routes
   Future<void> getData() async {
     try{
-      _MatchList =  await Match_Info().getNearRoutes(widget.data.routes) ?? [];
+      _MatchList =  await Match_Info().getMatchList(widget.data.routes) ?? [];
       isreq = await User().getisReq(widget.data.id, widget.data.uid) ?? [];
       setState(() {});
     }catch(error){
@@ -115,21 +115,12 @@ class _MatchListstate extends State<MatchList> {
   }
 
   Widget _buildRow( Match_Info data) {
-    if(isreq.contains(data.uid)){
       return CardTileWithTapMatch(
         data: data,
-        isreq: true,
+        isreq: isreq.contains(data.routes.uid),
         onCardPressed:() => _onCardPressed(data),
         onButtonPressed: () => _onButtonPressed(data),
       );
-    }else{
-      return CardTileWithTapMatch(
-        data: data,
-        isreq: false,
-        onCardPressed:() => _onCardPressed(data),
-        onButtonPressed: () => _onButtonPressed(data),
-      );
-    }
   }
 
   _onCardPressed(Match_Info data) {

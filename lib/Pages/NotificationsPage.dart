@@ -5,9 +5,10 @@ import 'package:travel_sharing/main.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 
 class NotificationsPage extends StatefulWidget{
- final bool isNeed2Update;
+  final Function setSate;
+  final bool isNeed2Update;
 
-  const NotificationsPage({Key key, this.isNeed2Update}) : super(key: key);
+  const NotificationsPage({Key key, this.setSate,this.isNeed2Update}) : super(key: key);
   NotificationsPageState createState() => NotificationsPageState();
 }
 
@@ -31,8 +32,13 @@ class NotificationsPageState extends State<NotificationsPage>{
   _pageConfig(){
     getData(widget.isNeed2Update);
     socket.off('onNewNotification');
+    socket.off('onNewAccept');
 
-    socket.on('onNewNotification', (data) => getData(false));
+    socket.on('onNewAccept',(data){
+      currentUser.status.navbarTrip = true;
+      widget.setSate();
+    });
+    socket.on('onNewNotification', (data) => getData(true));
     firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
           if( message['data']['page'] != '/NotificationPage' ){

@@ -33,7 +33,10 @@ class User {
         vehicle.add(Vehicle.fromJson(data));
     });
     token = json['token'];
-    status = Status.fromJson(json['status']);
+    if( json['status'] != null){
+      status = Status.fromJson(json['status']);
+    }
+
   }
 
   Map<String, dynamic> toJson() {

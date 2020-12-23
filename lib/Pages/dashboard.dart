@@ -40,9 +40,41 @@ class _Dashboard extends State<Dashboard> {
     _pageConfig();
   }
 
+  _updateCardStatus(String tripid){
+    _invitedList.forEach((x){
+      if (x.uid == tripid){
+        x.routes.status = true;
+      }
+    });
+    _joinList.forEach((x){
+      if (x.uid == tripid){
+        x.routes.status = true;
+      }
+    });
+    setState((){});
+  }
+
   _pageConfig() async {
     await getData();
     socket.off('onNewNotification');
+    socket.off('onNewAccept');
+    socket.off('onNewMatch');
+    socket.off('onNewMessage');
+    socket.on('onRequest', (data) {
+      _updateCardStatus(data['tripid']);
+    });
+    socket.on('onNewMatch' , (data){
+      print("onNewMatch");
+      _updateCardStatus(data['tripid']);
+    });
+    socket.on('onNewAccept',(data){
+      print("onNewAccept");
+      _updateCardStatus(data['tripid']);
+    });
+    socket.on('onNewMessage',(data){
+      print("onNewMessage");
+      _updateCardStatus(data['tripid']);
+    });
     socket.on('onNewNotification', (data) {
       currentUser.status.navbarNoti = true;
       widget.setSate();

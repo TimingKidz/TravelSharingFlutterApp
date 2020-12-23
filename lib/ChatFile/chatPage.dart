@@ -39,7 +39,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
       currentUser.status.navbarNoti = true;
     });
     socket.on('onNewMessage', (data) {
-      messagesReverseList.insert(0, Message.fromJson(data));
+      messagesReverseList.insert(0, Message.fromJson(data["messages"]));
       setState(() { });
     });
     firebaseMessaging.configure(

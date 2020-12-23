@@ -94,8 +94,6 @@ class SplashscreenState extends State<Splashscreen> {
     }
   }
 
-
-
   Future<void> _signInCheck() async {
     var isSignedIn = await googleSignIn.isSignedIn();
     // Future.delayed(Duration(seconds: 1), () async {
@@ -117,7 +115,6 @@ class SplashscreenState extends State<Splashscreen> {
           Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) => HomeNavigation()));
         }else{
-          Navigator.of(context).pop(); //Pop Loading Dialog
           Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) => SignUpPage()));
         }

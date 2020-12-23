@@ -3,23 +3,20 @@ import 'dart:convert';
 import 'package:http/http.dart' as Http;
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/Travel_Info.dart';
+import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/main.dart';
 
 class Req_Info {
   Routes routes;
-  String id;
-  String uid;
-  String name;
+  User user;
   String reqid;
 
-  Req_Info({this.routes, this.id,this.uid,this.name,this.reqid});
+  Req_Info({this.routes,this.user,this.reqid});
 
   Req_Info.fromJson(Map<String, dynamic> json) {
     routes = Routes.fromJson(json['detail']);
-    id = json['id'];
-    uid = json['_id'];
-    name = json['name'];
-    reqid = json['reqid'];
+    user = User.fromJson(json['detail']['id']);
+    reqid = json['_id'];
   }
 
   Future<List<Req_Info>> getReq(Travel_Info data) async {

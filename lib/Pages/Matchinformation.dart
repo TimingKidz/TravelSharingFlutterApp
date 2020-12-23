@@ -49,6 +49,7 @@ class _Matchinformation extends State<Matchinformation> {
   _pageConfig(){
     getData();
     socket.off('onNewNotification');
+
     socket.on('onNewNotification', (data) {
       currentUser.status.navbarNoti = true;
     });
@@ -213,13 +214,13 @@ class _Matchinformation extends State<Matchinformation> {
                                     fontSize: 16.0,
                                   ),
                                 ),
-                                if(widget.data != null)
+                                if(widget.data != null && tripDetails.routes.isMatch == false)
                                   ClipOval(
                                     child: Material(
                                       child: InkWell(
                                         child: SizedBox(width: 32, height: 32, child: Icon(Icons.add)),
                                         onTap: () {
-                                          Navigator.push(context, MaterialPageRoute(
+                                          Navigator.pushReplacement(context, MaterialPageRoute(
                                               builder: (context) => ReqList(data: widget.data))).then((value){
                                                 _pageConfig();
                                           });
@@ -239,7 +240,7 @@ class _Matchinformation extends State<Matchinformation> {
                   ),
                 ),
                 SizedBox(height: 8.0),
-                if(currentUser.uid == tripDetails.hostUser.uid && tripDetails.routes.isMatch == false )
+                if(currentUser.uid == tripDetails.hostUser.uid )
                   Container(
                     width: double.infinity,
                     child: RaisedButton(

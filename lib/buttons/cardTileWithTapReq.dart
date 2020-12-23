@@ -59,7 +59,7 @@ class CardTileWithTapReqState extends State<CardTileWithTapReq> {
                       children: <Widget>[
                         Icon(Icons.account_circle, size: 32.0),
                         SizedBox(width: 8.0),
-                        Text(widget.data.name, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                        Text(widget.data.user.name, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
                       ],
                     )
                   ],

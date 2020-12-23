@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/Pages/VehicleManagement/VehicleAddForm.dart';
 import 'package:travel_sharing/buttons/VehicleCardTileFull.dart';
@@ -29,6 +30,7 @@ class VehicleManagePageState extends State<VehicleManagePage> {
             onPressed: () async {
                   Navigator.push(context,MaterialPageRoute(
                   builder : (context) => VehicleAddForm())).then((value){
+                   getData();
                 _pageConfig();
                 setState((){});
               });

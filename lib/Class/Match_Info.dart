@@ -1,27 +1,24 @@
 import 'package:http/http.dart' as Http;
 import 'package:travel_sharing/Class/RouteJson.dart';
+import 'package:travel_sharing/Class/User.dart';
 import 'dart:convert';
 import 'package:travel_sharing/main.dart';
 
 class Match_Info {
   Routes routes;
-  String id;
-  String uid;
-  String name;
+  User user;
 
-  Match_Info({this.routes, this.id ,this.uid,this.name});
+  Match_Info({this.routes,this.user});
 
   Match_Info.fromJson(Map<String, dynamic> json) {
-    routes = Routes.fromJson(json['detail']);
-    id = json['detail']['id'];
-    uid = json['_id'];
-    name = json['name'];
+    routes = Routes.fromJson(json);
+    user = User.fromJson(json['id']);
   }
 
-  Future< List<Match_Info>> getNearRoutes(Routes My_Routes) async {
+  Future< List<Match_Info>> getMatchList(Routes My_Routes) async {
     try{
-      var url = "${HTTP().API_IP}/api/routes/getNearRoutes";
-      Http.Response response = await Http.post(url, headers: await HTTP().header(), body: jsonEncode( My_Routes.toJson()));
+      var url = "${HTTP().API_IP}/api/routes/getMatchList";
+      Http.Response response = await Http.post(url, headers: await HTTP().header(), body: jsonEncode( {"user": My_Routes.id,"tripid" : My_Routes.uid}));
       if(response.statusCode == 400 ){
         return Future.value(null);
       }else{

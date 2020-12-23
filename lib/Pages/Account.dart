@@ -119,10 +119,12 @@ class AccountState extends State<Account> {
 
   _pageConfig(){
     socket.off('onNewNotification');
-    socket.on('onNewNotification', (data) {
-      currentUser.status.navbarNoti = true;
+    socket.off('onNewAccept');
+
+    socket.on('onNewAccept',(data){
+      currentUser.status.navbarTrip = true;
+      widget.setSate();
     });
-    socket.off('onNewNotification');
     socket.on('onNewNotification', (data) {
       currentUser.status.navbarNoti = true;
       widget.setSate();
@@ -189,6 +191,8 @@ class AccountState extends State<Account> {
   }
 
   Future<void> _handleSignOut() async {
+    socket.disconnect();
+
     await googleSignIn.disconnect();
     // set user.token_id in DB to " "
     Navigator.of(context)

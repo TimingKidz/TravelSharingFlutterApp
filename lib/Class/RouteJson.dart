@@ -20,6 +20,7 @@ class Routes {
   bool isMatch;
   List<String> match;
   String role;
+  bool status;
 
   Routes({this.uid,this.id,this.routes, this.src,this.dst,this.amount,this.date,this.isMatch,this.match,this.role});
 
@@ -56,6 +57,7 @@ class Routes {
     }
     isMatch = json['isMatch'];
     role = json['role'];
+    status = json['status'];
   }
 
   Map<String, dynamic> toJson() {
@@ -95,8 +97,8 @@ class Routes {
       var url = "${HTTP().API_IP}/api/routes/request";
       Map<String,dynamic> temp = {
         'detail' : data0.routes.toJson(),
-        'to_id' : data.uid,
-        'toid' : data.id,
+        'to_id' : data.routes.uid,
+        'toid' : data.user.uid,
         'form_id' : data0.uid,
         'formid' : data0.id };
       jsonEncode(temp);

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/Feed.dart';
+import 'package:travel_sharing/Class/Feeds.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:travel_sharing/buttons/cardTileWithTap.dart';
@@ -16,9 +17,9 @@ class FeedPage extends StatefulWidget {
 }
 
 class FeedPageState extends State<FeedPage> {
-  Feed feed;
+  Feeds feed;
   int currentI = 0;
-  List<Routes> list = List();
+  List<Feed> list = List();
 
   @override
   void setState(fn) {
@@ -31,6 +32,7 @@ class FeedPageState extends State<FeedPage> {
   void initState() {
     super.initState();
     _pageConfig();
+    print(currentUser.uid);
   }
 
   @override
@@ -77,6 +79,11 @@ class FeedPageState extends State<FeedPage> {
   _pageConfig(){
     getData(0);
     socket.off('onNewNotification');
+    socket.off('onNewAccept');
+    socket.on('onNewAccept',(data){
+      currentUser.status.navbarTrip = true;
+      widget.setSate();
+    });
     socket.on('onNewNotification', (data) {
       currentUser.status.navbarNoti = true;
       widget.setSate();
@@ -91,9 +98,9 @@ class FeedPageState extends State<FeedPage> {
 
   getData(int offset) async {
     try{
-      feed = await Feed().getFeed(offset);
+      feed = await Feeds().getFeed(offset);
       print(feed.Offset);
-      list = list + feed.Allroutes;
+      list = list + feed.feeds;
       currentI = feed.Offset;
       setState(() { });
     }catch(error){
@@ -117,15 +124,15 @@ class FeedPageState extends State<FeedPage> {
               ),
             );
           }else{
-            return _buildRow(list[i]);
+              return _buildRow(list[i]);
           }
         }
     );
   }
 
-  Widget _buildRow(Routes data) {
+  Widget _buildRow(Feed data) {
     return CardTileWithTap(
-      data: data,
+      data: data.routes,
     );
   }
 
