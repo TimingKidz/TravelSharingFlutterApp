@@ -25,6 +25,8 @@ class _Dashboard extends State<Dashboard> {
   LocationData Locations;
   List<Travel_Info> _joinList  = List();
   List<Travel_Info> _invitedList = List();
+  // GlobalKey actionKey = GlobalKey();
+  // double height;
   bool isFirstPage = true;
 
   @override
@@ -38,7 +40,15 @@ class _Dashboard extends State<Dashboard> {
   void initState() {
     super.initState();
     _pageConfig();
+    // WidgetsBinding.instance.addPostFrameCallback((_) => _getHeight());
   }
+
+  // void _getHeight(){
+  //   RenderBox renderBox = actionKey.currentContext.findRenderObject();
+  //   height = renderBox.size.height;
+  //   print("HEIGHT:" + height.toString());
+  //   setState(() {});
+  // }
 
   _updateCardStatus(String tripid){
     _invitedList.forEach((x){
@@ -103,20 +113,25 @@ class _Dashboard extends State<Dashboard> {
         backgroundColor: isFirstPage ? Theme.of(context).accentColor : Theme.of(context).accentColor,
         heroTag: null,
       ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            Card(
-              elevation: 2.0,
-              margin: EdgeInsets.all(0.0),
-              color: isFirstPage ? Theme.of(context).colorScheme.darkBlue : Theme.of(context).colorScheme.amber,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(30.0),
-                      bottomRight: Radius.circular(30.0)
-                  )
-              ),
-              child: Container(
+      body: Stack(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(top: 80),
+            child: _widgetOptions(),
+          ),
+          // AppBar
+          Card(
+            // key: actionKey,
+            elevation: 2.0,
+            margin: EdgeInsets.all(0.0),
+            color: isFirstPage ? Theme.of(context).colorScheme.darkBlue : Theme.of(context).colorScheme.amber,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(30.0),
+                    bottomRight: Radius.circular(30.0)
+                )
+            ),
+            child: Container(
                 padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 20.0, top: 8.0),
                 child: SafeArea(
                   child: Row(
@@ -157,14 +172,10 @@ class _Dashboard extends State<Dashboard> {
                     ],
                   ),
                 )
-              ),
             ),
-            Expanded(
-              child: _widgetOptions(),
-            )
-          ],
-        ),
-      ),
+          ),
+        ],
+      )
     );
   }
 

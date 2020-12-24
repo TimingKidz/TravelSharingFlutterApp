@@ -19,6 +19,8 @@ class FeedPage extends StatefulWidget {
 
 class FeedPageState extends State<FeedPage> {
   Feeds feed;
+  GlobalKey actionKey = GlobalKey();
+  double height;
   int currentI = 0;
   List<Feed> list = List();
 
@@ -33,69 +35,83 @@ class FeedPageState extends State<FeedPage> {
   void initState() {
     super.initState();
     _pageConfig();
+    // WidgetsBinding.instance.addPostFrameCallback((_) => _getHeight());
   }
+
+  // void _getHeight(){
+  //   RenderBox renderBox = actionKey.currentContext.findRenderObject();
+  //   height = renderBox.size.height;
+  //   print(height);
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
+        body: Stack(
           children: <Widget>[
-            Card(
-              elevation: 2.0,
-              margin: EdgeInsets.all(0.0),
-              color: Theme.of(context).primaryColor,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(30.0),
-                      bottomRight: Radius.circular(30.0)
-                  )
+            Padding(
+              padding: EdgeInsets.only(top: 100),
+              child: list.isNotEmpty
+                  ? _buildListView()
+                  : Center(child: Text("Nothing in feed yet."),
               ),
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.only(left: 24.0, top: 16.0, right: 24.0),
-                    child: SafeArea(
-                      child: Text(
-                        "Feed",
-                        style: TextStyle(
-                          // fontWeight: FontWeight.bold,
-                            fontSize: 20.0,
-                            color: Colors.white
-                        ),
-                        // textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                  Card(
-                    elevation: 2,
-                    margin: EdgeInsets.all(16.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0)
-                    ),
-                    child: Container(
-                      width: double.infinity,
-                      child: Row(
-                        children: <Widget>[
-                          // Text("Search"),
-                          Spacer(),
-                          IconButton(
-                            icon: Icon(Icons.filter_list),
-                            onPressed: (){
-
-                            },
-                          )
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              )
             ),
-            Expanded(
-              child: list.isNotEmpty ? _buildListView() : Center(
-                child: Text("Nothing in feed yet."),
-              ),
+            Wrap(
+              children: <Widget>[
+                Card(
+                  // key: actionKey,
+                    elevation: 2.0,
+                    margin: EdgeInsets.all(0.0),
+                    color: Theme.of(context).primaryColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(30.0),
+                            bottomRight: Radius.circular(30.0)
+                        )
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.only(left: 24.0, top: 16.0, right: 24.0),
+                          child: SafeArea(
+                            child: Text(
+                              "Feed",
+                              style: TextStyle(
+                                // fontWeight: FontWeight.bold,
+                                  fontSize: 20.0,
+                                  color: Colors.white
+                              ),
+                              // textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        Card(
+                          elevation: 2,
+                          margin: EdgeInsets.all(16.0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0)
+                          ),
+                          child: Container(
+                            width: double.infinity,
+                            child: Row(
+                              children: <Widget>[
+                                // Text("Search"),
+                                Spacer(),
+                                IconButton(
+                                  icon: Icon(Icons.filter_list),
+                                  onPressed: (){
+
+                                  },
+                                )
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    )
+                ),
+              ],
             )
           ],
         )

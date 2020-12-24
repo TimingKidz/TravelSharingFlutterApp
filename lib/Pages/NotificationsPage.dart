@@ -61,8 +61,14 @@ class NotificationsPageState extends State<NotificationsPage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
+        body: Stack(
           children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(top: 80),
+              child: notifications.isNotEmpty ? _buildListView() : Center(
+                child: Text("Nothing in notifications yet."),
+              ),
+            ),
             Card(
               elevation: 2.0,
               margin: EdgeInsets.all(0.0),
@@ -89,11 +95,6 @@ class NotificationsPageState extends State<NotificationsPage>{
                 ),
               ),
             ),
-            Expanded(
-              child: notifications.isNotEmpty ? _buildListView() : Center(
-                child: Text("Nothing in notifications yet."),
-              ),
-            )
           ],
         )
     );
