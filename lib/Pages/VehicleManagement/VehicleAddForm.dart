@@ -49,6 +49,26 @@ class VehicleAddFormState extends State<VehicleAddForm> {
 
   _pageConfig(){
     socket.off('onNewNotification');
+    socket.off('onNewAccept');
+    socket.off('onNewMatch');
+    socket.off('onNewMessage');
+    socket.off('onRequest');
+
+    socket.on('onRequest', (data) {
+      currentUser.status.navbarTrip = true;
+    });
+    socket.on('onNewMatch' , (data){
+      currentUser.status.navbarTrip = true;
+    });
+    socket.on('onNewAccept', (data){
+      currentUser.status.navbarTrip = true;
+    });
+    socket.on('onNewMessage',(data){
+      currentUser.status.navbarTrip = true;
+    });
+    socket.on('onNewAccept',(data){
+      currentUser.status.navbarTrip = true;
+    });
     socket.on('onNewNotification', (data) {
       currentUser.status.navbarNoti = true;
     });

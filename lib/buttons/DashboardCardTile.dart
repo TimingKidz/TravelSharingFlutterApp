@@ -9,11 +9,13 @@ class DashboardCardTile extends StatefulWidget {
   final Routes data;
   final IconData iconData;
   final Function onCardPressed;
+  final bool status;
 
   DashboardCardTile({
     this.data,
     this.iconData,
-    this.onCardPressed
+    this.onCardPressed,
+    this.status
   });
 
 
@@ -122,6 +124,7 @@ class DashboardCardTileState extends State<DashboardCardTile> {
                     ],
                   ),
                   // Notification badge
+                  if(widget.status)
                   Align(
                     alignment: Alignment.topRight,
                     child: Material(

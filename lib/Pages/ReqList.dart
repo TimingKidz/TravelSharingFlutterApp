@@ -67,6 +67,10 @@ class _ReqListstate extends State<ReqList> {
 
   _pageConfig() async {
     await getData();
+    socket.off('onNewAccept');
+    socket.off('onNewMatch');
+    socket.off('onNewMessage');
+    socket.off('onRequest');
     socket.off('onNewNotification');
     socket.on('onNewNotification', (data) {
       currentUser.status.navbarNoti = true;

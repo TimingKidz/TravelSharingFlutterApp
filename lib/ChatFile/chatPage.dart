@@ -7,7 +7,8 @@ import 'package:travel_sharing/main.dart';
 
 class ChatPage extends StatefulWidget {
   final String tripid;
-  ChatPage({this.tripid});
+  final String currentTripid;
+  ChatPage({this.tripid,this.currentTripid});
   ChatPageState createState() => ChatPageState();
 }
 
@@ -35,11 +36,13 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
   _pageConfig(){
     getData();
     socket.off('onNewNotification');
+    socket.off('onNewMessage');
+
     socket.on('onNewNotification', (data) {
       currentUser.status.navbarNoti = true;
     });
     socket.on('onNewMessage', (data) {
-      messagesReverseList.insert(0, Message.fromJson(data["messages"]));
+      messagesReverseList.insert(0, Message.fromJson(data["data"]));
       setState(() { });
     });
     firebaseMessaging.configure(
@@ -166,7 +169,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
               child: Icon(Icons.send),
               onTap: () {
                 debugPrint('Send');
-                Message().sendMessage(widget.tripid,textController.text, currentUser.uid, currentUser.name);
+                Message().sendMessage(widget.tripid,textController.text, currentUser.uid, currentUser.name,widget.currentTripid);
                 textController.clear();
               },
             )

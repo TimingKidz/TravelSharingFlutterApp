@@ -6,6 +6,7 @@ import 'package:travel_sharing/Class/Travel_Info.dart';
 import 'package:travel_sharing/Class/TripDetails.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/ReqList.dart';
+import 'package:travel_sharing/buttons/VehicleCardTileMin.dart';
 import 'package:travel_sharing/main.dart';
 
 class Matchinformation extends StatefulWidget {
@@ -30,7 +31,7 @@ class _Matchinformation extends State<Matchinformation> {
 
   Future<void> getData() async {
     try{
-      tripDetails =  await TripDetails().getDetails(widget.uid);
+      tripDetails =  await TripDetails().getDetails(widget.uid,widget.data.uid);
       print(tripDetails.hostUser.vehicle.first.toJson());
       setState(() {});
     }catch(error){
@@ -48,6 +49,10 @@ class _Matchinformation extends State<Matchinformation> {
 
   _pageConfig(){
     getData();
+    socket.off('onNewAccept');
+    socket.off('onNewMatch');
+    socket.off('onNewMessage');
+    socket.off('onRequest');
     socket.off('onNewNotification');
 
     socket.on('onNewNotification', (data) {
@@ -104,7 +109,7 @@ class _Matchinformation extends State<Matchinformation> {
                 icon: Icon(Icons.chat),
                 onPressed: (){
                   Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => ChatPage(tripid: widget.uid))).then((value){
+                      builder: (context) => ChatPage(tripid: widget.uid,currentTripid: widget.data.uid,))).then((value){
                         _pageConfig();
                   });
                 },
@@ -140,60 +145,7 @@ class _Matchinformation extends State<Matchinformation> {
                   ),
                 ),
                 SizedBox(height: 4.0),
-                Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0)
-                  ),
-                  child: Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              Icon(Icons.motorcycle),
-                              SizedBox(width: 8.0),
-                              Text(
-                                'Motorcycle',
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                ),
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 4.0),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  Text('ทะเบียน', style: TextStyle(color: Colors.black.withOpacity(0.7)),),
-                                  Text('1กณ 8698 ชร.')
-                                ],
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Text('ยี่ห้อ', style: TextStyle(color: Colors.black.withOpacity(0.7)),),
-                                  Text('Honda')
-                                ],
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Text('รุ่น', style: TextStyle(color: Colors.black.withOpacity(0.7)),),
-                                  Text('Moove')
-                                ],
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Text('สี', style: TextStyle(color: Colors.black.withOpacity(0.7)),),
-                                  Text('ส้ม-ดำ')
-                                ],
-                              )
-                            ],
-                          ),
-                        ],
-                      )
-                  ),
-                ),
+                VehicleCardTileMin(data: tripDetails.hostUser.vehicle.first),
                 SizedBox(height: 8.0),
                 Expanded(
                   child: Card(
@@ -214,7 +166,7 @@ class _Matchinformation extends State<Matchinformation> {
                                     fontSize: 16.0,
                                   ),
                                 ),
-                                if(widget.data != null && tripDetails.routes.isMatch == false)
+                                if(currentUser.uid == tripDetails.hostUser.uid && tripDetails.routes.isMatch == false)
                                   ClipOval(
                                     child: Material(
                                       child: InkWell(

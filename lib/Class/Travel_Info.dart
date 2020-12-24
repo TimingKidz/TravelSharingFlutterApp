@@ -18,11 +18,11 @@ class Travel_Info{
     uid = json['_id'];
   }
 
-  Future<List<Travel_Info>> getRoutes(String id,int role) async {
+  Future<List<Travel_Info>> getRoutes(String id,int role,bool isNeed2Update) async {
 //    try{
       Map<int,String> path = {0:'invite',1:'join'};
       var url = "${HTTP().API_IP}/api/routes/getRoutes";
-      Http.Response response = await Http.post(url,headers:await HTTP().header(), body: jsonEncode({'id':id,'role':role}));
+      Http.Response response = await Http.post(url,headers:await HTTP().header(), body: jsonEncode({'id':id,'role':role,'isNeed2Update' : isNeed2Update}));
       if(response.statusCode == 400 ){
         return Future.value(null);
       }else{

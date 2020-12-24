@@ -37,7 +37,6 @@ class _MatchListstate extends State<MatchList> {
   @override
   void dispose() {
     socket.off('onAccept');
-    socket.off('onNewMatch');
     super.dispose();
   }
 
@@ -49,6 +48,10 @@ class _MatchListstate extends State<MatchList> {
 
   _pageConfig(){
     getData();
+    socket.off('onNewAccept');
+    socket.off('onNewMatch');
+    socket.off('onNewMessage');
+    socket.off('onRequest');
     socket.off('onNewNotification');
     socket.on('onNewNotification', (data) {
       currentUser.status.navbarNoti = true;

@@ -14,8 +14,10 @@ import 'package:travel_sharing/main.dart';
 
 class Dashboard extends StatefulWidget {
   final Function setSate;
+  final bool isNeed2Update;
 
-  const Dashboard({Key key, this.setSate}) : super(key: key);
+
+  const Dashboard({Key key, this.isNeed2Update , this.setSate}) : super(key: key);
   @override
   _Dashboard createState() => _Dashboard();
 }
@@ -39,8 +41,9 @@ class _Dashboard extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
-    _pageConfig();
+    //_pageConfig();
     // WidgetsBinding.instance.addPostFrameCallback((_) => _getHeight());
+    _pageConfig(widget.isNeed2Update);
   }
 
   // void _getHeight(){
@@ -64,12 +67,30 @@ class _Dashboard extends State<Dashboard> {
     setState((){});
   }
 
-  _pageConfig() async {
-    await getData();
+  _deleteCard(String tripid){
+    int index = -1;
+    _joinList.forEach((x){
+      if (x.uid == tripid){
+        _joinList.indexOf(x);
+      }
+    });
+    if (index != -1)  _joinList.removeAt(index);
+    setState((){});
+  }
+
+  _pageConfig(bool isNeed2Update) async {
+    await getData(isNeed2Update);
     socket.off('onNewNotification');
     socket.off('onNewAccept');
     socket.off('onNewMatch');
     socket.off('onNewMessage');
+    socket.off('onRequest');
+    socket.off('onTripEnd');
+
+    socket.on('onTripEnd', (data) {
+      _deleteCard(data['tripid']);
+    });
+
     socket.on('onRequest', (data) {
       _updateCardStatus(data['tripid']);
     });
@@ -77,12 +98,13 @@ class _Dashboard extends State<Dashboard> {
       print("onNewMatch");
       _updateCardStatus(data['tripid']);
     });
-    socket.on('onNewAccept',(data){
+    socket.on('onNewAccept', (data){
       print("onNewAccept");
       _updateCardStatus(data['tripid']);
     });
     socket.on('onNewMessage',(data){
       print("onNewMessage");
+      print(data['tripid']);
       _updateCardStatus(data['tripid']);
     });
     socket.on('onNewNotification', (data) {
@@ -179,11 +201,11 @@ class _Dashboard extends State<Dashboard> {
     );
   }
 
-  Future<void> getData() async {
+  Future<void> getData(bool isNeed2Update) async {
     print("get");
     try{
-      _invitedList =  await Travel_Info().getRoutes(currentUser.uid,0) ?? [];
-      _joinList =  await Travel_Info().getRoutes(currentUser.uid,1) ?? [];
+      _invitedList =  await Travel_Info().getRoutes(currentUser.uid,0,isNeed2Update) ?? [];
+      _joinList =  await Travel_Info().getRoutes(currentUser.uid,1,isNeed2Update) ?? [];
       _invitedList.sort((a,b) => b.routes.date.compareTo(a.routes.date));
       _joinList.sort((a,b) => b.routes.date.compareTo(a.routes.date));
       setState(() {});
@@ -216,6 +238,7 @@ class _Dashboard extends State<Dashboard> {
     print(data);
     return DashboardCardTile(
       data: data.routes,
+      status: data.routes.status,
       onCardPressed: () => _onCardPressed(data),
     );
   }
@@ -224,14 +247,16 @@ class _Dashboard extends State<Dashboard> {
     if( isFirstPage ){
       if( data.routes.match.isNotEmpty ){
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => Matchinformation(uid: data.routes.match.first))).then((value) async {
-              _pageConfig();
+            builder: (context) => Matchinformation(uid: data.routes.match.first,data: data,))).then((value) async {
+          _pageConfig(currentUser.status.navbarTrip);
+          currentUser.status.navbarTrip = false;
           await widget.setSate();
         });
       }else{
         Navigator.push(context, MaterialPageRoute(
             builder: (context) => MatchList(data: data))).then((value) async {
-              _pageConfig();
+          _pageConfig(currentUser.status.navbarTrip);
+          currentUser.status.navbarTrip = false;
           await widget.setSate();
         });
       }
@@ -239,13 +264,15 @@ class _Dashboard extends State<Dashboard> {
       if( data.routes.match.isNotEmpty){
         Navigator.push(context, MaterialPageRoute(
             builder: (context) => Matchinformation(uid: data.uid, data: data))).then((value) async {
-              _pageConfig();
+          _pageConfig(currentUser.status.navbarTrip);
+          currentUser.status.navbarTrip = false;
           await widget.setSate();
         });
       }else{
         Navigator.push(context, MaterialPageRoute(
             builder: (context) => ReqList(data: data))).then((value) async {
-              _pageConfig();
+          _pageConfig(currentUser.status.navbarTrip);
+          currentUser.status.navbarTrip = false;
           await widget.setSate();
         });
       }
@@ -255,7 +282,8 @@ class _Dashboard extends State<Dashboard> {
   _newroute() async{
     Navigator.push(context, MaterialPageRoute(
         builder: (context) => CreateRoute())).then((value) async {
-          _pageConfig();
+      _pageConfig(currentUser.status.navbarTrip);
+      currentUser.status.navbarTrip = false;
       await widget.setSate();
     });
   }
@@ -263,7 +291,8 @@ class _Dashboard extends State<Dashboard> {
   _newroute1() async{
     Navigator.push(context, MaterialPageRoute(
         builder: (context) => CreateRoute_Join())).then((value) async {
-          _pageConfig();
+          _pageConfig(currentUser.status.navbarTrip);
+          currentUser.status.navbarTrip = false;
       await widget.setSate();
     });
   }

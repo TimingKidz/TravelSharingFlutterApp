@@ -120,7 +120,26 @@ class AccountState extends State<Account> {
   _pageConfig(){
     socket.off('onNewNotification');
     socket.off('onNewAccept');
+    socket.off('onNewMatch');
+    socket.off('onNewMessage');
+    socket.off('onRequest');
 
+    socket.on('onRequest', (data) {
+      currentUser.status.navbarTrip = true;
+      widget.setSate();
+    });
+    socket.on('onNewMatch' , (data){
+      currentUser.status.navbarTrip = true;
+      widget.setSate();
+    });
+    socket.on('onNewAccept', (data){
+      currentUser.status.navbarTrip = true;
+      widget.setSate();
+    });
+    socket.on('onNewMessage',(data){
+      currentUser.status.navbarTrip = true;
+      widget.setSate();
+    });
     socket.on('onNewAccept',(data){
       currentUser.status.navbarTrip = true;
       widget.setSate();

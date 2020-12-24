@@ -143,6 +143,10 @@ class _CreateRoutestate extends State<CreateRoute> {
   }
 
   _pageConfig(){
+    socket.off('onNewAccept');
+    socket.off('onNewMatch');
+    socket.off('onNewMessage');
+    socket.off('onRequest');
     socket.off('onNewNotification');
     socket.on('onNewNotification', (data) {
       currentUser.status.navbarNoti = true;

@@ -25,10 +25,10 @@ class TripDetails{
     });
   }
 
-  Future<TripDetails> getDetails(String uid) async {
+  Future<TripDetails> getDetails(String uid,String currentTripid) async {
     try{
       var url = "${HTTP().API_IP}/api/routes/Tripinformation";
-      Http.Response response = await Http.post(url, headers: await HTTP().header(), body: jsonEncode({"_id": uid}));
+      Http.Response response = await Http.post(url, headers: await HTTP().header(), body: jsonEncode({"_id": uid, "currentTripid" : currentTripid}));
       if(response.statusCode == 400){
         return Future.value(null);
       }else{

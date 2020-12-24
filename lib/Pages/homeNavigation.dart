@@ -48,7 +48,34 @@ class HomeNavigation extends StatefulWidget {
         title: Text('ฟีด'),
       ),
       BottomNavigationBarItem(
-        icon: Icon(Icons.adjust),
+        icon: new Stack(
+          children: <Widget>[
+            new Icon(Icons.adjust),
+            if( currentUser.status.navbarTrip )
+              new Positioned(
+                right: 0,
+                child: new Container(
+                  padding: EdgeInsets.all(1),
+                  decoration: new BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  constraints: BoxConstraints(
+                    minWidth: 12,
+                    minHeight: 12,
+                  ),
+                  child: new Text(
+                    '!',
+                    style: new TextStyle(
+                      color: Colors.white,
+                      fontSize: 8,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              )
+          ],
+        ),
 //      title: Text('On going'),
         title: Text('การเดินทาง'),
       ),
@@ -66,7 +93,7 @@ class HomeNavigation extends StatefulWidget {
 
 class HomeNavigationState extends State<HomeNavigation> {
   int selectedBarIndex = 1;
-  bool isNeed2Update = false;
+  List<bool> isNeed2Update = [false,false];
 
   @override
   void setState(fn) {
@@ -83,9 +110,9 @@ class HomeNavigationState extends State<HomeNavigation> {
 
   List<Widget> pageRoute(){
     return [
-      NotificationsPage(isNeed2Update: isNeed2Update),
+      NotificationsPage(isNeed2Update: isNeed2Update[0] , setSate:() => setState(() { }) ),
       FeedPage(setSate:() => setState((){})),
-      Dashboard(setSate:() => setState((){})),
+      Dashboard(isNeed2Update : isNeed2Update[1] ,setSate:() => setState((){})),
       Account(setSate:() => setState((){}))
     ];
   }
@@ -107,9 +134,14 @@ class HomeNavigationState extends State<HomeNavigation> {
         currentIndex: selectedBarIndex,
         onTap: (index) {
           if ( index == 0 ){
-            isNeed2Update = currentUser.status.navbarNoti;
+            isNeed2Update[0] = currentUser.status.navbarNoti;
             currentUser.status.navbarNoti = false;
             print(currentUser.status.navbarNoti);
+          }
+          if ( index == 2){
+            isNeed2Update[1] = currentUser.status.navbarTrip;
+            currentUser.status.navbarTrip = false;
+            print(currentUser.status.navbarTrip);
           }
           setState(() {
             selectedBarIndex = index;

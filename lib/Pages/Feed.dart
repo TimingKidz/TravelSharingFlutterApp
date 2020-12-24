@@ -50,7 +50,7 @@ class FeedPageState extends State<FeedPage> {
         body: Stack(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(top: 100),
+              padding: EdgeInsets.only(top: 120),
               child: list.isNotEmpty
                   ? _buildListView()
                   : Center(child: Text("Nothing in feed yet."),
@@ -122,12 +122,34 @@ class FeedPageState extends State<FeedPage> {
     getData(0);
     socket.off('onNewNotification');
     socket.off('onNewAccept');
+    socket.off('onNewMatch');
+    socket.off('onNewMessage');
+    socket.off('onRequest');
+
+    socket.on('onRequest', (data) {
+      currentUser.status.navbarTrip = true;
+      widget.setSate();
+    });
+    socket.on('onNewMatch' , (data){
+      currentUser.status.navbarTrip = true;
+      widget.setSate();
+    });
+    socket.on('onNewAccept', (data){
+      currentUser.status.navbarTrip = true;
+      widget.setSate();
+    });
+    socket.on('onNewMessage',(data){
+      currentUser.status.navbarTrip = true;
+      widget.setSate();
+    });
     socket.on('onNewAccept',(data){
       currentUser.status.navbarTrip = true;
       widget.setSate();
     });
     socket.on('onNewNotification', (data) {
+      print(currentUser.status.navbarNoti);
       currentUser.status.navbarNoti = true;
+      print(currentUser.status.navbarNoti);
       widget.setSate();
     });
     firebaseMessaging.configure(

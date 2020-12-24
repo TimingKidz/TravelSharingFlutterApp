@@ -216,6 +216,10 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
 
   _pageConfig(){
     socket.off('onNewNotification');
+    socket.off('onNewAccept');
+    socket.off('onNewMatch');
+    socket.off('onNewMessage');
+    socket.off('onRequest');
     socket.on('onNewNotification', (data) {
       currentUser.status.navbarNoti = true;
     });

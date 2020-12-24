@@ -46,14 +46,15 @@ class Message {
     }
   }
 
-  Future<bool> sendMessage(String tripid,String message,String form_id,String name) async {
+  Future<bool> sendMessage(String tripid,String message,String form_id,String name,String currentTripid) async {
     try{
       var url = "${HTTP().API_IP}/api/routes/sendMessage";
       Map<String,dynamic> tmp = {
         "title": name,
         "message" : message,
         "formid" : form_id,
-        "tripid" : tripid
+        "tripid" : tripid,
+        "currentTripid" : currentTripid
       };
       Http.Response response = await Http.post(url, headers: await HTTP().header() ,body: jsonEncode(tmp));
       if(response.statusCode == 400 ){

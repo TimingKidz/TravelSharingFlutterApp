@@ -48,8 +48,8 @@ class MyHttpOverrides extends HttpOverrides{
 }
 
 class HTTP{
-  final String API_IP = "https://68.183.226.229";
-//    final String API_IP = "http://10.80.26.9:3000";
+//  final String API_IP = "https://68.183.226.229";
+    final String API_IP = "http://10.80.26.23:3000";
 
   Future<Map<String,String>> header() async {
     return {'Content-Type': 'application/json; charset=UTF-8','auth' : await firebaseAuth.user.getIdToken()};
