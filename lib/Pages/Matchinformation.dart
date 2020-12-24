@@ -5,7 +5,9 @@ import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/Travel_Info.dart';
 import 'package:travel_sharing/Class/TripDetails.dart';
 import 'package:travel_sharing/Class/User.dart';
+import 'package:travel_sharing/Dialog.dart';
 import 'package:travel_sharing/Pages/ReqList.dart';
+import 'package:travel_sharing/UI/ProfileInfo.dart';
 import 'package:travel_sharing/buttons/VehicleCardTileMin.dart';
 import 'package:travel_sharing/main.dart';
 
@@ -120,27 +122,32 @@ class _Matchinformation extends State<Matchinformation> {
             padding: EdgeInsets.all(8.0),
             child: Column(
               children: <Widget>[
-                Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0)
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        CircleAvatar(
-                          radius: 32,
-                        ),
-                        SizedBox(width: 16.0),
-                        Text(
-                          tripDetails.hostUser.name,
-                          style: TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold
+                InkWell(
+                  onTap: (){
+                    swipeDownDialog(this.context, ProfileInfo());
+                  },
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0)
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          CircleAvatar(
+                            radius: 32,
                           ),
-                        )
-                      ],
+                          SizedBox(width: 16.0),
+                          Text(
+                            tripDetails.hostUser.name,
+                            style: TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -203,7 +210,26 @@ class _Matchinformation extends State<Matchinformation> {
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       child: Text('End Trip', style: TextStyle(color: Colors.white,)),
-                      onPressed: () => _showDialog(),
+                      onPressed: () => normalDialog(
+                        this.context,
+                        'Are you sure',
+                        Text("This action couldn't be undone. Would you like to end this trip ?"),
+                        <Widget>[
+                          FlatButton(
+                            child: Text('No'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          FlatButton(
+                            child: Text('Yes'),
+                            onPressed: () {
+                              endTrip();
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
               ],
@@ -275,21 +301,26 @@ class _Matchinformation extends State<Matchinformation> {
   }
 
   Widget _buildRow(User user,Routes routes) {
-    return Container(
-      padding: EdgeInsets.all(8.0),
-      child: Row(
-        children: <Widget>[
-          CircleAvatar(
-            radius: 28,
-          ),
-          SizedBox(width: 16.0),
-          Text(
-            user.name,
-            style: TextStyle(
-                fontSize: 18.0,
+    return InkWell(
+      onTap: (){
+
+      },
+      child: Container(
+        padding: EdgeInsets.all(8.0),
+        child: Row(
+          children: <Widget>[
+            CircleAvatar(
+              radius: 28,
             ),
-          ),
-        ],
+            SizedBox(width: 16.0),
+            Text(
+              user.name,
+              style: TextStyle(
+                fontSize: 18.0,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
