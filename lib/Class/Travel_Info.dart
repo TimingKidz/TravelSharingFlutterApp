@@ -21,17 +21,15 @@ class Travel_Info{
   Future<List<Travel_Info>> getRoutes(String id,int role,bool isNeed2Update) async {
 //    try{
       Map<int,String> path = {0:'invite',1:'join'};
-      var url = "${HTTP().API_IP}/api/routes/getRoutes";
-      Http.Response response = await Http.post(url,headers:await HTTP().header(), body: jsonEncode({'id':id,'role':role,'isNeed2Update' : isNeed2Update}));
+      Http.Response response = await httpClass.reqHttp("/api/routes/getRoutes",{'id':id,'role':role,'isNeed2Update' : isNeed2Update});
       if(response.statusCode == 400 ){
         return Future.value(null);
-      }else{
-        if(response.statusCode == 404){
+      }else {
+        if (response.statusCode == 404) {
           return Future.value(null);
-        }else{
+        } else {
           print(role);
           Map<String, dynamic> data = jsonDecode(response.body);
-//          print(data);
           List<Travel_Info> travel_info_list = List();
           data['event'][path[role]].forEach((x) {
             Travel_Info tmp = Travel_Info.fromJson(x);
@@ -41,9 +39,5 @@ class Travel_Info{
           return Future.value(travel_info_list);
         }
       }
-//    }catch(error){
-//      print(error);
-//      throw("can't connect");
-//    }
   }
 }

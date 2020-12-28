@@ -43,11 +43,11 @@ class _MatchListstate extends State<MatchList> {
   @override
   void initState(){
     super.initState();
-    _pageConfig();
+    _pageConfig(widget.data.routes.status);
   }
 
-  _pageConfig(){
-    getData();
+  _pageConfig(bool isNeed2Update){
+    getData(isNeed2Update);
     socket.off('onNewAccept');
     socket.off('onNewMatch');
     socket.off('onNewMessage');
@@ -56,7 +56,11 @@ class _MatchListstate extends State<MatchList> {
     socket.on('onNewNotification', (data) {
       currentUser.status.navbarNoti = true;
     });
-    socket.on('onNewMatch', (data) => getData());
+    socket.on('onNewMatch', (data) {
+      if (widget.data.uid == data['tripid']){
+        getData(true);
+      }
+    });
     socket.on('onAccept', (data) =>  Navigator.pushReplacement(context, MaterialPageRoute(
         builder: (context) => Matchinformation(uid: data, data: widget.data))));
     firebaseMessaging.configure(
@@ -84,9 +88,9 @@ class _MatchListstate extends State<MatchList> {
   }
 
   // get Match list of current routes
-  Future<void> getData() async {
+  Future<void> getData(bool isNeed2Update) async {
     try{
-      _MatchList =  await Match_Info().getMatchList(widget.data.routes) ?? [];
+      _MatchList =  await Match_Info().getMatchList(widget.data.routes,isNeed2Update) ?? [];
       isreq = await User().getisReq(widget.data.id, widget.data.uid) ?? [];
       setState(() {});
     }catch(error){
@@ -142,8 +146,7 @@ class _MatchListstate extends State<MatchList> {
   }
 
   _onButtonPressed(Match_Info data) async {
-    Routes().Request(data,widget.data);
-    await getData();
+    Routes().Request(data,widget.data).then((value) async => await getData(false));
   }
 
 }

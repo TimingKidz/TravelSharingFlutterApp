@@ -42,8 +42,10 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
       currentUser.status.navbarNoti = true;
     });
     socket.on('onNewMessage', (data) {
-      messagesReverseList.insert(0, Message.fromJson(data["data"]));
-      setState(() { });
+      if (data["tripid"] == widget.currentTripid){
+        messagesReverseList.insert(0, Message.fromJson(data["data"]));
+        setState(() { });
+      }
     });
     firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {

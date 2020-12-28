@@ -31,9 +31,9 @@ class _Matchinformation extends State<Matchinformation> {
     }
   }
 
-  Future<void> getData() async {
+  Future<void> getData(bool isNeed2Update) async {
     try{
-      tripDetails =  await TripDetails().getDetails(widget.uid,widget.data.uid);
+      tripDetails =  await TripDetails().getDetails(widget.uid,widget.data.uid,isNeed2Update);
       print(tripDetails.hostUser.vehicle.first.toJson());
       setState(() {});
     }catch(error){
@@ -44,13 +44,13 @@ class _Matchinformation extends State<Matchinformation> {
   @override
   void initState() {
     super.initState();
-    _pageConfig();
+    _pageConfig(widget.data.routes.status);
   }
 
 
 
-  _pageConfig(){
-    getData();
+  _pageConfig(bool isNeed2Update){
+    getData(isNeed2Update);
     socket.off('onNewAccept');
     socket.off('onNewMatch');
     socket.off('onNewMessage');
@@ -60,7 +60,7 @@ class _Matchinformation extends State<Matchinformation> {
     socket.on('onNewNotification', (data) {
       currentUser.status.navbarNoti = true;
     });
-    socket.on('onNewAccept', (data) async => await getData());
+    socket.on('onNewAccept', (data) async => await getData(true));
     firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
           if( message['data']['page'] != '/MatchInformation' ){
@@ -112,7 +112,7 @@ class _Matchinformation extends State<Matchinformation> {
                 onPressed: (){
                   Navigator.push(context, MaterialPageRoute(
                       builder: (context) => ChatPage(tripid: widget.uid,currentTripid: widget.data.uid,))).then((value){
-                        _pageConfig();
+                        _pageConfig(false);
                   });
                 },
               )
@@ -182,7 +182,7 @@ class _Matchinformation extends State<Matchinformation> {
                                         onTap: () {
                                           Navigator.pushReplacement(context, MaterialPageRoute(
                                               builder: (context) => ReqList(data: widget.data))).then((value){
-                                            _pageConfig();
+                                                _pageConfig(false);
                                           });
                                         },
                                       ),

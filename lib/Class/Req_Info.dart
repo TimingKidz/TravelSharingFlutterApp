@@ -19,10 +19,9 @@ class Req_Info {
     reqid = json['_id'];
   }
 
-  Future<List<Req_Info>> getReq(Travel_Info data) async {
+  Future<List<Req_Info>> getReq(Travel_Info data,bool isNeed2Update) async {
     try{
-      var url = "${HTTP().API_IP}/api/user/getReqList";
-      Http.Response response = await Http.post(url, headers: await HTTP().header(), body: jsonEncode({'id':data.id,'to_id':data.uid}));
+      Http.Response response = await httpClass.reqHttp("/api/user/getReqList",{'id':data.id,'to_id':data.uid,"isNeed2Update" : isNeed2Update});
       if(response.statusCode == 400 ){
         return Future.value(null);
       }else{

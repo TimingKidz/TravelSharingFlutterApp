@@ -71,7 +71,7 @@ class _Dashboard extends State<Dashboard> {
     int index = -1;
     _joinList.forEach((x){
       if (x.uid == tripid){
-        _joinList.indexOf(x);
+       index = _joinList.indexOf(x);
       }
     });
     if (index != -1)  _joinList.removeAt(index);

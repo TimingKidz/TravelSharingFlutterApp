@@ -52,6 +52,8 @@ dependencies:
   adhara_socket_io: ^0.4.2+1
   socket_io_client: ^0.9.12
   flutter_socket_io: ^0.6.0
+  image_picker: ^0.6.7+17
+  image: ^2.1.19
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -35,7 +35,7 @@ class _ReqListstate extends State<ReqList> {
   @override
   void initState() {
     super.initState();
-    _pageConfig();
+    _pageConfig(widget.data.routes.status);
   }
 
   @override
@@ -94,8 +94,8 @@ class _ReqListstate extends State<ReqList> {
     // }
   }
 
-  _pageConfig() async {
-    await getData();
+  _pageConfig(bool isNeed2Update) async {
+    await getData(isNeed2Update);
     socket.off('onNewAccept');
     socket.off('onNewMatch');
     socket.off('onNewMessage');
@@ -105,7 +105,9 @@ class _ReqListstate extends State<ReqList> {
       currentUser.status.navbarNoti = true;
     });
     socket.on('onRequest', (data) {
-      getData();
+      if (widget.data.uid == data['tripid']){
+        getData(true);
+      }
     });
     firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
@@ -118,10 +120,9 @@ class _ReqListstate extends State<ReqList> {
   }
 
   // get request list of current routes
-  Future<void> getData() async {
+  Future<void> getData(bool isNeed2Update) async {
     try{
-      _ReqList =  await Req_Info().getReq(widget.data) ?? [];
-      print(_ReqList.first.user.name);
+      _ReqList =  await Req_Info().getReq(widget.data,isNeed2Update) ?? [];
       setState((){});
     }catch(error){
       print(error);
@@ -138,8 +139,7 @@ class _ReqListstate extends State<ReqList> {
   }
 
   _onDeclinePressed(Req_Info data) async{
-    await currentUser.DeclineReq(data.reqid,widget.data.id,widget.data.uid);
-    getData();
+    currentUser.DeclineReq(data.reqid,widget.data.id,widget.data.uid).then((value) async => await getData(true));
   }
 
 }

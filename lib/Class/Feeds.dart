@@ -22,8 +22,7 @@ class Feeds{
 
   Future<Feeds> getFeed(int offset) async {
     try{
-      var url = "${HTTP().API_IP}/api/routes/feeds";
-      Http.Response response = await Http.post(url, headers: await HTTP().header(), body: jsonEncode({ "offset" : offset }));
+      Http.Response response = await httpClass.reqHttp("/api/routes/feeds", { "offset" : offset });
       if(response.statusCode == 400 ){
         return Future.value(null);
       }else{

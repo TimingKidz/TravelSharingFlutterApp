@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:google_sign_in/widgets.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/homeNavigation.dart';
 import 'package:travel_sharing/buttons/CardDropdown.dart';
@@ -20,6 +23,7 @@ class SignUpPageState extends State<SignUpPage> {
   // User user = new User(name: googleUser.displayName,email: googleUser.email,id: googleUser.id,token: await firebaseMessaging.getToken());
   User userData = new User(name: googleUser.displayName,email: googleUser.email,id: googleUser.id);
   final _formKey = GlobalKey<FormState>();
+  File selectedImage;
 
   @override
   void setState(fn) {
@@ -90,12 +94,10 @@ class SignUpPageState extends State<SignUpPage> {
         // backgroundColor: Colors.transparent,
         child: InkWell(
           onTap: (){
-
+            getImage();
           },
           child: ClipOval(
-            child: Image.network(
-              "${HTTP().API_IP}/images/profile.jpg",
-            ),
+            child: selectedImage != null ? Image.file(selectedImage): Container()
           ),
         )
       ),
@@ -155,8 +157,8 @@ class SignUpPageState extends State<SignUpPage> {
         labelText: "Phone",
         isPhoneValidator: true,
         inputFormat: <TextInputFormatter>[
-          // FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), //1.20 or newer versions
-          WhitelistingTextInputFormatter.digitsOnly
+           FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), //1.20 or newer versions
+//          WhitelistingTextInputFormatter.digitsOnly
         ],
         type: TextInputType.phone,
         onChanged: (val) => print(val),
@@ -164,12 +166,24 @@ class SignUpPageState extends State<SignUpPage> {
     ];
   }
 
+  Future getImage() async {
+    PickedFile image = await ImagePicker().getImage(source: ImageSource.gallery);
+    setState(() {
+      if (image != null) {
+        selectedImage = File(image.path);
+        print("selected img");
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
   initsocket(){
-    socket = IO.io(HTTP().API_IP,
+    socket = IO.io(httpClass.API_IP,
         IO.OptionBuilder()
             .setTransports(['websocket']) // for Flutter or Dart VM
             .disableAutoConnect()
-            .setExtraHeaders({'uid': currentUser.uid}) // optional // disable auto-connection
+            .setExtraHeaders({'uid': currentUser.uid,'auth' : httpClass.header['auth']})
             .build());
     socket = socket.connect();
     socket.onConnect((_) {
@@ -181,6 +195,12 @@ class SignUpPageState extends State<SignUpPage> {
     userData.token = await firebaseMessaging.getToken();
     await userData.Register();
     currentUser = await User().getCurrentuser(googleUser.id);
+    if ( selectedImage != null){
+      await currentUser.uploadProfile(selectedImage);
+    }
+//    await currentUser.uploadStudentCard(file);
+    currentUser = await User().getCurrentuser(googleUser.id);
+    await httpClass.getNewHeader();
     initsocket();
     Navigator.pushReplacement(context,MaterialPageRoute(
         builder : (context) => HomeNavigation()));

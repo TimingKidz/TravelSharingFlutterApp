@@ -96,11 +96,12 @@ class LoginPageState extends State<LoginPage> {
   }
 
   initsocket(){
-    socket = IO.io(HTTP().API_IP,
+    print("${currentUser.uid} hhhhhhhh");
+    socket = IO.io(httpClass.API_IP,
         IO.OptionBuilder()
             .setTransports(['websocket']) // for Flutter or Dart VM
             .disableAutoConnect()
-            .setExtraHeaders({'uid': currentUser.uid}) // optional // disable auto-connection
+            .setExtraHeaders({'uid': currentUser.uid,'auth' : httpClass.header['auth']})
             .build());
     socket = socket.connect();
     socket.onConnect((_) {
@@ -119,11 +120,15 @@ class LoginPageState extends State<LoginPage> {
           idToken: Auth.idToken,
         );
         firebaseAuth = await u.FirebaseAuth.instance.signInWithCredential(a);
+        await httpClass.getNewHeader();
         bool isRegister = await User().getCurrentuser(googleUser.id) != null ? true : false;
         if (isRegister){
           String tokenID = await firebaseMessaging.getToken();
           currentUser =  await User().getCurrentuser(googleUser.id);
           await currentUser.updateToken(tokenID);
+          if( socket != null ){
+            socket.io.options['extraHeaders'] = {'uid': currentUser.uid,'auth' : httpClass.header['auth']};
+          }
           initsocket();
 
           Navigator.of(context).pop(); //Pop Loading Dialog

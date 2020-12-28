@@ -54,14 +54,12 @@ class AccountState extends State<Account> {
               child: SafeArea(
                 child: Column(
                   children: <Widget>[
-                    // CircleAvatar(
-                    //   radius: 64.0,
-                    // ),
-                    SizedBox(
-                      width: 128.0,
-                      height: 128.0,
-                      child: GoogleUserCircleAvatar(
-                        identity: googleUser,
+                    CircleAvatar(
+                      radius: 64,
+                      child: ClipOval(
+                        child: Image.network(
+                          "${httpClass.API_IP}${currentUser.imgpath}",
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -210,9 +208,9 @@ class AccountState extends State<Account> {
   }
 
   Future<void> _handleSignOut() async {
-    socket.disconnect();
-
-    await googleSignIn.disconnect();
+    socket = socket.disconnect();
+    socket.dispose();
+    googleUser = await googleSignIn.disconnect();
     // set user.token_id in DB to " "
     Navigator.of(context)
         .pushNamedAndRemoveUntil('/login', ModalRoute.withName('/'));

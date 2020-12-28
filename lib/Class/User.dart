@@ -1,30 +1,30 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as Http;
 import 'package:travel_sharing/Class/Status.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/main.dart';
-
+import 'package:image/image.dart' as img;
 
 class User {
   String name;
   String email;
   String id;
   String uid;
-  String img_url;
   String faculty;
   String gender;
   List<Vehicle> vehicle;
   String token;
   Status status;
+  String imgpath;
 
-  User({this.name, this.email,this.id,this.uid,this.img_url,this.faculty,this.gender,this.vehicle,this.token,this.status});
+  User({this.name, this.email,this.id,this.uid,this.faculty,this.gender,this.vehicle,this.token,this.status,this.imgpath});
 
   User.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     email = json['email'];
     id = json['id'];
     uid = json['_id'];
-    img_url = json['img_url'];
     faculty = json['faculty'];
     gender = json['gender'];
     vehicle = List();
@@ -38,7 +38,7 @@ class User {
     if( json['status'] != null){
       status = Status.fromJson(json['status']);
     }
-
+    imgpath = json['imgpath'];
   }
 
   Map<String, dynamic> toJson() {
@@ -47,7 +47,6 @@ class User {
     data['email'] = this.email;
     data['id']= this.id;
     data['_id'] = this.uid;
-    data['img_url'] = this.img_url;
     data['faculty'] = this.faculty;
     data['gender'] = this.gender;
     data['vehicle'] = this.vehicle;
@@ -58,14 +57,14 @@ class User {
  // get current user data
   Future<User> getCurrentuser(String id) async{
     try{
-      var url = "${HTTP().API_IP}/api/user/isreg";
-      Http.Response response = await Http.post(url,headers: await HTTP().header() , body: jsonEncode(<String,String>{ "id":id }));
+      Http.Response response = await httpClass.reqHttp("/api/user/isreg",{ "id":id });
       if(response.statusCode == 400){
         return Future.value(null);
       }else{
         if(response.statusCode == 404 ){
           return Future.value(null);
         }else{
+          print(jsonDecode(response.body));
           return Future.value(User.fromJson(jsonDecode(response.body)));
         }
       }
@@ -77,18 +76,17 @@ class User {
   // register for new user
   Future<bool> Register() async {
     try{
-      if(await getCurrentuser(this.id) == null){
-        var url = "${HTTP().API_IP}/api/user/register";
-        Http.Response response = await Http.post(url, headers: await HTTP().header() , body: jsonEncode(this.toJson()));
+//      if(await getCurrentuser(this.id) == null){
+        Http.Response response = await httpClass.reqHttp("/api/user/register",this.toJson());
         if(response.statusCode == 400 ){
           return Future.value(false);
         }else{
           print("Register Succesful : ${response.body}");
           return Future.value(true);
         }
-      }else{
-        return Future.value(true);
-      }
+//      }else{
+//        return Future.value(true);
+//      }
     }catch(error){
      throw("can't connect"+error);
     }
@@ -96,8 +94,7 @@ class User {
 
   Future<List<String>> getisReq(String id ,String _id) async {
     try{
-      var url = "${HTTP().API_IP}/api/routes/getisReq";
-      Http.Response response = await Http.post(url, headers: await HTTP().header() , body: jsonEncode({'id': id ,'_id' : _id}));
+      Http.Response response = await httpClass.reqHttp("/api/routes/getisReq",{'id': id ,'_id' : _id});
       if(response.statusCode == 400 ){
           return Future.value(null);
       }else{
@@ -120,12 +117,11 @@ class User {
 
   Future<bool> AcceptReq(String Reqid,String Currentid,String Current_id) async {
     try{
-      var url = "${HTTP().API_IP}/api/routes/AcceptRequest";
       Map<String, dynamic> temp = {
         'Reqid' : Reqid,
         'userid' : Currentid,
         'userRoute_id' : Current_id };
-      Http.Response response = await Http.post(url, headers: await HTTP().header() , body: jsonEncode(temp));
+      Http.Response response = await httpClass.reqHttp("/api/routes/AcceptRequest",temp);
       if(response.statusCode == 400 ){
         return Future.value(false);
       }else{
@@ -142,12 +138,11 @@ class User {
 
   Future<bool> DeclineReq(String Reqid,String Currentid,String Current_id) async {
     try{
-      var url = "${HTTP().API_IP}/api/routes/DeclineRequest";
       Map<String, dynamic> temp = {
         'Reqid' : Reqid,
         'userid' : Currentid,
         'userRoute_id' : Current_id };
-      Http.Response response = await Http.post(url, headers: await HTTP().header() , body: jsonEncode(temp));
+      Http.Response response = await httpClass.reqHttp("/api/routes/DeclineRequest",temp);
       if(response.statusCode == 400 ){
         return Future.value(false);
       }else{
@@ -165,8 +160,7 @@ class User {
   Future<void> updateToken(String tokenID) async {
     try{
       this.token = tokenID;
-      var url = "${HTTP().API_IP}/api/routes/updateToken";
-      Http.Response response = await Http.post(url, headers: await HTTP().header(), body: jsonEncode({"id":this.uid, "token_id": tokenID}));
+      Http.Response response = await httpClass.reqHttp("/api/routes/updateToken",{"id":this.uid, "token_id": tokenID});
       if(response.statusCode == 400 ){
         return Future.value(null);
       }else{
@@ -184,8 +178,7 @@ class User {
 
   Future<bool> endTrip(Map<String,dynamic> tmp) async {
     try{
-      var url = "${HTTP().API_IP}/api/routes/EndTrip";
-      Http.Response response = await Http.post(url, headers: await HTTP().header(), body: jsonEncode(tmp));
+      Http.Response response = await httpClass.reqHttp("/api/routes/EndTrip",tmp);
       if(response.statusCode == 400 ){
         return Future.value(false);
       }else{
@@ -201,16 +194,45 @@ class User {
     }
   }
 
-
-
   Future<bool> editUser() async {
     try{
-      var url = "${HTTP().API_IP}/api/routes/editUser";
-      Http.Response response = await Http.post(url, headers: await HTTP().header() , body: jsonEncode(this.toJson()));
+      Http.Response response = await httpClass.reqHttp("/api/routes/editUser",this.toJson());
       if(response.statusCode == 400){
         return Future.value(false);
       }else{
         print("Edit user : ${response.body}");
+        return Future.value(true);
+      }
+    }catch (err){
+      throw("can't connect" + err);
+    }
+  }
+
+  Future<bool> uploadProfile(File file)async{
+    try{
+      img.Image image = img.decodeImage(file.readAsBytesSync());
+      image = img.copyResize(image,
+          width: 512,
+          height: 512);
+      Http.StreamedResponse response = await httpClass.reqHttpMedia(image,this.uid,"profile.jpg");
+      if(response.statusCode == 400){
+        return Future.value(false);
+      }else{
+        print("upload succesful");
+        return Future.value(true);
+      }
+    }catch (err){
+      throw("can't connect" + err);
+    }
+  }
+
+  Future<bool> uploadStudentCard(File file)async{
+    try{
+      img.Image image = img.decodeImage(file.readAsBytesSync());
+      Http.StreamedResponse response = await httpClass.reqHttpMedia(image,this.uid,"card.jpg");
+      if(response.statusCode == 400){
+        return Future.value(false);
+      }else{
         return Future.value(true);
       }
     }catch (err){

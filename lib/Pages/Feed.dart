@@ -35,6 +35,7 @@ class FeedPageState extends State<FeedPage> {
   void initState() {
     super.initState();
     _pageConfig();
+    print(currentUser.imgpath);
     // WidgetsBinding.instance.addPostFrameCallback((_) => _getHeight());
   }
 

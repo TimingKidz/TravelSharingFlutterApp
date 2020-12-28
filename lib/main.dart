@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:travel_sharing/Class/HTTP.dart';
 import 'package:travel_sharing/Class/Status.dart';
 import 'package:travel_sharing/Pages/Account.dart';
 import 'package:travel_sharing/Pages/JoinMap.dart';
@@ -36,8 +37,9 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNo
 u.UserCredential firebaseAuth;
 GoogleSignInAccount googleUser;
 User currentUser;
-IO.Socket socket;
+IO.Socket socket ;
 Status status;
+HTTP httpClass = new HTTP();
 
 class MyHttpOverrides extends HttpOverrides{
   @override
@@ -45,16 +47,6 @@ class MyHttpOverrides extends HttpOverrides{
     return super.createHttpClient(context)
       ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
   }
-}
-
-class HTTP{
- final String API_IP = "https://68.183.226.229";
- //    final String API_IP = "http://192.168.0.102:3000";
-
-  Future<Map<String,String>> header() async {
-    return {'Content-Type': 'application/json; charset=UTF-8','auth' : await firebaseAuth.user.getIdToken()};
-  }
-
 }
 
 void main() {
@@ -135,6 +127,7 @@ class MyApp extends StatelessWidget {
           '/Profile' : (context) => ProfileManagePage(),
           '/ratingPage' : (context) => RatingPage(),
           '/ReqList' : (context) => ReqList(),
+
         },
       );
   }

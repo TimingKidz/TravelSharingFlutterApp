@@ -19,10 +19,7 @@ class Message {
 
   Future<List<Message>> getMessage(String tripid) async {
     try {
-      var url = "${HTTP().API_IP}/api/routes/getMessage";
-      Http.Response response = await Http.post(
-          url, headers: await HTTP().header(),
-          body: jsonEncode({"tripid": tripid}));
+      Http.Response response = await httpClass.reqHttp("/api/routes/getMessage",{"tripid": tripid});
       if (response.statusCode == 400) {
         return Future.value(null);
       } else {
@@ -48,7 +45,6 @@ class Message {
 
   Future<bool> sendMessage(String tripid,String message,String form_id,String name,String currentTripid) async {
     try{
-      var url = "${HTTP().API_IP}/api/routes/sendMessage";
       Map<String,dynamic> tmp = {
         "title": name,
         "message" : message,
@@ -56,7 +52,7 @@ class Message {
         "tripid" : tripid,
         "currentTripid" : currentTripid
       };
-      Http.Response response = await Http.post(url, headers: await HTTP().header() ,body: jsonEncode(tmp));
+      Http.Response response = await httpClass.reqHttp("/api/routes/sendMessage",tmp);
       if(response.statusCode == 400 ){
         return Future.value(false);
       }else{

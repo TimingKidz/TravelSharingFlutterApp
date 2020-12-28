@@ -76,16 +76,15 @@ class Routes {
   // save routes information to DB
   Future<bool> SaveRoute_toDB(User user) async{
     try{
-      var url = "${HTTP().API_IP}/api/routes/SaveRoutes";
-      Map<String, dynamic> temp = user.toJson();
-      temp['detail'] = this.toJson();
-      print(jsonEncode(temp));
-      Http.Response response = await Http.post(url, headers : await HTTP().header() , body: jsonEncode(temp));
-      if( response.statusCode == 400 ){
-        return Future.value(null);
-      }else{
-        return Future.value(true);
-      }
+        Map<String, dynamic> temp = user.toJson();
+        temp['detail'] = this.toJson();
+        Http.Response response = await httpClass.reqHttp("/api/routes/SaveRoutes",temp);
+        print(response.body);
+        if( response.statusCode == 400 ){
+          return Future.value(false);
+        }else{
+          return Future.value(true);
+        }
     }catch(error){
       print(error);
     }
@@ -94,15 +93,13 @@ class Routes {
   // send request to selected routes ( data is current user routes , data0 is who current user select routes )
   Future<bool> Request(Match_Info data , Travel_Info data0)async {
     try{
-      var url = "${HTTP().API_IP}/api/routes/request";
       Map<String,dynamic> temp = {
         'detail' : data0.routes.toJson(),
         'to_id' : data.routes.uid,
         'toid' : data.user.uid,
         'form_id' : data0.uid,
         'formid' : data0.id };
-      jsonEncode(temp);
-      Http.Response response = await Http.post(url, headers: await HTTP().header(), body: jsonEncode(temp));
+      Http.Response response = await httpClass.reqHttp("/api/routes/request",temp);
       if(response.statusCode == 400 ){
         return Future.value(false);
       }else{

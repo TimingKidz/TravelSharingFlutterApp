@@ -15,10 +15,9 @@ class Match_Info {
     user = User.fromJson(json['id']);
   }
 
-  Future< List<Match_Info>> getMatchList(Routes My_Routes) async {
+  Future< List<Match_Info>> getMatchList(Routes My_Routes,bool isNeed2Update) async {
     try{
-      var url = "${HTTP().API_IP}/api/routes/getMatchList";
-      Http.Response response = await Http.post(url, headers: await HTTP().header(), body: jsonEncode( {"user": My_Routes.id,"tripid" : My_Routes.uid}));
+      Http.Response response = await httpClass.reqHttp("/api/routes/getMatchList",{"user": My_Routes.id,"tripid" : My_Routes.uid, "isNeed2Update" : isNeed2Update});
       if(response.statusCode == 400 ){
         return Future.value(null);
       }else{

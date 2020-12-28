@@ -19,7 +19,7 @@ class ProfileInfo extends StatelessWidget {
             radius: 64,
             child: ClipOval(
               child: Image.network(
-                "${HTTP().API_IP}/images/profile.jpg",
+                "${httpClass.API_IP}/images/profile.jpg",
               ),
             ),
           ),

@@ -44,8 +44,7 @@ class Vehicle {
 
  Future<bool> addVehicle() async {
    try{
-     var url = "${HTTP().API_IP}/api/vehicle_manage/addVehicle";
-     Http.Response response = await Http.post(url, headers: await HTTP().header() , body: jsonEncode(this.toJson()));
+     Http.Response response = await httpClass.reqHttp("/api/vehicle_manage/addVehicle",this.toJson());
      if(response.statusCode == 400){
        return Future.value(false);
      }else{
@@ -59,8 +58,7 @@ class Vehicle {
 
  Future<bool> editVehicle() async {
    try{
-     var url = "${HTTP().API_IP}/api/vehicle_manage/editVehicle";
-     Http.Response response = await Http.post(url, headers: await HTTP().header() , body: jsonEncode(this.toJson()));
+     Http.Response response = await httpClass.reqHttp("/api/vehicle_manage/editVehicle",this.toJson());
      if(response.statusCode == 400){
        return Future.value(false);
      }else{
@@ -74,8 +72,7 @@ class Vehicle {
 
  Future<bool> deleteVehicle() async {
    try{
-     var url = "${HTTP().API_IP}/api/vehicle_manage/deleteVehicle";
-     Http.Response response = await Http.post(url, headers: await HTTP().header() , body: jsonEncode({"uid": currentUser.uid, "vid": this.vid}));
+     Http.Response response = await httpClass.reqHttp("/api/vehicle_manage/deleteVehicle",{"uid": currentUser.uid, "vid": this.vid});
      if(response.statusCode == 400){
        return Future.value(false);
      }else{
