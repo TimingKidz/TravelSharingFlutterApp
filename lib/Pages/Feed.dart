@@ -50,7 +50,7 @@ class FeedPageState extends State<FeedPage> {
         body: Stack(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(top: 120),
+              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.15),
               child: list.isNotEmpty
                   ? _buildListView()
                   : Center(child: Text("Nothing in feed yet."),

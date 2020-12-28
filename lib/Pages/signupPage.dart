@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:google_sign_in/widgets.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/homeNavigation.dart';
+import 'package:travel_sharing/buttons/CardDropdown.dart';
 import 'package:travel_sharing/buttons/borderTextField.dart';
+import 'package:travel_sharing/buttons/cardDatePicker.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -41,7 +44,7 @@ class SignUpPageState extends State<SignUpPage> {
           children: <Widget>[
             Container(
               alignment: Alignment.center,
-              padding: EdgeInsets.all(16.0),
+              // padding: EdgeInsets.all(16.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -66,7 +69,7 @@ class SignUpPageState extends State<SignUpPage> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
                   FloatingActionButton(
-                      child: Icon(Icons.arrow_forward),
+                      child: Icon(Icons.arrow_forward_ios),
                       onPressed: (){
                         if(_formKey.currentState.validate()) _Nextpage();
                       }
@@ -81,16 +84,21 @@ class SignUpPageState extends State<SignUpPage> {
 
   List<Widget> fieldList(){
     return [
-      SizedBox(
-        width: 96.0,
-        height: 96.0,
-//                    add photo
-//                    child: GoogleUserCircleAvatar(
-//                      identity: googleUser,
-//                    ),
-      ),
       SizedBox(height: 8.0),
-      Text(googleUser.id),
+      CircleAvatar(
+        radius: 64,
+        // backgroundColor: Colors.transparent,
+        child: InkWell(
+          onTap: (){
+
+          },
+          child: ClipOval(
+            child: Image.network(
+              "${HTTP().API_IP}/images/profile.jpg",
+            ),
+          ),
+        )
+      ),
       SizedBox(height: 8.0),
       CardTextField(
         notNull: true,
@@ -98,18 +106,61 @@ class SignUpPageState extends State<SignUpPage> {
         labelText: "Full Name",
         onChanged: (data) => userData.name = data,
       ),
-      SizedBox(height: 8.0),
-      CardTextField(
-        notNull: true,
+      CardDropdown(
+        listItems: <String>[
+          "Male",
+          "Female",
+          "LGBTQ"
+        ],
         labelText: "Gender",
         onChanged: (data) => userData.gender = data,
       ),
-      SizedBox(height: 8.0),
-      CardTextField(
-        notNull: true,
+      CardDatePicker(
+        labelText: "Birthday",
+        isJustDate: true,
+        onDatePick: (date){
+
+        },
+      ),
+      CardDropdown(
+        listItems: <String>[
+          "Mass Communication",
+          "Agriculture",
+          "Dentistry",
+          "Associated Medical Science",
+          "Law",
+          "Business Administration",
+          "Nursing",
+          "Medicine",
+          "Pharmacy",
+          "Humanities",
+          "Political Science and Public Administration",
+          "Fine Arts",
+          "Science",
+          "Engineering",
+          "Education",
+          "Economics",
+          "Architecture",
+          "Social Sciences",
+          "Veterinary Medicine",
+          "Public Health",
+          "Agro-Industry",
+          "College of Art, Media and Technology",
+        ],
         labelText: "Faculty",
         onChanged: (data) => userData.faculty = data,
       ),
+      CardTextField(
+        notNull: true,
+        labelText: "Phone",
+        isPhoneValidator: true,
+        inputFormat: <TextInputFormatter>[
+          // FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), //1.20 or newer versions
+          WhitelistingTextInputFormatter.digitsOnly
+        ],
+        type: TextInputType.phone,
+        onChanged: (val) => print(val),
+      )
     ];
   }
 

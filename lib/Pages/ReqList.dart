@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/Req_Info.dart';
 import 'package:travel_sharing/Class/Travel_Info.dart';
 import 'package:travel_sharing/Pages/Matchinformation.dart';
-import 'package:travel_sharing/Pages/mapview.dart';
-import 'package:travel_sharing/buttons/cardTileWithTapReq.dart';
+import 'package:travel_sharing/UI/ReqMapCard.dart';
 import 'package:travel_sharing/main.dart';
 
 
@@ -16,8 +15,8 @@ class ReqList extends StatefulWidget {
 }
 
 class _ReqListstate extends State<ReqList> {
+  int _index = 0;
   List<Req_Info> _ReqList = List();
-  bool isFirstPage = true;
 
   @override
   void setState(fn) {
@@ -42,27 +41,57 @@ class _ReqListstate extends State<ReqList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('ตอบรับคำขอของคนที่จะไปด้วย'),
-        elevation: 2.0,
-      ),
-//      floatingActionButton: FloatingActionButton(
-//        child: Icon(Icons.dashboard),
-//        onPressed: (){
-//          Navigator.of(context).pop();
-//        },
-//        heroTag: null,
-//      ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: _widgetOptions(),
+        body: SafeArea(
+          child: Center(
+            child: SizedBox(
+                height: double.infinity, // card height
+                child: _widgetOptions()
             ),
-          ],
-        ),
-      ),
+          ),
+        )
     );
+  }
+
+  Widget _widgetOptions(){
+    if(_ReqList.isEmpty){
+      return Center(
+        child: Text('No List'),
+      );
+    }else{
+      return _buildListView();
+    }
+  }
+
+  Widget _buildListView() {
+    return PageView.builder(
+      itemCount: _ReqList.length,
+      controller: PageController(viewportFraction: 0.85),
+      physics: BouncingScrollPhysics(),
+      onPageChanged: (int index) => setState(() => _index = index),
+      itemBuilder: (_, i) {
+        return Card(
+          margin: EdgeInsets.only(top: 64.0, bottom: 64.0, right: 8.0, left: 8.0),
+          elevation: 2,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: cardDetails(_ReqList[i]),
+        );
+      },
+    );
+  }
+
+  Widget cardDetails(Req_Info data){
+    // int next = i - 1 < 0 ? i : i-1;
+    // if(i == _index || next == _index){
+    return ReqMapCard(
+      data: data,
+      onAcceptPressed: () => _onAcceptPressed(data),
+      onDeclinePressed: () => _onDeclinePressed(data),
+    );
+    // }else{
+    //   return Center(
+    //     child: Text("Hello"),
+    //   );
+    // }
   }
 
   _pageConfig() async {
@@ -97,38 +126,6 @@ class _ReqListstate extends State<ReqList> {
     }catch(error){
       print(error);
     }
-  }
-
-  Widget _widgetOptions(){
-    if(_ReqList.isEmpty){
-      return Center(
-        child: Text('No List'),
-      );
-    }else{
-      return _buildListView();
-    }
-  }
-
-  Widget _buildListView() {
-    return ListView.builder(
-        itemCount: _ReqList.length,
-        itemBuilder: (context, i) {
-          return _buildRow(_ReqList[i]);
-        });
-  }
-
-  Widget _buildRow( Req_Info data) {
-    return CardTileWithTapReq(
-      data: data,
-      onCardPressed:() => _onCardPressed(data),
-      onAcceptPressed: () => _onAcceptPressed(data),
-      onDeclinePressed: () => _onDeclinePressed(data),
-    );
-  }
-
-  _onCardPressed(Req_Info data) async{
-    Navigator.push(context, MaterialPageRoute(
-        builder: (context) => mapview(from:data.routes,to:widget.data.routes)));
   }
 
   _onAcceptPressed(Req_Info data) async{

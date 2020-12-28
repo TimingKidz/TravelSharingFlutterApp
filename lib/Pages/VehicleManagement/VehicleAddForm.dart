@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
+import 'package:travel_sharing/buttons/CardDropdown.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
 import 'package:travel_sharing/main.dart';
 
@@ -82,8 +83,16 @@ class VehicleAddFormState extends State<VehicleAddForm> {
 
   List<Widget> formList(){
     return [
-      CardTextField(
-        notNull: true,
+      // CardTextField(
+      //   notNull: true,
+      //   labelText: "Type",
+      //   onChanged: (data) => vehicleData.type = data,
+      // ),
+      CardDropdown(
+        listItems: <String>[
+          "Motorcycle",
+          "Cars"
+        ],
         labelText: "Type",
         onChanged: (data) => vehicleData.type = data,
       ),

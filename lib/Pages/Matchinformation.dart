@@ -122,34 +122,35 @@ class _Matchinformation extends State<Matchinformation> {
             padding: EdgeInsets.all(8.0),
             child: Column(
               children: <Widget>[
-                InkWell(
-                  onTap: (){
-                    swipeDownDialog(this.context, ProfileInfo());
-                  },
-                  child: Card(
+                Card(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0)
                     ),
-                    child: Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          CircleAvatar(
-                            radius: 32,
-                          ),
-                          SizedBox(width: 16.0),
-                          Text(
-                            tripDetails.hostUser.name,
-                            style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold
+                    child: InkWell(
+                      onTap: (){
+                        swipeUpDialog(this.context, ProfileInfo(data: tripDetails.hostUser));
+                      },
+                      borderRadius: BorderRadius.circular(20.0),
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            CircleAvatar(
+                              radius: 32,
                             ),
-                          )
-                        ],
+                            SizedBox(width: 16.0),
+                            Text(
+                              tripDetails.hostUser.name,
+                              style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
+                    )
                 ),
                 SizedBox(height: 4.0),
                 VehicleCardTileMin(data: tripDetails.hostUser.vehicle.first),
@@ -159,12 +160,12 @@ class _Matchinformation extends State<Matchinformation> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0)
                       ),
-                      child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Row(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Row(
                               mainAxisAlignment:  MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Text(
@@ -177,11 +178,11 @@ class _Matchinformation extends State<Matchinformation> {
                                   ClipOval(
                                     child: Material(
                                       child: InkWell(
-                                        child: SizedBox(width: 32, height: 32, child: Icon(Icons.add)),
+                                        child: SizedBox(width: 28, height: 28, child: Icon(Icons.add)),
                                         onTap: () {
                                           Navigator.pushReplacement(context, MaterialPageRoute(
                                               builder: (context) => ReqList(data: widget.data))).then((value){
-                                                _pageConfig();
+                                            _pageConfig();
                                           });
                                         },
                                       ),
@@ -189,13 +190,13 @@ class _Matchinformation extends State<Matchinformation> {
                                   ),
                               ],
                             ),
-                            // SizedBox(height: 16.0),
-                            Expanded(
-                              child: _buildListView(),
-                            )
-                          ],
-                        ),
-                      )
+                          ),
+                          // SizedBox(height: 16.0),
+                          Expanded(
+                            child: _buildListView(),
+                          )
+                        ],
+                      ),
                   ),
                 ),
                 SizedBox(height: 8.0),
@@ -303,10 +304,10 @@ class _Matchinformation extends State<Matchinformation> {
   Widget _buildRow(User user,Routes routes) {
     return InkWell(
       onTap: (){
-
+        swipeUpDialog(context, ProfileInfo(data: user));
       },
       child: Container(
-        padding: EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(16.0),
         child: Row(
           children: <Widget>[
             CircleAvatar(

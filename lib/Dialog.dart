@@ -14,22 +14,54 @@ void normalDialog(BuildContext context, String title, Widget content, List<Widge
   );
 }
 
-void swipeDownDialog(BuildContext context, route){
-  showGeneralDialog(
-    barrierLabel: "Label",
-    barrierDismissible: false,
-    barrierColor: Colors.black.withOpacity(0.5),
-    transitionDuration: Duration(milliseconds: 200),
+void swipeUpDialog(BuildContext context, Widget route){
+  showModalBottomSheet(
     context: context,
-    pageBuilder: (context, anim1, anim2) {
-      return route;
-    },
-    transitionBuilder: (context, anim1, anim2, child) {
-      return SlideTransition(
-        position: Tween(begin: Offset(0, 1), end: Offset(0, 0))
-            .animate(anim1),
-        child: child,
-      );
-    },
+    isScrollControlled: true,
+    isDismissible: true,
+    backgroundColor: Colors.transparent,
+    builder: (context) =>
+        DraggableScrollableSheet(
+          initialChildSize: 0.33,
+          minChildSize: 0.2,
+          maxChildSize: 1,
+          expand: false,
+          builder: (context, scrollController) {
+            return Card(
+                margin: EdgeInsets.fromLTRB(0.0, 46.0, 0.0, 0.0),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(20.0),
+                    )
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(20.0),
+                  ),
+                  child: ListView(
+                    controller: scrollController,
+                    physics: BouncingScrollPhysics(),
+                    children: <Widget>[
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            width: 40,
+                            height: 4,
+                            margin: EdgeInsets.all(10.0),
+                            decoration: BoxDecoration(
+                                color: Colors.grey.shade500,
+                                borderRadius: BorderRadius.circular(20.0)
+                            ),
+                          ),
+                        ],
+                      ),
+                      route
+                    ],
+                  ),
+                )
+            );
+          },
+        ),
   );
 }

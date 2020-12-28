@@ -8,12 +8,12 @@ class RatingPage extends StatefulWidget {
 }
 
 class RatingPageState extends State<RatingPage> {
-
-
+  bool isSelected = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -37,6 +37,43 @@ class RatingPageState extends State<RatingPage> {
               onRatingUpdate: (rating) {
                 print(rating);
               },
+            ),
+          ),
+          SizedBox(height: 16.0),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 16.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20.0),
+              color: Theme.of(context).canvasColor
+            ),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Card(
+                      margin: EdgeInsets.all(8.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0)
+                      ),
+                      color: isSelected ? Theme.of(context).accentColor : Colors.white,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(20.0),
+                        onTap: (){
+                          setState(() {
+                            isSelected = !isSelected;
+                          });
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                              "Polite"
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                )
+              ],
             ),
           ),
           SizedBox(height: 128.0),

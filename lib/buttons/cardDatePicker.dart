@@ -6,10 +6,12 @@ import 'package:intl/intl.dart';
 class CardDatePicker extends StatefulWidget {
   final String labelText;
   final Function onDatePick;
+  final bool isJustDate;
 
   CardDatePicker({
     this.labelText,
-    this.onDatePick
+    this.onDatePick,
+    this.isJustDate
   });
 
   @override
@@ -72,6 +74,7 @@ class CardDatePickerState extends State<CardDatePicker> {
         ),
 
         //TimePickerUI
+        if(widget.isJustDate != null ? !widget.isJustDate : true)
         Expanded(
           child: Card(
               margin: EdgeInsets.all(8.0),

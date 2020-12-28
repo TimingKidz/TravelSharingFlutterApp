@@ -28,10 +28,12 @@ class User {
     faculty = json['faculty'];
     gender = json['gender'];
     vehicle = List();
-    json['vehicle'].forEach((data) {
-      if (!(data is String))
-        vehicle.add(Vehicle.fromJson(data));
-    });
+    if(json['vehicle'] != null){
+      json['vehicle'].forEach((data) {
+        if (!(data is String))
+          vehicle.add(Vehicle.fromJson(data));
+      });
+    }
     token = json['token'];
     if( json['status'] != null){
       status = Status.fromJson(json['status']);

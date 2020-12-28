@@ -1,15 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 
 class CardTextField extends StatefulWidget {
   final String labelText;
   final String initValue;
   final TextInputType type;
+  final List<TextInputFormatter> inputFormat;
+  final bool isPhoneValidator;
   final Function onChanged;
   final bool notNull;
 
-  const CardTextField({Key key, this.labelText, this.initValue, this.onChanged, this.type, @required this.notNull}) : super(key: key);
+  const CardTextField({Key key, this.labelText, this.initValue, this.onChanged, this.type, @required this.notNull, this.inputFormat, this.isPhoneValidator}) : super(key: key);
   CardTextFieldState createState() => CardTextFieldState();
 }
 
@@ -34,7 +37,7 @@ class CardTextFieldState extends State<CardTextField> {
             TextFormField(
               validator: (val){
                 if(widget.notNull){
-                  if(val.isEmpty){
+                  if(val.isEmpty || ((widget.isPhoneValidator != null ? widget.isPhoneValidator : false) && val.length != 10)){
                     setState(() {
                       isEmpty = true;
                     });
@@ -48,15 +51,17 @@ class CardTextFieldState extends State<CardTextField> {
                 }
                 return null;
               },
+              inputFormatters: widget.inputFormat,
               keyboardType: widget.type,
+              maxLength: widget.isPhoneValidator != null ? (widget.isPhoneValidator ? 10 : null) : null,
               onChanged: (text){
                 widget.onChanged(text);
               },
               initialValue: widget.initValue ?? "",
               decoration: InputDecoration(
                 border: InputBorder.none,
-                contentPadding:
-                EdgeInsets.symmetric(horizontal: 15),
+                counterText: "",
+                contentPadding: EdgeInsets.symmetric(horizontal: 15),
                 errorStyle: TextStyle(height: 0),
 //                hintText: 'Source',
               ),

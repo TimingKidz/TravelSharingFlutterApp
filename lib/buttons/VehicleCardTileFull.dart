@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
+import 'package:travel_sharing/UI/PlainBGInfo.dart';
 import 'package:travel_sharing/buttons/PlainBGTextField.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
 import 'package:travel_sharing/main.dart';
@@ -15,11 +16,7 @@ class VehicleCardTileFull extends StatefulWidget {
 
 class VehicleCardTileFullState extends State<VehicleCardTileFull> {
   Vehicle editData;
-  double fieldPadding = 16.0;
   final _formKey = GlobalKey<FormState>();
-  TextStyle fieldTextStyle = TextStyle(
-    color: Colors.black.withOpacity(0.6)
-  );
   bool isEdit = false;
 
   @override
@@ -154,6 +151,8 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
   List<Widget> infoField(){
     if(isEdit){
       return [
+
+        SizedBox(width: 16.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
@@ -271,44 +270,27 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
       ];
     } else {
       return [
+        PlainBGInfo(label: "ประเภท", info: widget.data.type),
+        SizedBox(height: 16.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            eachInfo("ทะเบียน", widget.data.license),
+            Expanded(child: PlainBGInfo(label: "ทะเบียน", info: widget.data.license)),
             SizedBox(width: 16.0),
-            eachInfo("ยี่ห้อ", widget.data.brand)
+            Expanded(child: PlainBGInfo(label: "ยี่ห้อ", info: widget.data.brand))
+
           ],
         ),
         SizedBox(height: 16.0),
         Row(
           children: <Widget>[
-            eachInfo("รุ่น", widget.data.model),
+            Expanded(child: PlainBGInfo(label: "รุ่น", info: widget.data.model)),
             SizedBox(width: 16.0),
-            eachInfo("สี", widget.data.color)
+            Expanded(child: PlainBGInfo(label: "สี", info: widget.data.color))
           ],
         )
       ];
     }
-  }
-
-  Widget eachInfo(String label, String info){
-    return Expanded(
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Container(
-          color: Theme.of(context).canvasColor,
-          padding: EdgeInsets.all(fieldPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(label, style: fieldTextStyle),
-              SizedBox(height: 14.0),
-              Text(info, style: TextStyle(fontSize: 16.0))
-            ],
-          ),
-        ),
-      ),
-    );
   }
 
 }

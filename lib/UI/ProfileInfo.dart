@@ -1,37 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:travel_sharing/Class/User.dart';
+import 'package:travel_sharing/UI/PlainBGInfo.dart';
+import 'package:travel_sharing/main.dart';
 
 class ProfileInfo extends StatelessWidget {
+  final User data;
+
+  const ProfileInfo({Key key, @required this.data}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      direction: DismissDirection.vertical,
-      key: const Key('key'),
-      onDismissed: (_) => Navigator.of(context).pop(),
-      child: SafeArea(
-        bottom: false,
-        child: Card(
-          elevation: 2,
-          margin: EdgeInsets.fromLTRB(0.0, 12.0, 0.0, 0.0),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(20.0),
-            )
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        children: <Widget>[
+          SizedBox(height: 16.0),
+          CircleAvatar(
+            radius: 64,
+            child: ClipOval(
+              child: Image.network(
+                "${HTTP().API_IP}/images/profile.jpg",
+              ),
+            ),
           ),
-          child: Column(
-            children: <Widget>[
-              Container(
-                width: 40,
-                height: 4,
-                margin: EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade500,
-                  borderRadius: BorderRadius.circular(20.0)
-                ),
-              )
-            ],
+          SizedBox(height: 16.0),
+          Text(
+            data.name,
+            style: TextStyle(
+              fontSize: 18.0
+            ),
           ),
-        )
-      )
+          SizedBox(height: 28.0),
+          PlainBGInfo(label: "Email", info: data.email),
+          SizedBox(height: 16.0),
+          PlainBGInfo(label: "Faculty", info: data.faculty),
+          SizedBox(height: 16.0),
+          PlainBGInfo(label: "Gender", info: data.gender),
+          SizedBox(height: 16.0),
+        ],
+      ),
     );
   }
 }

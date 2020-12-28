@@ -7,7 +7,7 @@ import 'package:travel_sharing/Class/User.dart';
 import 'package:location/location.dart' ;
 import 'package:travel_sharing/Pages/Matchinformation.dart';
 import 'package:travel_sharing/Pages/mapview.dart';
-import 'package:travel_sharing/buttons/cardTileWithTapMatch.dart';
+import 'package:travel_sharing/UI/MatchMapCard.dart';
 import 'package:travel_sharing/main.dart';
 
 
@@ -58,7 +58,7 @@ class _MatchListstate extends State<MatchList> {
     });
     socket.on('onNewMatch', (data) => getData());
     socket.on('onAccept', (data) =>  Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => Matchinformation(uid: data))));
+        builder: (context) => Matchinformation(uid: data, data: widget.data))));
     firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
           if( message['data']['page'] != '/MatchList' ){
@@ -72,19 +72,14 @@ class _MatchListstate extends State<MatchList> {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
-      appBar: AppBar(
-        title: const Text('ส่งคำขอให้คนที่คุณจะไปด้วย'),
-        elevation: 2.0,
-      ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: _widgetOptions(),
+        body: SafeArea(
+          child: Center(
+            child: SizedBox(
+                height: double.infinity, // card height
+                child: _widgetOptions()
             ),
-          ],
-        ),
-      ),
+          ),
+        )
     );
   }
 
@@ -110,20 +105,35 @@ class _MatchListstate extends State<MatchList> {
   }
 
   Widget _buildListView() {
-    return ListView.builder(
-        itemCount: _MatchList.length,
-        itemBuilder: (context, i) {
-          return _buildRow(_MatchList[i]);
-        });
+    return PageView.builder(
+      itemCount: _MatchList.length,
+      controller: PageController(viewportFraction: 0.85),
+      physics: BouncingScrollPhysics(),
+      // onPageChanged: (int index) => setState(() => _index = index),
+      itemBuilder: (_, i) {
+        return Card(
+          margin: EdgeInsets.only(top: 64.0, bottom: 64.0, right: 8.0, left: 8.0),
+          elevation: 2,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: cardDetails(_MatchList[i]),
+        );
+      },
+    );
   }
 
-  Widget _buildRow( Match_Info data) {
-      return CardTileWithTapMatch(
-        data: data,
-        isreq: isreq.contains(data.routes.uid),
-        onCardPressed:() => _onCardPressed(data),
-        onButtonPressed: () => _onButtonPressed(data),
-      );
+  Widget cardDetails(Match_Info data){
+    // int next = i - 1 < 0 ? i : i-1;
+    // if(i == _index || next == _index){
+    return MatchMapCard(
+      data: data,
+      isreq: isreq.contains(data.routes.uid),
+      onButtonPressed: () => _onButtonPressed(data),
+    );
+    // }else{
+    //   return Center(
+    //     child: Text("Hello"),
+    //   );
+    // }
   }
 
   _onCardPressed(Match_Info data) {
