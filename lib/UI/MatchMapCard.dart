@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travel_sharing/Class/Match_Info.dart';
+import 'package:travel_sharing/main.dart';
 
 class MatchMapCard extends StatefulWidget {
   final Match_Info data;
@@ -68,7 +69,14 @@ class _MatchMapCardState extends State<MatchMapCard> {
                               SizedBox(height: 16.0),
                               Row(
                                 children: <Widget>[
-                                  Icon(Icons.account_circle, size: 32.0),
+                                  CircleAvatar(
+                                    radius: 20,
+                                    child: ClipOval(
+                                      child: Image.network(
+                                        "${httpClass.API_IP}${widget.data.user.imgpath}",
+                                      ),
+                                    ),
+                                  ),
                                   SizedBox(width: 8.0),
                                   Text(widget.data.user.name, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
                                 ],

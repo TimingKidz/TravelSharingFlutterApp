@@ -214,7 +214,7 @@ class User {
       image = img.copyResize(image,
           width: 512,
           height: 512);
-      Http.StreamedResponse response = await httpClass.reqHttpMedia(image,this.uid,"profile.jpg");
+      Http.StreamedResponse response = await httpClass.reqHttpMedia(image,this.uid,"profile");
       if(response.statusCode == 400){
         return Future.value(false);
       }else{
@@ -229,7 +229,7 @@ class User {
   Future<bool> uploadStudentCard(File file)async{
     try{
       img.Image image = img.decodeImage(file.readAsBytesSync());
-      Http.StreamedResponse response = await httpClass.reqHttpMedia(image,this.uid,"card.jpg");
+      Http.StreamedResponse response = await httpClass.reqHttpMedia(image,this.uid,"card");
       if(response.statusCode == 400){
         return Future.value(false);
       }else{

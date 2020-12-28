@@ -61,8 +61,12 @@ class _MatchListstate extends State<MatchList> {
         getData(true);
       }
     });
-    socket.on('onAccept', (data) =>  Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => Matchinformation(uid: data, data: widget.data))));
+    socket.on('onAccept', (data) {
+      if( widget.data.uid == data['tripid'] ){
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => Matchinformation(uid: data, data: widget.data)));
+      }
+    });
     firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
           if( message['data']['page'] != '/MatchList' ){

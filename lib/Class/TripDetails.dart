@@ -25,9 +25,9 @@ class TripDetails{
     });
   }
 
-  Future<TripDetails> getDetails(String uid,String currentTripid,bool ) async {
+  Future<TripDetails> getDetails(String uid,String currentTripid,bool isNeed2Update ) async {
     try{
-      Http.Response response = await httpClass.reqHttp("/api/routes/Tripinformation",{"_id": uid, "currentTripid" : currentTripid});
+      Http.Response response = await httpClass.reqHttp("/api/routes/Tripinformation",{"_id": uid, "currentTripid" : currentTripid,"isNeed2Update" : isNeed2Update});
       if(response.statusCode == 400){
         return Future.value(null);
       }else{

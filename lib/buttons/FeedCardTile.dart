@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:travel_sharing/Class/DateManage.dart';
 import 'package:travel_sharing/Class/Feed.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
+import 'package:travel_sharing/main.dart';
 
 class FeedCardTile extends StatefulWidget {
   final Feed data;
@@ -167,7 +168,11 @@ class FeedCardTileState extends State<FeedCardTile> {
                         alignment: Alignment.bottomRight,
                         child: CircleAvatar(
                           radius: 24,
-                          child: Icon(Icons.face),
+                          child:  ClipOval(
+                            child: Image.network(
+                              "${httpClass.API_IP}${widget.data.user.imgpath}",
+                            ),
+                          ),
                         ),
                       ),
                     )

@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_sign_in/widgets.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/buttons/cardInformation.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
@@ -15,6 +18,8 @@ class ProfileManagePage extends StatefulWidget {
 class ProfileManagePageState extends State<ProfileManagePage> {
   User editUser;
   bool isEdit = false;
+  File selectedImage;
+  String url = "${httpClass.API_IP}${currentUser.imgpath}";
 
   @override
   void initState() {
@@ -53,12 +58,25 @@ class ProfileManagePageState extends State<ProfileManagePage> {
                           // CircleAvatar(
                           //   radius: 64.0,
                           // ),
-                          SizedBox(
-                            width: 128.0,
-                            height: 128.0,
-                            child: GoogleUserCircleAvatar(
-                              identity: googleUser,
-                            ),
+                          isEdit
+                          ? CircleAvatar(
+                                radius: 64,
+//                                 backgroundColor: Colors.transparent,
+                                child: InkWell(
+                                  onTap: (){
+                                    getImage();
+                                  },
+                                  child: ClipOval(
+                                      child: selectedImage != null ? Image.file(selectedImage): currentUser.imgpath != null ? Image.network(url) : Container()
+                                  ),
+                                )
+                            )
+                          :  CircleAvatar(
+                              radius: 64,
+                              // backgroundColor: Colors.transparent,
+                              child: ClipOval(
+                                  child: currentUser.imgpath != null ? Image.network(url) : Container()
+                              ),
                           ),
                           SizedBox(
                             height: 16.0,
@@ -126,6 +144,19 @@ class ProfileManagePageState extends State<ProfileManagePage> {
     );
   }
 
+  Future getImage() async {
+    print("5555555");
+    PickedFile image = await ImagePicker().getImage(source: ImageSource.gallery);
+    setState(() {
+      if (image != null) {
+        selectedImage = File(image.path);
+        print("selected img");
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
   void setEditDataDefault(){
     editUser = new User(
       uid: currentUser.uid,
@@ -164,6 +195,7 @@ class ProfileManagePageState extends State<ProfileManagePage> {
               child: Text("cancel"),
               onPressed: (){
                 setState(() {
+                  selectedImage = null;
                   setEditDataDefault();
                   isEdit = false;
                 });
@@ -172,6 +204,7 @@ class ProfileManagePageState extends State<ProfileManagePage> {
             FlatButton(
               child: Text("ok"),
               onPressed: () async {
+                selectedImage = null;
                 print(editUser.toJson());
                 isEdit = false;
                 await editUser.editUser();
@@ -204,6 +237,11 @@ class ProfileManagePageState extends State<ProfileManagePage> {
   }
 
   Future<void> getData() async {
+    if( selectedImage != null){
+      await currentUser.uploadProfile(selectedImage);
+      NetworkImage provider = NetworkImage(url);
+      await provider.evict();
+    }
     currentUser = await currentUser.getCurrentuser(currentUser.id);
     setState(() {});
   }
