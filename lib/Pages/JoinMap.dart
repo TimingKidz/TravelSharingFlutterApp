@@ -45,7 +45,6 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getLocation();
     _pageConfig();

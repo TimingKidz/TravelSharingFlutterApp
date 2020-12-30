@@ -20,16 +20,16 @@ class Notifications{
 
   Future<List<Notifications>> getNotification(String id,bool isNeed2Update) async {
     try{
-      Http.Response response = await httpClass.reqHttp("/api/routes/getMessage",{ "id" : id , "isNeed2Update" : isNeed2Update});
+      Http.Response response = await httpClass.reqHttp("/api/routes/getNotification",{ "id" : id , "isNeed2Update" : isNeed2Update});
       if(response.statusCode == 400 ){
         return Future.value(null);
       }else{
         if(response.statusCode == 404){
           return Future.value(null);
         }else{
-          Map<String, dynamic> data = jsonDecode(response.body);
+          List<dynamic> data = jsonDecode(response.body);
           List<Notifications> Notifications_List = List();
-          data['Notifications'].forEach((x) {
+          data.forEach((x) {
             Notifications_List.add(Notifications.fromJson(x));
           });
           return Future.value(Notifications_List);

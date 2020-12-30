@@ -87,6 +87,7 @@ class SignUpPageState extends State<SignUpPage> {
   }
 
   List<Widget> fieldList(){
+    // TODO: Add missing field in User class
     return [
       SizedBox(height: 8.0),
       CircleAvatar(
@@ -107,6 +108,11 @@ class SignUpPageState extends State<SignUpPage> {
         initValue: googleUser.displayName,
         labelText: "Full Name",
         onChanged: (data) => userData.name = data,
+      ),
+      CardTextField(
+        notNull: true,
+        labelText: "Username",
+        onChanged: (data) => print(data),
       ),
       CardDropdown(
         listItems: <String>[
@@ -157,8 +163,7 @@ class SignUpPageState extends State<SignUpPage> {
         labelText: "Phone",
         isPhoneValidator: true,
         inputFormat: <TextInputFormatter>[
-           FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), //1.20 or newer versions
-//          WhitelistingTextInputFormatter.digitsOnly
+           FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
         ],
         type: TextInputType.phone,
         onChanged: (val) => print(val),

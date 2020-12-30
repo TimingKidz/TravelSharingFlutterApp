@@ -240,6 +240,10 @@ class _Dashboard extends State<Dashboard> {
       data: data.routes,
       status: data.routes.status,
       onCardPressed: () => _onCardPressed(data),
+      onDeletePressed: () async {
+        await data.deleteTravel();
+        _deleteCard(data.uid);
+      },
     );
   }
 

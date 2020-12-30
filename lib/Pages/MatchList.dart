@@ -8,7 +8,9 @@ import 'package:location/location.dart' ;
 import 'package:travel_sharing/Pages/Matchinformation.dart';
 import 'package:travel_sharing/Pages/mapview.dart';
 import 'package:travel_sharing/UI/MatchMapCard.dart';
+import 'package:travel_sharing/UI/NotificationBarSettings.dart';
 import 'package:travel_sharing/main.dart';
+import 'package:flutter/services.dart';
 
 
 class MatchList extends StatefulWidget {
@@ -37,6 +39,7 @@ class _MatchListstate extends State<MatchList> {
   @override
   void dispose() {
     socket.off('onAccept');
+    notificationBarIconLight();
     super.dispose();
   }
 
@@ -79,6 +82,7 @@ class _MatchListstate extends State<MatchList> {
 
   @override
   Widget build(BuildContext context) {
+    notificationBarIconDark();
     return  Scaffold(
         body: SafeArea(
           child: Center(

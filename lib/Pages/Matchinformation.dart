@@ -196,6 +196,7 @@ class _Matchinformation extends State<Matchinformation> {
                             child: _buildListView(),
                           )
                         ],
+                        // TODO: Add MAP
                       ),
                   ),
                 ),

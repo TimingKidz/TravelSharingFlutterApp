@@ -117,6 +117,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
   }
 
   Widget buildSingleMessage(int index) {
+    // TODO: Add sender name and time stamp
     return Container(
       alignment: messagesReverseList[index].sender != currentUser.uid ? Alignment.centerLeft : Alignment.centerRight,
       child: Container(

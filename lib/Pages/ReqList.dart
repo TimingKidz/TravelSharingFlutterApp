@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/Req_Info.dart';
 import 'package:travel_sharing/Class/Travel_Info.dart';
 import 'package:travel_sharing/Pages/Matchinformation.dart';
+import 'package:travel_sharing/UI/NotificationBarSettings.dart';
 import 'package:travel_sharing/UI/ReqMapCard.dart';
 import 'package:travel_sharing/main.dart';
+import 'package:flutter/services.dart';
 
 
 class ReqList extends StatefulWidget {
@@ -27,8 +29,8 @@ class _ReqListstate extends State<ReqList> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     socket.off('onRequest');
+    notificationBarIconLight();
     super.dispose();
   }
 
@@ -40,6 +42,7 @@ class _ReqListstate extends State<ReqList> {
 
   @override
   Widget build(BuildContext context) {
+    notificationBarIconDark();
     return Scaffold(
         body: SafeArea(
           child: Center(

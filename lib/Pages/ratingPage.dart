@@ -1,19 +1,50 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:travel_sharing/main.dart';
+import 'package:travel_sharing/UI/NotificationBarSettings.dart';
 
 class RatingPage extends StatefulWidget {
   RatingPageState createState() => RatingPageState();
 }
 
 class RatingPageState extends State<RatingPage> {
-  bool isSelected = false;
+  List<String> ratingTypeList = List();
+  List<String> ratingTypeSelected = List();
+  Map<String, bool> isSelected = Map();
 
+  @override
+  void initState() {
+    ratingTypeList = ["สุภาพ", "เป็นมิตร", "ตรงเวลา"];
+    for(String each in ratingTypeList){
+      isSelected.addAll({each: false});
+    }
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    notificationBarIconLight();
+    super.dispose();
+  }
+
+  // TODO: Complete Flow to BackEnd
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        brightness: Brightness.light,
+        iconTheme: IconThemeData(
+          color: Colors.black
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.clear),
+            onPressed: () => Navigator.of(context).pop(),
+          )
+        ],
+      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -24,7 +55,7 @@ class RatingPageState extends State<RatingPage> {
           SizedBox(height: 16.0),
           Center(
             child: RatingBar.builder(
-              initialRating: 3,
+              initialRating: 5,
               minRating: 1,
               direction: Axis.horizontal,
               allowHalfRating: true,
@@ -42,6 +73,7 @@ class RatingPageState extends State<RatingPage> {
           SizedBox(height: 16.0),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 16.0),
+            padding: EdgeInsets.all(8.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20.0),
               color: Theme.of(context).canvasColor
@@ -50,27 +82,9 @@ class RatingPageState extends State<RatingPage> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Card(
-                      margin: EdgeInsets.all(8.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0)
-                      ),
-                      color: isSelected ? Theme.of(context).accentColor : Colors.white,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(20.0),
-                        onTap: (){
-                          setState(() {
-                            isSelected = !isSelected;
-                          });
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(
-                              "Polite"
-                          ),
-                        ),
-                      ),
-                    )
+                    for(String each in ratingTypeList)
+                      ratingType(each),
+                    SizedBox(width: 8.0),
                   ],
                 )
               ],
@@ -90,6 +104,32 @@ class RatingPageState extends State<RatingPage> {
             },
           )
         ],
+      ),
+    );
+  }
+
+  Widget ratingType(String type){
+    return Card(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0)
+      ),
+      color: isSelected[type] ? Theme.of(context).accentColor : Colors.white,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20.0),
+        onTap: (){
+          setState(() {
+            isSelected[type] = !isSelected[type];
+            if(isSelected[type]) ratingTypeSelected.add(type);
+            else ratingTypeSelected.remove(type);
+            print("Selected = " + ratingTypeSelected.join(", ")); // Print all selected type
+          });
+        },
+        child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+              type
+          ),
+        ),
       ),
     );
   }

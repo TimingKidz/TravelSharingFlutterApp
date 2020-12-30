@@ -186,7 +186,6 @@ class _LocationSearchState extends State<LocationSearch> {
     String baseURL = 'https://maps.googleapis.com/maps/api/place/autocomplete/json';
     String country = 'th';
     String radius = '20000';
-    // TODO Add session token
 
     String request = '$baseURL?input=$input&key=$api_key&components=country:$country'
         '&location=${widget.currentLocation.longitude},${widget.currentLocation.latitude}&radius=$radius';

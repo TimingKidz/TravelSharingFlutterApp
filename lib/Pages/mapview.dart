@@ -51,7 +51,6 @@ class _mapview extends State<mapview> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _pageConfig();
     _createMarkers();

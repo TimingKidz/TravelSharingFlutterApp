@@ -4,6 +4,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
+import 'package:travel_sharing/Pages/HistoryPage.dart';
 import 'package:travel_sharing/Pages/ProfileManagePage.dart';
 import 'package:travel_sharing/Pages/VehicleManagement/VehicleManagePage.dart';
 import 'package:travel_sharing/buttons/VehicleCardTileMin.dart';
@@ -187,7 +188,10 @@ class AccountState extends State<Account> {
         title: Text(
           "History"
         ),
-        onTap: (){},
+        onTap: (){
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => HistoryPage()));
+        },
       ),
       SizedBox(
         height: 32.0,

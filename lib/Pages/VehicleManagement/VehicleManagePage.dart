@@ -14,7 +14,6 @@ class VehicleManagePageState extends State<VehicleManagePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _pageConfig();
   }

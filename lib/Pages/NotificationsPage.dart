@@ -71,7 +71,7 @@ class NotificationsPageState extends State<NotificationsPage>{
 
   getData(bool Need2Update) async {
     try{
-      notifications = await Notifications().getNotification(currentUser.uid,Need2Update);
+      notifications = await Notifications().getNotification(currentUser.uid,Need2Update) ?? [];
       setState(() { });
     }catch(error){
       print(error );
@@ -137,10 +137,10 @@ class NotificationsPageState extends State<NotificationsPage>{
   }
 
   Widget _buildListView() {
-    return ListView.separated(
-      separatorBuilder: (context, i) => Divider(
-        color: Colors.grey,
-      ),
+    return ListView.builder(
+      // separatorBuilder: (context, i) => Divider(
+      //   color: Colors.grey,
+      // ),
         physics: BouncingScrollPhysics(),
         itemCount: notifications.length,
         itemBuilder: (context, i) {
@@ -150,8 +150,20 @@ class NotificationsPageState extends State<NotificationsPage>{
   }
 
   Widget _buildRow(Notifications data) {
-    return ListTile(
-      title: Text(data.Title),
+    return ExpansionTile(
+      title: Row(
+        children: [
+          Icon(Icons.announcement),
+          SizedBox(width: 8.0),
+          Text(data.Title)
+        ],
+      ),
+      childrenPadding: EdgeInsets.all(16.0),
+      children: <Widget>[
+        Text('Big Bang'),
+        Text('Birth of the Sun'),
+        Text('Earth is Born'),
+      ],
     );
   }
 

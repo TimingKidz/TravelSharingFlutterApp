@@ -54,7 +54,6 @@ class _CreateRoutestate extends State<CreateRoute> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getLocation();
     _pageConfig();

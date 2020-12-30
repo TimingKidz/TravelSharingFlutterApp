@@ -40,4 +40,18 @@ class Travel_Info{
         }
       }
   }
+
+  Future<bool> deleteTravel() async {
+    try{
+      Http.Response response = await httpClass.reqHttp("/api/routes/DeleteRoute",{"tripid": this.uid, "id": this.id});
+      if(response.statusCode == 400){
+        return Future.value(false);
+      }else{
+        print("Delete Travel Route : ${response.body}");
+        return Future.value(true);
+      }
+    }catch (err){
+      throw("can't connect" + err);
+    }
+  }
 }

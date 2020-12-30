@@ -50,7 +50,7 @@ class MyHttpOverrides extends HttpOverrides{
 }
 
 void main() {
-   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
+   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
 
    // statusBarColor is used to set Status bar color in Android devices.
    statusBarColor: Colors.transparent,
