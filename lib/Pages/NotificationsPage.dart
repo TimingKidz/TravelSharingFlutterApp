@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:travel_sharing/Class/DateManage.dart';
 import 'package:travel_sharing/Class/Notifications.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
@@ -137,10 +138,10 @@ class NotificationsPageState extends State<NotificationsPage>{
   }
 
   Widget _buildListView() {
-    return ListView.builder(
-      // separatorBuilder: (context, i) => Divider(
-      //   color: Colors.grey,
-      // ),
+    return ListView.separated(
+        separatorBuilder: (context, i) => Divider(
+          color: Colors.grey,
+        ),
         physics: BouncingScrollPhysics(),
         itemCount: notifications.length,
         itemBuilder: (context, i) {
@@ -150,20 +151,45 @@ class NotificationsPageState extends State<NotificationsPage>{
   }
 
   Widget _buildRow(Notifications data) {
-    return ExpansionTile(
-      title: Row(
-        children: [
-          Icon(Icons.announcement),
-          SizedBox(width: 8.0),
-          Text(data.Title)
+    return Theme(
+      data: ThemeData(
+        accentColor: Colors.black,
+        dividerColor: Colors.transparent
+      ),
+      child: ExpansionTile(
+        title: Row(
+          children: [
+            Icon(Icons.announcement),
+            SizedBox(width: 16.0),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  data.Title,
+                  style: TextStyle(
+                    fontSize: 18.0
+                  ),
+                ),
+                SizedBox(height: 8.0),
+                Text(
+                  DateManage().datetimeFormat("full", data.date),
+                  style: TextStyle(
+                    fontSize: 10.0
+                  ),
+                )
+              ],
+            )
+          ],
+        ),
+        childrenPadding: EdgeInsets.all(16.0),
+        tilePadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        expandedAlignment: Alignment.centerLeft,
+        children: <Widget>[
+          Text(data.Message),
+          // Text('Birth of the Sun'),
+          // Text('Earth is Born'),
         ],
       ),
-      childrenPadding: EdgeInsets.all(16.0),
-      children: <Widget>[
-        Text('Big Bang'),
-        Text('Birth of the Sun'),
-        Text('Earth is Born'),
-      ],
     );
   }
 

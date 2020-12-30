@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/homeNavigation.dart';
 import 'package:travel_sharing/Pages/signupPage.dart';
+import 'package:travel_sharing/UI/NotificationBarSettings.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:firebase_auth/firebase_auth.dart' as u;
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -34,6 +35,7 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    notificationBarIconDark();
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(child: buildBody())
@@ -130,11 +132,12 @@ class LoginPageState extends State<LoginPage> {
             socket.io.options['extraHeaders'] = {'uid': currentUser.uid,'auth' : httpClass.header['auth']};
           }
           initsocket();
-
+          notificationBarIconLight();
           Navigator.of(context).pop(); //Pop Loading Dialog
           Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) => HomeNavigation()));
         }else{
+          notificationBarIconLight();
           Navigator.of(context).pop(); //Pop Loading Dialog
           Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) => SignUpPage()));
