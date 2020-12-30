@@ -168,10 +168,8 @@ class FeedCardTileState extends State<FeedCardTile> {
                         alignment: Alignment.bottomRight,
                         child: CircleAvatar(
                           radius: 24,
-                          child:  ClipOval(
-                            child: Image.network(
-                              "${httpClass.API_IP}${widget.data.user.imgpath}",
-                            ),
+                          child: ClipOval(
+                            child: widget.data.user.imgpath != null ? Image.network("${httpClass.API_IP}${widget.data.user.imgpath}") : Container() ,
                           ),
                         ),
                       ),

@@ -5,11 +5,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travel_sharing/Class/Req_Info.dart';
 
 class ReqMapCard extends StatefulWidget {
+  final String url;
   final Req_Info data;
   final Function onAcceptPressed;
   final Function onDeclinePressed;
 
-  const ReqMapCard({Key key, this.data, this.onAcceptPressed, this.onDeclinePressed}) : super(key: key);
+  const ReqMapCard({Key key, this.url,this.data, this.onAcceptPressed, this.onDeclinePressed}) : super(key: key);
 
   @override
   _ReqMapCardState createState() => _ReqMapCardState();
@@ -21,14 +22,12 @@ class _ReqMapCardState extends State<ReqMapCard> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(20.0),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          Expanded(
-              child: FittedBox(
-                child: Image.network(
-                    "http://maps.googleapis.com/maps/api/staticmap?size=512x1980&key=AIzaSyBQCf89JOkrq2ECa6Ko8LBQaMO8A7rJt9Q&path=40.737102,-73.990318%7C40.749825,-73.987963&sensor=false&markers=%7C40.752946,-73.987384&sensor=false"
-                ),
-                fit: BoxFit.cover,
-              )
+          Image.network(
+            widget.url,
+            fit: BoxFit.cover,
+
           ),
           Container(
               padding: EdgeInsets.all(16.0),

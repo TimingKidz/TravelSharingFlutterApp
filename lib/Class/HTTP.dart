@@ -6,11 +6,10 @@ import 'package:http_parser/http_parser.dart';
 import 'package:image/image.dart' as img;
 
 class HTTP{
- // final String API_IP = "https://68.183.226.229";
+//  final String API_IP = "https://68.183.226.229";
   final String API_IP = "http://10.80.27.167:3000";
   Map<String,String>  header ;
   Map<String,String>  mediaHeader ;
-
 
   Future<Map<String,String>> getNewHeader() async {
     String tmp = await firebaseAuth.user.getIdToken();

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travel_sharing/Class/MapStaticRequest.dart';
 import 'package:travel_sharing/Class/Req_Info.dart';
 import 'package:travel_sharing/Class/Travel_Info.dart';
 import 'package:travel_sharing/Pages/Matchinformation.dart';
@@ -86,6 +87,7 @@ class _ReqListstate extends State<ReqList> {
     // int next = i - 1 < 0 ? i : i-1;
     // if(i == _index || next == _index){
     return ReqMapCard(
+      url: MapStaticRequest().getMapUrl(widget.data.routes, data.routes),
       data: data,
       onAcceptPressed: () => _onAcceptPressed(data),
       onDeclinePressed: () => _onDeclinePressed(data),

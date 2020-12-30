@@ -74,6 +74,8 @@ class _Dashboard extends State<Dashboard> {
        index = _joinList.indexOf(x);
       }
     });
+    print("removeeeeeeeeeeeeeeeeeeeeeee");
+    print(index);
     if (index != -1)  _joinList.removeAt(index);
     setState((){});
   }
@@ -90,7 +92,6 @@ class _Dashboard extends State<Dashboard> {
     socket.on('onTripEnd', (data) {
       _deleteCard(data['tripid']);
     });
-
     socket.on('onRequest', (data) {
       _updateCardStatus(data['tripid']);
     });

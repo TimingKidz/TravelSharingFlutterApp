@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:travel_sharing/Class/MapStaticRequest.dart';
 import 'package:travel_sharing/Class/Match_Info.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/Travel_Info.dart';
@@ -137,6 +138,7 @@ class _MatchListstate extends State<MatchList> {
     // int next = i - 1 < 0 ? i : i-1;
     // if(i == _index || next == _index){
     return MatchMapCard(
+      url : MapStaticRequest().getMapUrl( data.routes,widget.data.routes),
       data: data,
       isreq: isreq.contains(data.routes.uid),
       onButtonPressed: () => _onButtonPressed(data),

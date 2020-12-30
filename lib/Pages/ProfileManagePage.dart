@@ -195,20 +195,22 @@ class ProfileManagePageState extends State<ProfileManagePage> {
               child: Text("cancel"),
               onPressed: (){
                 setState(() {
-                  selectedImage = null;
+
                   setEditDataDefault();
                   isEdit = false;
+                  selectedImage = null;
                 });
               },
             ),
             FlatButton(
               child: Text("ok"),
               onPressed: () async {
-                selectedImage = null;
+
                 print(editUser.toJson());
                 isEdit = false;
                 await editUser.editUser();
                 getData();
+                selectedImage = null;
               },
             )
           ],
@@ -238,10 +240,13 @@ class ProfileManagePageState extends State<ProfileManagePage> {
 
   Future<void> getData() async {
     if( selectedImage != null){
+      print("upload");
       await currentUser.uploadProfile(selectedImage);
       NetworkImage provider = NetworkImage(url);
       await provider.evict();
     }
+
+    print("upload 555");
     currentUser = await currentUser.getCurrentuser(currentUser.id);
     setState(() {});
   }
