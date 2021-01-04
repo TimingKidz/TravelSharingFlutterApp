@@ -24,11 +24,14 @@ class _MatchMapCardState extends State<MatchMapCard> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(20.0),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          Image.network(
-            widget.url,
-            fit: BoxFit.cover,
+          Expanded(
+            child: Image.network(
+              widget.url,
+              fit: BoxFit.cover,
 
+            ),
           ),
           Container(
               padding: EdgeInsets.all(16.0),

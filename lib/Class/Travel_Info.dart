@@ -10,7 +10,7 @@ class Travel_Info{
   String id;
   String uid;
 
-  Travel_Info({this.routes, this.id});
+  Travel_Info({this.routes, this.id, this.uid});
 
   Travel_Info.fromJson(Map<String, dynamic> json) {
     routes = Routes.fromJson(json['detail']);

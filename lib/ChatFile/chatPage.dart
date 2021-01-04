@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:travel_sharing/Class/Message.dart';
 import 'package:travel_sharing/main.dart';
+import 'package:travel_sharing/custom_color_scheme.dart';
 
 class ChatPage extends StatefulWidget {
   final String tripid;
   final String currentTripid;
-  ChatPage({this.tripid,this.currentTripid});
+  final bool isHistory;
+  ChatPage({this.tripid,this.currentTripid, this.isHistory});
   ChatPageState createState() => ChatPageState();
 }
 
@@ -73,6 +75,64 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+        body: Stack(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(top: 80),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  if(messagesReverseList.isNotEmpty)
+                    Expanded(
+                      child: _chatListView(),
+                    ),
+                  if(widget.isHistory == null ? true : !widget.isHistory)
+                    _chatBottomBar()
+                ],
+              ),
+            ),
+            Card(
+              elevation: 2.0,
+              margin: EdgeInsets.all(0.0),
+              color: Theme.of(context).colorScheme.darkBlue,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(30.0),
+                      bottomRight: Radius.circular(30.0)
+                  )
+              ),
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.only(left: 4.0, top: 4.0, bottom: 16.0, right: 4.0),
+                child: SafeArea(
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.arrow_back),
+                        tooltip: "back",
+                        iconSize: 26.0,
+                        color: Colors.white,
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                      SizedBox(width: 16.0),
+                      Text(
+                        "Group Chat",
+                        style: TextStyle(
+                          // fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                          color: Colors.white,
+                        ),
+                        // textAlign: TextAlign.center,
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        )
+    );
     return
       Scaffold(
           appBar: AppBar(
@@ -87,6 +147,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
               Expanded(
                 child: _chatListView(),
               ),
+              if(widget.isHistory == null ? true : !widget.isHistory)
               _chatBottomBar()
             ],
           )

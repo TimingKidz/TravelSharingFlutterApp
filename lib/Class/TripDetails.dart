@@ -45,4 +45,25 @@ class TripDetails{
       throw("can't connect Match");
     }
   }
+
+  Future<TripDetails> getHistory(String uid) async {
+    try{
+      Http.Response response = await httpClass.reqHttp("/api/routes/TripHistoryinformation",{"_id": uid});
+      if(response.statusCode == 400){
+        return Future.value(null);
+      }else{
+        if(response.statusCode == 404){
+          return Future.value(null);
+        }else{
+          print(jsonDecode(response.body));
+          TripDetails tmp = TripDetails.fromJson(jsonDecode(response.body));
+          print(tmp.hostUser.name);
+          return Future.value(tmp);
+        }
+      }
+    }catch(err){
+      print(err);
+      throw("can't connect Match");
+    }
+  }
 }

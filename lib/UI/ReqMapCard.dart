@@ -24,10 +24,12 @@ class _ReqMapCardState extends State<ReqMapCard> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          Image.network(
-            widget.url,
-            fit: BoxFit.cover,
+          Expanded(
+            child: Image.network(
+              widget.url,
+              fit: BoxFit.cover,
 
+            ),
           ),
           Container(
               padding: EdgeInsets.all(16.0),

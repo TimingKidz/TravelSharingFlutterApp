@@ -23,6 +23,31 @@ class SignUpPageState extends State<SignUpPage> {
   // User user = new User(name: googleUser.displayName,email: googleUser.email,id: googleUser.id,token: await firebaseMessaging.getToken());
   User userData = new User(name: googleUser.displayName,email: googleUser.email,id: googleUser.id);
   final _formKey = GlobalKey<FormState>();
+  List<String> genderList = ["Male", "Female", "LGBTQ"];
+  List<String> facultyList = [
+    "Mass Communication",
+    "Agriculture",
+    "Dentistry",
+    "Associated Medical Science",
+    "Law",
+    "Business Administration",
+    "Nursing",
+    "Medicine",
+    "Pharmacy",
+    "Humanities",
+    "Political Science and Public Administration",
+    "Fine Arts",
+    "Science",
+    "Engineering",
+    "Education",
+    "Economics",
+    "Architecture",
+    "Social Sciences",
+    "Veterinary Medicine",
+    "Public Health",
+    "Agro-Industry",
+    "College of Art, Media and Technology",
+  ];
   File selectedImage;
 
   @override
@@ -34,8 +59,11 @@ class SignUpPageState extends State<SignUpPage> {
 
   @override
   void initState() {
+    userData.gender = genderList.first;
+    userData.faculty = facultyList.first;
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,11 +143,7 @@ class SignUpPageState extends State<SignUpPage> {
         onChanged: (data) => print(data),
       ),
       CardDropdown(
-        listItems: <String>[
-          "Male",
-          "Female",
-          "LGBTQ"
-        ],
+        listItems: genderList,
         labelText: "Gender",
         onChanged: (data) => userData.gender = data,
       ),
@@ -131,30 +155,7 @@ class SignUpPageState extends State<SignUpPage> {
         },
       ),
       CardDropdown(
-        listItems: <String>[
-          "Mass Communication",
-          "Agriculture",
-          "Dentistry",
-          "Associated Medical Science",
-          "Law",
-          "Business Administration",
-          "Nursing",
-          "Medicine",
-          "Pharmacy",
-          "Humanities",
-          "Political Science and Public Administration",
-          "Fine Arts",
-          "Science",
-          "Engineering",
-          "Education",
-          "Economics",
-          "Architecture",
-          "Social Sciences",
-          "Veterinary Medicine",
-          "Public Health",
-          "Agro-Industry",
-          "College of Art, Media and Technology",
-        ],
+        listItems: facultyList,
         labelText: "Faculty",
         onChanged: (data) => userData.faculty = data,
       ),
