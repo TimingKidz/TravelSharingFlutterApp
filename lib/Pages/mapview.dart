@@ -102,7 +102,7 @@ class _mapview extends State<mapview> {
   _pageConfig(){
     socket.off('onNewNotification');
     socket.on('onNewNotification', (data) {
-      currentUser.status.navbarNoti = true;
+      currentUser. status.navbarNoti = true;
     });
     firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {

@@ -126,22 +126,6 @@ class NotificationsPageState extends State<NotificationsPage>{
           ],
         )
     );
-    if( notifications.isEmpty ){
-      return Scaffold(
-        appBar: AppBar(
-        title: Text("Notifications"),
-        automaticallyImplyLeading: false,
-        )
-      );
-    }else{
-      return Scaffold(
-        appBar: AppBar(
-          title: Text("Notifications"),
-          automaticallyImplyLeading: false,
-        ),
-        body: _buildListView(),
-      );
-    }
   }
 
   Widget _buildListView() {

@@ -6,6 +6,7 @@ import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/Pages/HistoryPage.dart';
 import 'package:travel_sharing/Pages/ProfileManagePage.dart';
+import 'package:travel_sharing/Pages/ReviewView.dart';
 import 'package:travel_sharing/Pages/VehicleManagement/VehicleManagePage.dart';
 import 'package:travel_sharing/buttons/VehicleCardTileMin.dart';
 import 'package:travel_sharing/main.dart';
@@ -74,15 +75,22 @@ class AccountState extends State<Account> {
                     SizedBox(
                       height: 16.0,
                     ),
-                    RatingBarIndicator(
-                      rating: 4.75,
-                      itemBuilder: (context, index) => Icon(
-                        Icons.star,
-                        color: Colors.amber,
+                    InkWell(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => ReviewView()));
+                      },
+                      borderRadius: BorderRadius.circular(20.0),
+                      child: RatingBarIndicator(
+                        rating: 4.75,
+                        itemBuilder: (context, index) => Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                        ),
+                        itemCount: 5,
+                        itemSize: 30.0,
+                        direction: Axis.horizontal,
                       ),
-                      itemCount: 5,
-                      itemSize: 30.0,
-                      direction: Axis.horizontal,
                     ),
                     SizedBox(
                       height: 16.0,

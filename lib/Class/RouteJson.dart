@@ -111,4 +111,29 @@ class Routes {
     }
   }
 
+  Future<List<Travel_Info>> getHistory(String userID) async {
+    // try {
+    Http.Response response = await httpClass.reqHttp("/api/routes/getHistory", {'id': userID});
+    if (response.statusCode == 400) {
+      return Future.value(null);
+    } else {
+      if (response.statusCode == 404) {
+        return Future.value(null);
+      } else {
+        Map<String, dynamic> data = jsonDecode(response.body);
+        List<Travel_Info> historyList = List();
+        print(data);
+        data['History'].forEach((x) {
+          Routes rtmp = Routes.fromJson(x);
+          Travel_Info tmp = new Travel_Info(routes: rtmp, id: rtmp.id, uid: rtmp.uid);
+          historyList.add(tmp);
+        });
+        return Future.value(historyList);
+      }
+    }
+    // }catch(err){
+    //   throw("can't connect" + err);
+    // }
+  }
+
 }

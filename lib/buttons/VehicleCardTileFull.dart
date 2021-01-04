@@ -28,7 +28,6 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 2.0,
       margin: EdgeInsets.all(widget.cardMargin == null ? 0.0 : widget.cardMargin),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20))
