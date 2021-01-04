@@ -58,9 +58,7 @@ class AccountState extends State<Account> {
                     CircleAvatar(
                       radius: 64,
                       child: ClipOval(
-                        child: Image.network(
-                          "${httpClass.API_IP}${currentUser.imgpath}",
-                        ),
+                        child: currentUser.imgpath != null ? Image.network("${httpClass.API_IP}${currentUser.imgpath}") : Container(),
                       ),
                     ),
                     SizedBox(
@@ -122,6 +120,13 @@ class AccountState extends State<Account> {
     socket.off('onNewMatch');
     socket.off('onNewMessage');
     socket.off('onRequest');
+    socket.off('onKick');
+
+    socket.on('onKick', (data){
+      currentUser.status.navbarTrip = true;
+      currentUser.status.navbarNoti = true;
+      widget.setSate();
+    });
 
     socket.on('onRequest', (data) {
       currentUser.status.navbarTrip = true;
@@ -213,6 +218,7 @@ class AccountState extends State<Account> {
 
   Future<void> _handleSignOut() async {
     socket = socket.disconnect();
+    socket.destroy();
     socket.dispose();
     googleUser = await googleSignIn.disconnect();
     // set user.token_id in DB to " "

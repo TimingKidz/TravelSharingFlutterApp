@@ -67,16 +67,26 @@ class _Dashboard extends State<Dashboard> {
     setState((){});
   }
 
-  _deleteCard(String tripid){
+  _deletejoinCard(String tripid){
     int index = -1;
     _joinList.forEach((x){
       if (x.uid == tripid){
        index = _joinList.indexOf(x);
       }
     });
-    print("removeeeeeeeeeeeeeeeeeeeeeee");
     print(index);
     if (index != -1)  _joinList.removeAt(index);
+    setState((){});
+  }
+  _deleteinviteCard(String tripid){
+    int index = -1;
+    _invitedList.forEach((x){
+      if (x.uid == tripid){
+        index = _invitedList.indexOf(x);
+      }
+    });
+    print(index);
+    if (index != -1)  _invitedList.removeAt(index);
     setState((){});
   }
 
@@ -88,9 +98,16 @@ class _Dashboard extends State<Dashboard> {
     socket.off('onNewMessage');
     socket.off('onRequest');
     socket.off('onTripEnd');
+    socket.off('onKick');
 
+    socket.on('onKick', (data){
+      print("onKick");
+      _deletejoinCard(data['tripid']);
+      currentUser.status.navbarNoti = true;
+      widget.setSate();
+    });
     socket.on('onTripEnd', (data) {
-      _deleteCard(data['tripid']);
+      _deletejoinCard(data['tripid']);
     });
     socket.on('onRequest', (data) {
       _updateCardStatus(data['tripid']);
@@ -243,7 +260,12 @@ class _Dashboard extends State<Dashboard> {
       onCardPressed: () => _onCardPressed(data),
       onDeletePressed: () async {
         await data.deleteTravel();
-        _deleteCard(data.uid);
+        if(data.routes.role == "0"){
+          _deleteinviteCard(data.uid);
+        }else{
+          _deletejoinCard(data.uid);
+        }
+
       },
     );
   }
@@ -275,7 +297,7 @@ class _Dashboard extends State<Dashboard> {
         });
       }else{
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => ReqList(data: data))).then((value) async {
+            builder: (context) => ReqList(data: data,isFromMatchinfo: false,))).then((value) async {
           _pageConfig(currentUser.status.navbarTrip);
           currentUser.status.navbarTrip = false;
           await widget.setSate();

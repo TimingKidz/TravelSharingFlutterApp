@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travel_sharing/Class/Req_Info.dart';
+import 'package:travel_sharing/main.dart';
 
 class ReqMapCard extends StatefulWidget {
   final String url;
@@ -27,7 +28,6 @@ class _ReqMapCardState extends State<ReqMapCard> {
           Image.network(
             widget.url,
             fit: BoxFit.cover,
-
           ),
           Container(
               padding: EdgeInsets.all(16.0),
@@ -51,7 +51,12 @@ class _ReqMapCardState extends State<ReqMapCard> {
                             SizedBox(height: 16.0),
                             Row(
                               children: <Widget>[
-                                Icon(Icons.account_circle, size: 32.0),
+                                CircleAvatar(
+                                  radius: 20,
+                                  child: ClipOval(
+                                    child: currentUser.imgpath != null ? Image.network("${httpClass.API_IP}${currentUser.imgpath}") : Container(),
+                                  ),
+                                ),
                                 SizedBox(width: 8.0),
                                 Text(widget.data.user.name, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
                               ],

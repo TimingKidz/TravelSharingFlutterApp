@@ -56,6 +56,8 @@ class _Matchinformation extends State<Matchinformation> {
     socket.off('onNewMessage');
     socket.off('onRequest');
     socket.off('onNewNotification');
+    socket.off('onTripEnd');
+    socket.off('onKick');
 
     socket.on('onNewNotification', (data) {
       currentUser.status.navbarNoti = true;
@@ -180,8 +182,8 @@ class _Matchinformation extends State<Matchinformation> {
                                       child: InkWell(
                                         child: SizedBox(width: 28, height: 28, child: Icon(Icons.add)),
                                         onTap: () {
-                                          Navigator.pushReplacement(context, MaterialPageRoute(
-                                              builder: (context) => ReqList(data: widget.data))).then((value){
+                                          Navigator.push(context, MaterialPageRoute(
+                                              builder: (context) => ReqList(data: widget.data,isFromMatchinfo: true,))).then((value){
                                                 _pageConfig(false);
                                           });
                                         },
@@ -321,10 +323,24 @@ class _Matchinformation extends State<Matchinformation> {
                 fontSize: 18.0,
               ),
             ),
+            ClipOval(
+              child: Material(
+                child: InkWell(
+                  child: SizedBox(width: 28, height: 28, child: Icon(Icons.close)),
+                  onTap: () async {
+                   print("Kick out ${user.uid} ${routes.uid}");
+                   await tripDetails.kickOut(user.uid,routes.uid,"ขอโทษครับ");
+                   await getData(false);
+                  },
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
+
+
 
 }

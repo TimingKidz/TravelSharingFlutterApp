@@ -1,145 +1,339 @@
-import 'dart:io';
-
+import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as Http;
-import 'package:http_parser/http_parser.dart';
-import 'package:image/image.dart' as img;
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+import 'package:flutter/services.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:latlong/latlong.dart' as l;
+import 'package:location/location.dart' ;
+import "package:google_maps_webservice/places.dart" as p;
+import 'package:flutter_polyline_points/flutter_polyline_points.dart' ;
+import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:travel_sharing/Pages/InfoFill.dart';
+import 'package:travel_sharing/main.dart';
 
-  final String title;
-
+class CreateRoute extends StatefulWidget {
+  const CreateRoute({Key key}) : super(key: key);
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _CreateRoutestate createState() => _CreateRoutestate();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-
-  File selectedImage;
-  final picker = ImagePicker();
+class _CreateRoutestate extends State<CreateRoute> {
+  final places = new p.GoogleMapsPlaces(apiKey: api_key);
+  final l.Distance distance = new l.Distance();
+  p.GoogleMapsPlaces _places = p.GoogleMapsPlaces(apiKey: api_key);
+  GoogleMapController _mapController;
+  List<LatLng> routes = List();
+  Set<Polyline> lines = Set();
+  List<LatLng> temp = List();
+  Map<LatLng,String> Name_list = Map();
+  LatLng fromPoint = null;
+  LatLng toPoint = null;
+  Set<Marker> Markers = Set();
+  LocationData currentLocation ;
+  Location location = Location();
+  bool isSet_Marker = false;
+  LatLng current_Location ;
+  LatLngBounds bounds ;
+  p.PlacesSearchResult tmp = null;
+  LatLng src = null;
+  LatLng dst = null;
+  static int Role = 0;
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Image Upload Example"),
-        centerTitle: true,
-      ),
-      body: Column(
-        children: <Widget>[
-          SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.only(top: 10, bottom: 10),
-                alignment: Alignment.center,
-                width: MediaQuery.of(context).size.width * 0.8,
-                height: MediaQuery.of(context).size.height * 0.25,
-                child: FutureBuilder(
-                  future: _getImage(context),
-                  builder: (context, snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.none:
-                        return Text('Please wait');
-                      case ConnectionState.waiting:
-                        return Center(child: CircularProgressIndicator());
-                      default:
-                        if (snapshot.hasError)
-                          return Text('Error: ${snapshot.error}');
-                        else {
-                          return selectedImage != null
-                              ? Image.file(selectedImage)
-                              : Center(
-                            child: Text("Please Get the Image"),
-                          );
-                        }
-                    }
-                  },
-                ),
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey[500])),
-              ),
-            ],
-          ),
-          SizedBox(height: 20,),
-          RaisedButton(
-            color: Colors.cyan,
-            onPressed: (){
-              print("test");
-              submitSubscription(selectedImage,"600610740.jpg");
-            },
-            child: Text("Upload"),
-          )
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: getImage,
-        tooltip: 'Pick Image',
-        child: Icon(Icons.add_a_photo),
-      ),
-    );
-  }
-
-  //get image from camera
-  Future getImage() async {
-    PickedFile image = await picker.getImage(source: ImageSource.gallery);
-
-    setState(() {
-      if (image != null) {
-        selectedImage = File(image.path);
-      } else {
-        print('No image selected.');
-      }
-    });
-    //return image;
-  }
-
-  //resize the image
-  Future<void> _getImage(BuildContext context) async {
-    if (selectedImage != null) {
-      var imageFile = selectedImage;
-
-
-//      _image = image;
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
     }
   }
 
-  Future<int> submitSubscription(File file,String filename)async{
-    ///MultiPart request
-    Http.MultipartRequest request = Http.MultipartRequest(
-      'POST', Uri.parse("http://192.168.137.1:3000/api/user/profile"),
-    );
+  @override
+  void initState() {
+    super.initState();
+    getLocation();
+    _pageConfig();
+  }
 
-    Map<String,String> headers={
-//      "Authorization":"Bearer $token",
-      "Content-type": "multipart/form-data",
-      "auth" : "eyJhbGciOiJSUzI1NiIsImtpZCI6IjNjYmM4ZjIyMDJmNjZkMWIxZTEwMTY1OTFhZTIxNTZiZTM5NWM2ZDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGh1dCBDaGF5YXNhdGl0IiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hLS9BT2gxNEdqTVFOdXlEQTV5bjRqSlljMk5EN25LU1N4M0xkZ0xPbm1UaTJKRD1zOTYtYyIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS90cmF2ZWxzaGFyaW5nLTg2ZmMyIiwiYXVkIjoidHJhdmVsc2hhcmluZy04NmZjMiIsImF1dGhfdGltZSI6MTYwODk4MTk4MywidXNlcl9pZCI6Ilo1Uk9ncVZjbjFOWnBkdGF2cWFldUhNM1dzbTEiLCJzdWIiOiJaNVJPZ3FWY24xTlpwZHRhdnFhZXVITTNXc20xIiwiaWF0IjoxNjA4OTg4ODM4LCJleHAiOjE2MDg5OTI0MzgsImVtYWlsIjoidGh1dGJvb216QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7Imdvb2dsZS5jb20iOlsiMTA1NjY1NTM1MDc3MTExOTc0NjgzIl0sImVtYWlsIjpbInRodXRib29tekBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJnb29nbGUuY29tIn19.Uywen7F_zlA46ZnbXvMNf2KdhkSmseEb3dqqYqaL5Zzy7bb8_xuFg7Mz_ZQOJsSlXhSKlFQSg2ZcUOU8jewIzznpvpfsdXhYkxQ3jt_EuXPEotXIdKlx7MSnkJBiC5dx3wbwgf2D7FsbFZXbXFyFzzFbQsTMmTR2A3AziaL3WOl-MAn5uqj8Kic8L3QjbesUQRUBesT7GDJPKRlwc3-0U7rsAwpMPlUtecnk9p8F1DyyKW1_hCRBrJc5XgDaPujP0z2hUJzOMtIXD59WtSHy0B9m-W5t57doe2rMF2QZqWFyw4zsfFC3PDC9CVW6voSkeM6Fpud7JHZiWSOkk8dzLw"
-    };
-
-    img.Image image = img.decodeImage(file.readAsBytesSync());
-    image = img.copyResize(image,
-        width: 512,
-        height: 512);
-
-    request.files.add(
-      Http.MultipartFile.fromBytes(
-        'file',
-        img.encodeJpg(image),
-        filename: filename,
-        contentType: MediaType('image','jpeg'),
+  @override
+  Widget build(BuildContext context) {
+    print(current_Location);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Create your route.'),
+      ),
+      body: Stack(
+        children: <Widget>[
+          GoogleMap(
+            onMapCreated: _onMapCreated,
+            initialCameraPosition: CameraPosition(
+              target: LatLng(16.294922,100.928026),
+              zoom: 5,
+            ),
+            markers: Markers,
+            polylines: lines,
+            zoomControlsEnabled: false,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: false,
+//            onCameraMove: center,
+          ),
+          Positioned(
+            top: 10,
+            right: 15,
+            left: 15,
+            child: Container(
+              color: Colors.white,
+              child: Row(
+                children: <Widget>[
+                  IconButton(
+                    splashColor: Colors.grey,
+                    icon: Icon(Icons.menu),
+                    onPressed: () {},
+                  ),
+                  Expanded(
+                    child: TextField(
+                      cursorColor: Colors.black,
+                      keyboardType: TextInputType.text,
+                      onTap: _Searchbar,
+                      textInputAction: TextInputAction.go,
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding:
+                          EdgeInsets.symmetric(horizontal: 15),
+                          hintText: "Search..."),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(16.0),
+            alignment: Alignment.bottomCenter,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                FloatingActionButton(
+                  child: Icon(Icons.arrow_back),
+                  onPressed: _stepBack,
+                  heroTag: null,
+                ),
+                FloatingActionButton.extended(
+                  label: Text('Finish'),
+                  onPressed: _Fin,
+                  heroTag: null,
+                ),
+                FloatingActionButton(
+                  child: Icon(Icons.add),
+                  onPressed: _nextplace,
+                  heroTag: null,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
-    request.headers.addAll(headers);
-    request.fields.addAll({
-      "dir":"6006107400"
+  }
+
+  _pageConfig(){
+    socket.off('onNewAccept');
+    socket.off('onNewMatch');
+    socket.off('onNewMessage');
+    socket.off('onRequest');
+    socket.off('onTripEnd');
+    socket.off('onKick');
+    socket.off('onNewNotification');
+    socket.on('onNewNotification', (data) {
+      currentUser.status.navbarNoti = true;
     });
-//    print("request: "+request.toString());
-    Http.StreamedResponse res = await request.send();
-    print("This is response:"+res.statusCode.toString());
-    return res.statusCode;
+    firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          print("onMessage: $message");
+          showNotification(message);
+        }
+    );
+  }
+
+  getLocation() async{
+    LocationData currentLoc = await Location().getLocation();
+    current_Location =
+        LatLng(currentLoc.latitude, currentLoc.longitude);
+//    _mapController.animateCamera( CameraUpdate.newCameraPosition(CameraPosition(target: current_Location, zoom: 15,)));
+    _createMarkers(current_Location);
+    isSet_Marker = true;
+  }
+
+  Future<void> _Searchbar() async {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (currentFocus.nextFocus()) {
+      currentFocus.unfocus();
+    }
+    // show input autocomplete with selected mode
+    // then get the Prediction selected
+    p.Prediction P = await PlacesAutocomplete.show(
+      context: context,
+      apiKey: api_key,
+      mode: Mode.overlay,
+      language: "th",
+      components: [p.Component(p.Component.country, "th")],
+    );
+
+    p.PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(P.placeId);
+    final lat = detail.result.geometry.location.lat;
+    final lng = detail.result.geometry.location.lng;
+    toPoint = LatLng(lat,lng);
+    Name_list.putIfAbsent(toPoint, () => detail.result.name);
+    print(Name_list);
+    _createMarkers(toPoint);
+    _nextplace();
+  }
+
+  _Fin() async{
+    print(Name_list);
+    Markers.clear();
+    Markers.add(
+        Marker(
+          markerId: MarkerId("Src"),
+          position: routes.last,
+          infoWindow: InfoWindow(title: "Roca 123"),
+        )
+    );
+    Markers.add(
+        Marker(
+          markerId: MarkerId("Dst"),
+          position: routes.first,
+          infoWindow: InfoWindow(title: "Roca 123"),
+        )
+    );
+
+    String Placename_dst = Name_list[dst] ;
+    String Placename_src = Name_list[src] ;
+    print(dst);
+    print(Placename_dst);
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context) => InfoFill(routes: routes, bounds:bounds,Markers :Markers,lines :lines,src:Placename_src,dst: Placename_dst ,Role :Role)));
+  }
+
+  _stepBack() async {
+    if(!temp.isEmpty){
+      int index = routes.indexOf(temp.last);
+      routes.removeRange(index+1, routes.length);
+      fromPoint = temp.removeLast();
+      await _centerView(false);
+    }else {
+      routes.clear();
+      lines.clear();
+      src = null;
+      fromPoint = null;
+    }
+  }
+
+  _nextplace() async{
+    if( toPoint == null ){
+      toPoint =  current_Location;
+    }
+    if(src == null) {
+      src = toPoint;
+    }
+    dst = toPoint;
+    await _centerView(true);
+    if(tmp != null){
+      Name_list.putIfAbsent(toPoint, () => tmp.name);
+    }
+    fromPoint = toPoint;
+  }
+
+  _createMarkers(LatLng x) {
+    Markers.clear();
+    Markers.add(
+      Marker(
+        markerId: MarkerId("toPoint"),
+        position: x,
+        draggable: true,
+        onDragEnd: _onDragEnd,
+        infoWindow: InfoWindow(title: "Roca 123"),
+      ),
+    );
+    setState(() {});
+  }
+
+  void _onDragEnd(LatLng new_point) async{
+    tmp = null;
+    p.PlacesSearchResponse response = await places.searchNearbyWithRadius(new p.Location(new_point.latitude,new_point.longitude), 10);
+    int min = 10;
+    response.results.forEach((element) {
+      l.LatLng to = new l.LatLng(element.geometry.location.lat,element.geometry.location.lng);
+      l.LatLng ori = new l.LatLng(new_point.latitude, new_point.longitude);
+      if(distance(to,ori) <= min){
+        tmp = element;
+      }
+    });
+    if(tmp!=null){
+      toPoint = LatLng(tmp.geometry.location.lat,tmp.geometry.location.lng);
+      _createMarkers(toPoint);
+    }else {
+      toPoint = new_point;
+    }
+  }
+
+  void _onMapCreated(GoogleMapController controller) async{
+    _mapController = controller;
+    await _centerView(true);
+  }
+
+  _centerView(bool isFind_Direction ) async {
+    if (fromPoint != null) {
+      await _mapController.getVisibleRegion();
+      await findDirections(isFind_Direction);
+
+      var left = min(fromPoint.latitude, toPoint.latitude);
+      var right = max(fromPoint.latitude, toPoint.latitude);
+      var top = max(fromPoint.longitude, toPoint.longitude);
+      var bottom = min(fromPoint.longitude, toPoint.longitude);
+
+      lines.first.points.forEach((point) {
+        left = min(left, point.latitude);
+        right = max(right, point.latitude);
+        top = max(top, point.longitude);
+        bottom = min(bottom, point.longitude);
+      });
+
+      bounds = LatLngBounds(
+        southwest: LatLng(left, bottom),
+        northeast: LatLng(right, top),
+      );
+      var cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 50);
+      _mapController.animateCamera(cameraUpdate);
+    }
+  }
+
+  // find direction to destination
+  findDirections(bool isFind_Direction ) async {
+    var origin = PointLatLng(fromPoint.latitude, fromPoint.longitude);
+    var destination = PointLatLng(toPoint.latitude, toPoint.longitude);
+
+    if( isFind_Direction ){ // find new direction
+      PolylinePoints polylinePoints = PolylinePoints();
+      PolylineResult result = await polylinePoints.getRouteBetweenCoordinates("AIzaSyBQCf89JOkrq2ECa6Ko8LBQaMO8A7rJt9Q", origin,destination);
+      PointLatLng Ll = result.points.first;
+      temp.add(LatLng(Ll.latitude,Ll.longitude));
+      result.points.forEach((step) {
+        routes.add(LatLng(step.latitude, step.longitude));
+      });
+    }
+
+    // create line of routes on map
+    var line = Polyline(
+      patterns: [PatternItem.dot],
+      points: routes,
+      geodesic: true,
+      polylineId: PolylineId("mejor ruta"),
+      color: Colors.blue,
+      width: 4,
+    );
+
+    setState(() {
+      lines.clear();
+      lines.add(line);
+    });
   }
 }

@@ -55,9 +55,7 @@ class _MatchMapCardState extends State<MatchMapCard> {
                                 CircleAvatar(
                                   radius: 20,
                                   child: ClipOval(
-                                    child: Image.network(
-                                      "${httpClass.API_IP}${widget.data.user.imgpath}",
-                                    ),
+                                    child: currentUser.imgpath != null ? Image.network("${httpClass.API_IP}${currentUser.imgpath}") : Container(),
                                   ),
                                 ),
                                 SizedBox(width: 8.0),

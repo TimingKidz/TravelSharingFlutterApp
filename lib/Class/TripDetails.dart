@@ -45,4 +45,23 @@ class TripDetails{
       throw("can't connect Match");
     }
   }
+
+  Future<bool> kickOut(String userid,String tripid,String message) async {
+    try{
+      Http.Response response = await httpClass.reqHttp("/api/routes/kickOut",{"id": userid,"tripid" : tripid, "currentTripid" : this.routes.uid ,"message" : message});
+      if(response.statusCode == 400){
+        return Future.value(false);
+      }else{
+        if(response.statusCode == 404){
+          return Future.value(false);
+        }else{
+          print(jsonDecode(response.body));
+          return Future.value(true);
+        }
+      }
+    }catch(err){
+      print(err);
+      throw("can't connect Match");
+    }
+  }
 }

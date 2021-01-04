@@ -133,7 +133,32 @@ class ProfileManagePageState extends State<ProfileManagePage> {
 
   _pageConfig(){
     socket.off('onNewNotification');
-    socket.on('onNewNotification', (data) {
+    socket.off('onNewAccept');
+    socket.off('onNewMatch');
+    socket.off('onNewMessage');
+    socket.off('onRequest');
+    socket.off('onKick');
+
+    socket.on('onKick', (data){
+      currentUser.status.navbarTrip = true;
+      currentUser.status.navbarNoti = true;
+    });
+    socket.on('onRequest', (data) {
+      currentUser.status.navbarTrip = true;
+    });
+    socket.on('onNewMatch' , (data){
+      currentUser.status.navbarTrip = true;
+    });
+    socket.on('onNewAccept', (data){
+      currentUser.status.navbarTrip = true;
+    });
+    socket.on('onNewMessage',(data){
+      currentUser.status.navbarTrip = true;
+    });
+    socket.on('onNewAccept',(data){
+      currentUser.status.navbarTrip = true;
+    });
+    socket.on('onNewNotification', (data){
       currentUser.status.navbarNoti = true;
     });
     firebaseMessaging.configure(
@@ -242,12 +267,14 @@ class ProfileManagePageState extends State<ProfileManagePage> {
     if( selectedImage != null){
       print("upload");
       await currentUser.uploadProfile(selectedImage);
-      NetworkImage provider = NetworkImage(url);
-      await provider.evict();
+      if(currentUser.imgpath != null){
+        NetworkImage provider = NetworkImage(url);
+        await provider.evict();
+      }
     }
-
     print("upload 555");
     currentUser = await currentUser.getCurrentuser(currentUser.id);
+    url = "${httpClass.API_IP}${currentUser.imgpath}";
     setState(() {});
   }
 

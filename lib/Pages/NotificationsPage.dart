@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/DateManage.dart';
 import 'package:travel_sharing/Class/Notifications.dart';
+import 'package:travel_sharing/Pages/ratingPage.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 
@@ -15,6 +16,7 @@ class NotificationsPage extends StatefulWidget{
 
 class NotificationsPageState extends State<NotificationsPage>{
   List<Notifications> notifications = List();
+
 
   @override
   void setState(fn) {
@@ -37,7 +39,12 @@ class NotificationsPageState extends State<NotificationsPage>{
     socket.off('onNewMatch');
     socket.off('onNewMessage');
     socket.off('onRequest');
+    socket.off('onKick');
 
+    socket.on('onKick', (data){
+      currentUser.status.navbarTrip = true;
+      widget.setSate();
+    });
     socket.on('onRequest', (data) {
       currentUser.status.navbarTrip = true;
       widget.setSate();
@@ -151,46 +158,133 @@ class NotificationsPageState extends State<NotificationsPage>{
   }
 
   Widget _buildRow(Notifications data) {
-    return Theme(
-      data: ThemeData(
-        accentColor: Colors.black,
-        dividerColor: Colors.transparent
-      ),
-      child: ExpansionTile(
-        title: Row(
-          children: [
-            Icon(Icons.announcement),
-            SizedBox(width: 16.0),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    switch (data.tag) {
+      case "announcement":
+        return Theme(
+          data: ThemeData(
+              accentColor: Colors.black,
+              dividerColor: Colors.transparent
+          ),
+          child: ExpansionTile(
+            title: Row(
               children: [
-                Text(
-                  data.Title,
-                  style: TextStyle(
-                    fontSize: 18.0
-                  ),
-                ),
-                SizedBox(height: 8.0),
-                Text(
-                  DateManage().datetimeFormat("full", data.date),
-                  style: TextStyle(
-                    fontSize: 10.0
-                  ),
+                Icon(Icons.announcement),
+                SizedBox(width: 16.0),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      data.Title,
+                      style: TextStyle(
+                          fontSize: 18.0
+                      ),
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      DateManage().datetimeFormat("full", data.date),
+                      style: TextStyle(
+                          fontSize: 10.0
+                      ),
+                    )
+                  ],
                 )
               ],
-            )
-          ],
-        ),
-        childrenPadding: EdgeInsets.all(16.0),
-        tilePadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-        expandedAlignment: Alignment.centerLeft,
-        children: <Widget>[
-          Text(data.Message),
-          // Text('Birth of the Sun'),
-          // Text('Earth is Born'),
-        ],
-      ),
-    );
+            ),
+            childrenPadding: EdgeInsets.all(16.0),
+            tilePadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            expandedAlignment: Alignment.centerLeft,
+            children: <Widget>[
+              Text(data.Message),
+              // Text('Birth of the Sun'),
+              // Text('Earth is Born'),
+            ],
+          ),
+        );
+      // do something
+        break;
+      case "review":
+        return Theme(
+          data: ThemeData(
+              accentColor: Colors.black,
+              dividerColor: Colors.transparent
+          ),
+          child: ListTile(
+            onTap: () => Navigator.push(context, MaterialPageRoute(
+                builder: (context) =>RatingPage(sendToid: data.sender,notiId: data.uid,))).then((value) async => await getData(false)),
+            title: Row(
+              children: [
+                Icon(Icons.rate_review),
+                SizedBox(width: 16.0),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      data.Title,
+                      style: TextStyle(
+                          fontSize: 18.0
+                      ),
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      DateManage().datetimeFormat("full", data.date),
+                      style: TextStyle(
+                          fontSize: 10.0
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
+
+          ),
+        );
+        // do something
+        break;
+      case "alert":
+        return Theme(
+          data: ThemeData(
+              accentColor: Colors.black,
+              dividerColor: Colors.transparent
+          ),
+          child: ExpansionTile(
+            title: Row(
+              children: [
+                Icon(Icons.error),
+                SizedBox(width: 16.0),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      data.Title,
+                      style: TextStyle(
+                          fontSize: 18.0
+                      ),
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      DateManage().datetimeFormat("full", data.date),
+                      style: TextStyle(
+                          fontSize: 10.0
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
+            childrenPadding: EdgeInsets.all(16.0),
+            tilePadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            expandedAlignment: Alignment.centerLeft,
+            children: <Widget>[
+              Text(data.Message),
+              // Text('Birth of the Sun'),
+              // Text('Earth is Born'),
+            ],
+          ),
+        );
+        // do something
+        break;
+    }
+
   }
 
 }

@@ -8,14 +8,20 @@ import 'package:travel_sharing/main.dart';
 class Notifications{
   String Title;
   String Message;
+  String sender;
+  String tag;
   String date;
+  String uid;
 
-  Notifications({this.Title, this.Message , this.date });
+  Notifications({this.Title, this.Message , this.date ,this.sender,this.tag });
 
   Notifications.fromJson(Map<String, dynamic> json) {
+    uid = json['_id'];
     Title = json['title'];
     Message = json['message'];
     date = json['date'];
+    tag = json['tag'];
+    sender = json['sender'] ?? " ";
   }
 
   Future<List<Notifications>> getNotification(String id,bool isNeed2Update) async {

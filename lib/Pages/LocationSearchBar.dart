@@ -1,11 +1,16 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:travel_sharing/main.dart';
+import 'package:path_provider/path_provider.dart';
+
 
 //GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: API_KEY);
 //
@@ -126,10 +131,10 @@ class LocationSearch extends StatefulWidget {
 class _LocationSearchState extends State<LocationSearch> {
   TextEditingController _searchController = new TextEditingController();
   Timer _throttle;
-
   String _heading;
-  List<Map<String, dynamic>> _placesList;
-  List<Map<String, dynamic>> _historyList = [];
+  List<Map<String, dynamic>> _placesList = [];
+  List<dynamic> _historyList = [];
+  Directory dir ;
 
   @override
   void setState(fn) {
@@ -142,8 +147,20 @@ class _LocationSearchState extends State<LocationSearch> {
   void initState() {
     super.initState();
     _heading = "History";
-    _placesList = _historyList;
+//    _placesList = _historyList;
     _searchController.addListener(_onSearchChanged);
+//    print(_historyList.length);
+    getExternalStorageDirectory().then((Directory directory) {
+      dir = directory;
+      File file = new File(dir.path + "/History.json");
+      if(file.existsSync()) _historyList = jsonDecode(file.readAsStringSync());
+      else _historyList = [];
+      _historyList.forEach((element) {
+        print(element['description']);
+      });
+//      if (fileExists) this.setState(() => fileContent = JSON.decode(jsonFile.readAsStringSync()));
+    });
+
     _pageConfig();
   }
 
@@ -178,7 +195,7 @@ class _LocationSearchState extends State<LocationSearch> {
     if (input.isEmpty) {
       setState(() {
         _heading = "History";
-        _placesList = _historyList;
+//        _placesList = _historyList;
       });
       return;
     }
@@ -265,7 +282,7 @@ class _LocationSearchState extends State<LocationSearch> {
               ),
             ),
             onTap: () {
-
+              Navigator.of(context).pop(false);
             },
           ),
         ),
@@ -283,7 +300,7 @@ class _LocationSearchState extends State<LocationSearch> {
               ),
             ),
             onTap: () {
-
+              Navigator.of(context).pop(true);
             },
           ),
         ),
@@ -339,6 +356,20 @@ class _LocationSearchState extends State<LocationSearch> {
           ],
         ),
         onTap: () {
+          File file = new File(dir.path + "/History.json");
+          file.createSync();
+          int i = -1;
+          _historyList.forEach((element) {
+            if (element["place_id"] == _placesList[index]["place_id"]){
+              print(element["description"]);
+              i = _historyList.indexOf(element);
+            }
+          });
+          if (i != -1 ) _historyList.removeAt(i);
+          if (_historyList.length >= 10) _historyList.removeRange(9, _historyList.length);
+          _historyList.insert(0, _placesList[index]);
+          file.writeAsStringSync(jsonEncode(_historyList));
+//          storage.setItem('history', _historyList);
           Navigator.of(context).pop(_placesList[index]);
         },
       ),

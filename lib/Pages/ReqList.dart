@@ -11,8 +11,9 @@ import 'package:flutter/services.dart';
 
 class ReqList extends StatefulWidget {
   final Travel_Info data; // current routes
+  final bool isFromMatchinfo;
   static final GlobalKey<_ReqListstate> dashboardKey = GlobalKey<_ReqListstate>();
-  ReqList({Key key, this.data}) : super(key: dashboardKey);
+  ReqList({Key key, this.data, this.isFromMatchinfo}) : super(key: dashboardKey);
   @override
   _ReqListstate createState() => _ReqListstate();
 }
@@ -138,8 +139,12 @@ class _ReqListstate extends State<ReqList> {
     currentUser.AcceptReq(data.reqid,widget.data.id,widget.data.uid).then((value){
       print(value);
       print("555555555555");
-      Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (context) => Matchinformation(uid: widget.data.uid, data: widget.data)));
+      if(widget.isFromMatchinfo){
+        Navigator.of(context).pop();
+      }else{
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => Matchinformation(uid: widget.data.uid, data: widget.data)));
+      }
     });
   }
 

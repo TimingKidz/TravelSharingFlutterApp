@@ -1,9 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:travel_sharing/Class/Review.dart';
 import 'package:travel_sharing/UI/NotificationBarSettings.dart';
+import 'package:travel_sharing/main.dart';
 
 class RatingPage extends StatefulWidget {
+  final String sendToid;
+  final String notiId;
+
+  const RatingPage({Key key, this.sendToid, this.notiId}) : super(key: key);
   RatingPageState createState() => RatingPageState();
 }
 
@@ -11,6 +17,8 @@ class RatingPageState extends State<RatingPage> {
   List<String> ratingTypeList = List();
   List<String> ratingTypeSelected = List();
   Map<String, bool> isSelected = Map();
+  EachReview review = new EachReview(sender: currentUser.uid,name: currentUser.name);
+  double rate = 5.0;
 
   @override
   void initState() {
@@ -67,6 +75,7 @@ class RatingPageState extends State<RatingPage> {
               ),
               onRatingUpdate: (rating) {
                 print(rating);
+                rate = rating;
               },
             ),
           ),
@@ -99,8 +108,14 @@ class RatingPageState extends State<RatingPage> {
               borderRadius: BorderRadius.circular(30.0),
             ),
             child: Text('ส่ง', style: TextStyle(color: Colors.white,)),
-            onPressed: () {
-
+            onPressed: ()  async {
+              review.tag = ratingTypeSelected;
+              review.score = rate;
+              await review.sendReview(widget.sendToid,widget.notiId).then((value) {
+                if( value ) print("send a Review suceesfull.");
+                else print("Fail to send a Review.");
+                Navigator.of(context).pop();
+              });
             },
           )
         ],

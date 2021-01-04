@@ -47,7 +47,12 @@ class VehicleManagePageState extends State<VehicleManagePage> {
     socket.off('onNewMatch');
     socket.off('onNewMessage');
     socket.off('onRequest');
+    socket.off('onKick');
 
+    socket.on('onKick', (data){
+      currentUser.status.navbarTrip = true;
+      currentUser.status.navbarNoti = true;
+    });
     socket.on('onRequest', (data) {
       currentUser.status.navbarTrip = true;
     });

@@ -35,6 +35,8 @@ class _InfoFillState extends State<InfoFill> {
     }
   }
 
+
+
   @override
   void initState() {
     super.initState();
@@ -73,7 +75,7 @@ class _InfoFillState extends State<InfoFill> {
                     zoom: 14,
                   ),
                   markers: widget.Markers,
-                  polylines: widget.lines,
+                  polylines: widget.lines ?? Set(),
                   zoomControlsEnabled: false,
                   myLocationEnabled: false,
                   myLocationButtonEnabled: false,
@@ -131,9 +133,13 @@ class _InfoFillState extends State<InfoFill> {
 
   // set camera to cover all routes in map
   void _onMapCreated(GoogleMapController controller) async{
-    var cameraUpdate = CameraUpdate.newLatLngBounds(widget.bounds, 50);
-    await controller.animateCamera(cameraUpdate);
     _mapController = controller;
+    Future.delayed(new Duration(milliseconds: 100), () async {
+      await _mapController.animateCamera(CameraUpdate.newLatLngBounds(widget.bounds, 50));
+    });
+
+    print("dddddd");
+
   }
 
   _SavetoDB()async{

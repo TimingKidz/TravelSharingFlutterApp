@@ -126,6 +126,12 @@ class FeedPageState extends State<FeedPage> {
     socket.off('onNewMatch');
     socket.off('onNewMessage');
     socket.off('onRequest');
+    socket.off('onKick');
+
+    socket.on('onKick', (data){
+      currentUser.status.navbarTrip = true;
+      widget.setSate();
+    });
 
     socket.on('onRequest', (data) {
       currentUser.status.navbarTrip = true;
