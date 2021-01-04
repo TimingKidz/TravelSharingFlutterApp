@@ -399,7 +399,7 @@ class _Matchinformation extends State<Matchinformation> {
                 height: 64.0,
                 child: InkWell(
                   onTap: () {
-                    swipeUpDialog(context, ProfileInfo(data: user, isHost: currentUser.uid == tripDetails.hostUser.uid));
+                    swipeUpDialog(context, ProfileInfo(data: user, isHost: currentUser.uid == tripDetails.hostUser.uid, kickFunct :kickOut(user,routes) ));
                   },
                 ),
               ),
@@ -411,6 +411,11 @@ class _Matchinformation extends State<Matchinformation> {
     );
   }
 
+  kickOut(User user,Routes routes ) async {
+    print("Kick out ${user.uid} ${routes.uid}");
+    await tripDetails.kickOut(user.uid,routes.uid,"ขอโทษครับ");
+    await getData(false);
+  }
   // find direction to destination
   findDirections(bool isFind_Direction ) async {
     // create line of routes on map

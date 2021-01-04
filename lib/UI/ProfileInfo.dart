@@ -6,8 +6,8 @@ import 'package:travel_sharing/main.dart';
 class ProfileInfo extends StatelessWidget {
   final User data;
   final bool isHost;
-
-  const ProfileInfo({Key key, @required this.data, this.isHost}) : super(key: key);
+  final Function kickFunct;
+  const ProfileInfo({Key key, @required this.data, this.isHost, this.kickFunct}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,8 @@ class ProfileInfo extends StatelessWidget {
                           child: Text("Kick", style: TextStyle(color: Colors.white)),
                         ),
                         onTap: () async {
-
+                            kickFunct();
+                            Navigator.of(context).pop();
                         },
                       ),
                     ),
