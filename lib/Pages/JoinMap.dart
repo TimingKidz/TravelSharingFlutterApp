@@ -62,23 +62,29 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
 //------------------------------------ UI---------------------------------------
   @override
   Widget build(BuildContext context) {
+    if(current_Location == null){
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
     return Scaffold(
       body: Stack(
         children: <Widget>[
-          if(current_Location != null)
-            GoogleMap(
-              onMapCreated: _onMapCreated,
-              initialCameraPosition: CameraPosition(
-                target:current_Location,
-                zoom: 15,
-              ),
-              markers: isChooseOnMap ? Set() :  Set<Marker>.of(_markers.values),
-              zoomControlsEnabled: false,
-              myLocationEnabled: true,
-              myLocationButtonEnabled: false,
-//              onCameraIdle: OnMove_End ,
-              onCameraMove: center ,
+          GoogleMap(
+            onMapCreated: _onMapCreated,
+            initialCameraPosition: CameraPosition(
+              target:current_Location,
+              zoom: 15,
             ),
+            markers: isChooseOnMap ? Set() :  Set<Marker>.of(_markers.values),
+            zoomControlsEnabled: false,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: false,
+//              onCameraIdle: OnMove_End ,
+            onCameraMove: center ,
+          ),
           if(isChooseOnMap)
             Positioned.fill(
               child: Center(

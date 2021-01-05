@@ -78,7 +78,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Widget _buildListView() {
     return ListView.builder(
-        physics: BouncingScrollPhysics(),
+        physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         itemCount: historyList.length,
         itemBuilder: (context, i) {
           return _buildRow(historyList[i]);

@@ -53,7 +53,10 @@ class FeedPageState extends State<FeedPage> {
             Padding(
               padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.15),
               child: list.isNotEmpty
-                  ? _buildListView()
+                  ? RefreshIndicator(
+                onRefresh: () => getData(0),
+                child: _buildListView(),
+              )
                   : Center(child: Text("Nothing in feed yet."),
               ),
             ),
@@ -181,7 +184,7 @@ class FeedPageState extends State<FeedPage> {
 
   Widget _buildListView() {
     return ListView.builder(
-        physics: BouncingScrollPhysics(),
+        physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         itemCount: feed.isMore ? currentI + 1: currentI,
         itemBuilder: (context, i) {
           print(i);

@@ -3,121 +3,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:localstorage/localstorage.dart';
+import 'package:travel_sharing/UI/NotificationBarSettings.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:path_provider/path_provider.dart';
-
-
-//GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: API_KEY);
-//
-//final searchScaffoldKey = GlobalKey<ScaffoldState>();
-//
-//Future<Null> displayPrediction(Prediction p, ScaffoldState scaffold) async {
-//  if (p != null) {
-//    // get detail (lat/lng)
-//    PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId);
-//    final lat = detail.result.geometry.location.lat;
-//    final lng = detail.result.geometry.location.lng;
-//
-//    scaffold.showSnackBar(
-//      SnackBar(content: Text("${p.description} - $lat/$lng")),
-//    );
-//  }
-//}
-//
-//class CustomSearchScaffold extends PlacesAutocompleteWidget {
-//  CustomSearchScaffold()
-//      : super(
-//    apiKey: API_KEY,
-//    sessionToken: Uuid().generateV4(),
-//    language: "th",
-//    components: [Component(Component.country, "th")],
-//  );
-//
-//  @override
-//  _CustomSearchScaffoldState createState() => _CustomSearchScaffoldState();
-//}
-//
-//class _CustomSearchScaffoldState extends PlacesAutocompleteState {
-//  @override
-//  Widget build(BuildContext context) {
-//    return Scaffold(
-//      key: searchScaffoldKey,
-//      body: SafeArea(
-//        child: Column(
-//          children: <Widget>[
-//            Card(
-//                margin: EdgeInsets.all(8.0),
-//                elevation: 2.0,
-//                shape: RoundedRectangleBorder(
-//                    borderRadius: BorderRadius.circular(20.0)
-//                ),
-//                child: AppBarPlacesAutoCompleteTextField()
-//            ),
-//            Expanded(
-//              child: Container(
-//                child: PlacesAutocompleteResult(
-//                  onTap: (p) {
-//                    displayPrediction(p, searchScaffoldKey.currentState);
-//                  },
-//                  logo: Row(
-//                    children: [FlutterLogo()],
-//                    mainAxisAlignment: MainAxisAlignment.center,
-//                  ),
-//                ),
-//              ),
-//            ),
-//          ],
-//        ),
-//      )
-//    );
-//  }
-//
-//  @override
-//  void onResponseError(PlacesAutocompleteResponse response) {
-//    super.onResponseError(response);
-//    searchScaffoldKey.currentState.showSnackBar(
-//      SnackBar(content: Text(response.errorMessage)),
-//    );
-//  }
-//
-//  @override
-//  void onResponse(PlacesAutocompleteResponse response) {
-//    super.onResponse(response);
-//    if (response != null && response.predictions.isNotEmpty) {
-//      searchScaffoldKey.currentState.showSnackBar(
-//        SnackBar(content: Text("Got answer")),
-//      );
-//    }
-//  }
-//}
-//
-//class Uuid {
-//  final Random _random = Random();
-//
-//  String generateV4() {
-//    // Generate xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx / 8-4-4-4-12.
-//    final int special = 8 + _random.nextInt(4);
-//
-//    return '${_bitsDigits(16, 4)}${_bitsDigits(16, 4)}-'
-//        '${_bitsDigits(16, 4)}-'
-//        '4${_bitsDigits(12, 3)}-'
-//        '${_printDigits(special, 1)}${_bitsDigits(12, 3)}-'
-//        '${_bitsDigits(16, 4)}${_bitsDigits(16, 4)}${_bitsDigits(16, 4)}';
-//  }
-//
-//  String _bitsDigits(int bitCount, int digitCount) =>
-//      _printDigits(_generateBits(bitCount), digitCount);
-//
-//  int _generateBits(int bitCount) => _random.nextInt(1 << bitCount);
-//
-//  String _printDigits(int value, int count) =>
-//      value.toRadixString(16).padLeft(count, '0');
-//}
 
 class LocationSearch extends StatefulWidget {
   final LatLng currentLocation;
@@ -159,6 +50,7 @@ class _LocationSearchState extends State<LocationSearch> {
         print(element['description']);
       });
 //      if (fileExists) this.setState(() => fileContent = JSON.decode(jsonFile.readAsStringSync()));
+    setState(() {});
     });
 
     _pageConfig();
@@ -181,6 +73,7 @@ class _LocationSearchState extends State<LocationSearch> {
   void dispose() {
     _searchController.removeListener(_onSearchChanged);
     _searchController.dispose();
+    notificationBarIconLight();
     super.dispose();
   }
 
@@ -226,6 +119,7 @@ class _LocationSearchState extends State<LocationSearch> {
 
   @override
   Widget build(BuildContext context) {
+    notificationBarIconDark();
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -265,75 +159,92 @@ class _LocationSearchState extends State<LocationSearch> {
   }
 
   Widget defaultDisplay() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        Card(
-          margin: EdgeInsets.all(0.0),
-          child: InkWell(
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Row(
-                children: <Widget>[
-                  Icon(Icons.my_location),
-                  SizedBox(width: 8.0),
-                  Text('Your location')
+    return Expanded(
+      child: Column(
+        // crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Card(
+            margin: EdgeInsets.all(0.0),
+            shape: RoundedRectangleBorder(),
+            child: InkWell(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Row(
+                  children: <Widget>[
+                    Icon(Icons.my_location),
+                    SizedBox(width: 8.0),
+                    Text('Your location')
+                  ],
+                ),
+              ),
+              onTap: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+          ),
+          Card(
+            margin: EdgeInsets.all(0.0),
+            shape: RoundedRectangleBorder(),
+            child: InkWell(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Row(
+                  children: <Widget>[
+                    Icon(Icons.location_on),
+                    SizedBox(width: 8.0),
+                    Text('Choose on map')
+                  ],
+                ),
+              ),
+              onTap: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ),
+          SizedBox(height: 8.0),
+          Expanded(
+            child: Card(
+              shape: RoundedRectangleBorder(),
+              margin: EdgeInsets.all(0.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text('History'),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      physics: BouncingScrollPhysics(),
+                      itemCount: _historyList.length,
+                      itemBuilder: (BuildContext context, int index) =>
+                          buildPlaceRow(context, _historyList[index]),
+                    ),
+                  )
                 ],
               ),
             ),
-            onTap: () {
-              Navigator.of(context).pop(false);
-            },
           ),
-        ),
-        Card(
-          margin: EdgeInsets.all(0.0),
-          child: InkWell(
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Row(
-                children: <Widget>[
-                  Icon(Icons.location_on),
-                  SizedBox(width: 8.0),
-                  Text('Choose on map')
-                ],
-              ),
-            ),
-            onTap: () {
-              Navigator.of(context).pop(true);
-            },
-          ),
-        ),
-        SizedBox(height: 8.0),
-        Card(
-          margin: EdgeInsets.all(0.0),
-          child: InkWell(
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text('History'),
-            ),
-            onTap: () {
-
-            },
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   Widget resultDisplay() {
     return Expanded(
       child: ListView.builder(
+        physics: BouncingScrollPhysics(),
         itemCount: _placesList.length,
         itemBuilder: (BuildContext context, int index) =>
-            buildPlaceRow(context, index),
+            buildPlaceRow(context, _placesList[index]),
       ),
     );
   }
 
-  Widget buildPlaceRow(BuildContext context, int index) {
+  Widget buildPlaceRow(BuildContext context, Map<String, dynamic> data) {
     return Card(
       margin: EdgeInsets.all(0.0),
+      shape: RoundedRectangleBorder(),
       child: InkWell(
         child: Row(
           children: <Widget>[
@@ -345,7 +256,7 @@ class _LocationSearchState extends State<LocationSearch> {
                     Row(
                       children: <Widget>[
                         Flexible(
-                            child: Text(_placesList[index]['description'])
+                            child: Text(data['description'])
                         ),
                       ],
                     ),
@@ -360,17 +271,17 @@ class _LocationSearchState extends State<LocationSearch> {
           file.createSync();
           int i = -1;
           _historyList.forEach((element) {
-            if (element["place_id"] == _placesList[index]["place_id"]){
+            if (element["place_id"] == data["place_id"]){
               print(element["description"]);
               i = _historyList.indexOf(element);
             }
           });
           if (i != -1 ) _historyList.removeAt(i);
           if (_historyList.length >= 10) _historyList.removeRange(9, _historyList.length);
-          _historyList.insert(0, _placesList[index]);
+          _historyList.insert(0, data);
           file.writeAsStringSync(jsonEncode(_historyList));
 //          storage.setItem('history', _historyList);
-          Navigator.of(context).pop(_placesList[index]);
+          Navigator.of(context).pop(data);
         },
       ),
     );

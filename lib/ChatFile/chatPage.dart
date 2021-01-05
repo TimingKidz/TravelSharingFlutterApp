@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:travel_sharing/Class/Message.dart';
 import 'package:travel_sharing/main.dart';
+import 'package:travel_sharing/Class/DateManage.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 
 class ChatPage extends StatefulWidget {
@@ -179,27 +180,68 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
 
   Widget buildSingleMessage(int index) {
     // TODO: Add sender name and time stamp
-    return Container(
-      alignment: messagesReverseList[index].sender != currentUser.uid ? Alignment.centerLeft : Alignment.centerRight,
-      child: Container(
-        padding: const EdgeInsets.all(16.0),
-        margin: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
-        decoration: BoxDecoration(
-          color: Colors.deepOrange,
-          borderRadius: BorderRadius.circular(20.0),
+    bool isSender = messagesReverseList[index].sender == currentUser.uid;
+    return Column(
+      children: [
+        if(!isSender)
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(messagesReverseList[index].name ?? "NO NAME"),
+          ),
         ),
-        child: Text(
-          messagesReverseList[index].content,
-          style: TextStyle(color: Colors.white, fontSize: 15.0),
-        ),
-      ),
+        SizedBox(height: 8.0),
+        Row(
+          mainAxisAlignment: !isSender ? MainAxisAlignment.start : MainAxisAlignment.end,
+          children: [
+            if(isSender)
+            Text(
+              DateManage().datetimeFormat("time", messagesReverseList[index].timestamp),
+              style: TextStyle(
+                fontSize: 10.0
+              ),
+            ),
+            if(!isSender)
+              CircleAvatar(
+                radius: 16,
+                child: ClipOval(
+                  child: Image.network(
+                      "src"
+                  ),
+                ),
+              ),
+            Flexible(
+              child: Container(
+                padding: const EdgeInsets.all(12.0),
+                margin: const EdgeInsets.only(bottom: 16.0, left: 8.0, right: 8.0),
+                decoration: BoxDecoration(
+                  color: !isSender ? Colors.black : Colors.deepOrange,
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                child: Text(
+                  messagesReverseList[index].content,
+                  style: TextStyle(color: Colors.white, fontSize: 15.0),
+                ),
+              ),
+            ),
+            if(!isSender)
+              Text(
+                DateManage().datetimeFormat("time", messagesReverseList[index].timestamp),
+                style: TextStyle(
+                    fontSize: 10.0
+                ),
+              ),
+          ],
+        )
+      ],
     );
   }
   
   Widget _chatBottomBar() {
     return Material(
       child: Container(
-        padding: EdgeInsets.only(left: 16.0, right: 16.0),
+        padding: EdgeInsets.only(left: 4.0, right: 12.0),
         alignment: Alignment.bottomCenter,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -207,7 +249,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
             BoxShadow(
               color: Colors.grey,
               offset: Offset(0.0, 1.0), //(x,y)
-              blurRadius: 6.0,
+              blurRadius: 1.0,
             ),
           ],
         ),
@@ -233,7 +275,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
               child: Icon(Icons.send),
               onTap: () {
                 debugPrint('Send');
-                Message().sendMessage(widget.tripid,textController.text, currentUser.uid, currentUser.name,widget.currentTripid);
+                Message().sendMessage(widget.tripid,textController.text, currentUser.uid, currentUser.name,widget.currentTripid, currentUser.imgpath);
                 textController.clear();
               },
             )
@@ -250,7 +292,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
       alignment: Alignment.centerLeft,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30.0),
-          color: Colors.black12
+          color: Theme.of(context).canvasColor
       ),
       child: TextFormField(
         controller: textController,

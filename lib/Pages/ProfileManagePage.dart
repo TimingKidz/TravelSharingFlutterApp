@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_sign_in/widgets.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/buttons/cardInformation.dart';
@@ -169,17 +170,43 @@ class ProfileManagePageState extends State<ProfileManagePage> {
     );
   }
 
+  PickedFile image;
+
   Future getImage() async {
     print("5555555");
-    PickedFile image = await ImagePicker().getImage(source: ImageSource.gallery);
-    setState(() {
-      if (image != null) {
-        selectedImage = File(image.path);
-        print("selected img");
-      } else {
-        print('No image selected.');
-      }
-    });
+    image = await ImagePicker().getImage(source: ImageSource.gallery);
+    await _cropImage();
+    // setState(() {
+    //   if (image != null) {
+    //     // selectedImage = File(image.path);
+    //     print("selected img");
+    //   } else {
+    //     print('No image selected.');
+    //   }
+    // });
+  }
+
+  Future<Null> _cropImage() async {
+    File croppedFile = await ImageCropper.cropImage(
+        sourcePath: image.path,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: 'Crop Image',
+            toolbarColor: Theme.of(context).primaryColor,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: true),
+        iosUiSettings: IOSUiSettings(
+          title: 'Crop Image',
+          aspectRatioLockEnabled: true,
+          aspectRatioPickerButtonHidden: true,
+          rectX: 1,
+          rectY: 1
+        ));
+    if (croppedFile != null) {
+      selectedImage = croppedFile;
+      setState(() {});
+    }
   }
 
   void setEditDataDefault(){

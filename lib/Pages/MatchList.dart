@@ -66,9 +66,10 @@ class _MatchListstate extends State<MatchList> {
       }
     });
     socket.on('onAccept', (data) {
+      print(data);
       if( widget.data.uid == data['tripid'] ){
         Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => Matchinformation(uid: data, data: widget.data)));
+            builder: (context) => Matchinformation(uid: data['hosttripid'], data: widget.data)));
       }
     });
     firebaseMessaging.configure(

@@ -132,7 +132,7 @@ class VehicleManagePageState extends State<VehicleManagePage> {
 
   Widget _buildListView() {
     return ListView.builder(
-        physics: BouncingScrollPhysics(),
+        physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         itemCount: currentUser.vehicle.length,
         itemBuilder: (context, i) {
           return _buildRow(currentUser.vehicle[i]);

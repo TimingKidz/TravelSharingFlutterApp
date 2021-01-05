@@ -8,13 +8,15 @@ class Message {
   String sender;
   String content;
   String timestamp;
+  String name;
 
-  Message({this.sender, this.content, this.timestamp});
+  Message({this.sender, this.content, this.timestamp, this.name});
 
   Message.fromJson(Map<String, dynamic> json) {
     sender = json['sender'];
     content = json['content'];
     timestamp = json['timestamp'];
+    name = json['name'];
   }
 
   Future<List<Message>> getMessage(String tripid) async {
@@ -43,14 +45,15 @@ class Message {
     }
   }
 
-  Future<bool> sendMessage(String tripid,String message,String form_id,String name,String currentTripid) async {
+  Future<bool> sendMessage(String tripid,String message,String form_id,String name,String currentTripid, String imgpath) async {
     try{
       Map<String,dynamic> tmp = {
-        "title": name,
+        "name": name,
         "message" : message,
         "formid" : form_id,
         "tripid" : tripid,
-        "currentTripid" : currentTripid
+        "currentTripid" : currentTripid,
+        "imgpath" : imgpath
       };
       Http.Response response = await httpClass.reqHttp("/api/routes/sendMessage",tmp);
       if(response.statusCode == 400 ){

@@ -399,7 +399,7 @@ class _Matchinformation extends State<Matchinformation> {
                 height: 64.0,
                 child: InkWell(
                   onTap: () {
-                    swipeUpDialog(context, ProfileInfo(data: user, isHost: currentUser.uid == tripDetails.hostUser.uid, kickFunct :kickOut(user,routes) ));
+                    swipeUpDialog(context, ProfileInfo(data: user, isHost: currentUser.uid == tripDetails.hostUser.uid, kickFunct: () => kickOut(user,routes)));
                   },
                 ),
               ),

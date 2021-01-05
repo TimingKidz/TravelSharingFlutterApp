@@ -107,6 +107,7 @@ class _Dashboard extends State<Dashboard> {
       widget.setSate();
     });
     socket.on('onTripEnd', (data) {
+      print(data);
       _deletejoinCard(data['tripid']);
     });
     socket.on('onRequest', (data) {
@@ -244,7 +245,7 @@ class _Dashboard extends State<Dashboard> {
 
   Widget _buildListView() {
     return ListView.builder(
-        physics: BouncingScrollPhysics(),
+        physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         itemCount: isFirstPage ? _joinList.length : _invitedList.length,
         itemBuilder: (context, i) {
           return _buildRow(isFirstPage ? _joinList[i] : _invitedList[i]);

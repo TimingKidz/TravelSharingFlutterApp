@@ -133,7 +133,7 @@ class NotificationsPageState extends State<NotificationsPage>{
         separatorBuilder: (context, i) => Divider(
           color: Colors.grey,
         ),
-        physics: BouncingScrollPhysics(),
+        physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         itemCount: notifications.length,
         itemBuilder: (context, i) {
           return _buildRow(notifications[i]);
