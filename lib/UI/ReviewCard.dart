@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:travel_sharing/Class/Review.dart';
+import 'package:travel_sharing/main.dart';
 
 class ReviewCard extends StatefulWidget {
+  final EachReview data;
+
+  const ReviewCard({Key key, this.data}) : super(key: key);
   @override
   _ReviewCardState createState() => _ReviewCardState();
 }
@@ -24,13 +29,11 @@ class _ReviewCardState extends State<ReviewCard> {
                 CircleAvatar(
                   radius: 16,
                   child: ClipOval(
-                    child: Image.network(
-                      "src"
-                    ),
+                    child: widget.data.imgpath != null ? Image.network("${httpClass.API_IP}${widget.data.imgpath}") : Container(),
                   ),
                 ),
                 SizedBox(width: 8.0),
-                Text("NAME")
+                Text(widget.data.name)
               ],
             ),
             SizedBox(height: 8.0),
@@ -38,7 +41,7 @@ class _ReviewCardState extends State<ReviewCard> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 RatingBarIndicator(
-                  rating: 4.75,
+                  rating: widget.data.score,
                   itemBuilder: (context, index) => Icon(
                     Icons.star,
                     color: Colors.amber,
@@ -48,13 +51,15 @@ class _ReviewCardState extends State<ReviewCard> {
                   direction: Axis.horizontal,
                 ),
                 SizedBox(width: 4.0),
-                Text("5.0")
+                Text(widget.data.score.toString())
               ],
             ),
             SizedBox(height: 8.0),
             Row(
               children: [
-                ratingType("type")
+                for(String each in widget.data.tag)
+                  ratingType(each),
+                SizedBox(width: 8.0),
               ],
             )
           ],

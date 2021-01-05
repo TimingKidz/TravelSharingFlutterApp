@@ -17,7 +17,7 @@ class RatingPageState extends State<RatingPage> {
   List<String> ratingTypeList = List();
   List<String> ratingTypeSelected = List();
   Map<String, bool> isSelected = Map();
-  EachReview review = new EachReview(sender: currentUser.uid,name: currentUser.name);
+  EachReview review = new EachReview(sender: currentUser.uid,name: currentUser.name,imgpath: currentUser.imgpath);
   double rate = 5.0;
 
   @override

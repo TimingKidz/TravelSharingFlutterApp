@@ -77,7 +77,11 @@ class _Matchinformation extends State<Matchinformation> {
     socket.on('onNewNotification', (data) {
       currentUser.status.navbarNoti = true;
     });
-    socket.on('onNewAccept', (data) async => await getData(true));
+    socket.on('onNewAccept', (data) async {
+      if( widget.data.uid == data['tripid'] ){
+        await getData(true);
+      }
+      });
     firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
           if( message['data']['page'] != '/MatchInformation' ){
@@ -313,8 +317,8 @@ class _Matchinformation extends State<Matchinformation> {
                 ),
                 FlatButton(
                   child: Text('Yes'),
-                  onPressed: () {
-                    endTrip();
+                  onPressed: () async {
+                    await endTrip();
                     Navigator.of(context).pop();
                   },
                 ),
@@ -357,8 +361,8 @@ class _Matchinformation extends State<Matchinformation> {
                     child: InkWell(
                       child: SizedBox(width: 64, height: 64, child: Icon(Icons.add)),
                       onTap: () {
-                        Navigator.pushReplacement(context, MaterialPageRoute(
-                            builder: (context) => ReqList(data: widget.data))).then((value){
+                        Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => ReqList(data: widget.data, isFromMatchinfo: true,))).then((value){
                           _pageConfig(false);
                         });
                       },
@@ -399,7 +403,7 @@ class _Matchinformation extends State<Matchinformation> {
                 height: 64.0,
                 child: InkWell(
                   onTap: () {
-                    swipeUpDialog(context, ProfileInfo(data: user, isHost: currentUser.uid == tripDetails.hostUser.uid, kickFunct: () => kickOut(user,routes)));
+                    swipeUpDialog(context, ProfileInfo(data: user, isHost: currentUser.uid == tripDetails.hostUser.uid, kickFunct :() => kickOut(user,routes) ));
                   },
                 ),
               ),

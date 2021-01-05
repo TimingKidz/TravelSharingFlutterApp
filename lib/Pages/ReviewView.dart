@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:travel_sharing/Class/Review.dart';
 import 'package:travel_sharing/UI/ReviewCard.dart';
+import 'package:travel_sharing/main.dart';
 
 class ReviewView extends StatefulWidget {
   @override
@@ -8,14 +10,72 @@ class ReviewView extends StatefulWidget {
 }
 
 class _ReviewViewState extends State<ReviewView> {
+  Review review ;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _pageConfig();
+  }
+
+  _pageConfig() async {
+    await getData();
+    socket.off('onNewNotification');
+    socket.off('onNewAccept');
+    socket.off('onNewMatch');
+    socket.off('onNewMessage');
+    socket.off('onRequest');
+    socket.off('onKick');
+
+    socket.on('onKick', (data){
+      currentUser.status.navbarTrip = true;
+      currentUser.status.navbarNoti = true;
+    });
+    socket.on('onRequest', (data) {
+      currentUser.status.navbarTrip = true;
+    });
+    socket.on('onNewMatch' , (data){
+      currentUser.status.navbarTrip = true;
+    });
+    socket.on('onNewAccept', (data){
+      currentUser.status.navbarTrip = true;
+    });
+    socket.on('onNewMessage',(data){
+      currentUser.status.navbarTrip = true;
+    });
+    socket.on('onNewAccept',(data){
+      currentUser.status.navbarTrip = true;
+    });
+    socket.on('onNewNotification', (data){
+      currentUser.status.navbarNoti = true;
+    });
+    firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          print("onMessage: $message");
+          showNotification(message);
+        }
+    );
+  }
+
+  // get request list of current routes
+  Future<void> getData() async {
+    try{
+      review =  await Review().getReview(currentUser.uid);
+      setState((){});
+    }catch(error){
+      print(error);
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: <Widget>[
+          if(review != null)
           Padding(
             padding: EdgeInsets.only(top: 100),
-            child: true ? _buildListView() : Center(
+            child: review.review.isNotEmpty ? _buildListView() : Center(
               child: Text("No reviews in your account yet."),
             ),
           ),
@@ -106,14 +166,16 @@ class _ReviewViewState extends State<ReviewView> {
   Widget _buildListView() {
     return ListView.builder(
         physics: BouncingScrollPhysics(),
-        itemCount: 1,
+        itemCount: review.review.length,
         itemBuilder: (context, i) {
-          return _buildRow();
+          return _buildRow(review.review[i]);
         }
     );
   }
 
-  Widget _buildRow() {
-    return ReviewCard();
+  Widget _buildRow(EachReview data) {
+    return ReviewCard(
+      data: data,
+    );
   }
 }

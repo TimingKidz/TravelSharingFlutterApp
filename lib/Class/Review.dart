@@ -51,16 +51,21 @@ class EachReview {
   String message;
   List<String> tag ;
   String date;
+  String imgpath;
 
-  EachReview({this.score, this.sender, this.name,this.message,this.tag,this.date});
+  EachReview({this.score, this.sender, this.name,this.message,this.tag,this.date,this.imgpath});
 
   EachReview.fromJson(Map<String, dynamic> json) {
-    score = json['score'];
+    score = json['score'].toDouble();
     sender = json['sender'];
     name = json['name'];
     message = json['message'];
-    tag = json['tag'];
+    tag = List();
+    json['tag'].forEach((x){
+      tag.add(x.toString());
+    });
     date = json['date'];
+    imgpath = json['imgpath'];
   }
 
   Map<String, dynamic> toJson(String sendToid,String notiId) {
@@ -70,6 +75,7 @@ class EachReview {
     data['name']= this.name ;
     data['message'] = this.message;
     data['tag'] = this.tag ;
+    data['imgpath'] = this.imgpath;
     data['id'] = sendToid;
     data['notiId'] = notiId;
     return data;

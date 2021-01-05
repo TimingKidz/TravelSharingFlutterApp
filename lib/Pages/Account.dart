@@ -230,6 +230,7 @@ class AccountState extends State<Account> {
     socket.dispose();
     googleUser = await googleSignIn.disconnect();
     // set user.token_id in DB to " "
+    await currentUser.updateToken(" ");
     Navigator.of(context)
         .pushNamedAndRemoveUntil('/login', ModalRoute.withName('/'));
   }

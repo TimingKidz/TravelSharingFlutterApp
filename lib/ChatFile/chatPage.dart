@@ -52,7 +52,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
     });
     firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
-          if( message['notification']['tag'] != widget.tripid ){
+          print(messages);
+          if( message['data']['tag'] != widget.tripid ){
             print("onMessage: $message");
             showNotification(message);
           }
@@ -172,7 +173,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
   }
 
   getData() async {
-    messages = await Message().getMessage(widget.tripid);
+    messages = widget.isHistory ? await Message().getHistoryMessage(widget.tripid) : await Message().getMessage(widget.tripid);
 //    print(messages.first);
     messagesReverseList = messages.reversed.toList();
     setState((){});

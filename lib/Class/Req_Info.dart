@@ -31,9 +31,12 @@ class Req_Info {
           List<dynamic> Data = jsonDecode(response.body);
           List<Req_Info> Req_Info_List = List();
           Data.forEach((x) {
-            Req_Info tmp = Req_Info.fromJson(x);
-            Req_Info_List.add(tmp);
+            if(x['detail'] != null){
+              Req_Info tmp = Req_Info.fromJson(x);
+              Req_Info_List.add(tmp);
+            }
           });
+          print(Req_Info_List.length);
           return Future.value(Req_Info_List);
         }
       }
