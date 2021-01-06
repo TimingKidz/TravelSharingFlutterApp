@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:latlong/latlong.dart' as l;
 import 'package:location/location.dart' ;
 import "package:google_maps_webservice/places.dart" as p;
+import 'package:travel_sharing/Class/NearbyPlace.dart';
 import 'package:travel_sharing/Pages/LocationSearchBar.dart';
 import 'package:travel_sharing/Pages/InfoFill.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
@@ -78,7 +79,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
               target:current_Location,
               zoom: 15,
             ),
-            markers: isChooseOnMap ? Set() :  Set<Marker>.of(_markers.values),
+            markers:  Set<Marker>.of(_markers.values),
             zoomControlsEnabled: false,
             myLocationEnabled: true,
             myLocationButtonEnabled: false,
@@ -253,14 +254,15 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
                 children: <Widget>[
                   if( isChooseOnMap )
                     FloatingActionButton.extended(
-                      label: Text('Preview'),
-                      onPressed: (){
+                      label: Text('Choose'),
+                      onPressed: () async {
+                        await OnMove_End();
                         isChooseOnMap = false;
-                        OnMove_End();
+                        setState(() { });
                       },
                       heroTag: null,
                     ),
-                  if( Map_Latlng["src"] != null && Map_Latlng["dst"] != null)
+                  if( Map_Latlng["src"] != null && Map_Latlng["dst"] != null && !isChooseOnMap)
                   FloatingActionButton.extended(
                     label: Text('Preview'),
                     onPressed: _Fin,
@@ -329,23 +331,30 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
     print(i++);
     if (isChooseOnMap){
       if( isSet_Marker && Marker_Location != null){
-        p.PlacesSearchResult tmp = null;
-        int min = 10; // max distance (metre)
+//        p.PlacesSearchResult tmp = null;
+        NearbyPlace place = null;
+        String name = "";
+        double min = double.maxFinite; // max distance (metre)
         // search for nearby place in 10 metre
-        p.PlacesSearchResponse response = await _places.searchNearbyWithRadius(new p.Location(Marker_Location.latitude,Marker_Location.longitude), 10);
-        print(response.results.first.name);
-        response.results.forEach((element) {
-          l.LatLng NearPlace_Loc = new l.LatLng(element.geometry.location.lat,element.geometry.location.lng);
+        List<NearbyPlace> tmp = await NearbyPlace().getNearbyPlace(Marker_Location.latitude, Marker_Location.longitude);
+//        p.PlacesSearchResponse response = await _places.searchNearbyWithRadius(new p.Location(Marker_Location.latitude,Marker_Location.longitude), 10);
+//        print(response.results.first.name);
+        tmp.forEach((element) {
+          l.LatLng NearPlace_Loc = new l.LatLng(element.location.latitude,element.location.longitude);
           l.LatLng Marker_Loc = new l.LatLng(Marker_Location.latitude, Marker_Location.longitude);
-          if(distance(NearPlace_Loc,Marker_Loc) <= min){ tmp = element; }
+          double dis = distance(NearPlace_Loc,Marker_Loc);
+          if(dis <= min){
+            min = dis;
+            place = min > 30 ? null:element;
+            name = element.name;
+          }
         });
-        if(tmp!=null) { // set marker snap to nearby place
-          Marker_Location = LatLng(tmp.geometry.location.lat, tmp.geometry.location.lng);
-          _createMarkers(Marker_Location);
+        if(place!=null) {
+          Marker_Location = place.location;
           setState(() { });
         }
-        // check state function
-        Src_OR_Dst(Marker_Location, tmp != null ? tmp.name : "");
+//        // check state function
+        Src_OR_Dst(Marker_Location,name);
       }
     }
 

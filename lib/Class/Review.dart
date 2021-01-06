@@ -5,26 +5,28 @@ import 'package:http/http.dart' as Http;
 
 
 class Review {
+  bool isMore;
+  int offset;
   double totalscore;
   Map<String,dynamic> tag;
   List<EachReview> review;
 
-
-  Review({this.totalscore, this.tag,this.review});
+  Review({this.isMore,this.offset,this.totalscore, this.tag,this.review});
 
   Review.fromJson(Map<String, dynamic> json) {
-    totalscore = json['score'];
-    tag = json['tag'];
+    totalscore = json['data']['totalscore'].toDouble();
+    offset = json['offset'];
+    isMore = json['isMore'];
+    tag = json['data']['tag'];
     review = List();
-    json['review'].forEach((x){
+    json['data']['review'].forEach((x){
       review.add(EachReview.fromJson(x));
     });
-
   }
 
-  Future<Review> getReview(String userid) async {
+  Future<Review> getReview(String userid,int offset) async {
     try {
-      Http.Response response = await httpClass.reqHttp("/api/routes/getReview",{"id":userid});
+      Http.Response response = await httpClass.reqHttp("/api/routes/getReview",{"id":userid,"offset":offset});
       if (response.statusCode == 400) {
         return Future.value(null);
       } else {
@@ -40,9 +42,7 @@ class Review {
       throw("can't connect sendReview");
     }
   }
-
 }
-
 
 class EachReview {
   double score;

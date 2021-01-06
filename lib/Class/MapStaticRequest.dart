@@ -1,11 +1,12 @@
 import 'package:travel_sharing/Class/Match_Info.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/Travel_Info.dart';
+import 'package:travel_sharing/main.dart';
 
 class MapStaticRequest{
 
   String getMapUrl(Routes user,Routes other){
-    String url ="http://maps.googleapis.com/maps/api/staticmap?size=512x1980&key=AIzaSyBQCf89JOkrq2ECa6Ko8LBQaMO8A7rJt9Q";
+    String url ="http://maps.googleapis.com/maps/api/staticmap?size=512x1980&key=${api_key}";
     String path = "&path=";
     String marker =  "&markers=|";
     String end = "&sensor=false";

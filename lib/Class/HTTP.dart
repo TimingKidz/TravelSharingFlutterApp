@@ -7,7 +7,7 @@ import 'package:image/image.dart' as img;
 
 class HTTP{
 //  final String API_IP = "https://68.183.226.229";
-  final String API_IP = "http://10.80.24.37:3000";
+  final String API_IP = "http://10.80.24.78:3000";
   Map<String,String>  header ;
   Map<String,String>  mediaHeader ;
 

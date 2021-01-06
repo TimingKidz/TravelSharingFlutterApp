@@ -11,6 +11,8 @@ class ReviewView extends StatefulWidget {
 
 class _ReviewViewState extends State<ReviewView> {
   Review review ;
+  int currentI = 0;
+  List<EachReview> reviewList = List();
 
   @override
   void initState() {
@@ -20,7 +22,7 @@ class _ReviewViewState extends State<ReviewView> {
   }
 
   _pageConfig() async {
-    await getData();
+    await getData(0);
     socket.off('onNewNotification');
     socket.off('onNewAccept');
     socket.off('onNewMatch');
@@ -59,9 +61,12 @@ class _ReviewViewState extends State<ReviewView> {
   }
 
   // get request list of current routes
-  Future<void> getData() async {
+  Future<void> getData(int offset) async {
     try{
-      review =  await Review().getReview(currentUser.uid);
+
+      review =  await Review().getReview(currentUser.uid,offset);
+      reviewList = reviewList + review.review;
+      currentI = review.offset;
       setState((){});
     }catch(error){
       print(error);
@@ -104,7 +109,7 @@ class _ReviewViewState extends State<ReviewView> {
                               height: 8.0,
                             ),
                             RatingBarIndicator(
-                              rating: 4.75,
+                              rating:  review != null ? review.totalscore : 5.0,
                               itemBuilder: (context, index) => Icon(
                                 Icons.star,
                                 color: Colors.amber,
@@ -121,7 +126,7 @@ class _ReviewViewState extends State<ReviewView> {
                               children: [
                                 Icon(Icons.star),
                                 SizedBox(width: 8.0),
-                                Text("5.0")
+                                Text( review != null ? review.totalscore.toString() : "5.0")
                               ],
                             )
                           ],
@@ -166,9 +171,24 @@ class _ReviewViewState extends State<ReviewView> {
   Widget _buildListView() {
     return ListView.builder(
         physics: BouncingScrollPhysics(),
-        itemCount: review.review.length,
+        itemCount: review.isMore ? currentI+1 : currentI,
         itemBuilder: (context, i) {
-          return _buildRow(review.review[i]);
+          if(i >= currentI ){
+            getData(review.offset);
+            return Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Center(
+                child: SizedBox(
+                  child: CircularProgressIndicator(),
+                  height: 24,
+                  width: 24,
+                ),
+              ),
+            );
+          }else{
+            return _buildRow(reviewList[i]);
+          }
+
         }
     );
   }
