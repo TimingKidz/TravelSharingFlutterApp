@@ -46,7 +46,10 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
     });
     socket.on('onNewMessage', (data) {
       if (data["tripid"] == widget.currentTripid){
-        messagesReverseList.insert(0, Message.fromJson(data["data"]));
+        Message message = Message.fromJson(data["data"]);
+        if(messagesReverseList.first.sender == message.sender) message.isDuplicate = true;
+        else message.isDuplicate = false;
+        messagesReverseList.insert(0, message);
         setState(() { });
       }
     });
@@ -345,9 +348,11 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
             InkWell(
               child: Icon(Icons.send),
               onTap: () {
-                debugPrint('Send');
-                Message().sendMessage(widget.tripid,textController.text, currentUser.uid, currentUser.name,widget.currentTripid, currentUser.imgpath);
-                textController.clear();
+                if(textController.text != ""){
+                  debugPrint('Send');
+                  Message().sendMessage(widget.tripid,textController.text, currentUser.uid, currentUser.name,widget.currentTripid, currentUser.imgpath);
+                  textController.clear();
+                }
               },
             )
           ],
