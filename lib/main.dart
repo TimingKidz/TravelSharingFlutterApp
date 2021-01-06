@@ -5,7 +5,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_sharing/Class/HTTP.dart';
 import 'package:travel_sharing/Class/Status.dart';
 import 'package:travel_sharing/Pages/Account.dart';
@@ -29,6 +31,7 @@ import 'Pages/loginPage.dart';
 import 'Pages/map.dart';
 import 'Pages/dashboard.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:travel_sharing/localization.dart';
 
 final String api_key = "AIzaSyBQCf89JOkrq2ECa6Ko8LBQaMO8A7rJt9Q";
 GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['profile', 'email']);
@@ -49,7 +52,10 @@ class MyHttpOverrides extends HttpOverrides{
   }
 }
 
-void main() {
+SharedPreferences prefs;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
 
    // statusBarColor is used to set Status bar color in Android devices.
@@ -62,11 +68,12 @@ void main() {
    statusBarBrightness: Brightness.light,
    // Here light means dark color Status bar icons.
 
-   systemNavigationBarColor: Colors.transparent,
+   systemNavigationBarColor: Color(0xff2d4059),
    systemNavigationBarIconBrightness: Brightness.dark
 
  ));
   HttpOverrides.global = new MyHttpOverrides();
+  prefs = await SharedPreferences.getInstance();
   runApp(MyApp());
 }
 
@@ -97,7 +104,32 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
+        localizationsDelegates: [
+          // ... app-specific localization delegate[s] here
+          const AppLocalizationsDelegate(),
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('en', ''), // English, no country code
+          const Locale('th', ''), // Thai, no country code
+        ],
+        localeResolutionCallback: (locale, supportedLocales){
+          String lang = prefs.getString("lang");
+          if(lang != null){
+            return Locale(lang);
+          }
+          if (locale == null) {
+            locale = Localizations.localeOf(context);
+          }
+          for(var supportedLocale in supportedLocales){
+            if(supportedLocale.languageCode == locale.languageCode)
+              return locale;
+          }
+          return supportedLocales.first;
+        },
+        title: 'TActivity',
         theme: ThemeData(
           primaryColor: Theme.of(context).colorScheme.darkBlue,
           accentColor: Theme.of(context).colorScheme.amber,
@@ -127,7 +159,6 @@ class MyApp extends StatelessWidget {
           '/Profile' : (context) => ProfileManagePage(),
           '/ratingPage' : (context) => RatingPage(),
           '/ReqList' : (context) => ReqList(),
-
         },
       );
   }

@@ -9,6 +9,7 @@ import 'package:travel_sharing/Pages/map.dart';
 import 'package:location/location.dart' ;
 import 'package:travel_sharing/buttons/DashboardCardTile.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
+import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
 
 
@@ -185,7 +186,7 @@ class _Dashboard extends State<Dashboard> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
-                          child: Text('ไปด้วย', style: TextStyle(color: isFirstPage ? Colors.white : Colors.black)),
+                          child: Text(AppLocalizations.instance.text("PaiDuay"), style: TextStyle(color: isFirstPage ? Colors.white : Colors.black)),
                           onPressed: () {
                             setState(() {
                               isFirstPage = true;
@@ -202,7 +203,7 @@ class _Dashboard extends State<Dashboard> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
-                          child: Text('ชวน', style: TextStyle(color: isFirstPage ? Colors.black : Colors.white)),
+                          child: Text(AppLocalizations.instance.text("Chuan"), style: TextStyle(color: isFirstPage ? Colors.black : Colors.white)),
                           onPressed: () {
                             setState(() {
                               isFirstPage = false;

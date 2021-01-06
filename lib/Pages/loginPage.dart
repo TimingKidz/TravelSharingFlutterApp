@@ -35,21 +35,21 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    notificationBarIconDark();
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).primaryColor,
       body: Center(child: buildBody())
     );
   }
 
   Widget buildBody () {
+    navigationBarColorPrimary(context);
     return Container(
       padding: EdgeInsets.all(24.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          FlutterLogo(size: 150.0),
-          SizedBox(height: 150.0),
+          Image(image: AssetImage("assets/icons/TACtivity.png"), width: MediaQuery.of(context).size.width * 0.8),
+          SizedBox(height: 120.0),
           Container(
             width: 300.0,
             child: RaisedButton(
@@ -132,12 +132,12 @@ class LoginPageState extends State<LoginPage> {
             socket.io.options['extraHeaders'] = {'uid': currentUser.uid,'auth' : httpClass.header['auth']};
           }
           initsocket();
-          notificationBarIconLight();
+          navigationBarColorWhite();
           Navigator.of(context).pop(); //Pop Loading Dialog
           Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) => HomeNavigation()));
         }else{
-          notificationBarIconLight();
+          navigationBarColorWhite();
           Navigator.of(context).pop(); //Pop Loading Dialog
           Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) => SignUpPage()));

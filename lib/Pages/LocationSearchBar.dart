@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/UI/NotificationBarSettings.dart';
+import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -173,7 +174,7 @@ class _LocationSearchState extends State<LocationSearch> {
                   children: <Widget>[
                     Icon(Icons.my_location),
                     SizedBox(width: 8.0),
-                    Text('Your location')
+                    Text(AppLocalizations.instance.text("curLocate"))
                   ],
                 ),
               ),
@@ -192,7 +193,7 @@ class _LocationSearchState extends State<LocationSearch> {
                   children: <Widget>[
                     Icon(Icons.location_on),
                     SizedBox(width: 8.0),
-                    Text('Choose on map')
+                    Text(AppLocalizations.instance.text("ChooseOnMap"))
                   ],
                 ),
               ),
@@ -211,7 +212,7 @@ class _LocationSearchState extends State<LocationSearch> {
                 children: [
                   Padding(
                     padding: EdgeInsets.all(16.0),
-                    child: Text('History'),
+                    child: Text(AppLocalizations.instance.text("RoutesHistory")),
                   ),
                   Expanded(
                     child: ListView.builder(

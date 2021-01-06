@@ -4,6 +4,7 @@ import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/UI/PlainBGInfo.dart';
 import 'package:travel_sharing/buttons/PlainBGTextField.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
+import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
 
 class VehicleCardTileFull extends StatefulWidget {
@@ -58,7 +59,7 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
                           child: Container(
                             padding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 8.0, right: 8.0),
                             color: Colors.red,
-                            child: Text("Default", style: TextStyle(color: Colors.white)),
+                            child: Text(AppLocalizations.instance.text("default"), style: TextStyle(color: Colors.white)),
                           ),
                         ),
                     ],
@@ -158,7 +159,7 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
             Expanded(
               child: PlainBGTextField(
                 notNull: true,
-                labelText: "ทะเบียน",
+                labelText: AppLocalizations.instance.text("license"),
                 initValue: editData.license,
                 onChanged: (val){
                   editData.license = val;
@@ -169,7 +170,7 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
             Expanded(
               child: PlainBGTextField(
                 notNull: true,
-                labelText: "ยี่ห้อ",
+                labelText: AppLocalizations.instance.text("brand"),
                 initValue: editData.brand,
                 onChanged: (val){
                   editData.brand = val;
@@ -184,7 +185,7 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
             Expanded(
               child: PlainBGTextField(
                 notNull: true,
-                labelText: "รุ่น",
+                labelText: AppLocalizations.instance.text("model"),
                 initValue: editData.model,
                 onChanged: (val){
                   editData.model = val;
@@ -195,7 +196,7 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
             Expanded(
               child: PlainBGTextField(
                 notNull: true,
-                labelText: "สี",
+                labelText: AppLocalizations.instance.text("color"),
                 initValue: editData.color,
                 onChanged: (val){
                   editData.color = val;
@@ -217,7 +218,7 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
               },
             ),
             Text(
-              "Set this to default vehicle"
+                AppLocalizations.instance.text("setDefault")
             )
           ],
         ),
@@ -231,7 +232,7 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
                 child: InkWell(
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-                    child: Text("cancel"),
+                    child: Text(AppLocalizations.instance.text("cancel")),
                   ),
                   onTap: () {
                     setState(() {
@@ -250,7 +251,7 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
                 child: InkWell(
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-                    child: Text("ok"),
+                    child: Text(AppLocalizations.instance.text("ok")),
                   ),
                   onTap: () async {
                     if(_formKey.currentState.validate()){
@@ -269,23 +270,23 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
       ];
     } else {
       return [
-        PlainBGInfo(label: "ประเภท", info: widget.data.type),
+        PlainBGInfo(label: AppLocalizations.instance.text("type"), info: widget.data.type),
         SizedBox(height: 16.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Expanded(child: PlainBGInfo(label: "ทะเบียน", info: widget.data.license)),
+            Expanded(child: PlainBGInfo(label: AppLocalizations.instance.text("license"), info: widget.data.license)),
             SizedBox(width: 16.0),
-            Expanded(child: PlainBGInfo(label: "ยี่ห้อ", info: widget.data.brand))
+            Expanded(child: PlainBGInfo(label: AppLocalizations.instance.text("brand"), info: widget.data.brand))
 
           ],
         ),
         SizedBox(height: 16.0),
         Row(
           children: <Widget>[
-            Expanded(child: PlainBGInfo(label: "รุ่น", info: widget.data.model)),
+            Expanded(child: PlainBGInfo(label: AppLocalizations.instance.text("model"), info: widget.data.model)),
             SizedBox(width: 16.0),
-            Expanded(child: PlainBGInfo(label: "สี", info: widget.data.color))
+            Expanded(child: PlainBGInfo(label: AppLocalizations.instance.text("color"), info: widget.data.color))
           ],
         )
       ];

@@ -5,6 +5,7 @@ import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/Travel_Info.dart';
 import 'package:travel_sharing/Pages/Matchinformation.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
+import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
 
 // TODO: Implement History Page
@@ -51,14 +52,14 @@ class _HistoryPageState extends State<HistoryPage> {
                     children: [
                       IconButton(
                         icon: Icon(Icons.arrow_back),
-                        tooltip: "back",
+                        tooltip: AppLocalizations.instance.text("back"),
                         iconSize: 26.0,
                         color: Colors.white,
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                       SizedBox(width: 16.0),
                       Text(
-                        "History",
+                        AppLocalizations.instance.text("History"),
                         style: TextStyle(
                           // fontWeight: FontWeight.bold,
                             fontSize: 20.0,
@@ -98,11 +99,15 @@ class _HistoryPageState extends State<HistoryPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
-            data.routes.src
+            data.routes.src,
+            overflow: TextOverflow.ellipsis,
           ),
           Icon(Icons.navigate_next_outlined),
-          Text(
-            data.routes.dst
+          Flexible(
+            child: Text(
+              data.routes.dst,
+              overflow: TextOverflow.ellipsis,
+            ),
           )
         ],
       ),

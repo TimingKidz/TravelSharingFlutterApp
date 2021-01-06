@@ -326,6 +326,7 @@ class _Matchinformation extends State<Matchinformation> {
             ),
           ),
         ),
+      SizedBox(height: 16.0),
     ];
   }
 

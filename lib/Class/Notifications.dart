@@ -12,8 +12,10 @@ class Notifications{
   String tag;
   String date;
   String uid;
+  String src;
+  String dst;
 
-  Notifications({this.Title, this.Message , this.date ,this.sender,this.tag });
+  Notifications({this.Title, this.Message , this.date ,this.sender,this.tag, this.dst, this.src});
 
   Notifications.fromJson(Map<String, dynamic> json) {
     uid = json['_id'];
@@ -22,6 +24,8 @@ class Notifications{
     date = json['date'];
     tag = json['tag'];
     sender = json['sender'] ?? " ";
+    src = json['src'];
+    dst = json['dst'];
   }
 
   Future<List<Notifications>> getNotification(String id,bool isNeed2Update) async {

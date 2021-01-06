@@ -41,6 +41,7 @@ class RatingPageState extends State<RatingPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         brightness: Brightness.light,
         iconTheme: IconThemeData(

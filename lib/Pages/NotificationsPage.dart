@@ -5,6 +5,7 @@ import 'package:travel_sharing/Class/Notifications.dart';
 import 'package:travel_sharing/Pages/ratingPage.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
+import 'package:travel_sharing/localization.dart';
 
 class NotificationsPage extends StatefulWidget{
   final Function setSate;
@@ -112,7 +113,7 @@ class NotificationsPageState extends State<NotificationsPage>{
                 padding: EdgeInsets.only(left: 24.0, top: 16.0, bottom: 30.0, right: 24.0),
                 child: SafeArea(
                   child: Text(
-                    "Notifications",
+                    AppLocalizations.instance.text('NotiTitle'),
                     style: TextStyle(
                       // fontWeight: FontWeight.bold,
                         fontSize: 20.0,
@@ -136,7 +137,22 @@ class NotificationsPageState extends State<NotificationsPage>{
         physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         itemCount: notifications.length,
         itemBuilder: (context, i) {
-          return _buildRow(notifications[i]);
+          if(notifications[i].tag == "review")
+            return _buildRow(notifications[i]);
+          return Dismissible(
+            key: Key(notifications[i].sender),
+            direction: DismissDirection.endToStart,
+            onDismissed: (direction){
+
+            },
+            background: Container(
+              color: Colors.red,
+              alignment: Alignment.centerRight,
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Icon(Icons.delete, color: Colors.white),
+            ),
+            child: _buildRow(notifications[i]),
+          );
         }
     );
   }
@@ -154,28 +170,27 @@ class NotificationsPageState extends State<NotificationsPage>{
               children: [
                 Icon(Icons.announcement),
                 SizedBox(width: 16.0),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data.Title,
-                      style: TextStyle(
-                          fontSize: 18.0
-                      ),
+                Flexible(
+                  child: Text(
+                    data.Title,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontSize: 18.0
                     ),
-                    SizedBox(height: 8.0),
-                    Text(
-                      DateManage().datetimeFormat("full", data.date),
-                      style: TextStyle(
-                          fontSize: 10.0
-                      ),
-                    )
-                  ],
+                  ),
                 )
               ],
             ),
+            subtitle: Padding(
+              padding: EdgeInsets.only(top: 8.0),
+              child: Text(
+                DateManage().datetimeFormat("full", data.date),
+                style: TextStyle(
+                    fontSize: 10.0
+                ),
+              ),
+            ),
             childrenPadding: EdgeInsets.all(16.0),
-            tilePadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
             expandedAlignment: Alignment.centerLeft,
             children: <Widget>[
               Text(data.Message),
@@ -195,31 +210,57 @@ class NotificationsPageState extends State<NotificationsPage>{
           child: ListTile(
             onTap: () => Navigator.push(context, MaterialPageRoute(
                 builder: (context) =>RatingPage(sendToid: data.sender,notiId: data.uid,))).then((value) async => await getData(false)),
+            trailing: Icon(Icons.navigate_next),
             title: Row(
               children: [
                 Icon(Icons.rate_review),
                 SizedBox(width: 16.0),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data.Title,
-                      style: TextStyle(
-                          fontSize: 18.0
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        data.Title,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 18.0
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 8.0),
-                    Text(
-                      DateManage().datetimeFormat("full", data.date),
-                      style: TextStyle(
-                          fontSize: 10.0
-                      ),
-                    )
-                  ],
+                      SizedBox(height: 8.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            data.src ?? "Source",
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 12.0
+                            ),
+                          ),
+                          Icon(Icons.navigate_next_outlined),
+                          Text(
+                            data.dst ?? "Destination",
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 12.0
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 )
               ],
             ),
-
+            subtitle: Padding(
+              padding: EdgeInsets.only(top: 8.0),
+              child: Text(
+                DateManage().datetimeFormat("full", data.date),
+                style: TextStyle(
+                    fontSize: 10.0
+                ),
+              ),
+            ),
           ),
         );
         // do something
@@ -235,28 +276,53 @@ class NotificationsPageState extends State<NotificationsPage>{
               children: [
                 Icon(Icons.error),
                 SizedBox(width: 16.0),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data.Title,
-                      style: TextStyle(
-                          fontSize: 18.0
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        data.Title,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 18.0
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 8.0),
-                    Text(
-                      DateManage().datetimeFormat("full", data.date),
-                      style: TextStyle(
-                          fontSize: 10.0
-                      ),
-                    )
-                  ],
+                      SizedBox(height: 8.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            data.src ?? "Source",
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 12.0
+                            ),
+                          ),
+                          Icon(Icons.navigate_next_outlined),
+                          Text(
+                            data.dst ?? "Destination",
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 12.0
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 )
               ],
             ),
+            subtitle: Padding(
+              padding: EdgeInsets.only(top: 8.0),
+              child: Text(
+                DateManage().datetimeFormat("full", data.date),
+                style: TextStyle(
+                    fontSize: 10.0
+                ),
+              ),
+            ),
             childrenPadding: EdgeInsets.all(16.0),
-            tilePadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
             expandedAlignment: Alignment.centerLeft,
             children: <Widget>[
               Text(data.Message),

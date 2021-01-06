@@ -9,7 +9,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/homeNavigation.dart';
 import 'package:travel_sharing/Pages/signupPage.dart';
-import 'package:travel_sharing/buttons/CardDropdown.dart';
+import 'package:travel_sharing/UI/NotificationBarSettings.dart';
 import 'package:travel_sharing/main.dart';
 import 'loginPage.dart';
 
@@ -59,28 +59,18 @@ class SplashscreenState extends State<Splashscreen> {
     }catch(e){
       print(e.toString());
     }
-
     _signInCheck();
   }
 
   @override
   Widget build(BuildContext context) {
-    // return Scaffold(
-    //   body: Center(
-    //     child: Padding(
-    //       padding: EdgeInsets.all(16.0),
-    //       child: CardDropdown(
-    //         text: "GG",
-    //       ),
-    //     ),
-    //   ),
-    // );
+    navigationBarColorPrimary(context);
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).primaryColor,
         body: Center(
-          child: FlutterLogo(size: 180.0),
+          child: Image(image: AssetImage("assets/icons/TACtivity.png"), width: MediaQuery.of(context).size.width * 0.8),
         ),
       ),
     );
@@ -127,9 +117,11 @@ class SplashscreenState extends State<Splashscreen> {
             socket.io.options['extraHeaders'] = {'uid': currentUser.uid,'auth' : httpClass.header['auth']};
           }
           initsocket();
+          navigationBarColorWhite();
           Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) => HomeNavigation()));
         }else{
+          navigationBarColorWhite();
           Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) => SignUpPage()));
         }

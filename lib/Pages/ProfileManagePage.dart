@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/buttons/cardInformation.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
+import 'package:travel_sharing/localization.dart';
 
 import '../main.dart';
 
@@ -222,21 +223,21 @@ class ProfileManagePageState extends State<ProfileManagePage> {
     if(isEdit){
       return [
         CardInformation(
-          labelText: "Email",
+          labelText: AppLocalizations.instance.text("email"),
           infoText: currentUser.email,
         ),
         CardTextField(
-          labelText: "Name",
+          labelText: AppLocalizations.instance.text("name"),
           initValue: currentUser.name,
           onChanged: (val) => editUser.name = val,
         ),
         CardTextField(
-          labelText: "Faculty",
+          labelText: AppLocalizations.instance.text("faculty"),
           initValue: currentUser.faculty,
           onChanged: (val) => editUser.faculty = val,
         ),
         CardTextField(
-          labelText: "Gender",
+          labelText: AppLocalizations.instance.text("gender"),
           initValue: currentUser.gender,
           onChanged: (val) => editUser.gender = val,
         ),
@@ -244,7 +245,7 @@ class ProfileManagePageState extends State<ProfileManagePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             FlatButton(
-              child: Text("cancel"),
+              child: Text(AppLocalizations.instance.text("cancel")),
               onPressed: (){
                 setState(() {
 
@@ -255,7 +256,7 @@ class ProfileManagePageState extends State<ProfileManagePage> {
               },
             ),
             FlatButton(
-              child: Text("ok"),
+              child: Text(AppLocalizations.instance.text("ok")),
               onPressed: () async {
 
                 print(editUser.toJson());
@@ -271,19 +272,19 @@ class ProfileManagePageState extends State<ProfileManagePage> {
     }else{
       return [
         CardInformation(
-          labelText: "Email",
+          labelText: AppLocalizations.instance.text("email"),
           infoText: currentUser.email,
         ),
         CardInformation(
-          labelText: "Name",
+          labelText: AppLocalizations.instance.text("name"),
           infoText: currentUser.name,
         ),
         CardInformation(
-          labelText: "Faculty",
+          labelText: AppLocalizations.instance.text("faculty"),
           infoText: currentUser.faculty,
         ),
         CardInformation(
-          labelText: "Gender",
+          labelText: AppLocalizations.instance.text("gender"),
           infoText: currentUser.gender,
         ),
       ];

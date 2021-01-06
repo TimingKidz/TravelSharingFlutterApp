@@ -12,6 +12,7 @@ import 'package:travel_sharing/Class/NearbyPlace.dart';
 import 'package:travel_sharing/Pages/LocationSearchBar.dart';
 import 'package:travel_sharing/Pages/InfoFill.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
+import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
 
 class CreateRoute_Join extends StatefulWidget {
@@ -89,7 +90,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
           if(isChooseOnMap)
             Positioned.fill(
               child: Center(
-                child: Icon(Icons.add),
+                child: Icon(Icons.place, size: 32.0, color: Colors.red),
               ),
             ),
           Card(
@@ -172,7 +173,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
                                               border: InputBorder.none,
                                               contentPadding:
                                               EdgeInsets.symmetric(horizontal: 15),
-                                              hintText: "จุดเริ่มต้น ..."
+                                              hintText: AppLocalizations.instance.text("SrcPoint")
                                           ),
                                         ),
                                       ),
@@ -226,7 +227,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
                                               border: InputBorder.none,
                                               contentPadding:
                                               EdgeInsets.symmetric(horizontal: 15),
-                                              hintText: "จุดปลายทาง ..."
+                                              hintText: AppLocalizations.instance.text("DstPoint")
                                           ),
                                         ),
                                       ),

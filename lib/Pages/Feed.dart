@@ -4,6 +4,7 @@ import 'package:travel_sharing/Class/Feed.dart';
 import 'package:travel_sharing/Class/Feeds.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/buttons/FeedCardTile.dart';
+import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:travel_sharing/buttons/DashboardCardTile.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
@@ -51,7 +52,7 @@ class FeedPageState extends State<FeedPage> {
         body: Stack(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.15),
+              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.09),
               child: list.isNotEmpty
                   ? RefreshIndicator(
                 onRefresh: () => getData(0),
@@ -60,62 +61,45 @@ class FeedPageState extends State<FeedPage> {
                   : Center(child: Text("Nothing in feed yet."),
               ),
             ),
-            Wrap(
-              children: <Widget>[
-                Card(
-                  // key: actionKey,
-                    elevation: 2.0,
-                    margin: EdgeInsets.all(0.0),
-                    color: Theme.of(context).primaryColor,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(30.0),
-                            bottomRight: Radius.circular(30.0)
-                        )
-                    ),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.only(left: 24.0, top: 16.0, right: 24.0),
-                          child: SafeArea(
-                            child: Text(
-                              "Feed",
-                              style: TextStyle(
-                                // fontWeight: FontWeight.bold,
-                                  fontSize: 20.0,
-                                  color: Colors.white
-                              ),
-                              // textAlign: TextAlign.center,
-                            ),
-                          ),
+            Card(
+              elevation: 2.0,
+              margin: EdgeInsets.all(0.0),
+              color: Theme.of(context).colorScheme.darkBlue,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(30.0),
+                      bottomRight: Radius.circular(30.0)
+                  )
+              ),
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.only(left: 24.0, top: 4.0, bottom: 16.0, right: 4.0),
+                child: SafeArea(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        AppLocalizations.instance.text("FeedTitle"),
+                        style: TextStyle(
+                          // fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                          color: Colors.white,
                         ),
-                        Card(
-                          elevation: 2,
-                          margin: EdgeInsets.all(16.0),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0)
-                          ),
-                          child: Container(
-                            width: double.infinity,
-                            child: Row(
-                              children: <Widget>[
-                                // Text("Search"),
-                                Spacer(),
-                                IconButton(
-                                  icon: Icon(Icons.filter_list),
-                                  onPressed: (){
+                        // textAlign: TextAlign.center,
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.filter_list),
+                        tooltip: "Filter",
+                        iconSize: 26.0,
+                        color: Colors.white,
+                        onPressed: () {
 
-                                  },
-                                )
-                              ],
-                            ),
-                          ),
-                        )
-                      ],
-                    )
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ],
+              ),
             )
           ],
         )

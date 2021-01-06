@@ -5,12 +5,14 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/Pages/HistoryPage.dart';
+import 'package:travel_sharing/Pages/LanguageSelect.dart';
 import 'package:travel_sharing/Pages/ProfileManagePage.dart';
 import 'package:travel_sharing/Pages/ReviewView.dart';
 import 'package:travel_sharing/Pages/VehicleManagement/VehicleManagePage.dart';
 import 'package:travel_sharing/buttons/VehicleCardTileMin.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
+import 'package:travel_sharing/localization.dart';
 
 class Account extends StatefulWidget {
   final Function setSate;
@@ -175,7 +177,7 @@ class AccountState extends State<Account> {
     return [
       ListTile(
         title: Text(
-          "Profile"
+            AppLocalizations.instance.text("Profile")
         ),
         onTap: (){
           Navigator.push(context, MaterialPageRoute(
@@ -187,7 +189,7 @@ class AccountState extends State<Account> {
       ),
       ListTile(
         title: Text(
-          "Vehicle Management"
+            AppLocalizations.instance.text("Vehicle Management")
         ),
         onTap: () async {
               Navigator.push(context, MaterialPageRoute(
@@ -199,11 +201,20 @@ class AccountState extends State<Account> {
       ),
       ListTile(
         title: Text(
-          "History"
+          AppLocalizations.instance.text("History")
         ),
         onTap: (){
           Navigator.push(context, MaterialPageRoute(
               builder: (context) => HistoryPage()));
+        },
+      ),
+      ListTile(
+        title: Text(
+          AppLocalizations.instance.text("Language")
+        ),
+        onTap: (){
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => LanguageSelect())).then((value) => setState(() {}));
         },
       ),
       SizedBox(
@@ -212,7 +223,7 @@ class AccountState extends State<Account> {
       ListTile(
         title: Center(
           child: Text(
-            "SIGN OUT",
+            AppLocalizations.instance.text("SIGNOUT"),
             style: TextStyle(
                 color: Colors.red,
                 fontWeight: FontWeight.bold

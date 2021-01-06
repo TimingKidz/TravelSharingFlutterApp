@@ -90,7 +90,15 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
                       child: _chatListView(),
                     ),
                   if(widget.isHistory == null ? true : !widget.isHistory)
-                    _chatBottomBar()
+                    _chatBottomBar(),
+                  if(widget.isHistory == null ? false : widget.isHistory)
+                    Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.all(8.0),
+                      width: double.infinity,
+                      color: Colors.black.withOpacity(0.2),
+                      child: Text("You can only view chat history"),
+                    )
                 ],
               ),
             ),
@@ -156,8 +164,9 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
         );
   }
 
+  bool isSameTime;
+  bool isBottom;
 
-  
   Widget _chatListView() {
     return Container(
       child: ListView.builder(
@@ -166,7 +175,20 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
         controller: scrollController,
         itemCount: messagesReverseList.length,
         itemBuilder: (BuildContext context, int index) {
-          return buildSingleMessage(index);
+          if(index == 0){
+            isSameTime = false;
+            isBottom = true;
+          }else{
+            var presentTime = messagesReverseList[index].timestamp;
+            var pastTime = messagesReverseList[index-1].timestamp;
+            if(DateTime.parse(presentTime).minute == DateTime.parse(pastTime).minute){
+              isSameTime = true;
+            }else{
+              isSameTime = false;
+            }
+            isBottom = false;
+          }
+          return buildSingleMessage(messagesReverseList[index]);
         },
       ),
     );
@@ -179,62 +201,110 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
     setState((){});
   }
 
-  Widget buildSingleMessage(int index) {
-    // TODO: Add sender name and time stamp
-    bool isSender = messagesReverseList[index].sender == currentUser.uid;
-    return Column(
-      children: [
-        if(!isSender)
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(messagesReverseList[index].name ?? "NO NAME"),
-          ),
-        ),
-        SizedBox(height: 8.0),
-        Row(
-          mainAxisAlignment: !isSender ? MainAxisAlignment.start : MainAxisAlignment.end,
-          children: [
-            if(isSender)
-            Text(
-              DateManage().datetimeFormat("time", messagesReverseList[index].timestamp),
-              style: TextStyle(
-                fontSize: 10.0
-              ),
-            ),
-            if(!isSender)
-              CircleAvatar(
-                radius: 16,
-                child: ClipOval(
-                  child: Image.network(
-                      "src"
+  Widget buildSingleMessage(Message message) {
+    bool isSender = message.sender == currentUser.uid;
+    if(isSender)
+      return Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              SizedBox(width: 8.0),
+              if(!isSameTime)
+                Text(
+                  DateManage().datetimeFormat("time", message.timestamp),
+                  style: TextStyle(
+                      fontSize: 10.0
+                  ),
+                ),
+              SizedBox(width: 4.0),
+              Flexible(
+                child: Container(
+                  padding: const EdgeInsets.only(left: 12.0, top: 12.0, bottom: 12.0, right: 10.0),
+                  // margin: const EdgeInsets.only(bottom: 16.0, left: 8.0, right: 8.0),
+                  decoration: BoxDecoration(
+                    color: !isSender ? Colors.black : Colors.deepOrange,
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: SelectableText(
+                    message.content,
+                    style: TextStyle(color: Colors.white, fontSize: 15.0),
                   ),
                 ),
               ),
+              SizedBox(width: 8.0),
+            ],
+          ),
+          SizedBox(height: isBottom ? 8.0 : 4.0),
+        ],
+      );
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(width: 8.0),
+            if(message.isDuplicate)
+              SizedBox(width: 32.0),
+            if(!message.isDuplicate)
+              CircleAvatar(
+                radius: 16,
+                child: ClipOval(
+                  child: message.imgpath != null ? Image.network("${httpClass.API_IP}${message.imgpath}") : Container(),
+                ),
+              ),
             Flexible(
-              child: Container(
-                padding: const EdgeInsets.all(12.0),
-                margin: const EdgeInsets.only(bottom: 16.0, left: 8.0, right: 8.0),
-                decoration: BoxDecoration(
-                  color: !isSender ? Colors.black : Colors.deepOrange,
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                child: Text(
-                  messagesReverseList[index].content,
-                  style: TextStyle(color: Colors.white, fontSize: 15.0),
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if(!message.isDuplicate)
+                    SizedBox(height: 4.0),
+                  if(!message.isDuplicate)
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(message.name ?? "NO NAME", style: TextStyle(fontSize: 14.0)),
+                      ),
+                    ),
+                  if(!message.isDuplicate)
+                    SizedBox(height: 4.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.only(left: 12.0, top: 12.0, bottom: 12.0, right: 10.0),
+                        // margin: const EdgeInsets.only(bottom: 16.0, left: 8.0, right: 8.0),
+                        decoration: BoxDecoration(
+                          color: !isSender ? Colors.black : Colors.deepOrange,
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        child: SelectableText(
+                          message.content,
+                          style: TextStyle(color: Colors.white, fontSize: 15.0),
+                        ),
+                      ),
+                      SizedBox(width: 4.0),
+                      if(!isSameTime)
+                        Text(
+                          DateManage().datetimeFormat("time", message.timestamp),
+                          style: TextStyle(
+                              fontSize: 10.0
+                          ),
+                        ),
+                    ],
+                  )
+                ],
               ),
             ),
-            if(!isSender)
-              Text(
-                DateManage().datetimeFormat("time", messagesReverseList[index].timestamp),
-                style: TextStyle(
-                    fontSize: 10.0
-                ),
-              ),
+            SizedBox(width: 4.0),
           ],
-        )
+        ),
+        SizedBox(height: isBottom ? 8.0 : 4.0),
       ],
     );
   }

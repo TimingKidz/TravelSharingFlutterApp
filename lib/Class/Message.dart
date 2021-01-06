@@ -4,23 +4,26 @@ import 'package:travel_sharing/main.dart';
 import 'package:http/http.dart' as Http;
 
 class Message {
-
   String sender;
   String content;
   String timestamp;
   String name;
+  String imgpath;
+  bool isDuplicate;
 
-  Message({this.sender, this.content, this.timestamp, this.name});
+  Message({this.sender, this.content, this.timestamp, this.name, this.imgpath, this.isDuplicate});
 
   Message.fromJson(Map<String, dynamic> json) {
     sender = json['sender'];
     content = json['content'];
     timestamp = json['timestamp'];
     name = json['name'];
+    imgpath = json['imgpath'];
   }
 
   Future<List<Message>> getMessage(String tripid) async {
     try {
+      Message beforeTMP = new Message();
       Http.Response response = await httpClass.reqHttp("/api/routes/getMessage",{"tripid": tripid});
       if (response.statusCode == 400) {
         return Future.value(null);
@@ -34,6 +37,9 @@ class Message {
           List<Message> Message_List = List();
           data['messages'].forEach((x) {
             Message tmp = Message.fromJson(x);
+            if(beforeTMP.sender == tmp.sender) tmp.isDuplicate = true;
+            else tmp.isDuplicate = false;
+            beforeTMP = tmp;
             Message_List.add(tmp);
           });
           return Future.value(Message_List);
@@ -47,6 +53,7 @@ class Message {
 
   Future<List<Message>> getHistoryMessage(String tripid) async {
     try {
+      Message beforeTMP = new Message();
       Http.Response response = await httpClass.reqHttp("/api/routes/getHistoryMessage",{"tripid": tripid});
       if (response.statusCode == 400) {
         return Future.value(null);
@@ -60,6 +67,9 @@ class Message {
           List<Message> Message_List = List();
           data['messages'].forEach((x) {
             Message tmp = Message.fromJson(x);
+            if(beforeTMP.sender == tmp.sender) tmp.isDuplicate = true;
+            else tmp.isDuplicate = false;
+            beforeTMP = tmp;
             Message_List.add(tmp);
           });
           return Future.value(Message_List);

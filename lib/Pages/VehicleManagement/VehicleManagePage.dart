@@ -4,6 +4,7 @@ import 'package:http/http.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/Pages/VehicleManagement/VehicleAddForm.dart';
 import 'package:travel_sharing/buttons/VehicleCardTileFull.dart';
+import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 
@@ -51,14 +52,14 @@ class VehicleManagePageState extends State<VehicleManagePage> {
                         children: [
                           IconButton(
                             icon: Icon(Icons.arrow_back),
-                            tooltip: "back",
+                            tooltip: AppLocalizations.instance.text("back"),
                             iconSize: 26.0,
                             color: Colors.white,
                             onPressed: () => Navigator.of(context).pop(),
                           ),
                           SizedBox(width: 16.0),
                           Text(
-                            "Vehicle Management",
+                            AppLocalizations.instance.text("Vehicle Management"),
                             style: TextStyle(
                               // fontWeight: FontWeight.bold,
                               fontSize: 20.0,
@@ -70,7 +71,7 @@ class VehicleManagePageState extends State<VehicleManagePage> {
                       ),
                       IconButton(
                         icon: Icon(Icons.add),
-                        tooltip: "Add vehicle",
+                        tooltip: AppLocalizations.instance.text("AddVehicle"),
                         iconSize: 26.0,
                         color: Colors.white,
                         onPressed: () {
