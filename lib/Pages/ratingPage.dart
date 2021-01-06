@@ -35,7 +35,6 @@ class RatingPageState extends State<RatingPage> {
     super.dispose();
   }
 
-  // TODO: Complete Flow to BackEnd
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -16,7 +16,6 @@ class _ReviewViewState extends State<ReviewView> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _pageConfig();
   }
