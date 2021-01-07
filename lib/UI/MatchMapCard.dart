@@ -17,7 +17,6 @@ class MatchMapCard extends StatefulWidget {
   _MatchMapCardState createState() => _MatchMapCardState();
 }
 
-// TODO: Show correct map point
 class _MatchMapCardState extends State<MatchMapCard> {
   @override
   Widget build(BuildContext context) {

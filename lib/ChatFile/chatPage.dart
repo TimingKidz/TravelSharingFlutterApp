@@ -1,11 +1,13 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:travel_sharing/Class/Message.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:travel_sharing/Class/DateManage.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChatPage extends StatefulWidget {
   final String tripid;
@@ -182,9 +184,13 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
             isSameTime = false;
             isBottom = true;
           }else{
-            var presentTime = messagesReverseList[index].timestamp;
-            var pastTime = messagesReverseList[index-1].timestamp;
-            if(DateTime.parse(presentTime).minute == DateTime.parse(pastTime).minute){
+            DateTime pastTime = DateTime.parse(messagesReverseList[index-1].timestamp);
+            DateTime presentTime = DateTime.parse(messagesReverseList[index].timestamp);
+
+            pastTime = DateTime(pastTime.year, pastTime.month, pastTime.day, pastTime.hour, pastTime.minute);
+            presentTime = DateTime(presentTime.year, presentTime.month, presentTime.day, presentTime.hour, presentTime.minute);
+
+            if(pastTime.compareTo(presentTime) == 0){
               isSameTime = true;
             }else{
               isSameTime = false;
@@ -202,6 +208,51 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
 //    print(messages.first);
     messagesReverseList = messages.reversed.toList();
     setState((){});
+  }
+
+  List<TextSpan> telCheck(String content){
+    List<TextSpan> span = List();
+    List<String> allText = content.split(" ");
+    final phonePattern = r'^(\d{10})$';
+    final regEx = RegExp(phonePattern, multiLine: true);
+    for(String text in allText){
+      String obtainedPhone = regEx.stringMatch(text.toString());
+      if(obtainedPhone == null){
+        span.add(
+          TextSpan(
+            text: text,
+            style: TextStyle(
+              color: Colors.white
+            ),
+          )
+        );
+      }else{
+        span.add(
+          TextSpan(
+            text: obtainedPhone,
+            style: TextStyle(
+              color: Colors.blue,
+              decoration: TextDecoration.underline,
+            ),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () async {
+                final url = 'tel:$obtainedPhone';
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  throw 'Could not launch $url';
+                }
+              },
+          )
+        );
+      }
+      if(span.length != allText.length){
+        span.add(
+          TextSpan(text: " ")
+        );
+      }
+    }
+    return span;
   }
 
   Widget buildSingleMessage(Message message) {
@@ -230,10 +281,11 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
                     color: !isSender ? Colors.black : Colors.deepOrange,
                     borderRadius: BorderRadius.circular(20.0),
                   ),
-                  child: SelectableText(
-                    message.content,
-                    style: TextStyle(color: Colors.white, fontSize: 15.0),
-                  ),
+                  child: SelectableText.rich(
+                    TextSpan(
+                        children: telCheck(message.content)
+                    ),
+                  )
                 ),
               ),
               SizedBox(width: 8.0),
@@ -286,10 +338,11 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
                           color: !isSender ? Colors.black : Colors.deepOrange,
                           borderRadius: BorderRadius.circular(20.0),
                         ),
-                        child: SelectableText(
-                          message.content,
-                          style: TextStyle(color: Colors.white, fontSize: 15.0),
-                        ),
+                        child: SelectableText.rich(
+                          TextSpan(
+                            children: telCheck(message.content)
+                          ),
+                        )
                       ),
                       SizedBox(width: 4.0),
                       if(!isSameTime)

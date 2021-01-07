@@ -8,7 +8,6 @@ import 'package:travel_sharing/custom_color_scheme.dart';
 import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
 
-// TODO: Implement History Page
 class HistoryPage extends StatefulWidget {
   @override
   _HistoryPageState createState() => _HistoryPageState();
