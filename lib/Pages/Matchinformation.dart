@@ -483,7 +483,5 @@ class _Matchinformation extends State<Matchinformation> {
     );
     var cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 50);
     _mapController.moveCamera(cameraUpdate);
-
   }
-
 }

@@ -314,6 +314,7 @@ class _CreateRoutestate extends State<CreateRoute> {
     if( isFind_Direction ){ // find new direction
       PolylinePoints polylinePoints = PolylinePoints();
       PolylineResult result = await polylinePoints.getRouteBetweenCoordinates("AIzaSyBQCf89JOkrq2ECa6Ko8LBQaMO8A7rJt9Q", origin,destination);
+//      PolylineWayPoint(location: )
       PointLatLng Ll = result.points.first;
       temp.add(LatLng(Ll.latitude,Ll.longitude));
       result.points.forEach((step) {
@@ -322,7 +323,7 @@ class _CreateRoutestate extends State<CreateRoute> {
     }
 
     // create line of routes on map
-    var line = Polyline(
+    Polyline line = Polyline(
       patterns: [PatternItem.dot],
       points: routes,
       geodesic: true,

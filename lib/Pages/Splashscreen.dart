@@ -80,6 +80,7 @@ class SplashscreenState extends State<Splashscreen> {
     socket = IO.io(httpClass.API_IP,
         IO.OptionBuilder()
             .setTransports(['websocket']) // for Flutter or Dart VM
+            .enableReconnection()
             .disableAutoConnect()
             .setExtraHeaders({'uid': currentUser.uid,'auth' : httpClass.header['auth']}) // optional // disable auto-connection
             .build());

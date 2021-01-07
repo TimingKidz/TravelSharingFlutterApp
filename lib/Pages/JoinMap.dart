@@ -11,7 +11,6 @@ import "package:google_maps_webservice/places.dart" as p;
 import 'package:travel_sharing/Class/NearbyPlace.dart';
 import 'package:travel_sharing/Pages/LocationSearchBar.dart';
 import 'package:travel_sharing/Pages/InfoFill.dart';
-import 'package:travel_sharing/custom_color_scheme.dart';
 import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
 
@@ -160,11 +159,9 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
                                                     _mapController.animateCamera(CameraUpdate.newCameraPosition(
                                                         CameraPosition(target: current_Location, zoom: 18)));
                                                   }
-                                                  _createMarkers(Marker_Location);
                                                 }
                                               }
                                               print(isChooseOnMap);
-                                              _createMarkers(Marker_Location);
                                               setState(() { });
                                             });
                                           },
@@ -209,13 +206,11 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
                                                 if ( result is bool ) {
                                                   if (result) {
                                                     isChooseOnMap = true;
-//                                                    setState(() { });
                                                   }else {
                                                     Src_OR_Dst(current_Location, "Current Location");
                                                     _mapController.animateCamera(CameraUpdate.newCameraPosition(
                                                         CameraPosition(target: current_Location, zoom: 18)));
                                                   }
-                                                  _createMarkers(Marker_Location);
                                                 }
                                               }
                                               setState(() { });
@@ -332,14 +327,10 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
     print(i++);
     if (isChooseOnMap){
       if( isSet_Marker && Marker_Location != null){
-//        p.PlacesSearchResult tmp = null;
         NearbyPlace place = null;
         String name = "";
-        double min = double.maxFinite; // max distance (metre)
-        // search for nearby place in 10 metre
+        double min = double.maxFinite;
         List<NearbyPlace> tmp = await NearbyPlace().getNearbyPlace(Marker_Location.latitude, Marker_Location.longitude);
-//        p.PlacesSearchResponse response = await _places.searchNearbyWithRadius(new p.Location(Marker_Location.latitude,Marker_Location.longitude), 10);
-//        print(response.results.first.name);
         tmp.forEach((element) {
           l.LatLng NearPlace_Loc = new l.LatLng(element.location.latitude,element.location.longitude);
           l.LatLng Marker_Loc = new l.LatLng(Marker_Location.latitude, Marker_Location.longitude);
@@ -352,9 +343,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
         });
         if(place!=null) {
           Marker_Location = place.location;
-          setState(() { });
         }
-//        // check state function
         Src_OR_Dst(Marker_Location,name);
       }
     }
@@ -414,9 +403,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
       position: x,
       draggable: false,
     );
-//    setState(() {
       _centerMarkers[markerId] = marker;
-//    });
   }
 
   // set Map controller

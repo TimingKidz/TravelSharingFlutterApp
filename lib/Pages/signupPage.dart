@@ -188,6 +188,7 @@ class SignUpPageState extends State<SignUpPage> {
     socket = IO.io(httpClass.API_IP,
         IO.OptionBuilder()
             .setTransports(['websocket']) // for Flutter or Dart VM
+            .enableReconnection()
             .disableAutoConnect()
             .setExtraHeaders({'uid': currentUser.uid,'auth' : httpClass.header['auth']})
             .build());
