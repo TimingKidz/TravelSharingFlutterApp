@@ -206,7 +206,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
   getData() async {
     messages = widget.isHistory ? await Message().getHistoryMessage(widget.tripid) : await Message().getMessage(widget.tripid);
 //    print(messages.first);
-    messagesReverseList = messages.reversed.toList();
+    if(messages != null)
+      messagesReverseList = messages.reversed.toList();
     setState((){});
   }
 

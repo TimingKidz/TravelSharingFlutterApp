@@ -47,11 +47,22 @@ class _ReqListstate extends State<ReqList> {
     notificationBarIconDark();
     return Scaffold(
         body: SafeArea(
-          child: Center(
-            child: SizedBox(
-                height: double.infinity, // card height
-                child: _widgetOptions()
-            ),
+          child: Stack(
+            children: [
+              Center(
+                child: SizedBox(
+                    height: double.infinity, // card height
+                    child: _widgetOptions()
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 4.0, top: 4.0, bottom: 16.0, right: 4.0),
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              )
+            ],
           ),
         )
     );
@@ -76,7 +87,6 @@ class _ReqListstate extends State<ReqList> {
       itemBuilder: (_, i) {
         return Card(
           margin: EdgeInsets.only(top: 64.0, bottom: 64.0, right: 8.0, left: 8.0),
-          elevation: 2,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           child: cardDetails(_ReqList[i]),
         );

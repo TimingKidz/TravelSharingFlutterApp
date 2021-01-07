@@ -15,6 +15,7 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   List<Travel_Info> historyList = List();
+  List<Travel_Info> historyReverseList = List();
 
   @override
   void initState() {
@@ -29,7 +30,7 @@ class _HistoryPageState extends State<HistoryPage> {
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(top: 80),
-              child: historyList.isNotEmpty ? _buildListView() : Center(
+              child: historyReverseList.isNotEmpty ? _buildListView() : Center(
                 child: Text("Nothing in your history yet."),
               ),
             ),
@@ -79,9 +80,9 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget _buildListView() {
     return ListView.builder(
         physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-        itemCount: historyList.length,
+        itemCount: historyReverseList.length,
         itemBuilder: (context, i) {
-          return _buildRow(historyList[i]);
+          return _buildRow(historyReverseList[i]);
         }
     );
   }
@@ -119,6 +120,7 @@ class _HistoryPageState extends State<HistoryPage> {
     print("Get History List");
     try{
       historyList =  await Routes().getHistory(currentUser.uid) ?? [];
+      historyReverseList = historyList.reversed.toList();
       setState(() {});
     }catch(error){
       print("$error history");

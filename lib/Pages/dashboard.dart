@@ -171,7 +171,7 @@ class _Dashboard extends State<Dashboard> {
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(30.0),
                     bottomRight: Radius.circular(30.0)
-                )
+                ),
             ),
             child: Container(
                 padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 20.0, top: 8.0),
@@ -180,13 +180,18 @@ class _Dashboard extends State<Dashboard> {
                     children: <Widget>[
                       Expanded(
                         child: RaisedButton(
+                          elevation: 0.0,
                           highlightElevation: 0.0,
                           padding: EdgeInsets.all(16.0),
-                          color: isFirstPage ? Theme.of(context).colorScheme.orange : Colors.white,
+                          color: isFirstPage ? Colors.white : Colors.transparent,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
+                            side: BorderSide(
+                              color: !isFirstPage ? Colors.white : Colors.transparent,
+                              width: 1.0,
+                            ),
                           ),
-                          child: Text(AppLocalizations.instance.text("PaiDuay"), style: TextStyle(color: isFirstPage ? Colors.white : Colors.black)),
+                          child: Text(AppLocalizations.instance.text("PaiDuay"), style: TextStyle(color: !isFirstPage ? Colors.white : Colors.black)),
                           onPressed: () {
                             setState(() {
                               isFirstPage = true;
@@ -197,13 +202,18 @@ class _Dashboard extends State<Dashboard> {
                       SizedBox(width: 16.0),
                       Expanded(
                         child: RaisedButton(
+                          elevation: 0.0,
                           highlightElevation: 0.0,
                           padding: EdgeInsets.all(16.0),
-                          color: isFirstPage ? Colors.white : Theme.of(context).colorScheme.orange,
+                          color: isFirstPage ? Colors.transparent : Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
+                            side: BorderSide(
+                              color: isFirstPage ? Colors.white : Colors.transparent,
+                              width: 1.0,
+                            ),
                           ),
-                          child: Text(AppLocalizations.instance.text("Chuan"), style: TextStyle(color: isFirstPage ? Colors.black : Colors.white)),
+                          child: Text(AppLocalizations.instance.text("Chuan"), style: TextStyle(color: isFirstPage ? Colors.white : Colors.black)),
                           onPressed: () {
                             setState(() {
                               isFirstPage = false;
