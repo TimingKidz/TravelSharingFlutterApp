@@ -78,7 +78,7 @@ class Routes {
     data['id'] = this.id;
     data['match'] = this.match;
     data['role'] = this.role;
-    data['vehicle'] = this.vehicle.toJson();
+    data['vehicle'] = this.vehicle == null ? null : this.vehicle.toJson();
     data['tag'] = this.tag;
     return data;
   }
@@ -102,7 +102,7 @@ class Routes {
 
   // send request to selected routes ( data is current user routes , data0 is who current user select routes )
   Future<bool> Request(Match_Info data , Travel_Info data0)async {
-    try{
+    // try{
       Map<String,dynamic> temp = {
         'detail' : data0.routes.toJson(),
         'to_id' : data.routes.uid,
@@ -116,9 +116,9 @@ class Routes {
         print("Req Succesful : ${response.body}");
         return Future.value(true);
       }
-    }catch(error){
-      throw("can't connect");
-    }
+    // }catch(error){
+    //   throw("can't connect");
+    // }
   }
 
   Future<List<Travel_Info>> getHistory(String userID) async {

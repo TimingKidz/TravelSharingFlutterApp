@@ -22,8 +22,7 @@ class CardTextFieldState extends State<CardTextField> {
   @override
   Widget build(BuildContext context) {
     return Card(
-        margin: EdgeInsets.all(8.0),
-        elevation: 2.0,
+        margin: EdgeInsets.all(0.0),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0)
         ),
@@ -61,6 +60,7 @@ class CardTextFieldState extends State<CardTextField> {
               decoration: InputDecoration(
                 border: InputBorder.none,
                 counterText: "",
+                hintText: "...",
                 contentPadding: EdgeInsets.symmetric(horizontal: 15),
                 errorStyle: TextStyle(height: 0),
 //                hintText: 'Source',

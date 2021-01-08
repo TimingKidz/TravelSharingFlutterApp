@@ -362,7 +362,7 @@ class _Matchinformation extends State<Matchinformation> {
     tmp['subuser'] = subuser;
     await User().endTrip(tmp).then((value){
         if(value) Navigator.of(context).pop();
-        else  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not End Trip.")));
+        else Scaffold.of(context).showSnackBar(SnackBar(content: Text("Can not End Trip.")));
     });
   }
 

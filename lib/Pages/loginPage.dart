@@ -81,6 +81,9 @@ class LoginPageState extends State<LoginPage> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return Dialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0)
+          ),
           child: Container(
             margin: EdgeInsets.all(16.0),
             child: Row(

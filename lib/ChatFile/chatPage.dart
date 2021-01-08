@@ -410,7 +410,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
                   debugPrint('Send');
                   await Message().sendMessage(widget.tripid,textController.text, currentUser.uid, currentUser.name,widget.currentTripid, currentUser.imgpath).then((value) {
                     if(!value){
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not send the message.")));
+                      Scaffold.of(context).showSnackBar(SnackBar(content: Text("Can not send the message.")));
                     }else{
                       textController.clear();
                     }

@@ -42,8 +42,7 @@ class CardDatePickerState extends State<CardDatePicker> {
         // DatePickerUI
         Expanded(
           child: Card(
-              margin: EdgeInsets.all(8.0),
-              elevation: 2.0,
+              margin: EdgeInsets.all(0.0),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0)
               ),
@@ -81,8 +80,7 @@ class CardDatePickerState extends State<CardDatePicker> {
         if(widget.isJustDate != null ? !widget.isJustDate : true)
         Expanded(
           child: Card(
-              margin: EdgeInsets.all(8.0),
-              elevation: 2.0,
+              margin: EdgeInsets.all(0.0),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0)
               ),

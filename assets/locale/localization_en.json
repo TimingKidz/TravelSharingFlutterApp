@@ -28,5 +28,6 @@
   "model": "Model",
   "color": "Color",
   "default": "Default",
-  "setDefault": "Set this to default vehicle"
+  "setDefault": "Set this to default vehicle",
+  "SignUpTitle": "Sign Up to TActivity"
 }

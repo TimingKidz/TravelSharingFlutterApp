@@ -19,8 +19,8 @@ class ReqList extends StatefulWidget {
 }
 
 class _ReqListstate extends State<ReqList> {
-  int _index = 0;
   List<Req_Info> _ReqList = List();
+  int _index = 1;
 
   @override
   void setState(fn) {
@@ -61,7 +61,17 @@ class _ReqListstate extends State<ReqList> {
                   icon: Icon(Icons.arrow_back),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
-              )
+              ),
+              if(_ReqList.isNotEmpty)
+                Positioned.fill(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: 32.0),
+                      child: Text("$_index/${_ReqList.length}"),
+                    ),
+                  ),
+                )
             ],
           ),
         )
@@ -83,7 +93,7 @@ class _ReqListstate extends State<ReqList> {
       itemCount: _ReqList.length,
       controller: PageController(viewportFraction: 0.85),
       physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-      onPageChanged: (int index) => setState(() => _index = index),
+      onPageChanged: (int index) => setState(() => _index = index + 1),
       itemBuilder: (_, i) {
         return Card(
           margin: EdgeInsets.only(top: 64.0, bottom: 64.0, right: 8.0, left: 8.0),

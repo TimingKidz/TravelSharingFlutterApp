@@ -5,13 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:google_sign_in/widgets.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/homeNavigation.dart';
+import 'package:travel_sharing/Pages/loginPage.dart';
 import 'package:travel_sharing/buttons/CardDropdown.dart';
 import 'package:travel_sharing/buttons/borderTextField.dart';
 import 'package:travel_sharing/buttons/cardDatePicker.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
+import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -59,108 +62,164 @@ class SignUpPageState extends State<SignUpPage> {
 
   @override
   void initState() {
+    facultyList.sort();
     userData.gender = genderList.first;
     userData.faculty = facultyList.first;
-    facultyList.sort();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Text('Sign Up to Travel Sharing'),
-        ),
-        body: Stack(
-          children: <Widget>[
-            Container(
-              alignment: Alignment.center,
-              // padding: EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                      child: Form(
-                        key: _formKey,
-                        child: ListView(
-                          physics: BouncingScrollPhysics(),
-                          children: fieldList(),
+      body: Stack(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.3),
+            child: Form(
+              key: _formKey,
+              child: ListView(
+                padding: EdgeInsets.all(8.0),
+                physics: BouncingScrollPhysics(),
+                children: fieldList(),
+              ),
+            )
+          ),
+          // AppBar
+          Wrap(
+            children: <Widget>[
+              Card(
+                elevation: 2.0,
+                margin: EdgeInsets.all(0.0),
+                color: Theme.of(context).primaryColor,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(30.0),
+                        bottomRight: Radius.circular(30.0)
+                    )
+                ),
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.only(left: 4.0, top: 4.0, bottom: 16.0, right: 4.0),
+                  child: SafeArea(
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.arrow_back),
+                              tooltip: AppLocalizations.instance.text("back"),
+                              iconSize: 26.0,
+                              color: Colors.white,
+                              onPressed: () async {
+                                await googleSignIn.disconnect();
+                                Navigator.pushReplacement(context, MaterialPageRoute(
+                                    builder: (context) => LoginPage()));
+                              },
+                            ),
+                            SizedBox(width: 16.0),
+                            Text(
+                              AppLocalizations.instance.text("SignUpTitle"),
+                              style: TextStyle(
+                                // fontWeight: FontWeight.bold,
+                                fontSize: 20.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
                         ),
-                      )
-                  )
-                ],
-              ),
-            ),
-            Container(
-              alignment: Alignment.bottomRight,
-              padding: EdgeInsets.all(24.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  FloatingActionButton(
-                      child: Icon(Icons.arrow_forward_ios),
-                      onPressed: (){
-                        if(_formKey.currentState.validate()) _Nextpage();
-                      }
+                        SizedBox(height: 16.0),
+                        CircleAvatar(
+                            radius: 64,
+                            child: Material(
+                              shape: CircleBorder(),
+                              color: Colors.grey,
+                              child: InkWell(
+                                onTap: (){
+                                  getImage();
+                                },
+                                customBorder: CircleBorder(),
+                                child: ClipOval(
+                                    child: selectedImage != null ? Image.file(selectedImage) : Container(
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      child: Icon(Icons.add_a_photo),
+                                    )
+                                ),
+                              ),
+                            )
+                        ),
+                      ],
+                    ),
                   ),
-                ],
+                ),
+              ),
+            ],
+          ),
+          Positioned.fill(
+            bottom: 16,
+            right: 16,
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: FloatingActionButton.extended(
+                  elevation: 2,
+                  icon: Icon(Icons.check),
+                  label: Text("Finish"),
+                  onPressed: (){
+                    if(_formKey.currentState.validate()) _Nextpage();
+                  }
               ),
             ),
-          ],
-        )
+          )
+        ],
+      ),
     );
   }
 
   List<Widget> fieldList(){
     // TODO: Add missing field in User class
     return [
-      SizedBox(height: 8.0),
-      CircleAvatar(
-        radius: 64,
-        // backgroundColor: Colors.transparent,
-        child: InkWell(
-          onTap: (){
-            getImage();
-          },
-          child: ClipOval(
-            child: selectedImage != null ? Image.file(selectedImage): Container()
-          ),
-        )
-      ),
-      SizedBox(height: 8.0),
       CardTextField(
         notNull: true,
         initValue: googleUser.displayName,
         labelText: "Full Name",
         onChanged: (data) => userData.name = data,
       ),
+      SizedBox(height: 8.0),
       CardTextField(
         notNull: true,
-        labelText: "Username",
+        labelText: "Student Email",
         onChanged: (data) => userData.username = data,
       ),
-      CardDropdown(
-        listItems: genderList,
-        labelText: "Gender",
-        onChanged: (data) => userData.gender = data,
-      ),
-      CardDatePicker(
-        labelText: "Birthday",
-        isJustDate: true,
-        isBirthday: true,
-        onDatePick: (date){
+      SizedBox(height: 8.0),
+      Row(
+        children: [
+          Expanded(
+            child: CardDropdown(
+              listItems: genderList,
+              labelText: "Gender",
+              onChanged: (data) => userData.gender = data,
+            ),
+          ),
+          SizedBox(width: 8.0),
+          Expanded(
+            child: CardDatePicker(
+              labelText: "Birthday",
+              isJustDate: true,
+              isBirthday: true,
+              onDatePick: (date){
 
-        },
+              },
+            ),
+          ),
+        ],
       ),
+      SizedBox(height: 8.0),
       CardDropdown(
         listItems: facultyList,
         labelText: "Faculty",
         onChanged: (data) => userData.faculty = data,
       ),
+      SizedBox(height: 8.0),
       CardTextField(
         notNull: true,
         labelText: "Phone",
@@ -170,20 +229,39 @@ class SignUpPageState extends State<SignUpPage> {
         ],
         type: TextInputType.phone,
         onChanged: (val) => print(val),
-      )
+      ),
+      SizedBox(height: 72)
     ];
   }
 
+  PickedFile image;
+
   Future getImage() async {
-    PickedFile image = await ImagePicker().getImage(source: ImageSource.gallery);
-    setState(() {
-      if (image != null) {
-        selectedImage = File(image.path);
-        print("selected img");
-      } else {
-        print('No image selected.');
-      }
-    });
+    image = await ImagePicker().getImage(source: ImageSource.gallery);
+    await _cropImage();
+  }
+
+  Future<Null> _cropImage() async {
+    File croppedFile = await ImageCropper.cropImage(
+        sourcePath: image.path,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: 'Crop Image',
+            toolbarColor: Theme.of(context).primaryColor,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: true),
+        iosUiSettings: IOSUiSettings(
+            title: 'Crop Image',
+            aspectRatioLockEnabled: true,
+            aspectRatioPickerButtonHidden: true,
+            rectX: 1,
+            rectY: 1
+        ));
+    if (croppedFile != null) {
+      selectedImage = croppedFile;
+      setState(() {});
+    }
   }
 
   initsocket(){

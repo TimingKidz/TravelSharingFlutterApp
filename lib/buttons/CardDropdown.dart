@@ -29,8 +29,7 @@ class _CardDropdownState extends State<CardDropdown> {
   Widget build(BuildContext context) {
     return Card(
       key: _key,
-        margin: EdgeInsets.all(8.0),
-        elevation: 2.0,
+        margin: EdgeInsets.all(0.0),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0)
         ),

@@ -6,6 +6,9 @@ void normalDialog(BuildContext context, String title, Widget content, List<Widge
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0)
+        ),
         title: Text(title),
         content: content,
         actions: actions,
