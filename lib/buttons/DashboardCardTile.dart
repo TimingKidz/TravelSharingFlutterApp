@@ -103,7 +103,7 @@ class DashboardCardTileState extends State<DashboardCardTile> {
                                   Text(
                                     widget.data.role == "1"
                                         ? '${widget.data.amount} คน'
-                                        : '${int.parse(widget.data.amount) - widget.data.match.length} คน',
+                                        : '${widget.data.left} คน',
                                   )
                                 ],
                               ),
