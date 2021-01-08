@@ -66,6 +66,7 @@ class Routes {
     print(json["vehicle"]['id']);
     vehicle = json["vehicle"]["id"] is String ? null : Vehicle.fromJson(json["vehicle"]['id']);
     tag = json['tag'];
+    left = json['left'];
   }
 
   Map<String, dynamic> toJson() {
