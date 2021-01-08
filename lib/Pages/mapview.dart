@@ -12,15 +12,15 @@ import 'package:travel_sharing/Pages/InfoFill.dart';
 import 'package:travel_sharing/Pages/dashboard.dart';
 import 'package:travel_sharing/main.dart';
 
-class mapview extends StatefulWidget {
-  final Routes from;
-  final Routes to;
-  const mapview({Key key, this.from, this.to}) : super(key: key);
+class MapView extends StatefulWidget {
+  final Routes paiDuay;
+  final Routes chuan;
+  const MapView({Key key, this.paiDuay, this.chuan}) : super(key: key);
   @override
-  _mapview createState() => _mapview();
+  _MapView createState() => _MapView();
 }
 
-class _mapview extends State<mapview> {
+class _MapView extends State<MapView> {
   final places = new p.GoogleMapsPlaces(apiKey: api_key);
   final l.Distance distance = new l.Distance();
   p.GoogleMapsPlaces _places = p.GoogleMapsPlaces(apiKey: api_key);
@@ -60,7 +60,7 @@ class _mapview extends State<mapview> {
   findDirections(bool isFind_Direction ) async {
     // create line of routes on map
     var line = Polyline(
-      points: widget.to.routes,
+      points: widget.chuan.routes,
       geodesic: true,
       polylineId: PolylineId("mejor ruta"),
       color: Colors.blue,
@@ -75,9 +75,6 @@ class _mapview extends State<mapview> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Create your route.'),
-      ),
       body: Stack(
         children: <Widget>[
           GoogleMap(
@@ -93,7 +90,15 @@ class _mapview extends State<mapview> {
             myLocationButtonEnabled: false,
 //            onCameraMove: center,
           ),
-
+          SafeArea(
+            child: Padding(
+              padding: EdgeInsets.only(left: 4.0, top: 4.0, bottom: 16.0, right: 4.0),
+              child: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -117,14 +122,14 @@ class _mapview extends State<mapview> {
     Markers.add(
       Marker(
         markerId: MarkerId("1"),
-        position: widget.from.routes.first,
+        position: widget.paiDuay.routes.first,
         infoWindow: InfoWindow(title: "Roca 123"),
       ),
     );
     Markers.add(
       Marker(
         markerId: MarkerId("2"),
-        position: widget.from.routes.last,
+        position: widget.paiDuay.routes.last,
         infoWindow: InfoWindow(title: "Roca 123"),
       ),
     );
@@ -140,7 +145,7 @@ class _mapview extends State<mapview> {
       await _mapController.getVisibleRegion();
       await findDirections(isFind_Direction);
 
-      Routes temp = widget.from;
+      Routes temp = widget.paiDuay;
       var left = min(temp.routes.first.latitude, temp.routes.last.latitude);
       var right = max(temp.routes.first.latitude, temp.routes.last.latitude);
       var top = max(temp.routes.first.longitude, temp.routes.last.longitude);
@@ -157,7 +162,7 @@ class _mapview extends State<mapview> {
         northeast: LatLng(right, top),
       );
       var cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 50);
-      _mapController.animateCamera(cameraUpdate);
+      _mapController.moveCamera(cameraUpdate);
 
   }
 }

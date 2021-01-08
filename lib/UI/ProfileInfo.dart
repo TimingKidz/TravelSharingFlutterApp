@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:travel_sharing/Class/User.dart';
+import 'package:travel_sharing/Pages/ReviewView.dart';
 import 'package:travel_sharing/UI/PlainBGInfo.dart';
+import 'package:travel_sharing/buttons/VehicleCardTileMin.dart';
 import 'package:travel_sharing/main.dart';
 
 class ProfileInfo extends StatelessWidget {
@@ -58,7 +61,59 @@ class ProfileInfo extends StatelessWidget {
               fontSize: 18.0
             ),
           ),
+          SizedBox(height: 8.0),
+          InkWell(
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => ReviewView()));
+            },
+            borderRadius: BorderRadius.circular(20.0),
+            child: Padding(
+              padding: EdgeInsets.all(4.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  RatingBarIndicator(
+                    rating: 4.2,
+                    itemBuilder: (context, index) => Icon(
+                      Icons.star,
+                      color: Colors.amber,
+                    ),
+                    itemCount: 5,
+                    itemSize: 24.0,
+                    direction: Axis.horizontal,
+                  ),
+                  SizedBox(width: 4.0),
+                  Text("4.2", style: TextStyle(fontSize: 16.0)),
+                  SizedBox(width: 4.0),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 2.0),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.0),
+                        border: Border.all(color: Colors.black, width: 0.5)
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.people, size: 14.0),
+                        SizedBox(width: 2.0),
+                        Text("5K", style: TextStyle(fontSize: 14.0)),
+                        SizedBox(width: 1.0),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 4.0),
+                ],
+              ),
+            ),
+          ),
           SizedBox(height: 28.0),
+          if(data.vehicle.isNotEmpty)
+            VehicleCardTileMin(
+              data: data.vehicle.first,
+            ),
+          if(data.vehicle.isNotEmpty)
+            SizedBox(height: 16.0),
           PlainBGInfo(label: "Email", info: data.email),
           SizedBox(height: 16.0),
           PlainBGInfo(label: "Faculty", info: data.faculty),

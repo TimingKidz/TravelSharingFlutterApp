@@ -82,7 +82,7 @@ class _ReqListstate extends State<ReqList> {
     return PageView.builder(
       itemCount: _ReqList.length,
       controller: PageController(viewportFraction: 0.85),
-      physics: BouncingScrollPhysics(),
+      physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
       onPageChanged: (int index) => setState(() => _index = index),
       itemBuilder: (_, i) {
         return Card(
@@ -100,6 +100,7 @@ class _ReqListstate extends State<ReqList> {
     return ReqMapCard(
       url: MapStaticRequest().getMapUrl(widget.data.routes, data.routes),
       data: data,
+      userData: widget.data,
       onAcceptPressed: () => _onAcceptPressed(data),
       onDeclinePressed: () => _onDeclinePressed(data),
     );

@@ -152,7 +152,7 @@ class MyApp extends StatelessWidget {
           '/MatchInfo' : (context) => Matchinformation(),
           '/Account' : (context) => Account(),
           '/inviteMap' : (context) => CreateRoute(),
-          '/Map' : (context) => mapview(),
+          '/Map' : (context) => MapView(),
           '/LocationSerch' : (context) => LocationSearch(),
           '/MatchList' : (context) => MatchList(),
           '/NotificationPage' : (context) => NotificationsPage(),

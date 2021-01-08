@@ -2,16 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_directions_api/google_directions_api.dart';
 import 'package:intl/intl.dart';
+import 'package:travel_sharing/Class/DateManage.dart';
 
 class CardDatePicker extends StatefulWidget {
   final String labelText;
   final Function onDatePick;
   final bool isJustDate;
+  final bool isBirthday;
 
   CardDatePicker({
     this.labelText,
     this.onDatePick,
-    this.isJustDate
+    this.isJustDate, this.isBirthday
   });
 
   @override
@@ -23,11 +25,13 @@ class CardDatePickerState extends State<CardDatePicker> {
   DateTime updatedDate = DateTime.now();
   var dateText = TextEditingController();
   var timeText = TextEditingController();
+  bool isBirthday;
 
   @override
   void initState() {
     dateText.text = dateShow();
     timeText.text = '${DateFormat('HH:mm').format(updatedDate)}';
+    isBirthday = widget.isBirthday == null ? false : widget.isBirthday;
     super.initState();
   }
 
@@ -131,7 +135,7 @@ class CardDatePickerState extends State<CardDatePicker> {
 //      textShow = 'Tomorrow';
       textShow = 'พรุ่งนี้';
     }else{
-      textShow = '${DateFormat('d MMM yyyy').format(updatedDate)}';
+      textShow = DateManage().datetimeFormat("date", updatedDate.toString());
     }
     return textShow;
   }
@@ -145,8 +149,8 @@ class CardDatePickerState extends State<CardDatePicker> {
     return showDatePicker(
       context: context,
       initialDate: updatedDate,
-      firstDate: DateTime.now(),
-      lastDate: DateTime(DateTime.now().year + 1),
+      firstDate: isBirthday ? DateTime(DateTime.now().year - 30) : DateTime.now(),
+      lastDate: isBirthday ? DateTime.now() : DateTime(DateTime.now().year + 1),
       builder: (BuildContext context, Widget child) {
         return Theme(
           data: ThemeData(primarySwatch: Theme.of(context).colorScheme.primary),

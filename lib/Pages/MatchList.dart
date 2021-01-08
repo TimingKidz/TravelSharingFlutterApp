@@ -29,6 +29,7 @@ class _MatchListstate extends State<MatchList> {
   List<Match_Info> _MatchList = List();
   bool isFirstPage = true;
   List<String> isreq = List();
+  int _index = 1;
 
   @override
   void setState(fn) {
@@ -101,6 +102,16 @@ class _MatchListstate extends State<MatchList> {
                   icon: Icon(Icons.arrow_back),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
+              ),
+              if(_MatchList.isNotEmpty)
+              Positioned.fill(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 32.0),
+                    child: Text("$_index/${_MatchList.length}"),
+                  ),
+                ),
               )
             ],
           ),
@@ -133,23 +144,13 @@ class _MatchListstate extends State<MatchList> {
     return PageView.builder(
       itemCount: _MatchList.length,
       controller: PageController(viewportFraction: 0.85),
-      physics: BouncingScrollPhysics(),
-      // onPageChanged: (int index) => setState(() => _index = index),
+      physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+      onPageChanged: (int index) => setState(() => _index = index + 1),
       itemBuilder: (_, i) {
-        return Column(
-          children: [
-            Expanded(
-              child: Card(
-                margin: EdgeInsets.only(top: 64.0, bottom: 16.0, right: 8.0, left: 8.0),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                child: cardDetails(_MatchList[i]),
-              ),
-            ),
-            Text(
-              "${i+1}/${_MatchList.length}"
-            ),
-            SizedBox(height: 40.0)
-          ],
+        return Card(
+          margin: EdgeInsets.only(top: 64.0, bottom: 64.0, right: 8.0, left: 8.0),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: cardDetails(_MatchList[i]),
         );
       },
     );
@@ -161,6 +162,7 @@ class _MatchListstate extends State<MatchList> {
     return MatchMapCard(
       url : MapStaticRequest().getMapUrl(data.routes, widget.data.routes),
       data: data,
+      userData: widget.data,
       isreq: isreq.contains(data.routes.uid),
       onButtonPressed: () => _onButtonPressed(data),
     );
@@ -173,7 +175,7 @@ class _MatchListstate extends State<MatchList> {
 
   _onCardPressed(Match_Info data) {
     Navigator.push(context, MaterialPageRoute(
-        builder: (context) => mapview(from:widget.data.routes,to:data.routes)));
+        builder: (context) => MapView(paiDuay:widget.data.routes,chuan:data.routes)));
   }
 
   _onButtonPressed(Match_Info data) async {

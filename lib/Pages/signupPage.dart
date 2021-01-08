@@ -61,6 +61,7 @@ class SignUpPageState extends State<SignUpPage> {
   void initState() {
     userData.gender = genderList.first;
     userData.faculty = facultyList.first;
+    facultyList.sort();
     super.initState();
   }
 
@@ -150,6 +151,7 @@ class SignUpPageState extends State<SignUpPage> {
       CardDatePicker(
         labelText: "Birthday",
         isJustDate: true,
+        isBirthday: true,
         onDatePick: (date){
 
         },
