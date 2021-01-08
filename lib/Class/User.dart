@@ -5,9 +5,11 @@ import 'package:travel_sharing/Class/Status.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:image/image.dart' as img;
+import 'package:travel_sharing/Class/Review.dart';
 
 class User {
   String name;
+  String username;
   String email;
   String id;
   String uid;
@@ -17,11 +19,14 @@ class User {
   String token;
   Status status;
   String imgpath;
+  ReviewSummary reviewSummary;
 
-  User({this.name, this.email,this.id,this.uid,this.faculty,this.gender,this.vehicle,this.token,this.status,this.imgpath});
+
+  User({this.name,this.username, this.email,this.id,this.uid,this.faculty,this.gender,this.vehicle,this.token,this.status,this.imgpath,this.reviewSummary});
 
   User.fromJson(Map<String, dynamic> json) {
     name = json['name'];
+    username = json['username'];
     email = json['email'];
     id = json['id'];
     uid = json['_id'];
@@ -39,11 +44,13 @@ class User {
       status = Status.fromJson(json['status']);
     }
     imgpath = json['imgpath'];
+    reviewSummary = ReviewSummary.fromJson(json['Review']);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['name'] = this.name;
+    data['username'] =this.username;
     data['email'] = this.email;
     data['id']= this.id;
     data['_id'] = this.uid;

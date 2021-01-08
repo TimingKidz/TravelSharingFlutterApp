@@ -383,7 +383,6 @@ class _CreateRoutestate extends State<CreateRoute> {
     ));
 
 
-
     // find camera bound for 4 angle
     var left = min(routes.first.latitude, routes.last.latitude);
     var right = max(routes.first.latitude, routes.last.latitude);

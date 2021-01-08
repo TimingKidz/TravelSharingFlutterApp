@@ -35,6 +35,7 @@ class _Matchinformation extends State<Matchinformation> {
   List<LatLng> temp = List();
   Set<Marker> Markers = Set();
   LatLngBounds bounds;
+  bool isEndTrip = false;
 
   @override
   void setState(fn) {
@@ -44,14 +45,14 @@ class _Matchinformation extends State<Matchinformation> {
   }
 
   Future<void> getData(bool isNeed2Update) async {
-    try{
+//    try{
       if(!isHistory) tripDetails =  await TripDetails().getDetails(widget.uid,widget.data.uid,isNeed2Update);
       else tripDetails =  await TripDetails().getHistory(widget.uid);
-      print(tripDetails.hostUser.vehicle.first.toJson());
+//      print(tripDetails.hostUser.vehicle.first.toJson());
       setState(() {});
-    }catch(error){
-      print("$error tttashgahsdajsdadkajdak");
-    }
+//    }catch(error){
+//      print("$error tttashgahsdajsdadkajdak");
+//    }
   }
 
   @override
@@ -101,135 +102,141 @@ class _Matchinformation extends State<Matchinformation> {
 
   @override
   Widget build(BuildContext context) {
-    if(tripDetails == null)
-      return Scaffold(
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).pop();
+        return false;
+      },
+      child: tripDetails == null
+        ? Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
         ),
-      );
-    return Scaffold(
-        body: Stack(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(top: 210, left: 8.0, right: 8.0),
-              child: Column(
-                children: listView(),
+      )
+      : Scaffold(
+          body: Stack(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(top: 210, left: 8.0, right: 8.0),
+                child: Column(
+                  children: listView(),
+                ),
               ),
-            ),
-            Card(
-              elevation: 2.0,
-              margin: EdgeInsets.all(0.0),
-              color: Theme.of(context).colorScheme.darkBlue,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(30.0),
-                      bottomRight: Radius.circular(30.0)
-                  )
-              ),
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.only(left: 4.0, top: 4.0, bottom: 8.0, right: 4.0),
-                child: SafeArea(
-                  child: Wrap(
-                    children: [
-                      Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  IconButton(
-                                    icon: Icon(Icons.arrow_back),
-                                    tooltip: "back",
-                                    iconSize: 26.0,
-                                    color: Colors.white,
-                                    onPressed: () => Navigator.of(context).pop(),
-                                  ),
-                                  SizedBox(width: 16.0),
-                                  Text(
-                                    "ข้อมูลการเดินทาง",
-                                    style: TextStyle(
-                                      // fontWeight: FontWeight.bold,
-                                      fontSize: 20.0,
+              Card(
+                elevation: 2.0,
+                margin: EdgeInsets.all(0.0),
+                color: Theme.of(context).colorScheme.darkBlue,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(30.0),
+                        bottomRight: Radius.circular(30.0)
+                    )
+                ),
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.only(left: 4.0, top: 4.0, bottom: 8.0, right: 4.0),
+                  child: SafeArea(
+                    child: Wrap(
+                      children: [
+                        Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.arrow_back),
+                                      tooltip: "back",
+                                      iconSize: 26.0,
                                       color: Colors.white,
+                                      onPressed: () => Navigator.of(context).pop(),
                                     ),
-                                    // textAlign: TextAlign.center,
-                                  )
-                                ],
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.chat_bubble),
-                                tooltip: "Group chat",
-                                iconSize: 26.0,
-                                color: Colors.white,
-                                onPressed: (){
-                                  Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) => ChatPage(tripid: widget.uid,currentTripid: widget.data.uid, isHistory: isHistory))).then((value){
-                                    _pageConfig(false);
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                          Card(
-                            margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0)
-                              ),
-                              child: InkWell(
-                                onTap: (){
-                                  swipeUpDialog(this.context, ProfileInfo(data: tripDetails.hostUser));
-                                },
-                                borderRadius: BorderRadius.circular(20.0),
-                                child: Padding(
-                                  padding: EdgeInsets.all(16.0),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      CircleAvatar(
-                                        radius: 32,
-                                        child: ClipOval(
-                                          child: Image.network(
-                                            "${httpClass.API_IP}${tripDetails.hostUser.imgpath}",
-                                          ),
-                                        ),
+                                    SizedBox(width: 16.0),
+                                    Text(
+                                      "ข้อมูลการเดินทาง",
+                                      style: TextStyle(
+                                        // fontWeight: FontWeight.bold,
+                                        fontSize: 20.0,
+                                        color: Colors.white,
                                       ),
-                                      SizedBox(width: 16.0),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            tripDetails.hostUser.name,
-                                            style: TextStyle(
-                                                fontSize: 18.0,
-                                                fontWeight: FontWeight.bold
+                                      // textAlign: TextAlign.center,
+                                    )
+                                  ],
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.chat_bubble),
+                                  tooltip: "Group chat",
+                                  iconSize: 26.0,
+                                  color: Colors.white,
+                                  onPressed: (){
+                                    Navigator.push(context, MaterialPageRoute(
+                                        builder: (context) => ChatPage(tripid: widget.uid,currentTripid: widget.data.uid, isHistory: isHistory))).then((value){
+                                      _pageConfig(false);
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+                            Card(
+                                margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0)
+                                ),
+                                child: InkWell(
+                                  onTap: (){
+                                    swipeUpDialog(this.context, ProfileInfo(data: tripDetails.hostUser));
+                                  },
+                                  borderRadius: BorderRadius.circular(20.0),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(16.0),
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        CircleAvatar(
+                                          radius: 32,
+                                          child: ClipOval(
+                                            child: Image.network(
+                                              "${httpClass.API_IP}${tripDetails.hostUser.imgpath}",
                                             ),
                                           ),
-                                          SizedBox(height: 8.0),
-                                          Text(
-                                            tripDetails.hostUser.vehicle.first.brand +
-                                                " " +
-                                                tripDetails.hostUser.vehicle.first.model +
-                                              " | " +
-                                                tripDetails.hostUser.vehicle.first.license
-                                          )
-                                        ],
-                                      )
-                                    ],
+                                        ),
+                                        SizedBox(width: 16.0),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              tripDetails.hostUser.name,
+                                              style: TextStyle(
+                                                  fontSize: 18.0,
+                                                  fontWeight: FontWeight.bold
+                                              ),
+                                            ),
+                                            SizedBox(height: 8.0),
+                                            Text(
+                                                tripDetails.routes.vehicle.brand +
+                                                    " " +
+                                                    tripDetails.routes.vehicle.model +
+                                                    " | " +
+                                                    tripDetails.routes.vehicle.license
+                                            )
+                                          ],
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              )
-                          ),
-                        ],
-                      )
-                    ],
+                                )
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
-        )
+            ],
+          )
+      )
     );
   }
 
@@ -302,7 +309,19 @@ class _Matchinformation extends State<Matchinformation> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0),
             ),
-            child: Text('End Trip', style: TextStyle(color: Colors.white,)),
+            child: Row(
+             mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if(isEndTrip)
+                SizedBox(
+                  width: 16.0,
+                  height: 16.0,
+                  child: CircularProgressIndicator(strokeWidth: 2,valueColor: AlwaysStoppedAnimation(Colors.white),),
+                ),
+                SizedBox(width: 8.0),
+                Text(isEndTrip ? 'Loading...':'End Trip', style: TextStyle(color: Colors.white,))
+              ],
+            ),
             onPressed: () => normalDialog(
               this.context,
               'Are you sure',
@@ -317,8 +336,10 @@ class _Matchinformation extends State<Matchinformation> {
                 FlatButton(
                   child: Text('Yes'),
                   onPressed: () async {
-                    await endTrip();
                     Navigator.of(context).pop();
+                    isEndTrip = true;
+                    setState(() { });
+                    await endTrip();
                   },
                 ),
               ],
@@ -329,7 +350,7 @@ class _Matchinformation extends State<Matchinformation> {
     ];
   }
 
-  endTrip() async {
+  Future<void> endTrip() async {
     List<Map<String,dynamic>> subuser = List();
     for(int i = 0 ; i<tripDetails.subUser.length ;i++){
       subuser.add({"user_id":tripDetails.subUser[i].uid,"trip_id":tripDetails.subRoutes[i].uid});
@@ -339,9 +360,9 @@ class _Matchinformation extends State<Matchinformation> {
       "hostuser_id" : tripDetails.hostUser.uid
     };
     tmp['subuser'] = subuser;
-    User().endTrip(tmp).then((value){
-      print(value);
-      Navigator.of(context).pop();
+    await User().endTrip(tmp).then((value){
+        if(value) Navigator.of(context).pop();
+        else  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not End Trip.")));
     });
   }
 

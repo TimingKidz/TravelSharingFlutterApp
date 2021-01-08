@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:travel_sharing/Class/Review.dart';
+import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/UI/ReviewCard.dart';
 import 'package:travel_sharing/main.dart';
 
 class ReviewView extends StatefulWidget {
+  final User user;
+
+  const ReviewView({Key key, this.user}) : super(key: key);
   @override
   _ReviewViewState createState() => _ReviewViewState();
 }
@@ -63,7 +67,7 @@ class _ReviewViewState extends State<ReviewView> {
   Future<void> getData(int offset) async {
     try{
 
-      review =  await Review().getReview(currentUser.uid,offset);
+      review =  await Review().getReview(widget.user.uid,offset);
       reviewList = reviewList + review.review;
       currentI = review.offset;
       setState((){});

@@ -155,15 +155,15 @@ class FeedPageState extends State<FeedPage> {
   }
 
   getData(int offset) async {
-    try{
+//    try{
       feed = await Feeds().getFeed(offset);
       print(feed.Offset);
       list = list + feed.feeds;
       currentI = feed.Offset;
       setState(() { });
-    }catch(error){
-      print(error );
-    }
+//    }catch(error){
+//      print(error );
+//    }
   }
 
   Widget _buildListView() {

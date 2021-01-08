@@ -62,15 +62,17 @@ class _MatchListstate extends State<MatchList> {
       currentUser.status.navbarNoti = true;
     });
     socket.on('onNewMatch', (data) {
-      if (widget.data.uid == data['tripid']){
+      if(widget.data.uid == data['tripid']){
         getData(true);
       }
     });
     socket.on('onAccept', (data) {
       print(data);
       if( widget.data.uid == data['tripid'] ){
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => Matchinformation(uid: data['hosttripid'], data: widget.data)));
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => Matchinformation(uid: data['hosttripid'], data: widget.data))).then((value) {
+          Navigator.of(context).pop();
+        });
       }
     });
     firebaseMessaging.configure(

@@ -20,7 +20,6 @@ class ChatPage extends StatefulWidget {
 class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
   List<Message> messages = List() ;
   List<Message> messagesReverseList = List();
-
   final textController = TextEditingController();
   ScrollController scrollController;
 
@@ -49,8 +48,12 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
     socket.on('onNewMessage', (data) {
       if (data["tripid"] == widget.currentTripid){
         Message message = Message.fromJson(data["data"]);
-        if(messagesReverseList.first.sender == message.sender) message.isDuplicate = true;
-        else message.isDuplicate = false;
+        if( messagesReverseList.isNotEmpty){
+          if(messagesReverseList.first.sender == message.sender) message.isDuplicate = true;
+          else message.isDuplicate = false;
+        }else{
+          message.isDuplicate = false;
+        }
         messagesReverseList.insert(0, message);
         setState(() { });
       }
@@ -85,6 +88,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
     return Scaffold(
         body: Stack(
           children: <Widget>[
+
             Padding(
               padding: EdgeInsets.only(top: 80),
               child: Column(
@@ -401,11 +405,17 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
             ),
             InkWell(
               child: Icon(Icons.send),
-              onTap: () {
+              onTap: () async {
                 if(textController.text != ""){
                   debugPrint('Send');
-                  Message().sendMessage(widget.tripid,textController.text, currentUser.uid, currentUser.name,widget.currentTripid, currentUser.imgpath);
-                  textController.clear();
+                  await Message().sendMessage(widget.tripid,textController.text, currentUser.uid, currentUser.name,widget.currentTripid, currentUser.imgpath).then((value) {
+                    if(!value){
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not send the message.")));
+                    }else{
+                      textController.clear();
+                    }
+                  });
+
                 }
               },
             )

@@ -65,7 +65,7 @@ class ProfileInfo extends StatelessWidget {
           InkWell(
             onTap: (){
               Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => ReviewView()));
+                  builder: (context) => ReviewView(user: data)));
             },
             borderRadius: BorderRadius.circular(20.0),
             child: Padding(
@@ -75,7 +75,7 @@ class ProfileInfo extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   RatingBarIndicator(
-                    rating: 4.2,
+                    rating: data.reviewSummary.amount == 0 ? 0.0: data.reviewSummary.totalscore/data.reviewSummary.amount,
                     itemBuilder: (context, index) => Icon(
                       Icons.star,
                       color: Colors.amber,
@@ -85,7 +85,7 @@ class ProfileInfo extends StatelessWidget {
                     direction: Axis.horizontal,
                   ),
                   SizedBox(width: 4.0),
-                  Text("4.2", style: TextStyle(fontSize: 16.0)),
+                  Text( data.reviewSummary.amount == 0 ? "0.0": (data.reviewSummary.totalscore/data.reviewSummary.amount).toString(), style: TextStyle(fontSize: 16.0)),
                   SizedBox(width: 4.0),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 2.0),
@@ -97,7 +97,7 @@ class ProfileInfo extends StatelessWidget {
                       children: [
                         Icon(Icons.people, size: 14.0),
                         SizedBox(width: 2.0),
-                        Text("5K", style: TextStyle(fontSize: 14.0)),
+                        Text(data.reviewSummary.amount.toString(), style: TextStyle(fontSize: 14.0)),
                         SizedBox(width: 1.0),
                       ],
                     ),

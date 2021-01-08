@@ -80,11 +80,11 @@ class AccountState extends State<Account> {
                     InkWell(
                       onTap: (){
                         Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => ReviewView()));
+                            builder: (context) => ReviewView(user: currentUser)));
                       },
                       borderRadius: BorderRadius.circular(20.0),
                       child: RatingBarIndicator(
-                        rating: 4.75,
+                        rating: currentUser.reviewSummary.amount == 0 ? 0.0 :  currentUser.reviewSummary.totalscore/currentUser.reviewSummary.amount,
                         itemBuilder: (context, index) => Icon(
                           Icons.star,
                           color: Colors.amber,

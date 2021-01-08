@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/buttons/cardDatePicker.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
 import 'package:travel_sharing/main.dart';
@@ -145,7 +146,8 @@ class _InfoFillState extends State<InfoFill> {
   _SavetoDB()async{
     User user = currentUser ;
     Final_Data = new Routes(id: user.uid, routes : widget.routes, src : Final_Data.src, dst : Final_Data.dst,
-        amount : Final_Data.amount, date :Final_Data.date, isMatch: false,match: List(),role : widget.Role.toString());
+        amount : Final_Data.amount, date :Final_Data.date, isMatch: false,match: List(),role : widget.Role.toString(),
+        vehicle: widget.Role == 0 ? Vehicle(vid: currentUser.vehicle.first.vid ,type:  currentUser.vehicle.first.type) : Vehicle(),tag: ["T&A"]);
     Final_Data.SaveRoute_toDB(user).then((x){
       Navigator.of(context).pop();
       Navigator.of(context).pop();

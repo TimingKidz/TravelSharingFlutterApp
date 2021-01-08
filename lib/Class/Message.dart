@@ -98,13 +98,13 @@ class Message {
         if(response.statusCode == 404){
           return Future.value(false);
         }else{
-          print(jsonDecode(response.body));
+//          print(jsonDecode(response.body));
           return Future.value(true);
         }
       }
     }catch(error){
       print(error);
-      throw("can't send");
+      return Future.value(false);
     }
   }
 }

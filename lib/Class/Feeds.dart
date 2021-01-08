@@ -21,7 +21,7 @@ class Feeds{
   }
 
   Future<Feeds> getFeed(int offset) async {
-    try{
+//    try{
       Http.Response response = await httpClass.reqHttp("/api/routes/feeds", { "offset" : offset });
       if(response.statusCode == 400 ){
         return Future.value(null);
@@ -32,9 +32,9 @@ class Feeds{
           return Future.value(Feeds.fromJson(jsonDecode(response.body)));
         }
       }
-    }catch(error){
-      print(error);
-      throw("can't connect Match_List");
-    }
+//    }catch(error){
+//      print(error);
+//      throw("can't connect Match_List");
+//    }
   }
 }

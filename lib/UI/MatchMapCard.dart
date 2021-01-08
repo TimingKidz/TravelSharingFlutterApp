@@ -150,7 +150,7 @@ class _MatchMapCardState extends State<MatchMapCard> {
                                       Row(
                                         children: [
                                           RatingBarIndicator(
-                                            rating: 4.2,
+                                            rating: widget.data.user.reviewSummary.amount == 0 ? 0.0: widget.data.user.reviewSummary.totalscore/widget.data.user.reviewSummary.amount,
                                             itemBuilder: (context, index) => Icon(
                                               Icons.star,
                                               color: Colors.amber,
@@ -160,7 +160,7 @@ class _MatchMapCardState extends State<MatchMapCard> {
                                             direction: Axis.horizontal,
                                           ),
                                           SizedBox(width: 4.0),
-                                          Text("4.2", style: TextStyle(fontSize: 10.0)),
+                                          Text(widget.data.user.reviewSummary.amount == 0 ? "0.0": (widget.data.user.reviewSummary.totalscore/widget.data.user.reviewSummary.amount).toString(), style: TextStyle(fontSize: 10.0)),
                                           SizedBox(width: 4.0),
                                           Container(
                                             padding: EdgeInsets.symmetric(horizontal: 2.0),
@@ -172,7 +172,7 @@ class _MatchMapCardState extends State<MatchMapCard> {
                                               children: [
                                                 Icon(Icons.people, size: 10.0),
                                                 SizedBox(width: 2.0),
-                                                Text("5K", style: TextStyle(fontSize: 10.0)),
+                                                Text(widget.data.user.reviewSummary.amount.toString(), style: TextStyle(fontSize: 10.0)),
                                                 SizedBox(width: 1.0),
                                               ],
                                             ),

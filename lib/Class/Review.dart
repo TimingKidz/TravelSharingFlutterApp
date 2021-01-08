@@ -3,17 +3,38 @@ import 'dart:convert';
 import 'package:travel_sharing/main.dart';
 import 'package:http/http.dart' as Http;
 
+class ReviewSummary{
+  String uid;
+  String id;
+  double totalscore;
+  int amount;
+
+  ReviewSummary({this.totalscore,this.amount});
+
+  ReviewSummary.fromJson(Map<String, dynamic> json) {
+    uid = json['_id'];
+    id = json['id'];
+    totalscore = json['totalscore'].toDouble();
+    amount = json['amount'];
+  }
+
+}
 
 class Review {
+  String uid;
+  String id;
   bool isMore;
   int offset;
   double totalscore;
+  int amount;
   Map<String,dynamic> tag;
   List<EachReview> review;
 
-  Review({this.isMore,this.offset,this.totalscore, this.tag,this.review});
+  Review({this.isMore,this.offset,this.totalscore, this.tag,this.review,this.amount});
 
   Review.fromJson(Map<String, dynamic> json) {
+    uid = json['data']['_id'];
+    id = json['data']['id'];
     totalscore = json['data']['totalscore'].toDouble();
     offset = json['offset'];
     isMore = json['isMore'];
@@ -45,6 +66,7 @@ class Review {
 }
 
 class EachReview {
+  String uid;
   double score;
   String sender;
   String name;
@@ -56,6 +78,7 @@ class EachReview {
   EachReview({this.score, this.sender, this.name,this.message,this.tag,this.date,this.imgpath});
 
   EachReview.fromJson(Map<String, dynamic> json) {
+    uid = json['_id'];
     score = json['score'].toDouble();
     sender = json['sender'];
     name = json['name'];

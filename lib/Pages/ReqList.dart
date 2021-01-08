@@ -153,8 +153,10 @@ class _ReqListstate extends State<ReqList> {
       if(widget.isFromMatchinfo){
         Navigator.of(context).pop();
       }else{
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => Matchinformation(uid: widget.data.uid, data: widget.data)));
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => Matchinformation(uid: widget.data.uid, data: widget.data))).then((value){
+          Navigator.of(context).pop();
+        });
       }
     });
   }

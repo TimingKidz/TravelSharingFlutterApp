@@ -4,6 +4,7 @@ import 'package:http/http.dart' as Http;
 import 'package:travel_sharing/Class/Match_Info.dart';
 import 'package:travel_sharing/Class/Travel_Info.dart';
 import 'package:travel_sharing/Class/User.dart';
+import 'package:travel_sharing/Class/Vehicle.dart';
 
 import '../main.dart';
 
@@ -21,8 +22,12 @@ class Routes {
   List<String> match;
   String role;
   bool status;
+  int left;
+  Vehicle vehicle;
+  List<dynamic> tag;
 
-  Routes({this.uid,this.id,this.routes, this.src,this.dst,this.amount,this.date,this.isMatch,this.match,this.role});
+
+  Routes({this.uid,this.id,this.routes, this.src,this.dst,this.amount,this.date,this.isMatch,this.match,this.role,this.vehicle,this.tag});
 
   Routes.fromJson(Map<String, dynamic> json) {
     uid = json['_id'];
@@ -58,6 +63,9 @@ class Routes {
     isMatch = json['isMatch'];
     role = json['role'];
     status = json['status'];
+    print(json["vehicle"]['id']);
+    vehicle = json["vehicle"]["id"] is String ? null : Vehicle.fromJson(json["vehicle"]['id']);
+    tag = json['tag'];
   }
 
   Map<String, dynamic> toJson() {
@@ -70,6 +78,8 @@ class Routes {
     data['id'] = this.id;
     data['match'] = this.match;
     data['role'] = this.role;
+    data['vehicle'] = this.vehicle.toJson();
+    data['tag'] = this.tag;
     return data;
   }
 

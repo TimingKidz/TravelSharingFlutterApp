@@ -39,6 +39,7 @@ class _Dashboard extends State<Dashboard> {
     }
   }
 
+
   @override
   void initState() {
     super.initState();
@@ -46,6 +47,7 @@ class _Dashboard extends State<Dashboard> {
     // WidgetsBinding.instance.addPostFrameCallback((_) => _getHeight());
     _pageConfig(widget.isNeed2Update);
   }
+
 
   // void _getHeight(){
   //   RenderBox renderBox = actionKey.currentContext.findRenderObject();
@@ -140,8 +142,14 @@ class _Dashboard extends State<Dashboard> {
   }
 
 
+ afterBuild(){
+    print("555555555555");
+    setState(() { });
+ }
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterBuild);
+
     return Scaffold(
      // backgroundColor: Theme.of(context).primaryColor,
      //  appBar: AppBar(
@@ -238,10 +246,10 @@ class _Dashboard extends State<Dashboard> {
       _joinList =  await Travel_Info().getRoutes(currentUser.uid,1,isNeed2Update) ?? [];
       _invitedList.sort((a,b) => b.routes.date.compareTo(a.routes.date));
       _joinList.sort((a,b) => b.routes.date.compareTo(a.routes.date));
-      setState(() {});
     }catch(error){
       print("$error lllLLLL");
     }
+    setState(() {});
   }
 
   Widget _widgetOptions(){
@@ -277,7 +285,6 @@ class _Dashboard extends State<Dashboard> {
         }else{
           _deletejoinCard(data.uid);
         }
-
       },
     );
   }
@@ -285,14 +292,14 @@ class _Dashboard extends State<Dashboard> {
   _onCardPressed(Travel_Info data) async {
     if( isFirstPage ){
       if( data.routes.match.isNotEmpty ){
-        Navigator.push(context, MaterialPageRoute(
+        await Navigator.push(context, MaterialPageRoute(
             builder: (context) => Matchinformation(uid: data.routes.match.first,data: data,))).then((value) async {
           _pageConfig(currentUser.status.navbarTrip);
           currentUser.status.navbarTrip = false;
           await widget.setSate();
         });
       }else{
-        Navigator.push(context, MaterialPageRoute(
+        await Navigator.push(context, MaterialPageRoute(
             builder: (context) => MatchList(data: data))).then((value) async {
           _pageConfig(currentUser.status.navbarTrip);
           currentUser.status.navbarTrip = false;
@@ -301,15 +308,17 @@ class _Dashboard extends State<Dashboard> {
       }
     }else{
       if( data.routes.match.isNotEmpty){
-        Navigator.push(context, MaterialPageRoute(
+        await Navigator.push(context, MaterialPageRoute(
             builder: (context) => Matchinformation(uid: data.uid, data: data))).then((value) async {
+          print("backkkkkkkkkk matchinfo");
           _pageConfig(currentUser.status.navbarTrip);
           currentUser.status.navbarTrip = false;
           await widget.setSate();
         });
       }else{
-        Navigator.push(context, MaterialPageRoute(
+        await Navigator.push(context, MaterialPageRoute(
             builder: (context) => ReqList(data: data,isFromMatchinfo: false,))).then((value) async {
+          print("backkkkkkkkkk req");
           _pageConfig(currentUser.status.navbarTrip);
           currentUser.status.navbarTrip = false;
           await widget.setSate();

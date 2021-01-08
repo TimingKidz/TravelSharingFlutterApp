@@ -141,7 +141,7 @@ class SignUpPageState extends State<SignUpPage> {
       CardTextField(
         notNull: true,
         labelText: "Username",
-        onChanged: (data) => print(data),
+        onChanged: (data) => userData.username = data,
       ),
       CardDropdown(
         listItems: genderList,

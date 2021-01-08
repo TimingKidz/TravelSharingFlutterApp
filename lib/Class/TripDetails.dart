@@ -26,7 +26,7 @@ class TripDetails{
   }
 
   Future<TripDetails> getDetails(String uid,String currentTripid,bool isNeed2Update ) async {
-    try{
+//    try{
       Http.Response response = await httpClass.reqHttp("/api/routes/Tripinformation",{"_id": uid, "currentTripid" : currentTripid,"isNeed2Update" : isNeed2Update});
       if(response.statusCode == 400){
         return Future.value(null);
@@ -40,10 +40,10 @@ class TripDetails{
           return Future.value(tmp);
         }
       }
-    }catch(err){
-      print(err);
-      throw("can't connect Match");
-    }
+//    }catch(err){
+//      print(err);
+//      throw("can't connect Match");
+//    }
   }
 
   Future<TripDetails> getHistory(String uid) async {
