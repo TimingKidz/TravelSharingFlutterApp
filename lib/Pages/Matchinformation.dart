@@ -367,7 +367,7 @@ class _Matchinformation extends State<Matchinformation> {
    currentUser.endTrip(tmp).then((value){
         if(value)
           Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
-        else Scaffold.of(context).showSnackBar(SnackBar(content: Text("Can not End Trip.")));
+        else ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not End Trip.")));
     });
   }
 

@@ -231,7 +231,7 @@ class _MatchListstate extends State<MatchList> {
       if(value){
         isreq.add(data.routes.uid);
       }else{
-        print("error");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not send request please try again.")));
       }
       isPress[data.routes.uid] = false;
       setState(() { });

@@ -23,9 +23,9 @@ class FeedCardTile extends StatefulWidget {
 
 class FeedCardTileState extends State<FeedCardTile> {
   BorderRadius cardBorder = BorderRadius.circular(20.0);
-  Map<String,Widget> type = {
-    "Car" : Icon(Icons.drive_eta),
-    "Motorcycle" : Icon(Icons.motorcycle),
+  Map<String,IconData> type = {
+    "Car" : Icons.drive_eta,
+    "Motorcycle" : Icons.motorcycle,
   };
 
   @override
@@ -62,7 +62,8 @@ class FeedCardTileState extends State<FeedCardTile> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
-                                  type[widget.data.routes.vehicle.type] ?? (int.parse(widget.data.routes.amount) > 1 ? Icon(Icons.people) : Icon(Icons.person)),
+                                  Icon(  type[widget.data.routes.vehicle.type] ?? (int.parse(widget.data.routes.amount) > 1 ? Icons.people : Icons.person), size: 32.0,),
+
                                   SizedBox(height: 8.0),
                                   Container(
                                     padding: EdgeInsets.all(4.0),

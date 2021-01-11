@@ -39,6 +39,7 @@ class DashboardCardTileState extends State<DashboardCardTile> {
       "Waiting": Theme.of(context).colorScheme.warning,
       "Pending Request": Theme.of(context).colorScheme.warning,
       "No Matches Found": Theme.of(context).colorScheme.danger,
+      "Found Matched": Theme.of(context).colorScheme.warning,
     };
   }
 

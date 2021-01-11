@@ -214,7 +214,7 @@ class _ReqListstate extends State<ReqList> {
       }else{
         isPress[data.routes.uid] = false;
         await getData(true);
-        print("error");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not accept please try again.")));
       }
     });
   }
@@ -229,6 +229,7 @@ class _ReqListstate extends State<ReqList> {
         isPress[data.routes.uid] = false;
       }else{
         print("error");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not decline please try again.")));
       }
       await getData(true);
     });
