@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
+import 'package:travel_sharing/main.dart';
 
 class LanguageSelect extends StatefulWidget {
   @override
@@ -9,6 +10,11 @@ class LanguageSelect extends StatefulWidget {
 }
 
 class _LanguageSelectState extends State<LanguageSelect> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
@@ -29,7 +30,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
   p.GoogleMapsPlaces _places = p.GoogleMapsPlaces(apiKey: api_key);
   GoogleMapController _mapController;
   bool isSet_Marker = false;
-  // LatLng current_Location;
+//  LatLng current_Location;
   LatLng Marker_Location;
   bool is_src = true;
   Map<MarkerId, Marker> _centerMarkers = <MarkerId, Marker>{};
@@ -38,6 +39,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
   Map<String,String> Map_Placename = <String,String>{};
   bool isChooseOnMap = false;
   int i = 0;
+  Location location = Location();
 
   @override
   void setState(fn) {
@@ -47,7 +49,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
   }
 @override
   void dispose() {
-//   _mapController.dispose();
+   _mapController.dispose();
    src_Textcontroller.dispose();
    dst_Textcontroller.dispose();
     super.dispose();
@@ -149,19 +151,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
                                                     builder: (context) => LocationSearch(currentLocation: current_Location, hintText: "จุดเริ่มต้น ...")
                                                 )
                                             ).then((result) {
-                                              if(result != null) {
-                                                if ( result is Map<String,dynamic>) _Searchbar(result);
-                                                if ( result is bool ) {
-                                                  if (result) { isChooseOnMap = true; }
-                                                  else {
-                                                    Src_OR_Dst(current_Location, "Current Location");
-                                                    _mapController.animateCamera(CameraUpdate.newCameraPosition(
-                                                        CameraPosition(target: current_Location, zoom: 18)));
-                                                  }
-                                                }
-                                              }
-                                              print(isChooseOnMap);
-                                              setState(() { });
+                                             selectedMethod(result);
                                             });
                                           },
                                           textInputAction: TextInputAction.go,
@@ -200,20 +190,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
                                                     builder: (context) => LocationSearch(currentLocation: current_Location, hintText: "จุดปลายทาง ...")
                                                 )
                                             ).then((result) {
-                                              if(result != null) {
-                                                if ( result is Map<String,dynamic>) _Searchbar(result);
-                                                if ( result is bool ) {
-                                                  if (result) {
-                                                    isChooseOnMap = true;
-                                                  }else {
-                                                    Src_OR_Dst(current_Location, "Current Location");
-                                                    _mapController.animateCamera(CameraUpdate.newCameraPosition(
-                                                        CameraPosition(target: current_Location, zoom: 18)));
-                                                  }
-                                                }
-                                              }
-                                              setState(() { });
-                                              print(isChooseOnMap);
+                                              selectedMethod(result);
                                             });
                                           },
                                           textInputAction: TextInputAction.go,
@@ -270,6 +247,22 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
     );
   }
  // ----------------------------------------------------------------------------
+  void selectedMethod(dynamic result){
+    if(result != null) {
+      if ( result is Map<String,dynamic>) _Searchbar(result);
+      if ( result is bool ) {
+        if (result) {
+          isChooseOnMap = true;
+        }else {
+          Src_OR_Dst(current_Location, "Current Location");
+          _mapController.animateCamera(CameraUpdate.newCameraPosition(
+              CameraPosition(target: current_Location, zoom: 18)));
+        }
+      }
+    }
+    setState(() { });
+    print(isChooseOnMap);
+  }
 
   _pageConfig(){
     socket.off('onNewNotification');
@@ -282,6 +275,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
     socket.on('onNewNotification', (data) {
       currentUser.status.navbarNoti = true;
     });
+
     firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
           print("onMessage: $message");
@@ -291,13 +285,10 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
   }
 
   getLocation() async{
-    LocationData currentLoc = await Location().getLocation();
-    current_Location =
-        LatLng(currentLoc.latitude, currentLoc.longitude);
-    print(current_Location.longitude);
-//    _mapController.animateCamera( CameraUpdate.newCameraPosition(CameraPosition(target: current_Location, zoom: 15,)));
+    location.onLocationChanged.listen((LocationData currentLocation) {
+      current_Location = LatLng(currentLocation.latitude, currentLocation.longitude);
+    });
     Marker_Location = current_Location;
-    _createMarkers(current_Location);
     setState(() { });
     isSet_Marker = true;
   }
@@ -307,7 +298,6 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
     List<LatLng> routes = [Map_Latlng["src"],Map_Latlng["dst"]];
     String Placename_src = Map_Placename["src"];
     String Placename_dst = Map_Placename["dst"];
-
     // find camera bound for 4 angle
     var left = min(routes.first.latitude, routes.last.latitude);
     var right = max(routes.first.latitude, routes.last.latitude);
@@ -319,7 +309,13 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
     );
     // go to fill all information in next page before save to DB
     Navigator.push(context, MaterialPageRoute(
-        builder: (context) => InfoFill(routes: routes, bounds:bounds,Markers : Set<Marker>.of(_markers.values),lines :null,src:Placename_src,dst: Placename_dst ,Role: Role))).then((value) => setState(() { }));
+        builder: (context) => InfoFill(routes: routes,
+            bounds:bounds,
+            Markers : Set<Marker>.of(_markers.values),
+            lines :null,
+            src:Placename_src,
+            dst: Placename_dst ,
+            Role: Role))).then((value) => setState(() { }));
   }
 
   OnMove_End() async {
@@ -340,27 +336,21 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
             name = element.name;
           }
         });
-        if(place!=null) {
-          Marker_Location = place.location;
-        }
+        if(place!=null) { Marker_Location = place.location; }
         Src_OR_Dst(Marker_Location,name);
       }
     }
-
   }
 
   center(CameraPosition pos) {
     Marker_Location = pos.target;
-    if ( isChooseOnMap ){ _createMarkers(Marker_Location); }
   }
 
   Future<void> _Searchbar(Map<String, dynamic> result) async {
     p.PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(result['place_id']);
     debugPrint(result['place_id']);
-
     final lat = detail.result.geometry.location.lat;
     final lng = detail.result.geometry.location.lng;
-
     Src_OR_Dst(LatLng(lat,lng), detail.result.name);
     _mapController.animateCamera(CameraUpdate.newCameraPosition(
         CameraPosition(target: LatLng(lat,lng), zoom: 18)));
@@ -392,17 +382,6 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
     }
     setState(() {
     });
-  }
-
-// function create marker at x position
-  _createMarkers(LatLng x) {
-    MarkerId markerId = MarkerId("src");
-    Marker marker = Marker(
-      markerId: markerId,
-      position: x,
-      draggable: false,
-    );
-      _centerMarkers[markerId] = marker;
   }
 
   // set Map controller

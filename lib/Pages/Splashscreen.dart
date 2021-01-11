@@ -5,7 +5,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:location/location.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/homeNavigation.dart';
 import 'package:travel_sharing/Pages/signupPage.dart';
@@ -96,7 +98,13 @@ class SplashscreenState extends State<Splashscreen> {
     }
   }
 
+  Future<void> _getLocation() async {
+    LocationData currentLoc = await Location().getLocation();
+    current_Location = LatLng(currentLoc.latitude, currentLoc.longitude);
+  }
+
   Future<void> _signInCheck() async {
+    _getLocation();
     var isSignedIn = await googleSignIn.isSignedIn();
     // Future.delayed(Duration(seconds: 1), () async {
       if(isSignedIn){
@@ -108,7 +116,6 @@ class SplashscreenState extends State<Splashscreen> {
         );
         firebaseAuth = await u.FirebaseAuth.instance.signInWithCredential(a);
         await httpClass.getNewHeader();
-//        print(httpClass.header);
         bool isRegister = await User().getCurrentuser(googleUser.id) != null ? true : false;
         if (isRegister){
           String tokenID = await firebaseMessaging.getToken();
@@ -119,16 +126,13 @@ class SplashscreenState extends State<Splashscreen> {
           }
           initsocket();
           navigationBarColorWhite();
-          Navigator.pushReplacement(context, MaterialPageRoute(
-              builder: (context) => HomeNavigation()));
+          Navigator.pushReplacementNamed(context,"/homeNavigation");
         }else{
           navigationBarColorWhite();
-          Navigator.pushReplacement(context, MaterialPageRoute(
-              builder: (context) => SignUpPage()));
+          Navigator.pushReplacementNamed(context,"/SignUp");
         }
       }else{
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => LoginPage()));
+        Navigator.pushReplacementNamed(context,"/login");
       }
     // });
   }

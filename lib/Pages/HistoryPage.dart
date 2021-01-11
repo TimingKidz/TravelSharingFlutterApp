@@ -19,7 +19,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   @override
   void initState() {
-    getHistoryList();
+  _pageConfig();
     super.initState();
   }
 
@@ -77,6 +77,44 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
+  _pageConfig(){
+    getHistoryList();
+    socket.off('onNewNotification');
+    socket.off('onNewAccept');
+    socket.off('onNewMatch');
+    socket.off('onNewMessage');
+    socket.off('onRequest');
+    socket.off('onKick');
+
+    socket.on('onKick', (data){
+      currentUser.status.navbarTrip = true;
+    });
+    socket.on('onRequest', (data) {
+      currentUser.status.navbarTrip = true;
+    });
+    socket.on('onNewMatch' , (data){
+      currentUser.status.navbarTrip = true;
+    });
+    socket.on('onNewAccept', (data){
+      currentUser.status.navbarTrip = true;
+    });
+    socket.on('onNewMessage',(data){
+      currentUser.status.navbarTrip = true;
+    });
+    socket.on('onNewAccept',(data){
+      currentUser.status.navbarTrip = true;
+    });
+    socket.on('onNewNotification', (data) {
+      currentUser.status.navbarNoti = true;
+    });
+    firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          print("onMessage: $message");
+          showNotification(message);
+        }
+    );
+  }
+
   Widget _buildListView() {
     return ListView.builder(
         physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
@@ -90,10 +128,16 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget _buildRow(Travel_Info data) {
     return ListTile(
       onTap: (){
-        if(data.routes.role == "0") Navigator.push(context, MaterialPageRoute(
-            builder: (context) => Matchinformation(uid: data.routes.uid, data: data, isHistory: true)));
-        else Navigator.push(context, MaterialPageRoute(
-            builder: (context) => Matchinformation(uid: data.routes.match.first, data: data, isHistory: true)));
+        if(data.routes.role == "0")  Navigator.pushNamed(context,"/MatchInfo", arguments: {
+          "uid" : data.routes.uid,
+          "data" : data,
+          "isHistory" : true
+        }).then((value) => _pageConfig());
+        else   Navigator.pushNamed(context,"/MatchInfo", arguments: {
+          "uid" : data.routes.match.first,
+          "data" : data,
+          "isHistory" : true
+        }).then((value) =>  _pageConfig());
       },
       title: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -118,12 +162,12 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Future<void> getHistoryList() async {
     print("Get History List");
-    try{
+//    try{
       historyList =  await Routes().getHistory(currentUser.uid) ?? [];
       historyReverseList = historyList.reversed.toList();
       setState(() {});
-    }catch(error){
-      print("$error history");
-    }
+//    }catch(error){
+//      print("$error history");
+//    }
   }
 }

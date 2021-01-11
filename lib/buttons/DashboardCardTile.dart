@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:travel_sharing/Class/DateManage.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
+import 'package:travel_sharing/Class/Travel_Info.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 
 class DashboardCardTile extends StatefulWidget {
-  final Routes data;
+  final Travel_Info data;
   final IconData iconData;
   final Function onCardPressed;
   final Function onDeletePressed;
@@ -69,13 +70,13 @@ class DashboardCardTileState extends State<DashboardCardTile> {
                                   Column(
                                     children: <Widget>[
                                       Text(
-                                        DateManage().datetimeFormat("day", widget.data.date),
+                                        DateManage().datetimeFormat("day", widget.data.routes.date),
                                         style: TextStyle(
                                             fontSize: 32.0
                                         ),
                                       ),
                                       Text(
-                                        DateManage().datetimeFormat("month", widget.data.date),
+                                        DateManage().datetimeFormat("month", widget.data.routes.date),
                                         style: TextStyle(
                                             fontSize: 22.0
                                         ),
@@ -91,18 +92,18 @@ class DashboardCardTileState extends State<DashboardCardTile> {
                                     ),
                                     child: Column(
                                       children: <Widget>[
-                                        Text(DateManage().datetimeFormat("time", widget.data.date))
+                                        Text(DateManage().datetimeFormat("time", widget.data.routes.date))
                                       ],
                                     ),
                                   ),
                                   SizedBox(height: 8.0),
                                   Text(
-                                      widget.data.role == "1" ? "ไปด้วย" : "ต้องการ"
+                                      widget.data.routes.role == "1" ? "ไปด้วย" : "ต้องการ"
                                   ),
                                   Text(
-                                    widget.data.role == "1"
-                                        ? '${widget.data.amount} คน'
-                                        : '${widget.data.left} คน',
+                                    widget.data.routes.role == "1"
+                                        ? '${widget.data.routes.amount} คน'
+                                        : '${widget.data.routes.left} คน',
                                   )
                                 ],
                               ),
@@ -115,11 +116,11 @@ class DashboardCardTileState extends State<DashboardCardTile> {
                                     children: <Widget>[
                                       Text('ปลายทาง', style: TextStyle(fontSize: 10.0)),
                                       SizedBox(height: 5.0),
-                                      Text(widget.data.dst, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                                      Text(widget.data.routes.dst, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
                                       SizedBox(height: 16.0),
                                       Text('ต้นทาง', style: TextStyle(fontSize: 10.0, color: Colors.black54)),
                                       SizedBox(height: 5.0),
-                                      Text(widget.data.src, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold, color: Colors.black54)),
+                                      Text(widget.data.routes.src, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold, color: Colors.black54)),
                                     ],
                                   ),
                                 ),
@@ -156,7 +157,24 @@ class DashboardCardTileState extends State<DashboardCardTile> {
                           onPressed: () => widget.onDeletePressed(),
                         ),
                       ),
-                    )
+                    ),
+                    if(!isLongPress)
+                     Positioned.fill(
+                       child:  Align(
+                         alignment: Alignment.bottomRight,
+                         child: Material(
+                           elevation: 1,
+                           borderRadius: BorderRadius.circular(20.0),
+                           color: Colors.green,
+                           child: Container(
+                             padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0) ,
+                             child: Text(widget.data.status, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                           ),
+
+                         ),
+                       ),
+                     ),
+
                   ],
                 ),
               ),

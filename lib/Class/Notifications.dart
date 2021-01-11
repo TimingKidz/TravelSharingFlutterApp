@@ -50,4 +50,22 @@ class Notifications{
       throw("can't connect Match_List");
     }
   }
+
+  Future<bool> deleteNotification(String userid) async {
+    try{
+      Http.Response response = await httpClass.reqHttp("/api/routes/deleteNotifications",{ "notiId" : this.uid , "id" : userid});
+      if(response.statusCode == 400 ){
+        return Future.value(false);
+      }else{
+        if(response.statusCode == 404){
+          return Future.value(false);
+        }else{
+          return Future.value(true);
+        }
+      }
+    }catch(error){
+      print(error);
+      throw("can't connect Match_List");
+    }
+  }
 }

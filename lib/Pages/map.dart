@@ -24,14 +24,12 @@ class CreateRoute extends StatefulWidget {
 
 class _CreateRoutestate extends State<CreateRoute> {
   static int Role = 0;
-//  final places = new p.GoogleMapsPlaces(apiKey: api_key);
   final l.Distance distance = new l.Distance();
   final TextEditingController src_Textcontroller = new TextEditingController();
   final TextEditingController dst_Textcontroller = new TextEditingController();
   p.GoogleMapsPlaces _places = p.GoogleMapsPlaces(apiKey: api_key);
   GoogleMapController _mapController;
   bool isSet_Marker = false;
-  // LatLng current_Location;
   LatLng Marker_Location;
   bool is_src = true;
   Map<MarkerId, Marker> _centerMarkers = <MarkerId, Marker>{};
@@ -45,6 +43,7 @@ class _CreateRoutestate extends State<CreateRoute> {
   Set<Polyline> finalLines = Set();
   int pointNo = 0;
   int i = 0;
+  Location location = Location();
 
   @override
   void setState(fn) {
@@ -54,7 +53,7 @@ class _CreateRoutestate extends State<CreateRoute> {
   }
   @override
   void dispose() {
-//   _mapController.dispose();
+   _mapController.dispose();
     src_Textcontroller.dispose();
     dst_Textcontroller.dispose();
     super.dispose();
@@ -468,13 +467,10 @@ class _CreateRoutestate extends State<CreateRoute> {
   }
 
   getLocation() async{
-    LocationData currentLoc = await Location().getLocation();
-    current_Location =
-        LatLng(currentLoc.latitude, currentLoc.longitude);
-    print(current_Location.longitude);
-//    _mapController.animateCamera( CameraUpdate.newCameraPosition(CameraPosition(target: current_Location, zoom: 15,)));
+    location.onLocationChanged.listen((LocationData currentLocation) {
+      current_Location = LatLng(currentLocation.latitude, currentLocation.longitude);
+    });
     Marker_Location = current_Location;
-//    _createMarkers(current_Location);
     setState(() { });
     isSet_Marker = true;
   }
@@ -510,7 +506,6 @@ class _CreateRoutestate extends State<CreateRoute> {
       width: 4,
     ));
 
-
     // find camera bound for 4 angle
     var left = min(routes.first.latitude, routes.last.latitude);
     var right = max(routes.first.latitude, routes.last.latitude);
@@ -522,7 +517,13 @@ class _CreateRoutestate extends State<CreateRoute> {
     );
     // go to fill all information in next page before save to DB
     Navigator.push(context, MaterialPageRoute(
-        builder: (context) => InfoFill(routes: tmp, bounds:bounds,Markers : Set<Marker>.of(_markers.values),lines :finalLines,src:Placename_src,dst: Placename_dst ,Role: Role))).then((value) => setState(() { }));
+        builder: (context) => InfoFill(routes: tmp,
+            bounds:bounds,
+            Markers : Set<Marker>.of(_markers.values),
+            lines :finalLines,
+            src:Placename_src,
+            dst: Placename_dst ,
+            Role: Role))).then((value) => setState(() { }));
   }
 
   OnMove_End() async {
@@ -549,12 +550,10 @@ class _CreateRoutestate extends State<CreateRoute> {
         Src_OR_Dst(Marker_Location,name);
       }
     }
-
   }
 
   center(CameraPosition pos) {
     Marker_Location = pos.target;
-//    if ( isChooseOnMap ){ _createMarkers(Marker_Location); }
   }
 
   Future<void> _Searchbar(Map<String, dynamic> result) async {
@@ -578,7 +577,6 @@ class _CreateRoutestate extends State<CreateRoute> {
         infoWindow: InfoWindow(title: pointNo.toString())
     );
     pointNo ++;
-//    _markers[markerId] = marker;
   }
 
 
@@ -609,17 +607,6 @@ class _CreateRoutestate extends State<CreateRoute> {
     setState(() {
     });
   }
-
-// function create marker at x position
-//  _createMarkers(LatLng x) {
-//    MarkerId markerId = MarkerId("src");
-//    Marker marker = Marker(
-//      markerId: markerId,
-//      position: x,
-//      draggable: false,
-//    );
-//    _centerMarkers[markerId] = marker;
-//  }
 
   // set Map controller
   void _onMapCreated(GoogleMapController controller){

@@ -10,6 +10,7 @@ import 'package:travel_sharing/main.dart';
 import 'package:firebase_auth/firebase_auth.dart' as u;
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
+
 class LoginPage extends StatefulWidget {
   LoginPageState createState() => LoginPageState();
 }
@@ -79,33 +80,7 @@ class LoginPageState extends State<LoginPage> {
     );
   }
 
-  void _loadingDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0)
-          ),
-          child: Container(
-            margin: EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(width: 16.0),
-                Text("Signing in..."),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   initsocket(){
-    print("${currentUser.uid} hhhhhhhh");
     socket = IO.io(httpClass.API_IP,
         IO.OptionBuilder()
             .setTransports(['websocket']) // for Flutter or Dart VM
@@ -123,7 +98,6 @@ class LoginPageState extends State<LoginPage> {
     try{
       googleUser = await googleSignIn.signIn();
       if(googleUser != null){
-        // _loadingDialog();
         setState(() => isLoading = true);
         GoogleSignInAuthentication Auth = await googleUser.authentication;
         u.GoogleAuthCredential a =  u.GoogleAuthProvider.credential(
@@ -142,14 +116,10 @@ class LoginPageState extends State<LoginPage> {
           }
           initsocket();
           navigationBarColorWhite();
-          // Navigator.of(context).pop(); //Pop Loading Dialog
-          Navigator.pushReplacement(context, MaterialPageRoute(
-              builder: (context) => HomeNavigation()));
+          Navigator.pushReplacementNamed(context,"/homeNavigation");
         }else{
           navigationBarColorWhite();
-          // Navigator.of(context).pop(); //Pop Loading Dialog
-          Navigator.pushReplacement(context, MaterialPageRoute(
-              builder: (context) => SignUpPage()));
+          Navigator.pushReplacementNamed(context,"/SignUp");
         }
       }
     }catch(error){

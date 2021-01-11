@@ -58,7 +58,15 @@ class _LocationSearchState extends State<LocationSearch> {
   }
 
   _pageConfig(){
+    socket.off('onAccept');
     socket.off('onNewNotification');
+    socket.off('onNewAccept');
+    socket.off('onNewMatch');
+    socket.off('onNewMessage');
+    socket.off('onRequest');
+    socket.off('onTripEnd');
+    socket.off('onKick');
+
     socket.on('onNewNotification', (data) {
       currentUser.status.navbarNoti = true;
     });

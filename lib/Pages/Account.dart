@@ -16,9 +16,7 @@ import 'package:travel_sharing/localization.dart';
 
 class Account extends StatefulWidget {
   final Function setSate;
-
   const Account({Key key, this.setSate}) : super(key: key);
-
   AccountState createState() => AccountState();
 }
 
@@ -125,16 +123,17 @@ class AccountState extends State<Account> {
 
 
   _pageConfig(){
+    socket.off('onAccept');
     socket.off('onNewNotification');
     socket.off('onNewAccept');
     socket.off('onNewMatch');
     socket.off('onNewMessage');
     socket.off('onRequest');
+    socket.off('onTripEnd');
     socket.off('onKick');
 
     socket.on('onKick', (data){
       currentUser.status.navbarTrip = true;
-      currentUser.status.navbarNoti = true;
       widget.setSate();
     });
 
@@ -205,7 +204,11 @@ class AccountState extends State<Account> {
         ),
         onTap: (){
           Navigator.push(context, MaterialPageRoute(
-              builder: (context) => HistoryPage()));
+              builder: (context) => HistoryPage())).then((value){
+            _pageConfig();
+            widget.setSate();
+//            setState((){});
+          });
         },
       ),
       ListTile(
@@ -214,7 +217,10 @@ class AccountState extends State<Account> {
         ),
         onTap: (){
           Navigator.push(context, MaterialPageRoute(
-              builder: (context) => LanguageSelect())).then((value) => setState(() {}));
+              builder: (context) => LanguageSelect())).then((value){
+//            _pageConfig();
+            setState((){});
+          });
         },
       ),
       SizedBox(
@@ -240,7 +246,6 @@ class AccountState extends State<Account> {
     socket.destroy();
     socket.dispose();
     googleUser = await googleSignIn.disconnect();
-    // set user.token_id in DB to " "
     await currentUser.updateToken(" ");
     Navigator.of(context)
         .pushNamedAndRemoveUntil('/login', ModalRoute.withName('/'));

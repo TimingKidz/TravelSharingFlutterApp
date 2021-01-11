@@ -9,6 +9,7 @@ class Travel_Info{
   Routes routes;
   String id;
   String uid;
+  String status;
 
   Travel_Info({this.routes, this.id, this.uid});
 
@@ -30,11 +31,13 @@ class Travel_Info{
         } else {
           print(role);
           Map<String, dynamic> data = jsonDecode(response.body);
+          print("ssssssssssssssssssssssssss");
           List<Travel_Info> travel_info_list = List();
-          data['event'][path[role]].forEach((x) {
+          data['data']['event'][path[role]].forEach((x) {
             Travel_Info tmp = Travel_Info.fromJson(x);
+            tmp.status = data['status'][tmp.uid];
             travel_info_list.add(tmp);
-            print(tmp.routes.src);
+            print(tmp.status);
           });
           return Future.value(travel_info_list);
         }

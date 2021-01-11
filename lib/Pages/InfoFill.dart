@@ -23,7 +23,6 @@ class InfoFill extends StatefulWidget {
   final int Role;
 
   const InfoFill({Key key,this.routes, this.bounds, this.lines, this.Markers, this.src, this.dst,this.Role}) : super(key: key);
-
   _InfoFillState createState() => _InfoFillState();
 }
 
@@ -42,13 +41,13 @@ class _InfoFillState extends State<InfoFill> {
   @override
   void dispose() {
     super.dispose();
-    // _formKey.currentState.reset(); // Clear form
+    _mapController.dispose();
+    _formKey.currentState.reset(); // Clear form
   }
 
   @override
   void initState() {
     super.initState();
-    _pageConfig();
     Final_Data.date =  DateTime.now().toString();
     Final_Data.src = widget.src;
     Final_Data.dst = widget.dst;
@@ -239,42 +238,23 @@ class _InfoFillState extends State<InfoFill> {
     );
   }
 
-  _pageConfig(){
-    socket.off('onNewNotification');
-    socket.on('onNewNotification', (data) {
-      currentUser.status.navbarNoti = true;
-    });
-    firebaseMessaging.configure(
-        onMessage: (Map<String, dynamic> message) async {
-          print("onMessage: $message");
-          showNotification(message);
-        }
-    );
-  }
-
-  // set camera to cover all routes in map
   void _onMapCreated(GoogleMapController controller) async{
     _mapController = controller;
     Future.delayed(new Duration(milliseconds: 100), () async {
       await _mapController.animateCamera(CameraUpdate.newLatLngBounds(widget.bounds, 50));
     });
-
-    print("dddddd");
-
   }
 
   _SavetoDB()async{
     User user = currentUser ;
+    print(Final_Data.date);
     Final_Data = new Routes(id: user.uid, routes : widget.routes, src : Final_Data.src, dst : Final_Data.dst,
         amount : Final_Data.amount, date :Final_Data.date, isMatch: false,match: List(),role : widget.Role.toString(),
         vehicle: widget.Role == 0 ? Vehicle(vid: currentUser.vehicle.first.vid ,type:  currentUser.vehicle.first.type) : Vehicle(),tag: ["T&A"]);
     Final_Data.SaveRoute_toDB(user).then((x){
-      _formKey.currentState.reset(); // Clear form
-      Navigator.of(context).pop();
-      Navigator.of(context).pop();
+      _formKey.currentState.reset();
+      Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
     });
-    // go to dashboard
-
   }
 }
 

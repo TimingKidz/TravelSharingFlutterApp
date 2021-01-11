@@ -52,6 +52,7 @@ class SignUpPageState extends State<SignUpPage> {
     "College of Art, Media and Technology",
   ];
   File selectedImage;
+  bool isPress = false;
 
   @override
   void setState(fn) {
@@ -73,8 +74,7 @@ class SignUpPageState extends State<SignUpPage> {
     return WillPopScope(
       onWillPop: () async {
         await googleSignIn.disconnect();
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => LoginPage()));
+        Navigator.pushReplacementNamed(context,"/login");
         return false;
       },
       child: Scaffold(
@@ -165,10 +165,18 @@ class SignUpPageState extends State<SignUpPage> {
                 child: FloatingActionButton.extended(
                     elevation: 2,
                     highlightElevation: 2,
-                    icon: Icon(Icons.check),
-                    label: Text("Finish"),
-                    onPressed: (){
-                      if(_formKey.currentState.validate()) _Nextpage();
+                    icon: isPress ? SizedBox(
+                      width: 16.0,
+                      height: 16.0,
+                      child: CircularProgressIndicator(strokeWidth: 2,valueColor: AlwaysStoppedAnimation(Colors.black),),
+                    ):Icon(Icons.check),
+                    label: Text(isPress ? "Loading..." :"Finish"),
+                    onPressed: isPress ? null : (){
+                      if(_formKey.currentState.validate()) {
+                        isPress = true;
+                        setState(() { });
+                        _Nextpage();
+                      }
                     }
                 ),
               ),
@@ -217,7 +225,7 @@ class SignUpPageState extends State<SignUpPage> {
               isJustDate: true,
               isBirthday: true,
               onDatePick: (date){
-
+                userData.birthDate = date.toString();
               },
             ),
           ),
@@ -296,17 +304,23 @@ class SignUpPageState extends State<SignUpPage> {
 
   _Nextpage() async {
     userData.token = await firebaseMessaging.getToken();
-    await userData.Register();
-    currentUser = await User().getCurrentuser(googleUser.id);
-    if ( selectedImage != null){
-      await currentUser.uploadProfile(selectedImage);
-    }
+    bool isSuccesful = await userData.Register();
+    if( isSuccesful ){
+      currentUser = await User().getCurrentuser(googleUser.id);
+      if ( selectedImage != null){
+        await currentUser.uploadProfile(selectedImage);
+      }
 //    await currentUser.uploadStudentCard(file);
-    currentUser = await User().getCurrentuser(googleUser.id);
-    await httpClass.getNewHeader();
-    initsocket();
-    Navigator.pushReplacement(context,MaterialPageRoute(
-        builder : (context) => HomeNavigation()));
+      currentUser = await User().getCurrentuser(googleUser.id);
+      await httpClass.getNewHeader();
+      initsocket();
+      Navigator.pushReplacementNamed(context,"/homeNavigation");
+    }else{
+      isPress = false;
+      setState(() { });
+    }
+
+
   }
 }
 

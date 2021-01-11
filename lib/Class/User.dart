@@ -19,10 +19,11 @@ class User {
   String token;
   Status status;
   String imgpath;
+  String birthDate;
   ReviewSummary reviewSummary;
 
 
-  User({this.name,this.username, this.email,this.id,this.uid,this.faculty,this.gender,this.vehicle,this.token,this.status,this.imgpath,this.reviewSummary});
+  User({this.name,this.username,this.birthDate, this.email,this.id,this.uid,this.faculty,this.gender,this.vehicle,this.token,this.status,this.imgpath,this.reviewSummary});
 
   User.fromJson(Map<String, dynamic> json) {
     name = json['name'];
@@ -45,6 +46,7 @@ class User {
     }
     imgpath = json['imgpath'];
     reviewSummary = ReviewSummary.fromJson(json['Review']);
+    birthDate = json['birthDate'];
   }
 
   Map<String, dynamic> toJson() {
@@ -58,6 +60,7 @@ class User {
     data['gender'] = this.gender;
     data['vehicle'] = this.vehicle;
     data['token'] = this.token;
+    data['birthDate'] = this.birthDate;
     return data;
   }
 
@@ -100,7 +103,7 @@ class User {
   }
 
   Future<List<String>> getisReq(String id ,String _id) async {
-    try{
+//    try{
       Http.Response response = await httpClass.reqHttp("/api/routes/getisReq",{'id': id ,'_id' : _id});
       if(response.statusCode == 400 ){
           return Future.value(null);
@@ -116,10 +119,10 @@ class User {
           return Future.value(temp);
         }
       }
-    }catch(error){
-      print(error);
-      throw("can't connect");
-    }
+//    }catch(error){
+//      print(error);
+//      throw("can't connect");
+//    }
   }
 
   Future<bool> AcceptReq(String Reqid,String Currentid,String Current_id) async {

@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_sharing/Class/HTTP.dart';
@@ -24,6 +24,7 @@ import 'package:travel_sharing/Pages/homeNavigation.dart';
 import 'package:travel_sharing/Pages/InfoFill.dart';
 import 'package:travel_sharing/Pages/mapview.dart';
 import 'package:travel_sharing/Pages/ratingPage.dart';
+import 'package:travel_sharing/Pages/signupPage.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 import 'ChatFile/chatPage.dart';
 import 'Class/User.dart';
@@ -41,11 +42,11 @@ final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 u.UserCredential firebaseAuth;
 GoogleSignInAccount googleUser;
-LatLng current_Location;
 User currentUser;
 IO.Socket socket ;
 Status status;
 HTTP httpClass = new HTTP();
+LatLng current_Location;
 SharedPreferences prefs;
 bool isJoinPage = true;
 
@@ -77,9 +78,6 @@ void main() async {
  ));
   HttpOverrides.global = new MyHttpOverrides();
   prefs = await SharedPreferences.getInstance();
-  LocationData currentLoc = await Location().getLocation();
-  current_Location =
-      LatLng(currentLoc.latitude, currentLoc.longitude);
   runApp(MyApp());
 }
 
@@ -152,7 +150,7 @@ class MyApp extends StatelessWidget {
           '/dashboard' : (context) => Dashboard(),
           '/joinMap' : (context) => CreateRoute_Join(),
           '/inviteMap' : (context) => CreateRoute(),
-          '/tripInfo' : (context) => InfoFill(),
+          '/InfoFill' : (context) => InfoFill(),
           '/chatPage' : (context) => ChatPage(),
           '/feedPage' : (context) => FeedPage(),
           '/MatchInfo' : (context) => Matchinformation(),
@@ -165,6 +163,7 @@ class MyApp extends StatelessWidget {
           '/Profile' : (context) => ProfileManagePage(),
           '/ratingPage' : (context) => RatingPage(),
           '/ReqList' : (context) => ReqList(),
+          '/SignUp' : (context) => SignUpPage()
         },
       );
   }

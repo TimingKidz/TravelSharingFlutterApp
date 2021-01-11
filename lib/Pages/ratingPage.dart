@@ -29,6 +29,7 @@ class RatingPageState extends State<RatingPage> {
     super.initState();
   }
 
+
   @override
   void dispose() {
     notificationBarIconLight();
@@ -112,9 +113,8 @@ class RatingPageState extends State<RatingPage> {
               review.tag = ratingTypeSelected;
               review.score = rate;
               await review.sendReview(widget.sendToid,widget.notiId).then((value) {
-                if( value ) print("send a Review suceesfull.");
-                else print("Fail to send a Review.");
-                Navigator.of(context).pop();
+                if( value )  Navigator.of(context).pop();
+                else ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not send a Review.")));
               });
             },
           )
@@ -141,9 +141,7 @@ class RatingPageState extends State<RatingPage> {
         },
         child: Padding(
           padding: EdgeInsets.all(8.0),
-          child: Text(
-              type
-          ),
+          child: Text(type),
         ),
       ),
     );

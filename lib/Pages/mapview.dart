@@ -40,7 +40,7 @@ class _MapView extends State<MapView> {
   p.PlacesSearchResult tmp = null;
   LatLng src = null;
   LatLng dst = null;
-  static int Role = 0;
+//  static int Role = 0;
 
   @override
   void setState(fn) {
@@ -50,9 +50,15 @@ class _MapView extends State<MapView> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    _mapController.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
-    _pageConfig();
     _createMarkers();
   }
 
@@ -101,19 +107,6 @@ class _MapView extends State<MapView> {
           )
         ],
       ),
-    );
-  }
-
-  _pageConfig(){
-    socket.off('onNewNotification');
-    socket.on('onNewNotification', (data) {
-      currentUser. status.navbarNoti = true;
-    });
-    firebaseMessaging.configure(
-        onMessage: (Map<String, dynamic> message) async {
-          print("onMessage: $message");
-          showNotification(message);
-        }
     );
   }
 

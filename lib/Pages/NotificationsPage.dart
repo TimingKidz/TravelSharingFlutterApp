@@ -1,7 +1,10 @@
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/DateManage.dart';
 import 'package:travel_sharing/Class/Notifications.dart';
+import 'package:travel_sharing/Dialog.dart';
 import 'package:travel_sharing/Pages/ratingPage.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
@@ -16,7 +19,7 @@ class NotificationsPage extends StatefulWidget{
 }
 
 class NotificationsPageState extends State<NotificationsPage>{
-  List<Notifications> notifications = List();
+  List<Notifications> notifications = null;
 
 
   @override
@@ -29,17 +32,19 @@ class NotificationsPageState extends State<NotificationsPage>{
   @override
   void initState() {
     super.initState();
-    _pageConfig();
+    _pageConfig(widget.isNeed2Update);
 
   }
 
-  _pageConfig(){
-    getData(widget.isNeed2Update);
+  _pageConfig(bool isNeed2Update){
+    getData(isNeed2Update);
+    socket.off('onAccept');
     socket.off('onNewNotification');
     socket.off('onNewAccept');
     socket.off('onNewMatch');
     socket.off('onNewMessage');
     socket.off('onRequest');
+    socket.off('onTripEnd');
     socket.off('onKick');
 
     socket.on('onKick', (data){
@@ -92,10 +97,24 @@ class NotificationsPageState extends State<NotificationsPage>{
     return Scaffold(
         body: Stack(
           children: <Widget>[
+            notifications != null ?
             Padding(
               padding: EdgeInsets.only(top: 80),
               child: notifications.isNotEmpty ? _buildListView() : Center(
                 child: Text("Nothing in notifications yet."),
+              ),
+            ) : Padding(
+              padding: EdgeInsets.only(top: 80),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    CircularProgressIndicator(),
+                    SizedBox(height: 20.0),
+                    Text("Loading..."),
+                  ],
+                )
               ),
             ),
             Card(
@@ -140,13 +159,43 @@ class NotificationsPageState extends State<NotificationsPage>{
           if(notifications[i].tag == "review")
             return _buildRow(notifications[i]);
           return Dismissible(
-            key: Key(notifications[i].sender),
+            behavior: HitTestBehavior.translucent,
+            key: UniqueKey(),
             direction: DismissDirection.endToStart,
-            onDismissed: (direction){
-
+            confirmDismiss: (direction) async{
+              bool isDelete = false;
+              normalDialog(
+                this.context,
+                'Are you sure',
+                Text("This action couldn't be undone. Would you like to end this trip ?"),
+                <Widget>[
+                  FlatButton(
+                    child: Text('No'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  FlatButton(
+                    child: Text('Yes'),
+                    onPressed: () async {
+                      notifications[i].deleteNotification(currentUser.uid).then((value){
+                        if(value){
+                          isDelete = true;
+                          notifications.removeAt(i);
+                          Navigator.of(context).pop();
+                          setState(() {  });
+                        }else{
+                          print("error");
+                        }
+                      });
+                    },
+                  ),
+                ],
+              );
+              return isDelete;
             },
             background: Container(
-              color: Colors.red,
+              color: Theme.of(context).accentColor,
               alignment: Alignment.centerRight,
               padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: Icon(Icons.delete, color: Colors.white),
@@ -209,7 +258,10 @@ class NotificationsPageState extends State<NotificationsPage>{
           ),
           child: ListTile(
             onTap: () => Navigator.push(context, MaterialPageRoute(
-                builder: (context) =>RatingPage(sendToid: data.sender,notiId: data.uid,))).then((value) async => await getData(false)),
+                builder: (context) =>RatingPage(sendToid: data.sender,notiId: data.uid,))).then((value) async {
+                  await _pageConfig(true);
+                  widget.setSate();
+                }),
             trailing: Icon(Icons.navigate_next),
             title: Row(
               children: [

@@ -17,6 +17,55 @@ void normalDialog(BuildContext context, String title, Widget content, List<Widge
   );
 }
 
+void unPopDialog(BuildContext context, String title, Widget content, List<Widget> actions){
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return WillPopScope(
+        onWillPop: () async => false,
+        child:AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0)
+          ),
+          title: Text(title),
+          content: content,
+          actions: actions,
+        ),
+      );
+    },
+  );
+}
+
+
+void loadingDialog(BuildContext context,String text) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return WillPopScope(
+          onWillPop: () async => false,
+      child: Dialog(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0)
+        ),
+        child: Container(
+          margin: EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 16.0),
+              Text(text),
+            ],
+          ),
+        ),
+      ),
+      );
+    },
+  );
+}
+
 void swipeUpDialog(BuildContext context, Widget route){
   showModalBottomSheet(
     context: context,

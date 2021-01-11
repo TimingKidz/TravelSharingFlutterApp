@@ -61,7 +61,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
     firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
           print(messages);
-          if( message['data']['tag'] != widget.tripid ){
+          if( (message['data']['tag'] != widget.tripid && message['data']['page'] == '/chatPage') ||  message['data']['page'] != '/chatPage' ){
             print("onMessage: $message");
             showNotification(message);
           }

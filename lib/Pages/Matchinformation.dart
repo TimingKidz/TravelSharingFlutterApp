@@ -28,14 +28,15 @@ class _Matchinformation extends State<Matchinformation> {
   Routes Final_Data = new Routes();
   List<Map<String, dynamic>> passengerList = [];
   TripDetails tripDetails;
-  bool isHistory;
-
   GoogleMapController _mapController;
   Set<Polyline> lines = Set();
   List<LatLng> temp = List();
   Set<Marker> Markers = Set();
   LatLngBounds bounds;
   bool isEndTrip = false;
+//  String uid;
+//  Travel_Info Data;
+  bool isHistory;
 
   @override
   void setState(fn) {
@@ -44,29 +45,17 @@ class _Matchinformation extends State<Matchinformation> {
     }
   }
 
-  Future<void> getData(bool isNeed2Update) async {
-//    try{
-      if(!isHistory) tripDetails =  await TripDetails().getDetails(widget.uid,widget.data.uid,isNeed2Update);
-      else tripDetails =  await TripDetails().getHistory(widget.uid);
-//      print(tripDetails.hostUser.vehicle.first.toJson());
-      setState(() {});
-//    }catch(error){
-//      print("$error tttashgahsdajsdadkajdak");
-//    }
-  }
-
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
     isHistory = widget.isHistory == null ? false : widget.isHistory;
-    _createMarkers();
     _pageConfig(widget.data.routes.status);
   }
 
-
-
   _pageConfig(bool isNeed2Update){
     getData(isNeed2Update);
+    socket.off('onAccept');
     socket.off('onNewAccept');
     socket.off('onNewMatch');
     socket.off('onNewMessage');
@@ -78,14 +67,24 @@ class _Matchinformation extends State<Matchinformation> {
     socket.on('onNewNotification', (data) {
       currentUser.status.navbarNoti = true;
     });
-    socket.on('onNewAccept', (data) async {
-      if( widget.data.uid == data['tripid'] ){
+
+    socket.on('onKick', (data) async {
+      print("onkick");
+      if (widget.data.uid == data['tripid']) {
         await getData(true);
       }
-      });
+    });
+
+    socket.on('onNewAccept', (data) async {
+      print("onNewAccecpt");
+      if (widget.data.uid == data['tripid']) {
+        await getData(true);
+      }
+    });
+
     firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
-          if( message['data']['page'] != '/MatchInformation' ){
+          if(  (message['data']['tag'] != widget.data.uid && message['data']['page'] == '/MatchInformation') ||  message['data']['page'] != '/MatchInformation' ){
             print("onMessage: $message");
             showNotification(message);
           }
@@ -96,7 +95,8 @@ class _Matchinformation extends State<Matchinformation> {
 
   @override
   void dispose() {
-    socket.off('onNewAccept');
+//    socket.off('onNewAccept');
+    _mapController.dispose();
     super.dispose();
   }
 
@@ -104,7 +104,8 @@ class _Matchinformation extends State<Matchinformation> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Navigator.of(context).pop();
+        if(isHistory)  Navigator.of(context).pop();
+          else Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
         return false;
       },
       child: tripDetails == null
@@ -150,7 +151,9 @@ class _Matchinformation extends State<Matchinformation> {
                                       tooltip: "back",
                                       iconSize: 26.0,
                                       color: Colors.white,
-                                      onPressed: () => Navigator.of(context).pop(),
+                                      onPressed: () {
+                                        Navigator.of(context).maybePop();
+                                      },
                                     ),
                                     SizedBox(width: 16.0),
                                     Text(
@@ -322,7 +325,7 @@ class _Matchinformation extends State<Matchinformation> {
                 Text(isEndTrip ? 'Loading...':'End Trip', style: TextStyle(color: Colors.white,))
               ],
             ),
-            onPressed: () => normalDialog(
+            onPressed: () => isEndTrip ? null : normalDialog(
               this.context,
               'Are you sure',
               Text("This action couldn't be undone. Would you like to end this trip ?"),
@@ -360,8 +363,10 @@ class _Matchinformation extends State<Matchinformation> {
       "hostuser_id" : tripDetails.hostUser.uid
     };
     tmp['subuser'] = subuser;
-    await User().endTrip(tmp).then((value){
-        if(value) Navigator.of(context).pop();
+
+   currentUser.endTrip(tmp).then((value){
+        if(value)
+          Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
         else Scaffold.of(context).showSnackBar(SnackBar(content: Text("Can not End Trip.")));
     });
   }
@@ -383,7 +388,7 @@ class _Matchinformation extends State<Matchinformation> {
                       child: SizedBox(width: 64, height: 64, child: Icon(Icons.add)),
                       onTap: () {
                         Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => ReqList(data: widget.data, isFromMatchinfo: true,))).then((value){
+                            builder: (context) => ReqList(data: widget.data,isFromMatchinfo: true,))).then((value){
                           _pageConfig(false);
                         });
                       },
@@ -436,16 +441,27 @@ class _Matchinformation extends State<Matchinformation> {
     );
   }
 
+  Future<void> getData(bool isNeed2Update) async {
+    try{
+    if(!isHistory) tripDetails =  await TripDetails().getDetails(widget.uid,widget.data.uid,isNeed2Update);
+    else tripDetails =  await TripDetails().getHistory(widget.uid);
+    _createMarkers();
+    setState(() {});
+    }catch(error){
+      print("$error from Matchinfo");
+    }
+  }
+
   kickOut(User user,Routes routes ) async {
-    print("Kick out ${user.uid} ${routes.uid}");
     await tripDetails.kickOut(user.uid,routes.uid,"ขอโทษครับ");
     await getData(false);
   }
+
   // find direction to destination
   findDirections(bool isFind_Direction ) async {
     // create line of routes on map
     var line = Polyline(
-      points: widget.data.routes.routes,
+      points: tripDetails.routes.routes,
       geodesic: true,
       polylineId: PolylineId("mejor ruta"),
       color: Colors.blue,
@@ -459,20 +475,22 @@ class _Matchinformation extends State<Matchinformation> {
 
   _createMarkers() {
     Markers.clear();
-    Markers.add(
-      Marker(
-        markerId: MarkerId("1"),
-        position: widget.data.routes.routes.first,
-        infoWindow: InfoWindow(title: "Roca 123"),
-      ),
-    );
-    Markers.add(
-      Marker(
-        markerId: MarkerId("2"),
-        position: widget.data.routes.routes.last,
-        infoWindow: InfoWindow(title: "Roca 123"),
-      ),
-    );
+    for(int i = 0 ; i<tripDetails.subRoutes.length ; i++){
+      Markers.add(
+        Marker(
+          markerId: MarkerId("1"),
+          position: tripDetails.subRoutes[i].routes.first,
+          infoWindow: InfoWindow(title:"dst : ${tripDetails.subUser[i].name}"),
+        ),
+      );
+      Markers.add(
+        Marker(
+          markerId: MarkerId("2"),
+          position: tripDetails.subRoutes[i].routes.last,
+          infoWindow: InfoWindow(title: "src : ${tripDetails.subUser[i].name}"),
+        ),
+      );
+    }
     setState(() {});
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/Travel_Info.dart';
+import 'package:travel_sharing/Dialog.dart';
 import 'package:travel_sharing/Pages/JoinMap.dart';
 import 'package:travel_sharing/Pages/MatchList.dart';
 import 'package:travel_sharing/Pages/Matchinformation.dart';
@@ -12,12 +13,9 @@ import 'package:travel_sharing/custom_color_scheme.dart';
 import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
 
-
 class Dashboard extends StatefulWidget {
   final Function setSate;
   final bool isNeed2Update;
-
-
   const Dashboard({Key key, this.isNeed2Update , this.setSate}) : super(key: key);
   @override
   _Dashboard createState() => _Dashboard();
@@ -26,8 +24,8 @@ class Dashboard extends StatefulWidget {
 class _Dashboard extends State<Dashboard> {
   Location location = Location();
   LocationData Locations;
-  List<Travel_Info> _joinList  = List();
-  List<Travel_Info> _invitedList = List();
+  List<Travel_Info> _joinList  = null;
+  List<Travel_Info> _invitedList = null;
   // GlobalKey actionKey = GlobalKey();
   // double height;
   // bool isJoinPage = true;
@@ -95,6 +93,7 @@ class _Dashboard extends State<Dashboard> {
 
   _pageConfig(bool isNeed2Update) async {
     await getData(isNeed2Update);
+    socket.off('onAccept');
     socket.off('onNewNotification');
     socket.off('onNewAccept');
     socket.off('onNewMatch');
@@ -106,13 +105,12 @@ class _Dashboard extends State<Dashboard> {
     socket.on('onKick', (data){
       print("onKick");
       _deletejoinCard(data['tripid']);
-      currentUser.status.navbarNoti = true;
-      widget.setSate();
     });
     socket.on('onTripEnd', (data) {
-      print(data);
+
       _deletejoinCard(data['tripid']);
     });
+
     socket.on('onRequest', (data) {
       _updateCardStatus(data['tripid']);
     });
@@ -141,15 +139,8 @@ class _Dashboard extends State<Dashboard> {
     );
   }
 
-
- afterBuild(){
-    print("555555555555");
-    setState(() { });
- }
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => afterBuild);
-
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
@@ -247,13 +238,29 @@ class _Dashboard extends State<Dashboard> {
   }
 
   Widget _widgetOptions(){
-    if((_joinList.isEmpty && isJoinPage) || (_invitedList.isEmpty && !isJoinPage)){
-      return Center(
-        child: Text('No List'),
-      );
-    }else{
-      return _buildListView();
+    if( _joinList != null && _invitedList != null){
+      if((_joinList.isEmpty && isJoinPage) || (_invitedList.isEmpty && !isJoinPage)){
+        return Center(
+          child: Text('No List'),
+        );
+      }else{
+        return _buildListView();
+      }
     }
+    return Padding(
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.09),
+      child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              CircularProgressIndicator(),
+              SizedBox(height: 20.0),
+              Text("Loading..."),
+            ],
+          )
+      ),
+    );
   }
 
   Widget _buildListView() {
@@ -273,7 +280,7 @@ class _Dashboard extends State<Dashboard> {
   Widget _buildRow(Travel_Info data) {
     print(data);
     return DashboardCardTile(
-      data: data.routes,
+      data: data,
       status: data.routes.status,
       onCardPressed: () => _onCardPressed(data),
       onDeletePressed: () async {
@@ -288,59 +295,84 @@ class _Dashboard extends State<Dashboard> {
   }
 
   _onCardPressed(Travel_Info data) async {
-    if( isJoinPage ){
+    if( data.routes.role == "1" ){
       if( data.routes.match.isNotEmpty ){
-        await Navigator.push(context, MaterialPageRoute(
+        Navigator.push(context, MaterialPageRoute(
             builder: (context) => Matchinformation(uid: data.routes.match.first,data: data,))).then((value) async {
           _pageConfig(currentUser.status.navbarTrip);
           currentUser.status.navbarTrip = false;
           await widget.setSate();
         });
       }else{
-        await Navigator.push(context, MaterialPageRoute(
+        Navigator.push(context, MaterialPageRoute(
             builder: (context) => MatchList(data: data))).then((value) async {
-          _pageConfig(currentUser.status.navbarTrip);
-          currentUser.status.navbarTrip = false;
-          await widget.setSate();
+            _pageConfig(currentUser.status.navbarTrip);
+            currentUser.status.navbarTrip = false;
+            await widget.setSate();
         });
       }
     }else{
       if( data.routes.match.isNotEmpty){
-        await Navigator.push(context, MaterialPageRoute(
+        Navigator.push(context, MaterialPageRoute(
             builder: (context) => Matchinformation(uid: data.uid, data: data))).then((value) async {
-          print("backkkkkkkkkk matchinfo");
           _pageConfig(currentUser.status.navbarTrip);
           currentUser.status.navbarTrip = false;
           await widget.setSate();
         });
       }else{
-        await Navigator.push(context, MaterialPageRoute(
+        Navigator.push(context, MaterialPageRoute(
             builder: (context) => ReqList(data: data,isFromMatchinfo: false,))).then((value) async {
-          print("backkkkkkkkkk req");
-          _pageConfig(currentUser.status.navbarTrip);
-          currentUser.status.navbarTrip = false;
-          await widget.setSate();
+          if(value){
+            loadingDialog(context,"Please wait...");
+            await _pageConfig(currentUser.status.navbarTrip);
+            currentUser.status.navbarTrip = false;
+            _invitedList.forEach((element) {
+              if(element.uid == data.uid){
+                Navigator.of(context).pop();
+                _onCardPressed(element);
+              }
+            });
+          }else{
+            await _pageConfig(currentUser.status.navbarTrip);
+            currentUser.status.navbarTrip = false;
+            await widget.setSate();
+          }
         });
       }
     }
   }
 
   _callInviteMap() async{
-    Navigator.push(context, MaterialPageRoute(
-        builder: (context) => CreateRoute())).then((value) async {
-      _pageConfig(currentUser.status.navbarTrip);
-      currentUser.status.navbarTrip = false;
-      await widget.setSate();
-    });
+    if(currentUser.vehicle.isEmpty){
+      normalDialog(context,
+          "No vehicle",
+          Text("Please add your vehicle.\n\n Account > Vehicle Management",
+          textAlign: TextAlign.center),
+        <Widget>[
+          FlatButton(
+            child: Text('Ok'),
+            onPressed: () async {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    }else{
+      Navigator.push(context, MaterialPageRoute(
+          builder: (context) => CreateRoute())).then((value) async {
+        _pageConfig(currentUser.status.navbarTrip);
+        currentUser.status.navbarTrip = false;
+        await widget.setSate();
+      });
+    }
   }
 
   _callJoinMap() async{
     Navigator.push(context, MaterialPageRoute(
         builder: (context) => CreateRoute_Join())).then((value) async {
-          _pageConfig(currentUser.status.navbarTrip);
-          currentUser.status.navbarTrip = false;
+      _pageConfig(currentUser.status.navbarTrip);
+      currentUser.status.navbarTrip = false;
       await widget.setSate();
     });
   }
-
 }

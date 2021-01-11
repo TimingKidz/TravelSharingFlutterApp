@@ -23,7 +23,7 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
   GlobalKey actionKey = GlobalKey();
   double height;
   int currentI = 0;
-  List<Feed> list = List();
+  List<Feed> list = null;
   bool isFilter = false;
 
   List<String> filterTypeList = List();
@@ -41,13 +41,11 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _pageConfig();
-    print(currentUser.imgpath);
 
     filterTypeList = ["ไปด้วย", "ชวน", "Travel"];
     for(String each in filterTypeList){
       isSelected.addAll({each: false});
     }
-    // WidgetsBinding.instance.addPostFrameCallback((_) => _getHeight());
   }
 
   // void _getHeight(){
@@ -61,6 +59,7 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
     return Scaffold(
         body: Stack(
           children: <Widget>[
+            list != null ?
             Padding(
               padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * (isFilter ? 0.13 : 0.09)),
               child: list.isNotEmpty
@@ -69,6 +68,19 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
                 child: _buildListView(),
               )
                   : Center(child: Text("Nothing in feed yet."),
+              ),
+            ) : Padding(
+              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.09),
+              child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      CircularProgressIndicator(),
+                      SizedBox(height: 20.0),
+                      Text("Loading..."),
+                    ],
+                  )
               ),
             ),
             Card(
@@ -213,11 +225,13 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
 
   _pageConfig(){
     getData(0);
+    socket.off('onAccept');
     socket.off('onNewNotification');
     socket.off('onNewAccept');
     socket.off('onNewMatch');
     socket.off('onNewMessage');
     socket.off('onRequest');
+    socket.off('onTripEnd');
     socket.off('onKick');
 
     socket.on('onKick', (data){
@@ -246,9 +260,7 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
       widget.setSate();
     });
     socket.on('onNewNotification', (data) {
-      print(currentUser.status.navbarNoti);
       currentUser.status.navbarNoti = true;
-      print(currentUser.status.navbarNoti);
       widget.setSate();
     });
     firebaseMessaging.configure(
@@ -260,15 +272,15 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
   }
 
   getData(int offset) async {
-//    try{
+    try{
       feed = await Feeds().getFeed(offset);
-      print(feed.Offset);
-      list = list + feed.feeds;
+      print(feed);
+      list = (list ?? []) + feed.feeds;
       currentI = feed.Offset;
       setState(() { });
-//    }catch(error){
-//      print(error );
-//    }
+    }catch(error){
+      print(error );
+    }
   }
 
   Widget _buildListView() {

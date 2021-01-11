@@ -16,59 +16,20 @@ class ReviewView extends StatefulWidget {
 class _ReviewViewState extends State<ReviewView> {
   Review review ;
   int currentI = 0;
-  List<EachReview> reviewList = List();
+  List<EachReview> reviewList = null;
 
   @override
   void initState() {
     super.initState();
-    _pageConfig();
+    getData(0);
   }
 
-  _pageConfig() async {
-    await getData(0);
-    socket.off('onNewNotification');
-    socket.off('onNewAccept');
-    socket.off('onNewMatch');
-    socket.off('onNewMessage');
-    socket.off('onRequest');
-    socket.off('onKick');
-
-    socket.on('onKick', (data){
-      currentUser.status.navbarTrip = true;
-      currentUser.status.navbarNoti = true;
-    });
-    socket.on('onRequest', (data) {
-      currentUser.status.navbarTrip = true;
-    });
-    socket.on('onNewMatch' , (data){
-      currentUser.status.navbarTrip = true;
-    });
-    socket.on('onNewAccept', (data){
-      currentUser.status.navbarTrip = true;
-    });
-    socket.on('onNewMessage',(data){
-      currentUser.status.navbarTrip = true;
-    });
-    socket.on('onNewAccept',(data){
-      currentUser.status.navbarTrip = true;
-    });
-    socket.on('onNewNotification', (data){
-      currentUser.status.navbarNoti = true;
-    });
-    firebaseMessaging.configure(
-        onMessage: (Map<String, dynamic> message) async {
-          print("onMessage: $message");
-          showNotification(message);
-        }
-    );
-  }
 
   // get request list of current routes
   Future<void> getData(int offset) async {
     try{
-
       review =  await Review().getReview(widget.user.uid,offset);
-      reviewList = reviewList + review.review;
+      reviewList = (reviewList ?? []) + review.review;
       currentI = review.offset;
       setState((){});
     }catch(error){
@@ -80,11 +41,24 @@ class _ReviewViewState extends State<ReviewView> {
     return Scaffold(
       body: Stack(
         children: <Widget>[
-          if(review != null)
+          reviewList != null ?
           Padding(
             padding: EdgeInsets.only(top: 100),
             child: review.review.isNotEmpty ? _buildListView() : Center(
               child: Text("No reviews in your account yet."),
+            ),
+          ) : Padding(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.09),
+            child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    CircularProgressIndicator(),
+                    SizedBox(height: 20.0),
+                    Text("Loading..."),
+                  ],
+                )
             ),
           ),
           Card(
@@ -112,7 +86,7 @@ class _ReviewViewState extends State<ReviewView> {
                               height: 8.0,
                             ),
                             RatingBarIndicator(
-                              rating:  review != null ? review.totalscore : 5.0,
+                              rating:  review != null ? review.totalscore : 0.0,
                               itemBuilder: (context, index) => Icon(
                                 Icons.star,
                                 color: Colors.amber,

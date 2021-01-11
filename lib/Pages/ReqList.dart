@@ -19,8 +19,11 @@ class ReqList extends StatefulWidget {
 }
 
 class _ReqListstate extends State<ReqList> {
-  List<Req_Info> _ReqList = List();
+  List<Req_Info> _ReqList = null;
   int _index = 1;
+//  Travel_Info Data; // current routes
+//  bool isFromMatchinfo;
+  Map<String,bool> isPress = Map();
 
   @override
   void setState(fn) {
@@ -31,7 +34,6 @@ class _ReqListstate extends State<ReqList> {
 
   @override
   void dispose() {
-    socket.off('onRequest');
     notificationBarIconLight();
     super.dispose();
   }
@@ -43,9 +45,22 @@ class _ReqListstate extends State<ReqList> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+//    final arg = ModalRoute.of(context).settings.arguments as Map<String,dynamic>;
+//    Data = arg['data'];
+//    isFromMatchinfo = arg['isFromMatchinfo'];
+  }
+  @override
   Widget build(BuildContext context) {
     notificationBarIconDark();
-    return Scaffold(
+    return WillPopScope(
+        onWillPop: () async {
+          Navigator.of(context).pop(false);
+      return false;
+    },
+    child:
+      Scaffold(
         body: SafeArea(
           child: Stack(
             children: [
@@ -59,9 +74,10 @@ class _ReqListstate extends State<ReqList> {
                 padding: EdgeInsets.only(left: 4.0, top: 4.0, bottom: 16.0, right: 4.0),
                 child: IconButton(
                   icon: Icon(Icons.arrow_back),
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () => Navigator.of(context).pop(false),
                 ),
               ),
+              if( _ReqList != null)
               if(_ReqList.isNotEmpty)
                 Positioned.fill(
                   child: Align(
@@ -75,17 +91,35 @@ class _ReqListstate extends State<ReqList> {
             ],
           ),
         )
+      )
     );
   }
 
   Widget _widgetOptions(){
-    if(_ReqList.isEmpty){
-      return Center(
-        child: Text('No List'),
-      );
-    }else{
-      return _buildListView();
+    if( _ReqList != null){
+      if(_ReqList.isEmpty){
+        return Center(
+          child: Text('No List'),
+        );
+      }else{
+        return _buildListView();
+      }
     }
+    return Padding(
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.09),
+      child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              CircularProgressIndicator(),
+              SizedBox(height: 20.0),
+              Text("Loading..."),
+            ],
+          )
+      ),
+    );
+
   }
 
   Widget _buildListView() {
@@ -111,6 +145,7 @@ class _ReqListstate extends State<ReqList> {
       url: MapStaticRequest().getMapUrl(widget.data.routes, data.routes),
       data: data,
       userData: widget.data,
+      isPress : isPress[data.routes.uid],
       onAcceptPressed: () => _onAcceptPressed(data),
       onDeclinePressed: () => _onDeclinePressed(data),
     );
@@ -123,11 +158,15 @@ class _ReqListstate extends State<ReqList> {
 
   _pageConfig(bool isNeed2Update) async {
     await getData(isNeed2Update);
+    socket.off('onNewNotification');
     socket.off('onNewAccept');
     socket.off('onNewMatch');
     socket.off('onNewMessage');
     socket.off('onRequest');
-    socket.off('onNewNotification');
+    socket.off('onTripEnd');
+    socket.off('onKick');
+    socket.off('onAccept');
+
     socket.on('onNewNotification', (data) {
       currentUser.status.navbarNoti = true;
     });
@@ -150,6 +189,9 @@ class _ReqListstate extends State<ReqList> {
   Future<void> getData(bool isNeed2Update) async {
     try{
       _ReqList =  await Req_Info().getReq(widget.data,isNeed2Update) ?? [];
+      _ReqList.forEach((element) {
+        isPress[element.routes.uid] = false;
+      });
       setState((){});
     }catch(error){
       print(error);
@@ -157,22 +199,38 @@ class _ReqListstate extends State<ReqList> {
   }
 
   _onAcceptPressed(Req_Info data) async{
-    currentUser.AcceptReq(data.reqid,widget.data.id,widget.data.uid).then((value){
-      print(value);
-      print("555555555555");
-      if(widget.isFromMatchinfo){
-        Navigator.of(context).pop();
+    isPress[data.routes.uid] = true;
+    setState((){ });
+    currentUser.AcceptReq(data.reqid,widget.data.id,widget.data.uid)
+    .then((v)async{
+      var value = true;
+      if(value){
+        if(widget.isFromMatchinfo){
+          Navigator.of(context).pop(false);
+          setState(() { });
+        }else{
+          Navigator.of(context).pop(true);
+        }
       }else{
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) => Matchinformation(uid: widget.data.uid, data: widget.data))).then((value){
-          Navigator.of(context).pop();
-        });
+        isPress[data.routes.uid] = false;
+        await getData(true);
+        print("error");
       }
     });
   }
 
   _onDeclinePressed(Req_Info data) async{
-    currentUser.DeclineReq(data.reqid,widget.data.id,widget.data.uid).then((value) async => await getData(true));
+    isPress[data.routes.uid] = true;
+    setState((){ });
+    currentUser.DeclineReq(data.reqid,widget.data.id,widget.data.uid)
+    .then((v)async{
+      var value = true;
+      if(value){
+        isPress[data.routes.uid] = false;
+      }else{
+        print("error");
+      }
+      await getData(true);
+    });
   }
-
 }

@@ -16,7 +16,7 @@ class Match_Info {
   }
 
   Future< List<Match_Info>> getMatchList(Routes My_Routes,bool isNeed2Update) async {
-    try{
+//    try{
       Http.Response response = await httpClass.reqHttp("/api/routes/getMatchList",{"user": My_Routes.id,"tripid" : My_Routes.uid, "isNeed2Update" : isNeed2Update});
       if(response.statusCode == 400 ){
         return Future.value(null);
@@ -34,9 +34,9 @@ class Match_Info {
           return Future.value(Match_Info_List);
         }
       }
-    }catch(error){
-      print(error);
-      throw("can't connect Match_List");
-    }
+//    }catch(error){
+//      print(error);
+//      throw("can't connect Match_List");
+//    }
   }
 }

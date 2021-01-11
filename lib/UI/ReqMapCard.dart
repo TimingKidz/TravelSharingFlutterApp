@@ -17,8 +17,9 @@ class ReqMapCard extends StatefulWidget {
   final Travel_Info userData;
   final Function onAcceptPressed;
   final Function onDeclinePressed;
+  final bool isPress;
 
-  const ReqMapCard({Key key, this.url,this.data, this.onAcceptPressed, this.onDeclinePressed, this.userData}) : super(key: key);
+  const ReqMapCard({Key key, this.isPress,this.url,this.data, this.onAcceptPressed, this.onDeclinePressed, this.userData}) : super(key: key);
 
   @override
   _ReqMapCardState createState() => _ReqMapCardState();
@@ -151,7 +152,7 @@ class _ReqMapCardState extends State<ReqMapCard> {
                                       Row(
                                         children: [
                                           RatingBarIndicator(
-                                            rating: 4.2,
+                                            rating:  widget.data.user.reviewSummary.amount == 0 ? 0.0: widget.data.user.reviewSummary.totalscore/widget.data.user.reviewSummary.amount,
                                             itemBuilder: (context, index) => Icon(
                                               Icons.star,
                                               color: Colors.amber,
@@ -161,7 +162,7 @@ class _ReqMapCardState extends State<ReqMapCard> {
                                             direction: Axis.horizontal,
                                           ),
                                           SizedBox(width: 4.0),
-                                          Text("4.2", style: TextStyle(fontSize: 10.0)),
+                                          Text(widget.data.user.reviewSummary.amount == 0 ? "0.0": (widget.data.user.reviewSummary.totalscore/widget.data.user.reviewSummary.amount).toString(), style: TextStyle(fontSize: 10.0)),
                                           SizedBox(width: 4.0),
                                           Container(
                                             padding: EdgeInsets.symmetric(horizontal: 2.0),
@@ -173,7 +174,7 @@ class _ReqMapCardState extends State<ReqMapCard> {
                                               children: [
                                                 Icon(Icons.people, size: 10.0),
                                                 SizedBox(width: 2.0),
-                                                Text("5K", style: TextStyle(fontSize: 10.0)),
+                                                Text(widget.data.user.reviewSummary.amount.toString(), style: TextStyle(fontSize: 10.0)),
                                                 SizedBox(width: 1.0),
                                               ],
                                             ),
@@ -190,6 +191,7 @@ class _ReqMapCardState extends State<ReqMapCard> {
                       ),
                       Row(
                         children: <Widget>[
+                          if(!widget.isPress)
                           Expanded(
                             child: RaisedButton(
                               highlightElevation: 0.0,
@@ -202,7 +204,9 @@ class _ReqMapCardState extends State<ReqMapCard> {
                               onPressed: () => widget.onDeclinePressed(),
                             ),
                           ),
+                          if(!widget.isPress)
                           SizedBox(width: 16.0),
+                          if(!widget.isPress)
                           Expanded(
                             child: RaisedButton(
                               highlightElevation: 0.0,
@@ -213,6 +217,31 @@ class _ReqMapCardState extends State<ReqMapCard> {
                               ),
                               child: Text('ยอมรับ', style: TextStyle(color: Colors.white)),
                               onPressed: () => widget.onAcceptPressed() ,
+                            ),
+                          ),
+                          if(widget.isPress)
+                          Expanded(
+                            child: RaisedButton(
+                              highlightElevation: 0.0,
+                              padding: EdgeInsets.all(16.0),
+                              color: Colors.green,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  if (widget.isPress)
+                                    SizedBox(
+                                      width: 16.0,
+                                      height: 16.0,
+                                      child: CircularProgressIndicator(strokeWidth: 2,valueColor: AlwaysStoppedAnimation(Colors.white),),
+                                    ),
+                                  if (widget.isPress)
+                                    SizedBox( width: 20,),
+                                  Text("Loading...", style: TextStyle(color: Colors.white,)),
+                                ],
+                              ),
                             ),
                           ),
                         ],

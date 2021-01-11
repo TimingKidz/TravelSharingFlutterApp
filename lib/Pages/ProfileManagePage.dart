@@ -26,7 +26,6 @@ class ProfileManagePageState extends State<ProfileManagePage> {
   @override
   void initState() {
     super.initState();
-    _pageConfig();
     setEditDataDefault();
   }
 
@@ -133,43 +132,7 @@ class ProfileManagePageState extends State<ProfileManagePage> {
     );
   }
 
-  _pageConfig(){
-    socket.off('onNewNotification');
-    socket.off('onNewAccept');
-    socket.off('onNewMatch');
-    socket.off('onNewMessage');
-    socket.off('onRequest');
-    socket.off('onKick');
 
-    socket.on('onKick', (data){
-      currentUser.status.navbarTrip = true;
-      currentUser.status.navbarNoti = true;
-    });
-    socket.on('onRequest', (data) {
-      currentUser.status.navbarTrip = true;
-    });
-    socket.on('onNewMatch' , (data){
-      currentUser.status.navbarTrip = true;
-    });
-    socket.on('onNewAccept', (data){
-      currentUser.status.navbarTrip = true;
-    });
-    socket.on('onNewMessage',(data){
-      currentUser.status.navbarTrip = true;
-    });
-    socket.on('onNewAccept',(data){
-      currentUser.status.navbarTrip = true;
-    });
-    socket.on('onNewNotification', (data){
-      currentUser.status.navbarNoti = true;
-    });
-    firebaseMessaging.configure(
-        onMessage: (Map<String, dynamic> message) async {
-          print("onMessage: $message");
-          showNotification(message);
-        }
-    );
-  }
 
   PickedFile image;
 

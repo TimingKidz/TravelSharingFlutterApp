@@ -17,14 +17,16 @@ class MatchMapCard extends StatefulWidget {
   final Match_Info data;
   final Travel_Info userData;
   final bool isreq;
+  final bool isPress;
   final Function onButtonPressed;
 
-  const MatchMapCard({Key key,this.url ,this.data, this.isreq, this.onButtonPressed, this.userData}) : super(key: key);
+  const MatchMapCard({Key key,this.isPress,this.url ,this.data, this.isreq,this.onButtonPressed, this.userData}) : super(key: key);
   @override
   _MatchMapCardState createState() => _MatchMapCardState();
 }
 
 class _MatchMapCardState extends State<MatchMapCard> {
+
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -124,7 +126,7 @@ class _MatchMapCardState extends State<MatchMapCard> {
                             ),
                             SizedBox(height: 16.0),
                             InkWell(
-                              onTap: (){
+                              onTap: () async {
                                 swipeUpDialog(
                                   context,
                                   ProfileInfo(
@@ -196,8 +198,23 @@ class _MatchMapCardState extends State<MatchMapCard> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
-                          child: Text(widget.isreq ? 'ส่งคำขอแล้ว' : 'ส่งคำขอ', style: TextStyle(color: Colors.white)),
-                          onPressed: widget.isreq ? null : () => widget.onButtonPressed(),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              if (widget.isPress)
+                              SizedBox(
+                                width: 16.0,
+                                height: 16.0,
+                                child: CircularProgressIndicator(strokeWidth: 2,valueColor: AlwaysStoppedAnimation(Colors.white),),
+                              ),
+                              if (widget.isPress)
+                              SizedBox( width: 20,),
+                              Text(widget.isreq ? 'ส่งคำขอแล้ว' : widget.isPress ? "Loading...": 'ส่งคำขอ', style: TextStyle(color: Colors.white,)),
+                            ],
+                          ),
+                          onPressed: widget.isreq ? null : widget.isPress ? null :() async {
+                            widget.onButtonPressed();
+                          },
                         ),
                       ),
                     ],
