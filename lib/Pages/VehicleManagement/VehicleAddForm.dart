@@ -97,29 +97,6 @@ class VehicleAddFormState extends State<VehicleAddForm> {
           ],
         )
     );
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Add Vehicle"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.check),
-            onPressed: () async {
-              if(_formKey.currentState.validate()){
-                await vehicleData.addVehicle();
-                Navigator.of(context).pop();
-              }
-            },
-          )
-        ],
-      ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          physics: BouncingScrollPhysics(),
-          children: formList(),
-        ),
-      )
-    );
   }
 
   _pageConfig(){
@@ -167,6 +144,12 @@ class VehicleAddFormState extends State<VehicleAddForm> {
       CardDropdown(
         listItems: vehicleType,
         labelText: "Type",
+        dropdownTileBuild: (value) {
+          return DropdownMenuItem(
+            value: value,
+            child: Text(value),
+          );
+        },
         onChanged: (data) => vehicleData.type = data,
       ),
       CardTextField(

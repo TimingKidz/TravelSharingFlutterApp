@@ -29,5 +29,6 @@
   "color": "Color",
   "default": "Default",
   "setDefault": "Set this to default vehicle",
-  "SignUpTitle": "Sign Up to TActivity"
+  "SignUpTitle": "Sign Up to TActivity",
+  "InfoFormTitle": "Your travel information"
 }

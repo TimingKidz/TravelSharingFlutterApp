@@ -196,7 +196,7 @@ class _MatchMapCardState extends State<MatchMapCard> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
-                          child: Text(widget.isreq ? 'ส่งคำขอแล้ว' : 'ส่งคำขอ', style: TextStyle(color: Colors.white,)),
+                          child: Text(widget.isreq ? 'ส่งคำขอแล้ว' : 'ส่งคำขอ', style: TextStyle(color: Colors.white)),
                           onPressed: widget.isreq ? null : () => widget.onButtonPressed(),
                         ),
                       ),

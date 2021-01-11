@@ -70,107 +70,111 @@ class SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.3),
-            child: Form(
+    return WillPopScope(
+      onWillPop: () async {
+        await googleSignIn.disconnect();
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => LoginPage()));
+        return false;
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Form(
               key: _formKey,
               child: ListView(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.fromLTRB(8.0, MediaQuery.of(context).size.height * 0.32, 8.0, 8.0),
                 physics: BouncingScrollPhysics(),
                 children: fieldList(),
               ),
-            )
-          ),
-          // AppBar
-          Wrap(
-            children: <Widget>[
-              Card(
-                elevation: 2.0,
-                margin: EdgeInsets.all(0.0),
-                color: Theme.of(context).primaryColor,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(30.0),
-                        bottomRight: Radius.circular(30.0)
-                    )
-                ),
-                child: Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.only(left: 4.0, top: 4.0, bottom: 16.0, right: 4.0),
-                  child: SafeArea(
-                    child: Column(
-                      children: <Widget>[
-                        Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.arrow_back),
-                              tooltip: AppLocalizations.instance.text("back"),
-                              iconSize: 26.0,
-                              color: Colors.white,
-                              onPressed: () async {
-                                await googleSignIn.disconnect();
-                                Navigator.pushReplacement(context, MaterialPageRoute(
-                                    builder: (context) => LoginPage()));
-                              },
-                            ),
-                            SizedBox(width: 16.0),
-                            Text(
-                              AppLocalizations.instance.text("SignUpTitle"),
-                              style: TextStyle(
-                                // fontWeight: FontWeight.bold,
-                                fontSize: 20.0,
+            ),
+            // AppBar
+            Wrap(
+              children: <Widget>[
+                Card(
+                  elevation: 2.0,
+                  margin: EdgeInsets.all(0.0),
+                  color: Theme.of(context).primaryColor,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(30.0),
+                          bottomRight: Radius.circular(30.0)
+                      )
+                  ),
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.only(left: 4.0, top: 4.0, bottom: 24.0, right: 4.0),
+                    child: SafeArea(
+                      child: Column(
+                        children: <Widget>[
+                          Row(
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.arrow_back),
+                                tooltip: AppLocalizations.instance.text("back"),
+                                iconSize: 26.0,
                                 color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 16.0),
-                        CircleAvatar(
-                            radius: 64,
-                            child: Material(
-                              shape: CircleBorder(),
-                              color: Colors.grey,
-                              child: InkWell(
-                                onTap: (){
-                                  getImage();
+                                onPressed: () {
+                                  Navigator.of(context).maybePop();
                                 },
-                                customBorder: CircleBorder(),
-                                child: ClipOval(
-                                    child: selectedImage != null ? Image.file(selectedImage) : Container(
-                                      width: double.infinity,
-                                      height: double.infinity,
-                                      child: Icon(Icons.add_a_photo),
-                                    )
+                              ),
+                              SizedBox(width: 16.0),
+                              Text(
+                                AppLocalizations.instance.text("SignUpTitle"),
+                                style: TextStyle(
+                                  // fontWeight: FontWeight.bold,
+                                  fontSize: 20.0,
+                                  color: Colors.white,
                                 ),
                               ),
-                            )
-                        ),
-                      ],
+                            ],
+                          ),
+                          SizedBox(height: 16.0),
+                          CircleAvatar(
+                              radius: 64,
+                              child: Material(
+                                shape: CircleBorder(),
+                                color: Colors.grey,
+                                child: InkWell(
+                                  onTap: (){
+                                    getImage();
+                                  },
+                                  customBorder: CircleBorder(),
+                                  child: ClipOval(
+                                      child: selectedImage != null ? Image.file(selectedImage) : Container(
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                        child: Icon(Icons.add_a_photo),
+                                      )
+                                  ),
+                                ),
+                              )
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          Positioned.fill(
-            bottom: 16,
-            right: 16,
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: FloatingActionButton.extended(
-                  elevation: 2,
-                  icon: Icon(Icons.check),
-                  label: Text("Finish"),
-                  onPressed: (){
-                    if(_formKey.currentState.validate()) _Nextpage();
-                  }
-              ),
+              ],
             ),
-          )
-        ],
+            Positioned.fill(
+              bottom: 16,
+              right: 16,
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: FloatingActionButton.extended(
+                    elevation: 2,
+                    highlightElevation: 2,
+                    icon: Icon(Icons.check),
+                    label: Text("Finish"),
+                    onPressed: (){
+                      if(_formKey.currentState.validate()) _Nextpage();
+                    }
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -197,6 +201,12 @@ class SignUpPageState extends State<SignUpPage> {
             child: CardDropdown(
               listItems: genderList,
               labelText: "Gender",
+              dropdownTileBuild: (value) {
+                return DropdownMenuItem(
+                  value: value,
+                  child: Text(value),
+                );
+              },
               onChanged: (data) => userData.gender = data,
             ),
           ),
@@ -217,6 +227,12 @@ class SignUpPageState extends State<SignUpPage> {
       CardDropdown(
         listItems: facultyList,
         labelText: "Faculty",
+        dropdownTileBuild: (value) {
+          return DropdownMenuItem(
+            value: value,
+            child: Text(value),
+          );
+        },
         onChanged: (data) => userData.faculty = data,
       ),
       SizedBox(height: 8.0),

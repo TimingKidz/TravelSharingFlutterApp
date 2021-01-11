@@ -30,7 +30,7 @@ class _Dashboard extends State<Dashboard> {
   List<Travel_Info> _invitedList = List();
   // GlobalKey actionKey = GlobalKey();
   // double height;
-  bool isFirstPage = true;
+  // bool isJoinPage = true;
 
   @override
   void setState(fn) {
@@ -151,22 +151,16 @@ class _Dashboard extends State<Dashboard> {
     WidgetsBinding.instance.addPostFrameCallback((_) => afterBuild);
 
     return Scaffold(
-     // backgroundColor: Theme.of(context).primaryColor,
-     //  appBar: AppBar(
-     //    backgroundColor: isFirstPage ? Theme.of(context).accentColor : Theme.of(context).colorScheme.orange,
-     //    automaticallyImplyLeading: false,
-     //    title: const Text('แดชบอร์ด'),
-     //  ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: isFirstPage ? _newroute1 : _newroute,
-        backgroundColor: isFirstPage ? Theme.of(context).accentColor : Theme.of(context).accentColor,
+        onPressed: isJoinPage ? _callJoinMap : _callInviteMap,
+        // Scafford.of(context).showSnackBar(SnackBar(content: Text("Please add vehicle before proceed to this action."))
+        backgroundColor: isJoinPage ? Theme.of(context).accentColor : Theme.of(context).accentColor,
         heroTag: null,
       ),
       body: Stack(
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(top: 80),
+          SafeArea(
             child: _widgetOptions(),
           ),
           // AppBar
@@ -174,7 +168,7 @@ class _Dashboard extends State<Dashboard> {
             // key: actionKey,
             elevation: 2.0,
             margin: EdgeInsets.all(0.0),
-            color: isFirstPage ? Theme.of(context).colorScheme.darkBlue : Theme.of(context).colorScheme.amber,
+            color: isJoinPage ? Theme.of(context).colorScheme.darkBlue : Theme.of(context).colorScheme.amber,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(30.0),
@@ -182,7 +176,7 @@ class _Dashboard extends State<Dashboard> {
                 ),
             ),
             child: Container(
-                padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 20.0, top: 8.0),
+                padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0, top: 8.0),
                 child: SafeArea(
                   child: Row(
                     children: <Widget>[
@@ -191,18 +185,18 @@ class _Dashboard extends State<Dashboard> {
                           elevation: 0.0,
                           highlightElevation: 0.0,
                           padding: EdgeInsets.all(16.0),
-                          color: isFirstPage ? Colors.white : Colors.transparent,
+                          color: isJoinPage ? Colors.white : Colors.transparent,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
                             side: BorderSide(
-                              color: !isFirstPage ? Colors.white : Colors.transparent,
+                              color: !isJoinPage ? Colors.white : Colors.transparent,
                               width: 1.0,
                             ),
                           ),
-                          child: Text(AppLocalizations.instance.text("PaiDuay"), style: TextStyle(color: !isFirstPage ? Colors.white : Colors.black)),
+                          child: Text(AppLocalizations.instance.text("PaiDuay"), style: TextStyle(color: !isJoinPage ? Colors.white : Colors.black)),
                           onPressed: () {
                             setState(() {
-                              isFirstPage = true;
+                              isJoinPage = true;
                             });
                           },
                         ),
@@ -213,18 +207,18 @@ class _Dashboard extends State<Dashboard> {
                           elevation: 0.0,
                           highlightElevation: 0.0,
                           padding: EdgeInsets.all(16.0),
-                          color: isFirstPage ? Colors.transparent : Colors.white,
+                          color: isJoinPage ? Colors.transparent : Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
                             side: BorderSide(
-                              color: isFirstPage ? Colors.white : Colors.transparent,
+                              color: isJoinPage ? Colors.white : Colors.transparent,
                               width: 1.0,
                             ),
                           ),
-                          child: Text(AppLocalizations.instance.text("Chuan"), style: TextStyle(color: isFirstPage ? Colors.white : Colors.black)),
+                          child: Text(AppLocalizations.instance.text("Chuan"), style: TextStyle(color: isJoinPage ? Colors.white : Colors.black)),
                           onPressed: () {
                             setState(() {
-                              isFirstPage = false;
+                              isJoinPage = false;
                             });
                           },
                         ),
@@ -253,7 +247,7 @@ class _Dashboard extends State<Dashboard> {
   }
 
   Widget _widgetOptions(){
-    if((_joinList.isEmpty && isFirstPage) || (_invitedList.isEmpty && !isFirstPage)){
+    if((_joinList.isEmpty && isJoinPage) || (_invitedList.isEmpty && !isJoinPage)){
       return Center(
         child: Text('No List'),
       );
@@ -263,11 +257,15 @@ class _Dashboard extends State<Dashboard> {
   }
 
   Widget _buildListView() {
-    return ListView.builder(
+    return ListView.separated(
+      separatorBuilder: (context, _) {
+        return SizedBox(height: 8.0);
+      },
+      padding: EdgeInsets.fromLTRB(8.0, 88, 8.0, 8.0),
         physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-        itemCount: isFirstPage ? _joinList.length : _invitedList.length,
+        itemCount: isJoinPage ? _joinList.length : _invitedList.length,
         itemBuilder: (context, i) {
-          return _buildRow(isFirstPage ? _joinList[i] : _invitedList[i]);
+          return _buildRow(isJoinPage ? _joinList[i] : _invitedList[i]);
         }
     );
   }
@@ -290,7 +288,7 @@ class _Dashboard extends State<Dashboard> {
   }
 
   _onCardPressed(Travel_Info data) async {
-    if( isFirstPage ){
+    if( isJoinPage ){
       if( data.routes.match.isNotEmpty ){
         await Navigator.push(context, MaterialPageRoute(
             builder: (context) => Matchinformation(uid: data.routes.match.first,data: data,))).then((value) async {
@@ -327,7 +325,7 @@ class _Dashboard extends State<Dashboard> {
     }
   }
 
-  _newroute() async{
+  _callInviteMap() async{
     Navigator.push(context, MaterialPageRoute(
         builder: (context) => CreateRoute())).then((value) async {
       _pageConfig(currentUser.status.navbarTrip);
@@ -336,7 +334,7 @@ class _Dashboard extends State<Dashboard> {
     });
   }
 
-  _newroute1() async{
+  _callJoinMap() async{
     Navigator.push(context, MaterialPageRoute(
         builder: (context) => CreateRoute_Join())).then((value) async {
           _pageConfig(currentUser.status.navbarTrip);

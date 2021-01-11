@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_sharing/Class/HTTP.dart';
 import 'package:travel_sharing/Class/Status.dart';
@@ -39,10 +41,13 @@ final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 u.UserCredential firebaseAuth;
 GoogleSignInAccount googleUser;
+LatLng current_Location;
 User currentUser;
 IO.Socket socket ;
 Status status;
 HTTP httpClass = new HTTP();
+SharedPreferences prefs;
+bool isJoinPage = true;
 
 class MyHttpOverrides extends HttpOverrides{
   @override
@@ -51,8 +56,6 @@ class MyHttpOverrides extends HttpOverrides{
       ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
   }
 }
-
-SharedPreferences prefs;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -74,6 +77,9 @@ void main() async {
  ));
   HttpOverrides.global = new MyHttpOverrides();
   prefs = await SharedPreferences.getInstance();
+  LocationData currentLoc = await Location().getLocation();
+  current_Location =
+      LatLng(currentLoc.latitude, currentLoc.longitude);
   runApp(MyApp());
 }
 

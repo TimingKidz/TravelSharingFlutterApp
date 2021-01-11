@@ -25,7 +25,7 @@ void swipeUpDialog(BuildContext context, Widget route){
     backgroundColor: Colors.transparent,
     builder: (context) =>
         DraggableScrollableSheet(
-          initialChildSize: 0.33,
+          initialChildSize: 0.36,
           minChildSize: 0.2,
           maxChildSize: 1,
           expand: false,

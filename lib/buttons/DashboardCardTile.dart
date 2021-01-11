@@ -32,8 +32,7 @@ class DashboardCardTileState extends State<DashboardCardTile> {
   Widget build(BuildContext context) {
     return Card(
       color: Colors.white,
-      margin: EdgeInsets.all(10.0),
-      // elevation: 2.0,
+      margin: EdgeInsets.all(0.0),
       shape: RoundedRectangleBorder(
           borderRadius: cardBorder
       ),

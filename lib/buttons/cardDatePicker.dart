@@ -78,6 +78,8 @@ class CardDatePickerState extends State<CardDatePicker> {
 
         //TimePickerUI
         if(widget.isJustDate != null ? !widget.isJustDate : true)
+          SizedBox(width: 8.0),
+        if(widget.isJustDate != null ? !widget.isJustDate : true)
         Expanded(
           child: Card(
               margin: EdgeInsets.all(0.0),

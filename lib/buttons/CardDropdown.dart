@@ -2,22 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CardDropdown extends StatefulWidget {
-  // final String text;
-  //
-  // const CardDropdown({Key key, this.text}) : super(key: key);
   final String labelText;
-  final List<String> listItems;
+  final List<dynamic> listItems;
+  final Function dropdownTileBuild;
   final Function onChanged;
 
-  const CardDropdown({Key key, this.labelText, this.listItems, this.onChanged}) : super(key: key);
+  const CardDropdown({Key key, this.labelText, this.listItems, this.onChanged, @required this.dropdownTileBuild}) : super(key: key);
 
   @override
   _CardDropdownState createState() => _CardDropdownState();
 }
 
 class _CardDropdownState extends State<CardDropdown> {
-  String dropdownValue;
   GlobalKey _key = GlobalKey();
+  dynamic dropdownValue;
 
   @override
   void initState() {
@@ -40,24 +38,19 @@ class _CardDropdownState extends State<CardDropdown> {
             children: <Widget>[
               Text(widget.labelText, style: TextStyle(color: Colors.black.withOpacity(0.6))),
               DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
+                child: DropdownButton<dynamic>(
                   isExpanded: true,
                   value: dropdownValue,
                   icon: Icon(Icons.arrow_drop_down_circle),
                   style: TextStyle(color: Colors.black),
-                  onChanged: (String newValue) {
+                  onChanged: (dynamic newValue) {
                     setState(() {
                       dropdownValue = newValue;
                       widget.onChanged(dropdownValue);
                     });
                   },
                   items: widget.listItems
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
+                      .map<DropdownMenuItem<dynamic>>(widget.dropdownTileBuild).toList(),
                 ),
               ),
             ],

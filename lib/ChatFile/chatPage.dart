@@ -38,7 +38,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
   }
 
   _pageConfig(){
-    getData();
+    Future.delayed(const Duration(milliseconds: 200), () => getData());
     socket.off('onNewNotification');
     socket.off('onNewMessage');
 
@@ -173,7 +173,6 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
         );
   }
 
-  bool isSameTime;
   bool isBottom;
 
   Widget _chatListView() {
@@ -185,21 +184,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
         itemCount: messagesReverseList.length,
         itemBuilder: (BuildContext context, int index) {
           if(index == 0){
-            isSameTime = false;
             isBottom = true;
-          }else{
-            DateTime pastTime = DateTime.parse(messagesReverseList[index-1].timestamp);
-            DateTime presentTime = DateTime.parse(messagesReverseList[index].timestamp);
-
-            pastTime = DateTime(pastTime.year, pastTime.month, pastTime.day, pastTime.hour, pastTime.minute);
-            presentTime = DateTime(presentTime.year, presentTime.month, presentTime.day, presentTime.hour, presentTime.minute);
-
-            if(pastTime.compareTo(presentTime) == 0){
-              isSameTime = true;
-            }else{
-              isSameTime = false;
-            }
-            isBottom = false;
           }
           return buildSingleMessage(messagesReverseList[index]);
         },
@@ -215,28 +200,52 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
     setState((){});
   }
 
-  List<TextSpan> telCheck(String content){
+  List<TextSpan> urlCheck(String content){
     List<TextSpan> span = List();
     List<String> allText = content.split(" ");
+    int spaceBar = 0;
     final phonePattern = r'^(\d{10})$';
-    final regEx = RegExp(phonePattern, multiLine: true);
+    // final urlPattern = r'(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})';
+    final urlPattern = r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)';
+    final regExPhone = RegExp(phonePattern, multiLine: true);
+    final regExURL = RegExp(urlPattern, multiLine: true);
     for(String text in allText){
-      String obtainedPhone = regEx.stringMatch(text.toString());
-      if(obtainedPhone == null){
+      String obtainedPhone = regExPhone.stringMatch(text.toString());
+      String obtainedURL = regExURL.stringMatch(text.toString());
+      if(obtainedPhone == null && obtainedURL == null){
         span.add(
           TextSpan(
             text: text,
-            style: TextStyle(
-              color: Colors.white
-            ),
+            // style: TextStyle(
+            //   color: Colors.white
+            // ),
           )
+        );
+      }else if(obtainedURL != null){
+        span.add(
+            TextSpan(
+              text: obtainedURL,
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                decoration: TextDecoration.underline,
+              ),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () async {
+                  final url = '$obtainedURL';
+                  if (await canLaunch(url)) {
+                    await launch(url);
+                  } else {
+                    throw 'Could not launch $url';
+                  }
+                },
+            )
         );
       }else{
         span.add(
           TextSpan(
             text: obtainedPhone,
             style: TextStyle(
-              color: Colors.blue,
+              color: Theme.of(context).primaryColor,
               decoration: TextDecoration.underline,
             ),
             recognizer: TapGestureRecognizer()
@@ -251,10 +260,11 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
           )
         );
       }
-      if(span.length != allText.length){
+      if((span.length - spaceBar) != allText.length){
         span.add(
           TextSpan(text: " ")
         );
+        spaceBar++;
       }
     }
     return span;
@@ -270,25 +280,27 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               SizedBox(width: 8.0),
-              if(!isSameTime)
-                Text(
-                  DateManage().datetimeFormat("time", message.timestamp),
-                  style: TextStyle(
-                      fontSize: 10.0
-                  ),
+              Text(
+                DateManage().datetimeFormat("time", message.timestamp),
+                style: TextStyle(
+                    fontSize: 10.0
                 ),
+              ),
               SizedBox(width: 4.0),
               Flexible(
                 child: Container(
                   padding: const EdgeInsets.only(left: 12.0, top: 12.0, bottom: 12.0, right: 10.0),
                   // margin: const EdgeInsets.only(bottom: 16.0, left: 8.0, right: 8.0),
                   decoration: BoxDecoration(
-                    color: !isSender ? Colors.black : Colors.deepOrange,
+                    color: Theme.of(context).accentColor,
                     borderRadius: BorderRadius.circular(20.0),
                   ),
                   child: SelectableText.rich(
                     TextSpan(
-                        children: telCheck(message.content)
+                        style: TextStyle(
+                            color: Colors.black
+                        ),
+                        children: urlCheck(message.content)
                     ),
                   )
                 ),
@@ -327,7 +339,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
                       padding: EdgeInsets.symmetric(horizontal: 8.0),
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(message.name ?? "NO NAME", style: TextStyle(fontSize: 14.0)),
+                        child: Text(message.name ?? "NO NAME", style: TextStyle(fontSize: 14.0, color: Colors.black54)),
                       ),
                     ),
                   if(!message.isDuplicate)
@@ -336,33 +348,37 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.only(left: 12.0, top: 12.0, bottom: 12.0, right: 10.0),
-                        // margin: const EdgeInsets.only(bottom: 16.0, left: 8.0, right: 8.0),
-                        decoration: BoxDecoration(
-                          color: !isSender ? Colors.black : Colors.deepOrange,
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        child: SelectableText.rich(
-                          TextSpan(
-                            children: telCheck(message.content)
+                      Flexible(
+                        child: Container(
+                          padding: const EdgeInsets.only(left: 12.0, top: 12.0, bottom: 12.0, right: 10.0),
+                          // margin: const EdgeInsets.only(bottom: 16.0, left: 8.0, right: 8.0),
+                          decoration: BoxDecoration(
+                            color: Colors.black12,
+                            borderRadius: BorderRadius.circular(20.0),
                           ),
-                        )
+                          child: SelectableText.rich(
+                            TextSpan(
+                              style: TextStyle(
+                                color: Colors.black
+                              ),
+                              children: urlCheck(message.content)
+                            ),
+                          )
+                        ),
                       ),
                       SizedBox(width: 4.0),
-                      if(!isSameTime)
-                        Text(
-                          DateManage().datetimeFormat("time", message.timestamp),
-                          style: TextStyle(
-                              fontSize: 10.0
-                          ),
+                      Text(
+                        DateManage().datetimeFormat("time", message.timestamp),
+                        style: TextStyle(
+                            fontSize: 10.0
                         ),
+                      ),
                     ],
                   )
                 ],
               ),
             ),
-            SizedBox(width: 4.0),
+            SizedBox(width: 8.0),
           ],
         ),
         SizedBox(height: isBottom ? 8.0 : 4.0),
@@ -406,11 +422,11 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
             InkWell(
               child: Icon(Icons.send),
               onTap: () async {
-                if(textController.text != ""){
+                if(textController.text != "" && textController.text.trim().isNotEmpty){
                   debugPrint('Send');
                   await Message().sendMessage(widget.tripid,textController.text, currentUser.uid, currentUser.name,widget.currentTripid, currentUser.imgpath).then((value) {
                     if(!value){
-                      Scaffold.of(context).showSnackBar(SnackBar(content: Text("Can not send the message.")));
+                      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not send the message.")));
                     }else{
                       textController.clear();
                     }

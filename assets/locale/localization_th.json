@@ -29,5 +29,6 @@
   "color": "สี",
   "default": "ค่าเริ่มต้น",
   "setDefault": "ตั้งยานพาหนะนี้เป็นค่าเริ่มต้น",
-  "SignUpTitle": "สมัครใช้งาน TActivity"
+  "SignUpTitle": "สมัครใช้งาน TActivity",
+  "InfoFormTitle": "ข้อมูลการเดินทาง"
 }

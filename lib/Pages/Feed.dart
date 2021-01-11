@@ -18,12 +18,17 @@ class FeedPage extends StatefulWidget {
   FeedPageState createState() => FeedPageState();
 }
 
-class FeedPageState extends State<FeedPage> {
+class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
   Feeds feed;
   GlobalKey actionKey = GlobalKey();
   double height;
   int currentI = 0;
   List<Feed> list = List();
+  bool isFilter = false;
+
+  List<String> filterTypeList = List();
+  List<String> filterTypeSelected = List();
+  Map<String, bool> isSelected = Map();
 
   @override
   void setState(fn) {
@@ -37,6 +42,11 @@ class FeedPageState extends State<FeedPage> {
     super.initState();
     _pageConfig();
     print(currentUser.imgpath);
+
+    filterTypeList = ["ไปด้วย", "ชวน", "Travel"];
+    for(String each in filterTypeList){
+      isSelected.addAll({each: false});
+    }
     // WidgetsBinding.instance.addPostFrameCallback((_) => _getHeight());
   }
 
@@ -52,7 +62,7 @@ class FeedPageState extends State<FeedPage> {
         body: Stack(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.09),
+              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * (isFilter ? 0.13 : 0.09)),
               child: list.isNotEmpty
                   ? RefreshIndicator(
                 onRefresh: () => getData(0),
@@ -62,7 +72,6 @@ class FeedPageState extends State<FeedPage> {
               ),
             ),
             Card(
-              elevation: 2.0,
               margin: EdgeInsets.all(0.0),
               color: Theme.of(context).colorScheme.darkBlue,
               shape: RoundedRectangleBorder(
@@ -73,36 +82,132 @@ class FeedPageState extends State<FeedPage> {
               ),
               child: Container(
                 width: double.infinity,
-                padding: EdgeInsets.only(left: 24.0, top: 4.0, bottom: 16.0, right: 4.0),
                 child: SafeArea(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        AppLocalizations.instance.text("FeedTitle"),
-                        style: TextStyle(
-                          // fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
-                          color: Colors.white,
+                      Padding(
+                        padding: EdgeInsets.only(left: 24.0, top: 4.0, bottom: 0.0, right: 4.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              AppLocalizations.instance.text("FeedTitle"),
+                              style: TextStyle(
+                                // fontWeight: FontWeight.bold,
+                                fontSize: 20.0,
+                                color: Colors.white,
+                              ),
+                              // textAlign: TextAlign.center,
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.filter_list),
+                              splashRadius: 24.0,
+                              tooltip: "Filter",
+                              iconSize: 26.0,
+                              color: Colors.white,
+                              onPressed: () {
+                                setState(() {
+                                  isFilter = !isFilter;
+                                });
+                              },
+                            ),
+                          ],
                         ),
-                        // textAlign: TextAlign.center,
                       ),
-                      IconButton(
-                        icon: Icon(Icons.filter_list),
-                        tooltip: "Filter",
-                        iconSize: 26.0,
-                        color: Colors.white,
-                        onPressed: () {
-
-                        },
+                      AnimatedSize(
+                        vsync: this,
+                        duration: Duration(milliseconds: 200),
+                        curve: Curves.fastOutSlowIn,
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 200),
+                          curve: Curves.fastOutSlowIn,
+                          margin: isFilter ? EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0) : EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.5),
+                          height: isFilter ? 44 : 0,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20.0)
+                          ),
+                          child: ListView.separated(
+                            separatorBuilder: (context, _) {
+                              return SizedBox(width: 4.0);
+                            },
+                            scrollDirection: Axis.horizontal,
+                            padding: EdgeInsets.all(4.0),
+                            itemCount: filterTypeList.length,
+                            itemBuilder: (context, i) {
+                              return filterType(filterTypeList[i]);
+                            },
+                          )
+                        ),
                       ),
+                      // SizedBox(height: 16.0)
                     ],
                   ),
                 ),
               ),
-            )
+            ),
           ],
         )
+    );
+  }
+
+  Widget filterType(String type){
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20.0),
+      child: Material(
+        color: isSelected[type] ? Theme.of(context).primaryColor : Colors.white,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+            side: BorderSide(
+              color: Theme.of(context).primaryColor,
+              width: 1.5
+            )
+        ),
+        child: InkWell(
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text(
+              type,
+              style: TextStyle(
+                color: !isSelected[type] ? Theme.of(context).primaryColor : Colors.white,
+              ),
+            ),
+          ),
+          onTap: (){
+            setState(() {
+              isSelected[type] = !isSelected[type];
+              if(isSelected[type]) filterTypeSelected.add(type);
+              else filterTypeSelected.remove(type);
+              print("Selected = " + filterTypeSelected.join(", ")); // Print all selected type
+            });
+          },
+        ),
+      ),
+    );
+    return Card(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0)
+      ),
+      color: isSelected[type] ? Theme.of(context).accentColor : Colors.white,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20.0),
+        onTap: (){
+          setState(() {
+            isSelected[type] = !isSelected[type];
+            if(isSelected[type]) filterTypeSelected.add(type);
+            else filterTypeSelected.remove(type);
+            print("Selected = " + filterTypeSelected.join(", ")); // Print all selected type
+          });
+        },
+        child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+              type
+          ),
+        ),
+      ),
     );
   }
 

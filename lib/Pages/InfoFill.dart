@@ -6,9 +6,12 @@ import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
+import 'package:travel_sharing/buttons/CardDropdown.dart';
 import 'package:travel_sharing/buttons/cardDatePicker.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
+import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
+import 'package:travel_sharing/custom_color_scheme.dart';
 
 class InfoFill extends StatefulWidget {
   final List<LatLng> routes;
@@ -36,7 +39,11 @@ class _InfoFillState extends State<InfoFill> {
     }
   }
 
-
+  @override
+  void dispose() {
+    super.dispose();
+    // _formKey.currentState.reset(); // Clear form
+  }
 
   @override
   void initState() {
@@ -50,73 +57,186 @@ class _InfoFillState extends State<InfoFill> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-//          automaticallyImplyLeading: false,
-          title: Text('ข้อมูลการเดินทาง'),
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.arrow_forward),
-          onPressed: (){
-            if(_formKey.currentState.validate()) _SavetoDB();
-          },
-          heroTag: null,
-        ),
-        body: Form(
-          // TODO: Add Tag and select Vehicle
-          key: _formKey,
-          child: ListView(
-            physics: BouncingScrollPhysics(),
-            children: <Widget>[
-              Container(
-                height: MediaQuery.of(context).size.height * 0.3,
-                child: GoogleMap(
-                  onMapCreated: _onMapCreated,
-                  initialCameraPosition: CameraPosition(
-                    target: LatLng(widget.routes.last.latitude,widget.routes.last.longitude),
-                    zoom: 14,
+        body: Stack(
+          children: <Widget>[
+            Form(
+              // TODO: Add Tag and select Vehicle
+              key: _formKey,
+              child: ListView(
+                padding: EdgeInsets.fromLTRB(8.0, MediaQuery.of(context).size.height * 0.135, 8.0, 8.0),
+                physics: BouncingScrollPhysics(),
+                children: <Widget>[
+                  Card(
+                    margin: EdgeInsets.all(0.0),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0)
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20.0),
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.3,
+                        child: AbsorbPointer(
+                          absorbing: true,
+                          child: GoogleMap(
+                            onMapCreated: _onMapCreated,
+                            initialCameraPosition: CameraPosition(
+                              target: LatLng(widget.routes.last.latitude,widget.routes.last.longitude),
+                              zoom: 14,
+                            ),
+                            markers: widget.Markers,
+                            polylines: widget.lines ?? Set(),
+                            zoomControlsEnabled: false,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                  markers: widget.Markers,
-                  polylines: widget.lines ?? Set(),
-                  zoomControlsEnabled: false,
-                  myLocationEnabled: false,
-                  myLocationButtonEnabled: false,
+                  SizedBox(height: 8.0),
+                  CardDropdown(
+                    labelText: 'Tag',
+                    listItems: ["Travel", "Travel & Activity"],
+                    dropdownTileBuild: (value) {
+                      return DropdownMenuItem(
+                        value: value,
+                        child: Text(value),
+                      );
+                    },
+                    onChanged: (text) {
+
+                    },
+                  ),
+                  SizedBox(height: 8.0),
+                  CardTextField(
+                    notNull: true,
+                    initValue: widget.src,
+                    labelText: 'ต้นทาง',
+                    onChanged: (text) {
+                      Final_Data.src = text;
+                    },
+                  ),
+                  SizedBox(height: 8.0),
+                  CardTextField(
+                    notNull: true,
+                    initValue: widget.dst,
+                    labelText: 'ปลายทาง',
+                    onChanged: (text) {
+                      Final_Data.dst = text;
+                    },
+                  ),
+                  SizedBox(height: 8.0),
+                  CardDatePicker(
+                    labelText: 'วันเดินทาง',
+                    onDatePick: (date) {
+                      Final_Data.date = date;
+                      print(date);
+                    },
+                  ),
+                  SizedBox(height: 8.0),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CardTextField(
+                          notNull: true,
+                          labelText: 'จำนวนคนไปด้วย',
+                          type: TextInputType.number,
+                          onChanged: (text) {
+                            Final_Data.amount = text;
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 8.0),
+                      Expanded(
+                        child: CardTextField(
+                          notNull: true,
+                          labelText: 'ราคา',
+                          type: TextInputType.number,
+                          onChanged: (text) {
+
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                  if(widget.Role == 0)
+                    SizedBox(height: 8.0),
+                  if(widget.Role == 0)
+                    CardDropdown(
+                      labelText: 'ยานพาหนะที่จะใช้',
+                      listItems: currentUser.vehicle,
+                      dropdownTileBuild: (value) {
+                        return DropdownMenuItem(
+                          value: value,
+                          child: Text(
+                              "${value.brand} ${value.model} - ${value.license}"
+                          ),
+                        );
+                      },
+                      onChanged: (text) {
+                        print(text);
+                      },
+                    ),
+                  SizedBox(height: 72)
+                ],
+              ),
+            ),
+            Card(
+              elevation: 2.0,
+              margin: EdgeInsets.all(0.0),
+              color: Theme.of(context).colorScheme.darkBlue,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(30.0),
+                      bottomRight: Radius.circular(30.0)
+                  )
+              ),
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.only(left: 4.0, top: 4.0, bottom: 16.0, right: 4.0),
+                child: SafeArea(
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.arrow_back),
+                        tooltip: AppLocalizations.instance.text("back"),
+                        iconSize: 26.0,
+                        color: Colors.white,
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                      SizedBox(width: 16.0),
+                      Text(
+                        AppLocalizations.instance.text("InfoFormTitle"),
+                        style: TextStyle(
+                          // fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                          color: Colors.white,
+                        ),
+                        // textAlign: TextAlign.center,
+                      )
+                    ],
+                  ),
                 ),
               ),
-              CardTextField(
-                notNull: true,
-                initValue: widget.src,
-                labelText: 'ต้นทาง',
-                onChanged: (text) {
-                  Final_Data.src = text;
-                },
+            ),
+            Positioned.fill(
+              bottom: 16,
+              right: 16,
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: FloatingActionButton.extended(
+                  elevation: 2,
+                  highlightElevation: 2,
+                  icon: Icon(Icons.check),
+                  label: Text("Finish"),
+                  onPressed: (){
+                    if(_formKey.currentState.validate()) _SavetoDB();
+                  },
+                  heroTag: null,
+                ),
               ),
-              CardTextField(
-                notNull: true,
-                initValue: widget.dst,
-                labelText: 'ปลายทาง',
-                onChanged: (text) {
-                  Final_Data.dst = text;
-                },
-              ),
-              CardDatePicker(
-                labelText: 'วันเดินทาง',
-                onDatePick: (date) {
-                  Final_Data.date = date;
-                  print(date);
-                },
-              ),
-              CardTextField(
-                notNull: true,
-                labelText: 'จำนวนคนไปด้วย',
-                type: TextInputType.number,
-                onChanged: (text) {
-                  Final_Data.amount = text;
-                },
-              )
-            ],
-          ),
+            )
+          ],
         )
-      );
+    );
   }
 
   _pageConfig(){
@@ -149,6 +269,7 @@ class _InfoFillState extends State<InfoFill> {
         amount : Final_Data.amount, date :Final_Data.date, isMatch: false,match: List(),role : widget.Role.toString(),
         vehicle: widget.Role == 0 ? Vehicle(vid: currentUser.vehicle.first.vid ,type:  currentUser.vehicle.first.type) : Vehicle(),tag: ["T&A"]);
     Final_Data.SaveRoute_toDB(user).then((x){
+      _formKey.currentState.reset(); // Clear form
       Navigator.of(context).pop();
       Navigator.of(context).pop();
     });

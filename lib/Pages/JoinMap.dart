@@ -29,7 +29,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
   p.GoogleMapsPlaces _places = p.GoogleMapsPlaces(apiKey: api_key);
   GoogleMapController _mapController;
   bool isSet_Marker = false;
-  LatLng current_Location;
+  // LatLng current_Location;
   LatLng Marker_Location;
   bool is_src = true;
   Map<MarkerId, Marker> _centerMarkers = <MarkerId, Marker>{};

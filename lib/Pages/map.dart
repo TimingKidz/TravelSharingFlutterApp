@@ -31,7 +31,7 @@ class _CreateRoutestate extends State<CreateRoute> {
   p.GoogleMapsPlaces _places = p.GoogleMapsPlaces(apiKey: api_key);
   GoogleMapController _mapController;
   bool isSet_Marker = false;
-  LatLng current_Location;
+  // LatLng current_Location;
   LatLng Marker_Location;
   bool is_src = true;
   Map<MarkerId, Marker> _centerMarkers = <MarkerId, Marker>{};
@@ -40,6 +40,7 @@ class _CreateRoutestate extends State<CreateRoute> {
   Map<String,String> Map_Placename = <String,String>{};
   bool isChooseOnMap = false;
   bool isSelected = false;
+  bool isWantCustom = false;
   Set<Polyline> lines = Set();
   Set<Polyline> finalLines = Set();
   int pointNo = 0;
@@ -53,7 +54,6 @@ class _CreateRoutestate extends State<CreateRoute> {
   }
   @override
   void dispose() {
-    // TODO: implement dispose
 //   _mapController.dispose();
     src_Textcontroller.dispose();
     dst_Textcontroller.dispose();
@@ -93,215 +93,343 @@ class _CreateRoutestate extends State<CreateRoute> {
         ),
       );
     }
-    return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          GoogleMap(
-            onMapCreated: _onMapCreated,
-            initialCameraPosition: CameraPosition(
-              target:current_Location,
-              zoom: 15,
-            ),
-            markers:  Set<Marker>.of(_markers.values),
-            polylines: isSelected ? lines : Set(),
-            zoomControlsEnabled: false,
-            myLocationEnabled: true,
-            myLocationButtonEnabled: false,
-//              onCameraIdle: OnMove_End ,
-            onCameraMove: center ,
-          ),
-          if(isChooseOnMap)
-            Positioned.fill(
-              child: Center(
-                child: Icon(Icons.place, size: 32.0, color: Colors.red),
+    return WillPopScope(
+      onWillPop: () async {
+        if (isChooseOnMap) {
+          setState(() {
+            isChooseOnMap = !isChooseOnMap;
+          });
+          return false;
+        }else{
+          if(!isSelected) return true;
+          else {
+            setState(() {
+              isWantCustom = !isWantCustom;
+              isSelected = !isSelected;
+            });
+            return false;
+          }
+        }
+      },
+      child: Scaffold(
+        body: Stack(
+          children: <Widget>[
+            GoogleMap(
+              onMapCreated: _onMapCreated,
+              initialCameraPosition: CameraPosition(
+                target:current_Location,
+                zoom: 15,
               ),
+              markers:  Set<Marker>.of(_markers.values),
+              polylines: isSelected ? lines : Set(),
+              zoomControlsEnabled: false,
+              myLocationEnabled: true,
+              myLocationButtonEnabled: false,
+//              onCameraIdle: OnMove_End ,
+              onCameraMove: center ,
             ),
-          Card(
-            elevation: 2.0,
-            margin: EdgeInsets.all(0.0),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(30.0),
-                    bottomRight: Radius.circular(30.0)
-                )
-            ),
-            child: Container(
-                padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0, bottom: 14.0),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(30.0),
-                        bottomRight: Radius.circular(30.0)
-                    )
+            if(isChooseOnMap)
+              Positioned.fill(
+                bottom: 20,
+                child: Center(
+                  child: Icon(Icons.place, size: 40.0, color: Colors.red),
                 ),
-                // color: Theme.of(context).primaryColor,
-                child: Wrap(
-                  children: <Widget>[
-                    SafeArea(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          IconButton(
-                            icon: Icon(Icons.arrow_back),
-                            color: Colors.white,
-                            onPressed: () => Navigator.of(context).pop(),
-                          ),
-                          SizedBox(width: 8.0),
-                          if (!isSelected)
-                          Expanded(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
+              ),
+            Card(
+              margin: EdgeInsets.all(0.0),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(30.0),
+                      bottomRight: Radius.circular(30.0)
+                  )
+              ),
+              child: Container(
+                  padding: EdgeInsets.fromLTRB(4.0, 4.0, 4.0, isChooseOnMap ? 16.0 : 2.0),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(30.0),
+                          bottomRight: Radius.circular(30.0)
+                      )
+                  ),
+                  // color: Theme.of(context).primaryColor,
+                  child: Wrap(
+                    children: <Widget>[
+                      SafeArea(
+                        child: Column(
+                          children: [
+                            Row(
+                              crossAxisAlignment: isChooseOnMap ? CrossAxisAlignment.center : CrossAxisAlignment.start,
                               children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Icon(Icons.location_searching, color: Colors.white),
-                                    Expanded(
-                                      child: Card(
-                                        margin: EdgeInsets.only(left: 8.0, right: 8.0),
-                                        elevation: 2.0,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(20.0)
-                                        ),
-                                        child: TextFormField(
-                                          readOnly: true,
-                                          controller: src_Textcontroller,
-                                          cursorColor: Colors.black,
-                                          keyboardType: TextInputType.text,
-                                          onTap: (){
-                                            is_src = true;
-                                            isChooseOnMap = false;
-                                            Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                    builder: (context) => LocationSearch(currentLocation: current_Location, hintText: "จุดเริ่มต้น ...")
-                                                )
-                                            ).then((result) {
-                                             selectedMethod(result);
-                                            });
-                                          },
-                                          textInputAction: TextInputAction.go,
-                                          decoration: InputDecoration(
-                                              border: InputBorder.none,
-                                              contentPadding:
-                                              EdgeInsets.symmetric(horizontal: 15),
-                                              hintText: AppLocalizations.instance.text("SrcPoint")
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                IconButton(
+                                  icon: Icon(Icons.arrow_back),
+                                  tooltip: AppLocalizations.instance.text("back"),
+                                  iconSize: 26.0,
+                                  color: Colors.white,
+                                  onPressed: () => Navigator.of(context).maybePop(),
                                 ),
-                                SizedBox(height: 10.0),
-                                Row(
-                                  children: <Widget>[
-                                    Icon(Icons.location_on, color: Colors.white),
-                                    Expanded(
-                                      child: Card(
-                                        margin: EdgeInsets.only(left: 8.0, right: 8.0),
-                                        elevation: 2.0,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(20.0)
-                                        ),
-                                        child: TextFormField(
-                                          readOnly: true,
-                                          controller: dst_Textcontroller,
-                                          cursorColor: Colors.black,
-                                          keyboardType: TextInputType.text,
-                                          onTap: (){
-                                            is_src = false;
-                                            isChooseOnMap = false;
-                                            Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                    builder: (context) => LocationSearch(currentLocation: current_Location, hintText: "จุดปลายทาง ...")
-                                                )
-                                            ).then((result) {
-                                             selectedMethod(result);
-                                            });
-                                          },
-                                          textInputAction: TextInputAction.go,
-                                          decoration: InputDecoration(
-                                              border: InputBorder.none,
-                                              contentPadding:
-                                              EdgeInsets.symmetric(horizontal: 15),
-                                              hintText: AppLocalizations.instance.text("DstPoint")
-                                          ),
-                                        ),
+                                SizedBox(width: 8.0),
+                                if(isChooseOnMap)
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 0.0),
+                                    child: Text(
+                                      "Choose on map",
+                                      style: TextStyle(
+                                        // fontWeight: FontWeight.bold,
+                                        fontSize: 20.0,
+                                        color: Colors.white,
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 2.0),
-                              ],
-                            ),
-                          ),
-                          if(isSelected)
-                            Expanded(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  ClipOval(
-                                    child: Material(
-                                      child: InkWell(
-                                        child: SizedBox(width: 64, height: 64, child: isChooseOnMap ? Icon(Icons.close):Icon(Icons.add)),
-                                        onTap: () {
-                                          isChooseOnMap = !isChooseOnMap;
-                                          setState(() { });
-                                          },
-                                      ),
+                                      // textAlign: TextAlign.center,
                                     ),
                                   ),
-                                ],
-                              ),
-                            )
-                        ],
-                      ),
-                    )
-                  ],
-                )
+                                if (!isSelected && !isChooseOnMap)
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        Row(
+                                          children: <Widget>[
+                                            Icon(Icons.location_searching, color: Colors.white),
+                                            Expanded(
+                                              child: Card(
+                                                margin: EdgeInsets.only(left: 8.0, right: 8.0),
+                                                elevation: 2.0,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(20.0)
+                                                ),
+                                                child: TextFormField(
+                                                  readOnly: true,
+                                                  controller: src_Textcontroller,
+                                                  cursorColor: Colors.black,
+                                                  keyboardType: TextInputType.text,
+                                                  onTap: (){
+                                                    is_src = true;
+                                                    isChooseOnMap = false;
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder: (context) => LocationSearch(currentLocation: current_Location, hintText: "จุดเริ่มต้น ...")
+                                                        )
+                                                    ).then((result) {
+                                                     selectedMethod(result);
+                                                    });
+                                                  },
+                                                  textInputAction: TextInputAction.go,
+                                                  decoration: InputDecoration(
+                                                      border: InputBorder.none,
+                                                      contentPadding:
+                                                      EdgeInsets.symmetric(horizontal: 15),
+                                                      hintText: AppLocalizations.instance.text("SrcPoint")
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 10.0),
+                                        Row(
+                                          children: <Widget>[
+                                            Icon(Icons.location_on, color: Colors.white),
+                                            Expanded(
+                                              child: Card(
+                                                margin: EdgeInsets.only(left: 8.0, right: 8.0),
+                                                elevation: 2.0,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(20.0)
+                                                ),
+                                                child: TextFormField(
+                                                  readOnly: true,
+                                                  controller: dst_Textcontroller,
+                                                  cursorColor: Colors.black,
+                                                  keyboardType: TextInputType.text,
+                                                  onTap: (){
+                                                    is_src = false;
+                                                    isChooseOnMap = false;
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder: (context) => LocationSearch(currentLocation: current_Location, hintText: "จุดปลายทาง ...")
+                                                        )
+                                                    ).then((result) {
+                                                     selectedMethod(result);
+                                                    });
+                                                  },
+                                                  textInputAction: TextInputAction.go,
+                                                  decoration: InputDecoration(
+                                                      border: InputBorder.none,
+                                                      contentPadding:
+                                                      EdgeInsets.symmetric(horizontal: 15),
+                                                      hintText: AppLocalizations.instance.text("DstPoint")
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                if(isSelected && !isChooseOnMap)
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(right: 8.0, bottom: 12.0),
+                                      child: SizedBox(
+                                        height: 64,
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(20.0),
+                                          child: _buildListView(),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                              ],
+                            ),
+                            if(!isSelected && !isChooseOnMap)
+                              Container(
+                                padding: EdgeInsets.only(left: 4.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Switch(
+                                          value: isWantCustom,
+                                          onChanged: (bool value){
+                                            setState(() {
+                                              isWantCustom = value;
+                                            });
+                                          },
+                                        ),
+                                        Text(
+                                          "ต้องการปรับแต่งแผนที่ตามที่ต้องการ",
+                                          style: TextStyle(
+                                              color: Colors.white
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    IconButton(
+                                      onPressed: (){
+                                        // TODO: Show info of how this button work.
+                                      },
+                                      icon: Icon(Icons.info, color: Colors.white),
+                                    )
+                                  ],
+                                ),
+                              )
+                          ],
+                        ),
+                      )
+                    ],
+                  )
+              ),
             ),
-          ),
-          Container(
-            padding: EdgeInsets.all(16.0),
-            alignment: Alignment.bottomCenter,
-            child:
-            Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  if( isChooseOnMap )
-                    FloatingActionButton.extended(
-                      label: Text('Choose'),
-                      onPressed: () async {
-                        if(isSelected){
-                          createRoute(Marker_Location);
+            Container(
+              padding: EdgeInsets.all(16.0),
+              alignment: Alignment.bottomCenter,
+              child:
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    if( isChooseOnMap )
+                      FloatingActionButton.extended(
+                        elevation: 1,
+                        label: Text('OK'),
+                        onPressed: () async {
+                          if(isSelected){
+                            createRoute(Marker_Location);
+                            _drawLine();
+                            isChooseOnMap = false;
+                          }else{
+                            await OnMove_End();
+                            isChooseOnMap = false;
+                            setState(() { });
+                          }
+                        },
+                        heroTag: null,
+                      ),
+                    if( Map_Latlng["src"] != null && Map_Latlng["dst"] != null && !isChooseOnMap && isWantCustom)
+                      FloatingActionButton.extended(
+                        elevation: 1,
+                        icon: Icon(Icons.arrow_forward_sharp),
+                        label: Text('Next'),
+                        onPressed: (){
+                          isChooseOnMap = false;
+                          isWantCustom = false;
                           _drawLine();
-                          isChooseOnMap = false;
-                        }else{
-                          await OnMove_End();
-                          isChooseOnMap = false;
-                          setState(() { });
-                        }
-                      },
-                      heroTag: null,
-                    ),
-                  if( Map_Latlng["src"] != null && Map_Latlng["dst"] != null && !isChooseOnMap && !isSelected)
-                    FloatingActionButton.extended(
-                      label: Text('Preview'),
-                      onPressed: (){
-                        isChooseOnMap = false;
-                        _drawLine();
-                      },
-                      heroTag: null,
-                    ),
-                  if( isSelected && !isChooseOnMap )
-                    FloatingActionButton.extended(
-                      label: Text('finish'),
-                      onPressed: _Fin,
-                      heroTag: null,
-                    ),
-                ]),
-          ),
-        ],
+                        },
+                        heroTag: null,
+                      ),
+                    if( Map_Latlng["src"] != null && Map_Latlng["dst"] != null && !isChooseOnMap && !isWantCustom )
+                      FloatingActionButton.extended(
+                        elevation: 1,
+                        icon: Icon(Icons.check),
+                        label: Text('Finish'),
+                        onPressed: _Fin,
+                        heroTag: null,
+                      ),
+                  ]),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildListView(){
+    return ListView.separated(
+      separatorBuilder: (context, _) {
+        return SizedBox(width: 8.0);
+      },
+      physics: BouncingScrollPhysics(),
+      scrollDirection: Axis.horizontal,
+      itemCount: pointNo + 1,
+      itemBuilder: (context, i) {
+        if(i == pointNo){
+          return ClipOval(
+            child: Material(
+              child: InkWell(
+                child: SizedBox(width: 64, height: 64, child: Icon(Icons.add)),
+                onTap: () {
+                  isChooseOnMap = !isChooseOnMap;
+                  setState(() {});
+                },
+              ),
+            ),
+          );
+        }
+        return Stack(
+          alignment: Alignment.topRight,
+          children: [
+            ClipOval(
+              child: Material(
+                child: SizedBox(
+                    width: 64,
+                    height: 64,
+                    child: Center(
+                        child: Text(
+                            "${i+1}",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold
+                        ),)
+                    )
+                ),
+              ),
+            ),
+            ClipOval(
+              child: Material(
+                color: Colors.red,
+                child: InkWell(
+                  child: SizedBox(width: 20, height: 20, child: Icon(Icons.clear, color: Colors.white, size: 12)),
+                  onTap: () async {
+                    // TODO: Implement remove selected pin.
+                  },
+                ),
+              ),
+            )
+          ],
+        );
+      },
     );
   }
   // ----------------------------------------------------------------------------

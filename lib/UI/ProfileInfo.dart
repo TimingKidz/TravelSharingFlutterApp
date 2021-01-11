@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/ReviewView.dart';
@@ -38,11 +39,17 @@ class ProfileInfo extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20.0),
                     child: Material(
-                      color: Colors.red,
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        side: BorderSide(
+                          color: Colors.red,
+                        )
+                      ),
                       child: InkWell(
                         child: Padding(
                           padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-                          child: Text("Kick", style: TextStyle(color: Colors.white)),
+                          child: Text("นำออก", style: TextStyle(color: Colors.red)),
                         ),
                         onTap: () async {
                             kickFunct();

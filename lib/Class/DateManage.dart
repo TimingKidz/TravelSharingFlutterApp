@@ -4,7 +4,7 @@ import '../main.dart';
 
 class DateManage{
   String datetimeFormat(String check, String date) {
-    var datetimeFromDB = DateTime.parse(date);
+    var datetimeFromDB = DateTime.parse(date).toLocal();
     String locale = prefs.getString("lang");
     if(check == "full") {
       return DateFormat('d MMM yyyy | HH:mm', locale).format(datetimeFromDB);

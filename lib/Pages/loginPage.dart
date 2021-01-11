@@ -16,6 +16,7 @@ class LoginPage extends StatefulWidget {
 
 class LoginPageState extends State<LoginPage> {
   GoogleSignInAccount _currentUser;
+  bool isLoading = false;
 
   @override
   void setState(fn) {
@@ -50,6 +51,9 @@ class LoginPageState extends State<LoginPage> {
         children: <Widget>[
           Image(image: AssetImage("assets/icons/TACtivity.png"), width: MediaQuery.of(context).size.width * 0.8),
           SizedBox(height: 120.0),
+          if(isLoading)
+            CircularProgressIndicator(),
+          if(!isLoading)
           Container(
             width: 300.0,
             child: RaisedButton(
@@ -119,7 +123,8 @@ class LoginPageState extends State<LoginPage> {
     try{
       googleUser = await googleSignIn.signIn();
       if(googleUser != null){
-        _loadingDialog();
+        // _loadingDialog();
+        setState(() => isLoading = true);
         GoogleSignInAuthentication Auth = await googleUser.authentication;
         u.GoogleAuthCredential a =  u.GoogleAuthProvider.credential(
           accessToken: Auth.accessToken,
@@ -137,12 +142,12 @@ class LoginPageState extends State<LoginPage> {
           }
           initsocket();
           navigationBarColorWhite();
-          Navigator.of(context).pop(); //Pop Loading Dialog
+          // Navigator.of(context).pop(); //Pop Loading Dialog
           Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) => HomeNavigation()));
         }else{
           navigationBarColorWhite();
-          Navigator.of(context).pop(); //Pop Loading Dialog
+          // Navigator.of(context).pop(); //Pop Loading Dialog
           Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) => SignUpPage()));
         }
