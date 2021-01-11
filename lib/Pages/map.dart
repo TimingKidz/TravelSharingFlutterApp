@@ -125,7 +125,8 @@ class _CreateRoutestate extends State<CreateRoute> {
               myLocationEnabled: true,
               myLocationButtonEnabled: false,
 //              onCameraIdle: OnMove_End ,
-              onCameraMove: center ,
+              onCameraMove: center,
+              mapToolbarEnabled: !isSelected,
             ),
             if(isChooseOnMap)
               Positioned.fill(

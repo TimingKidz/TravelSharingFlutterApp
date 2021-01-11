@@ -159,7 +159,6 @@ class NotificationsPageState extends State<NotificationsPage>{
           if(notifications[i].tag == "review")
             return _buildRow(notifications[i]);
           return Dismissible(
-            behavior: HitTestBehavior.translucent,
             key: UniqueKey(),
             direction: DismissDirection.endToStart,
             confirmDismiss: (direction) async{

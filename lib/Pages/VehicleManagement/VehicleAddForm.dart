@@ -13,7 +13,7 @@ class VehicleAddForm extends StatefulWidget {
 class VehicleAddFormState extends State<VehicleAddForm> {
   Vehicle vehicleData = Vehicle();
   bool isChecked = true;
-  List<String> vehicleType = ["Motorcycle", "Cars"];
+  List<String> vehicleType = ["Motorcycle", "Car"];
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -28,14 +28,18 @@ class VehicleAddFormState extends State<VehicleAddForm> {
     return Scaffold(
         body: Stack(
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(top: 70),
-              child: Form(
-                key: _formKey,
-                child: ListView(
-                  physics: BouncingScrollPhysics(),
-                  children: formList(),
-                ),
+            Form(
+              key: _formKey,
+              child: ListView.separated(
+                separatorBuilder: (context, _){
+                  return SizedBox(height: 8.0);
+                },
+                padding: EdgeInsets.fromLTRB(8.0, 115.0, 8.0, 8.0),
+                physics: BouncingScrollPhysics(),
+                itemCount: formList().length,
+                itemBuilder: (context, i){
+                  return formList()[i];
+                },
               ),
             ),
             Card(

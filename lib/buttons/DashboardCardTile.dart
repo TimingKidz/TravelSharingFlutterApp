@@ -28,6 +28,19 @@ class DashboardCardTile extends StatefulWidget {
 class DashboardCardTileState extends State<DashboardCardTile> {
   BorderRadius cardBorder = BorderRadius.circular(20.0);
   bool isLongPress = false;
+  Map<String, Color> statColors;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    statColors = {
+      "Matched": Theme.of(context).colorScheme.success,
+      "Accepted": Theme.of(context).colorScheme.success,
+      "Waiting": Theme.of(context).colorScheme.warning,
+      "Pending Request": Theme.of(context).colorScheme.warning,
+      "No Matches Found": Theme.of(context).colorScheme.danger,
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,7 +178,7 @@ class DashboardCardTileState extends State<DashboardCardTile> {
                          child: Material(
                            elevation: 1,
                            borderRadius: BorderRadius.circular(20.0),
-                           color: Colors.green,
+                           color: statColors[widget.data.status],
                            child: Container(
                              padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0) ,
                              child: Text(widget.data.status, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),

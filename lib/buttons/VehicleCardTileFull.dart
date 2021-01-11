@@ -6,6 +6,7 @@ import 'package:travel_sharing/buttons/PlainBGTextField.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
 import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
+import 'package:travel_sharing/custom_color_scheme.dart';
 
 class VehicleCardTileFull extends StatefulWidget {
   final Vehicle data;
@@ -68,13 +69,14 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
                     children: <Widget>[
                       ClipOval(
                         child: Material(
+                          color: isEdit ? Theme.of(context).colorScheme.warning : Theme.of(context).canvasColor,
                           child: InkWell(
                             child: SizedBox(width: 32, height: 32, child: Icon(Icons.edit)),
                             onTap: () {
                               // Navigator.push(context, MaterialPageRoute(
                               //     builder: (context) => ReqList(data: widget.data)));
                               setState(() {
-                                isEdit = true;
+                                isEdit = !isEdit;
                               });
                             },
                           ),
@@ -251,7 +253,7 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
                 child: InkWell(
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-                    child: Text(AppLocalizations.instance.text("ok")),
+                    child: Text(AppLocalizations.instance.text("ok"), style: TextStyle(color: Colors.white)),
                   ),
                   onTap: () async {
                     if(_formKey.currentState.validate()){

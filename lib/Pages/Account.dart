@@ -95,8 +95,8 @@ class AccountState extends State<Account> {
                     SizedBox(
                       height: 16.0,
                     ),
-                    if(defaultVehicle() != null)
-                      VehicleCardTileMin(data: defaultVehicle())
+                    if(Vehicle().defaultVehicle() != null)
+                      VehicleCardTileMin(data: Vehicle().defaultVehicle())
                   ],
                 ),
               ),
@@ -161,15 +161,6 @@ class AccountState extends State<Account> {
       currentUser.status.navbarNoti = true;
       widget.setSate();
     });
-  }
-
-  Vehicle defaultVehicle(){
-    for(Vehicle each in currentUser.vehicle){
-      if(each.isDefault){
-        return each;
-      }
-    }
-    return null;
   }
 
   List<Widget> menuList(){

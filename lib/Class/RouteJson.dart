@@ -23,11 +23,13 @@ class Routes {
   String role;
   bool status;
   int left;
+  int range;
+  int cost;
   Vehicle vehicle;
   List<dynamic> tag;
 
 
-  Routes({this.uid,this.id,this.routes, this.src,this.dst,this.amount,this.date,this.isMatch,this.match,this.role,this.vehicle,this.tag});
+  Routes({this.uid,this.id,this.routes, this.src,this.dst,this.amount,this.date,this.isMatch,this.match,this.role,this.vehicle,this.tag, this.cost, this.range});
 
   Routes.fromJson(Map<String, dynamic> json) {
     uid = json['_id'];
@@ -67,6 +69,7 @@ class Routes {
     vehicle = json["vehicle"]["id"] is Map<String,dynamic> ? Vehicle.fromJson(json["vehicle"]['id']) : null ;
     tag = json['tag'];
     left = json['left'];
+    cost = json['cost'];
   }
 
   Map<String, dynamic> toJson() {
@@ -81,6 +84,8 @@ class Routes {
     data['role'] = this.role;
     data['vehicle'] = this.vehicle == null ? null : this.vehicle.toJson();
     data['tag'] = this.tag;
+    data['range'] = this.range;
+    data['cost'] = this.cost;
     return data;
   }
 

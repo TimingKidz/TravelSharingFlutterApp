@@ -114,7 +114,7 @@ class RatingPageState extends State<RatingPage> {
               review.score = rate;
               await review.sendReview(widget.sendToid,widget.notiId).then((value) {
                 if( value )  Navigator.of(context).pop();
-                else ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not send a Review.")));
+                // else ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not send a Review.")));
               });
             },
           )

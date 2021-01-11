@@ -143,6 +143,7 @@ class _Dashboard extends State<Dashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
+        elevation: 2.0,
         child: Icon(Icons.add),
         onPressed: isJoinPage ? _callJoinMap : _callInviteMap,
         // Scafford.of(context).showSnackBar(SnackBar(content: Text("Please add vehicle before proceed to this action."))

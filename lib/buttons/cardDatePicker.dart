@@ -3,17 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:google_directions_api/google_directions_api.dart';
 import 'package:intl/intl.dart';
 import 'package:travel_sharing/Class/DateManage.dart';
+import 'package:travel_sharing/buttons/cardTextField.dart';
 
 class CardDatePicker extends StatefulWidget {
   final String labelText;
   final Function onDatePick;
   final bool isJustDate;
   final bool isBirthday;
+  final Widget additionWidget;
 
   CardDatePicker({
     this.labelText,
     this.onDatePick,
-    this.isJustDate, this.isBirthday
+    this.isJustDate, this.isBirthday, this.additionWidget
   });
 
   @override
@@ -81,43 +83,55 @@ class CardDatePickerState extends State<CardDatePicker> {
           SizedBox(width: 8.0),
         if(widget.isJustDate != null ? !widget.isJustDate : true)
         Expanded(
-          child: Card(
-              margin: EdgeInsets.all(0.0),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0)
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(left: 16.0, top: 12.0),
-                    child: Text('เวลา', style: TextStyle(color: Colors.black.withOpacity(0.6))),
-                  ),
-                  TextFormField(
-                    controller: timeText,
-                    readOnly: true,
-                    onTap: () async {
-                      TimeOfDay timePick = await callTimePicker();
-                      setState(() {
-                        if(timePick != null) {
-                          var updateTime = DateTime(
-                            updatedDate.year, updatedDate.month, updatedDate.day, timePick.hour, timePick.minute
-                          );
-                          updatedDate = updateTime;
-                        }
-                        timeText.text = '${DateFormat('HH:mm น.').format(updatedDate)}';
-                        widget.onDatePick(updatedDate.toIso8601String());
-                      });
-                    },
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      contentPadding:
-                      EdgeInsets.symmetric(horizontal: 15),
-//                hintText: 'Source',
+          child: Row(
+            children: [
+              Expanded(
+                child: Card(
+                    margin: EdgeInsets.all(0.0),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0)
                     ),
-                  ),
-                ],
-              )
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(left: 16.0, top: 12.0),
+                          child: Text('เวลา', style: TextStyle(color: Colors.black.withOpacity(0.6))),
+                        ),
+                        TextFormField(
+                          controller: timeText,
+                          readOnly: true,
+                          onTap: () async {
+                            TimeOfDay timePick = await callTimePicker();
+                            setState(() {
+                              if(timePick != null) {
+                                var updateTime = DateTime(
+                                  updatedDate.year, updatedDate.month, updatedDate.day, timePick.hour, timePick.minute
+                                );
+                                updatedDate = updateTime;
+                              }
+                              timeText.text = '${DateFormat('HH:mm น.').format(updatedDate)}';
+                              widget.onDatePick(updatedDate.toIso8601String());
+                            });
+                          },
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            contentPadding:
+                            EdgeInsets.symmetric(horizontal: 15),
+//                hintText: 'Source',
+                          ),
+                        ),
+                      ],
+                    )
+                ),
+              ),
+              if(widget.additionWidget != null)
+                SizedBox(width: 8.0),
+              if(widget.additionWidget != null)
+                Expanded(
+                  child: widget.additionWidget
+                ),
+            ],
           ),
         )
       ],

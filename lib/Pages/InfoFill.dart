@@ -29,6 +29,7 @@ class InfoFill extends StatefulWidget {
 class _InfoFillState extends State<InfoFill> {
   GoogleMapController _mapController;
   Routes Final_Data = new Routes();
+  List<String> tagList = ["Travel", "Travel & Activity"];
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -51,6 +52,8 @@ class _InfoFillState extends State<InfoFill> {
     Final_Data.date =  DateTime.now().toString();
     Final_Data.src = widget.src;
     Final_Data.dst = widget.dst;
+    Final_Data.range = 0;
+    Final_Data.tag = [tagList.first];
   }
 
   @override
@@ -93,15 +96,20 @@ class _InfoFillState extends State<InfoFill> {
                   SizedBox(height: 8.0),
                   CardDropdown(
                     labelText: 'Tag',
-                    listItems: ["Travel", "Travel & Activity"],
+                    listItems: tagList,
                     dropdownTileBuild: (value) {
                       return DropdownMenuItem(
                         value: value,
-                        child: Text(value),
+                        child: Text(
+                          value,
+                          style: TextStyle(
+                            fontSize: 18.0
+                          ),
+                        ),
                       );
                     },
                     onChanged: (text) {
-
+                      Final_Data.tag = [text];
                     },
                   ),
                   SizedBox(height: 8.0),
@@ -127,16 +135,26 @@ class _InfoFillState extends State<InfoFill> {
                     labelText: 'วันเดินทาง',
                     onDatePick: (date) {
                       Final_Data.date = date;
-                      print(date);
                     },
+                    additionWidget: widget.Role == 0
+                        ? CardTextField(
+                      notNull: false,
+                      labelText: 'ช่วง',
+                      type: TextInputType.number,
+                      onChanged: (text) {
+                        Final_Data.range = int.parse(text);
+                      },
+                    )
+                        : null
                   ),
                   SizedBox(height: 8.0),
-                  Row(
+                  widget.Role == 0
+                      ? Row(
                     children: [
                       Expanded(
                         child: CardTextField(
                           notNull: true,
-                          labelText: 'จำนวนคนไปด้วย',
+                          labelText: 'ต้องการคนไปด้วย',
                           type: TextInputType.number,
                           onChanged: (text) {
                             Final_Data.amount = text;
@@ -146,15 +164,26 @@ class _InfoFillState extends State<InfoFill> {
                       SizedBox(width: 8.0),
                       Expanded(
                         child: CardTextField(
-                          notNull: true,
+                          notNull: false,
                           labelText: 'ราคา',
                           type: TextInputType.number,
                           onChanged: (text) {
-
+                            print(text);
+                            Final_Data.cost = int.parse(text);
                           },
                         ),
                       )
                     ],
+                  )
+                      : Expanded(
+                    child: CardTextField(
+                      notNull: true,
+                      labelText: 'จำนวนคนไปด้วย',
+                      type: TextInputType.number,
+                      onChanged: (text) {
+                        Final_Data.amount = text;
+                      },
+                    ),
                   ),
                   if(widget.Role == 0)
                     SizedBox(height: 8.0),
@@ -166,12 +195,15 @@ class _InfoFillState extends State<InfoFill> {
                         return DropdownMenuItem(
                           value: value,
                           child: Text(
-                              "${value.brand} ${value.model} - ${value.license}"
+                            "${value.brand} ${value.model} - ${value.license}",
+                            style: TextStyle(
+                                fontSize: 18.0
+                            ),
                           ),
                         );
                       },
-                      onChanged: (text) {
-                        print(text);
+                      onChanged: (data) {
+                        Final_Data.vehicle = data;
                       },
                     ),
                   SizedBox(height: 72)
@@ -246,11 +278,12 @@ class _InfoFillState extends State<InfoFill> {
   }
 
   _SavetoDB()async{
-    User user = currentUser ;
-    print(Final_Data.date);
+    User user = currentUser;
     Final_Data = new Routes(id: user.uid, routes : widget.routes, src : Final_Data.src, dst : Final_Data.dst,
         amount : Final_Data.amount, date :Final_Data.date, isMatch: false,match: List(),role : widget.Role.toString(),
-        vehicle: widget.Role == 0 ? Vehicle(vid: currentUser.vehicle.first.vid ,type:  currentUser.vehicle.first.type) : Vehicle(),tag: ["T&A"]);
+        vehicle: widget.Role == 0 ? Final_Data.vehicle : Vehicle(),tag: ["T&A"],
+        cost: widget.Role == 0 ? (Final_Data.cost ?? 0) : 0, range: Final_Data.range ?? 0
+    );
     Final_Data.SaveRoute_toDB(user).then((x){
       _formKey.currentState.reset();
       Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));

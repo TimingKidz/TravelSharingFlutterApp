@@ -83,4 +83,13 @@ class Vehicle {
      throw("can't connect" + err);
    }
  }
+
+  Vehicle defaultVehicle(){
+    for(Vehicle each in currentUser.vehicle){
+      if(each.isDefault){
+        return each;
+      }
+    }
+    return null;
+  }
 }
