@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:math';
@@ -40,6 +41,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
   bool isChooseOnMap = false;
   int i = 0;
   Location location = Location();
+  StreamSubscription<LocationData> locationSubscription;
 
   @override
   void setState(fn) {
@@ -49,9 +51,11 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
   }
 @override
   void dispose() {
+    print("dispose");
    _mapController.dispose();
    src_Textcontroller.dispose();
    dst_Textcontroller.dispose();
+   locationSubscription.cancel();
     super.dispose();
   }
   @override
@@ -285,7 +289,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
   }
 
   getLocation() async{
-    location.onLocationChanged.listen((LocationData currentLocation) {
+    locationSubscription = location.onLocationChanged.listen((LocationData currentLocation) {
       current_Location = LatLng(currentLocation.latitude, currentLocation.longitude);
     });
     Marker_Location = current_Location;

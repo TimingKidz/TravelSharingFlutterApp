@@ -43,7 +43,7 @@ class _InfoFillState extends State<InfoFill> {
   void dispose() {
     super.dispose();
     _mapController.dispose();
-    _formKey.currentState.reset(); // Clear form
+//    _formKey.currentState.reset(); // Clear form
   }
 
   @override
@@ -285,7 +285,7 @@ class _InfoFillState extends State<InfoFill> {
         cost: widget.Role == 0 ? (Final_Data.cost ?? 0) : 0, range: Final_Data.range ?? 0
     );
     Final_Data.SaveRoute_toDB(user).then((x){
-      _formKey.currentState.reset();
+//      _formKey.currentState.reset();
       Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
     });
   }

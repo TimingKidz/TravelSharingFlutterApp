@@ -230,10 +230,10 @@ class _MatchListstate extends State<MatchList> {
     Routes().Request(data,widget.data).then((value){
       if(value){
         isreq.add(data.routes.uid);
-        isPress[data.routes.uid] = false;
       }else{
         print("error");
       }
+      isPress[data.routes.uid] = false;
       setState(() { });
     });
   }

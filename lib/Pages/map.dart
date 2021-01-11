@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -44,6 +45,7 @@ class _CreateRoutestate extends State<CreateRoute> {
   int pointNo = 0;
   int i = 0;
   Location location = Location();
+  StreamSubscription<LocationData> locationSubscription;
 
   @override
   void setState(fn) {
@@ -56,6 +58,7 @@ class _CreateRoutestate extends State<CreateRoute> {
    _mapController.dispose();
     src_Textcontroller.dispose();
     dst_Textcontroller.dispose();
+    locationSubscription.cancel();
     super.dispose();
   }
   @override
@@ -468,7 +471,7 @@ class _CreateRoutestate extends State<CreateRoute> {
   }
 
   getLocation() async{
-    location.onLocationChanged.listen((LocationData currentLocation) {
+    locationSubscription = location.onLocationChanged.listen((LocationData currentLocation) {
       current_Location = LatLng(currentLocation.latitude, currentLocation.longitude);
     });
     Marker_Location = current_Location;
