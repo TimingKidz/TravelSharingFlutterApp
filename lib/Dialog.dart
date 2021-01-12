@@ -76,11 +76,10 @@ void swipeUpDialog(BuildContext context, Widget route){
         DraggableScrollableSheet(
           initialChildSize: 0.36,
           minChildSize: 0.2,
-          maxChildSize: 1,
           expand: false,
           builder: (context, scrollController) {
             return Card(
-                margin: EdgeInsets.fromLTRB(0.0, 46.0, 0.0, 0.0),
+                margin: EdgeInsets.fromLTRB(0.0, MediaQuery.of(context).padding.top, 0.0, 0.0),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(20.0),

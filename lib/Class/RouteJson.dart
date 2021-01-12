@@ -23,8 +23,8 @@ class Routes {
   String role;
   bool status;
   int left;
-  int range;
-  int cost;
+  String range;
+  String cost;
   Vehicle vehicle;
   List<dynamic> tag;
 
@@ -69,23 +69,23 @@ class Routes {
     vehicle = json["vehicle"]["id"] is Map<String,dynamic> ? Vehicle.fromJson(json["vehicle"]['id']) : Vehicle() ;
     tag = json['tag'];
     left = json['left'];
-    cost = json['cost'];
+    cost = json['cost'].toString();
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['src'] = this.src;
     data['dst'] = this.dst;
-    data['routes']= this.routes;
-    data['amount']=this.amount;
-    data['date']=this.date;
+    data['routes'] = this.routes;
+    data['amount'] = this.amount;
+    data['date'] = this.date;
     data['id'] = this.id;
     data['match'] = this.match;
     data['role'] = this.role;
     data['vehicle'] = this.vehicle == null ? null : this.vehicle.toJson();
     data['tag'] = this.tag;
-    data['range'] = this.range;
-    data['cost'] = this.cost;
+    data['range'] = int.parse(this.range);
+    data['cost'] = int.parse(this.cost);
     return data;
   }
 

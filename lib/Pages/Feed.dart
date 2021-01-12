@@ -59,17 +59,19 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
     return Scaffold(
         body: Stack(
           children: <Widget>[
-            list != null ?
-            Padding(
-              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * (isFilter ? 0.13 : 0.09)),
+            list != null
+                ? AnimatedPadding(
+              duration: Duration(milliseconds: 300),
+              curve: Curves.fastOutSlowIn,
+              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * (isFilter ? 0.143 : 0.096)),
               child: list.isNotEmpty
                   ? RefreshIndicator(
                 onRefresh: () => getData(0),
                 child: _buildListView(),
               )
-                  : Center(child: Text("Nothing in feed yet."),
-              ),
-            ) : Padding(
+                  : Center(child: Text("Nothing in feed yet.")),
+            )
+                : Padding(
               padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.09),
               child: Center(
                   child: Column(
@@ -284,7 +286,10 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
   }
 
   Widget _buildListView() {
-    return ListView.builder(
+    return ListView.separated(
+      separatorBuilder: (context, _){
+        return SizedBox(height: 8.0);
+      },
         physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         itemCount: feed.isMore ? currentI + 1: currentI,
         itemBuilder: (context, i) {
@@ -302,7 +307,14 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
               ),
             );
           }else{
-              return _buildRow(list[i]);
+            if(!feed.isMore && i+1 == currentI)
+              return Column(
+                children: [
+                  _buildRow(list[i]),
+                  SizedBox(height: 8.0)
+                ],
+              );
+            return _buildRow(list[i]);
           }
         }
     );

@@ -137,17 +137,9 @@ class ProfileManagePageState extends State<ProfileManagePage> {
   PickedFile image;
 
   Future getImage() async {
-    print("5555555");
     image = await ImagePicker().getImage(source: ImageSource.gallery);
-    await _cropImage();
-    // setState(() {
-    //   if (image != null) {
-    //     // selectedImage = File(image.path);
-    //     print("selected img");
-    //   } else {
-    //     print('No image selected.');
-    //   }
-    // });
+    if(image != null)
+      await _cropImage();
   }
 
   Future<Null> _cropImage() async {

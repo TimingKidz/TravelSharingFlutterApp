@@ -262,7 +262,8 @@ class SignUpPageState extends State<SignUpPage> {
 
   Future getImage() async {
     image = await ImagePicker().getImage(source: ImageSource.gallery);
-    await _cropImage();
+    if(image != null)
+      await _cropImage();
   }
 
   Future<Null> _cropImage() async {

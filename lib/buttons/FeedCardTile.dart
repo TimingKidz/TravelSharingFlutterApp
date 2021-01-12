@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:travel_sharing/Class/DateManage.dart';
 import 'package:travel_sharing/Class/Feed.dart';
+import 'package:travel_sharing/Dialog.dart';
+import 'package:travel_sharing/UI/ProfileInfo.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 import 'package:travel_sharing/main.dart';
 
@@ -32,8 +34,7 @@ class FeedCardTileState extends State<FeedCardTile> {
   Widget build(BuildContext context) {
     return Card(
       color: Colors.white,
-      margin: EdgeInsets.all(10.0),
-      elevation: 2.0,
+      margin: EdgeInsets.symmetric(horizontal: 8.0),
       shape: RoundedRectangleBorder(
           borderRadius: cardBorder
       ),
@@ -162,7 +163,7 @@ class FeedCardTileState extends State<FeedCardTile> {
                             .accentColor,
                         child: Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text("T&A", style: TextStyle(fontSize: 12,
+                          child: Text(widget.data.routes.tag.first, style: TextStyle(fontSize: 12,
                               color: Colors.white,
                               fontWeight: FontWeight.bold)),
                         ),
@@ -171,12 +172,22 @@ class FeedCardTileState extends State<FeedCardTile> {
                     Positioned.fill(
                       child: Align(
                         alignment: Alignment.bottomRight,
-                        child: CircleAvatar(
-                          radius: 24,
-                          child: ClipOval(
-                            child: widget.data.user.imgpath != null ? Image.network("${httpClass.API_IP}${widget.data.user.imgpath}") : Container() ,
+                        child: Material(
+                          shape: CircleBorder(),
+                          clipBehavior: Clip.antiAlias,
+                          color: Colors.transparent,
+                          child: Ink.image(
+                            image: widget.data.user.imgpath != null ? Image.network("${httpClass.API_IP}${widget.data.user.imgpath}").image : Icons.person,
+                            fit: BoxFit.cover,
+                            width: 48.0,
+                            height: 48.0,
+                            child: InkWell(
+                              onTap: () {
+                                swipeUpDialog(context, ProfileInfo(data: widget.data.user));
+                              },
+                            ),
                           ),
-                        ),
+                        )
                       ),
                     )
                   ],
