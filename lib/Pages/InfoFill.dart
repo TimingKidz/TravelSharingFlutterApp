@@ -23,15 +23,16 @@ class InfoFill extends StatefulWidget {
   final String src ;
   final String dst;
   final int Role;
+  final Routes data;
 
-  const InfoFill({Key key,this.routes, this.bounds, this.lines, this.Markers, this.src, this.dst,this.Role}) : super(key: key);
+  const InfoFill({Key key,this.routes, this.bounds, this.lines, this.Markers, this.src, this.dst,this.Role,this.data}) : super(key: key);
   _InfoFillState createState() => _InfoFillState();
 }
 
 class _InfoFillState extends State<InfoFill> {
   GoogleMapController _mapController;
   Routes Final_Data = new Routes();
-  List<String> tagList = ["Travel", "Travel & Activity"];
+  List<String> tagList = ["Travel", "T&A"];
   final _formKey = GlobalKey<FormState>();
   bool isActivity = false;
 
@@ -55,6 +56,12 @@ class _InfoFillState extends State<InfoFill> {
     Final_Data.src = widget.src;
     Final_Data.dst = widget.dst;
     Final_Data.tag = [tagList.first];
+    if(widget.data != null){
+      Final_Data.tag = widget.data.tag;
+      Final_Data.date = DateTime.parse(widget.data.date).toLocal().toString();
+      Final_Data.range = widget.data.range;
+    }
+    print(widget.data.date);
   }
 
   @override
@@ -397,7 +404,8 @@ class _InfoFillState extends State<InfoFill> {
         cost: widget.Role == "0" ? Final_Data.cost : "0",
         range: Final_Data.range
     );
-    Final_Data.SaveRoute_toDB(user).then((x){
+
+    Final_Data.SaveRoute_toDB(user,widget.data).then((x){
       Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
     });
   }

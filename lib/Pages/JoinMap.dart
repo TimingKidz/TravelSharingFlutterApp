@@ -11,13 +11,15 @@ import 'package:latlong/latlong.dart' as l;
 import 'package:location/location.dart' ;
 import "package:google_maps_webservice/places.dart" as p;
 import 'package:travel_sharing/Class/NearbyPlace.dart';
+import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Pages/LocationSearchBar.dart';
 import 'package:travel_sharing/Pages/InfoFill.dart';
 import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
 
 class CreateRoute_Join extends StatefulWidget {
-  const CreateRoute_Join({Key key, }) : super(key: key);
+  final Routes data;
+  const CreateRoute_Join({Key key, this.data, }) : super(key: key);
   @override
   _CreateRoutestate_Join createState() => _CreateRoutestate_Join();
 }
@@ -42,6 +44,8 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
   int i = 0;
   Location location = Location();
   StreamSubscription<LocationData> locationSubscription;
+  Set<Polyline> lines = Set();
+  LatLngBounds bounds;
 
   @override
   void setState(fn) {
@@ -61,6 +65,52 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
   @override
   void initState() {
     super.initState();
+    if(widget.data != null){
+      Polyline line = Polyline(
+        points: widget.data.routes,
+        geodesic: true,
+        polylineId: PolylineId("mejor ruta"),
+        color: Colors.blue.withOpacity(0.5),
+        width: 4,
+      );
+      lines.add(line);
+      MarkerId markerId = MarkerId("other src");
+      Marker marker =  Marker(
+          markerId: markerId,
+          position:  widget.data.routes.first,
+          infoWindow: InfoWindow(title: widget.data.src)
+      );
+      _markers[markerId] = marker;
+      markerId = MarkerId("other dst");
+      marker =  Marker(
+          markerId: markerId,
+          position:  widget.data.routes.last,
+          infoWindow: InfoWindow(title: widget.data.dst)
+      );
+      _markers[markerId] = marker;
+
+      var left = min( widget.data.routes.first.latitude,  widget.data.routes.last.latitude);
+      var right = max( widget.data.routes.first.latitude,  widget.data.routes.last.latitude);
+      var top = max( widget.data.routes.first.longitude,  widget.data.routes.last.longitude);
+      var bottom = min( widget.data.routes.first.longitude,  widget.data.routes.last.longitude);
+
+      lines.first.points.forEach((point) {
+        left = min(left, point.latitude);
+        right = max(right, point.latitude);
+        top = max(top, point.longitude);
+        bottom = min(bottom, point.longitude);
+      });
+
+      left = min(left, current_Location.latitude);
+      right = max(right, current_Location.latitude);
+      top = max(top, current_Location.longitude);
+      bottom = min(bottom, current_Location.longitude);
+
+      bounds = LatLngBounds(
+        southwest: LatLng(left, bottom),
+        northeast: LatLng(right, top),
+      );
+    }
     getLocation();
     _pageConfig();
   }
@@ -85,6 +135,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
               zoom: 15,
             ),
             markers:  Set<Marker>.of(_markers.values),
+            polylines: lines ,
             zoomControlsEnabled: false,
             myLocationEnabled: true,
             myLocationButtonEnabled: false,
@@ -269,16 +320,51 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
   }
 
   _pageConfig(){
-    socket.off('onNewNotification');
-    socket.off('onNewAccept');
-    socket.off('onNewMatch');
-    socket.off('onNewMessage');
-    socket.off('onRequest');
-    socket.off('onTripEnd');
-    socket.off('onKick');
-    socket.on('onNewNotification', (data) {
-      currentUser.status.navbarNoti = true;
-    });
+    if(widget.data != null){
+      socket.off('onAccept');
+      socket.off('onNewNotification');
+      socket.off('onNewAccept');
+      socket.off('onNewMatch');
+      socket.off('onNewMessage');
+      socket.off('onRequest');
+      socket.off('onTripEnd');
+      socket.off('onKick');
+
+      socket.on('onKick', (data){
+        currentUser.status.navbarTrip = true;
+      });
+
+      socket.on('onRequest', (data) {
+        currentUser.status.navbarTrip = true;
+      });
+      socket.on('onNewMatch' , (data){
+        currentUser.status.navbarTrip = true;
+      });
+      socket.on('onNewAccept', (data){
+        currentUser.status.navbarTrip = true;
+      });
+      socket.on('onNewMessage',(data){
+        currentUser.status.navbarTrip = true;
+      });
+      socket.on('onNewAccept',(data){
+        currentUser.status.navbarTrip = true;
+      });
+      socket.on('onNewNotification', (data) {
+        currentUser.status.navbarNoti = true;
+      });
+    }else{
+      socket.off('onNewNotification');
+      socket.off('onNewAccept');
+      socket.off('onNewMatch');
+      socket.off('onNewMessage');
+      socket.off('onRequest');
+      socket.off('onTripEnd');
+      socket.off('onKick');
+      socket.on('onNewNotification', (data) {
+        currentUser.status.navbarNoti = true;
+      });
+    }
+
 
     firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
@@ -319,7 +405,9 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
             lines :null,
             src:Placename_src,
             dst: Placename_dst ,
-            Role: Role))).then((value) => setState(() { }));
+            Role: Role,
+            data: widget.data,
+        ))).then((value) => setState(() { }));
   }
 
   OnMove_End() async {
@@ -391,5 +479,8 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
   // set Map controller
   void _onMapCreated(GoogleMapController controller){
     _mapController = controller;
+    Future.delayed(new Duration(milliseconds: 100), () async {
+      await _mapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, 50));
+    });
   }
 }

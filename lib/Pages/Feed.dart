@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/Feed.dart';
 import 'package:travel_sharing/Class/Feeds.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
+import 'package:travel_sharing/Pages/JoinMap.dart';
+import 'package:travel_sharing/Pages/map.dart';
 import 'package:travel_sharing/buttons/FeedCardTile.dart';
 import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
@@ -41,8 +43,7 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _pageConfig();
-
-    filterTypeList = ["ไปด้วย", "ชวน", "Travel"];
+    filterTypeList = ["ไปด้วย", "ชวน", "Travel","T&A"];
     for(String each in filterTypeList){
       isSelected.addAll({each: false});
     }
@@ -66,7 +67,10 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
               padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * (isFilter ? 0.143 : 0.096)),
               child: list.isNotEmpty
                   ? RefreshIndicator(
-                onRefresh: () => getData(0),
+                onRefresh: () async {
+                  list.clear();
+                  getData(0,filterTypeSelected);
+                },
                 child: _buildListView(),
               )
                   : Center(child: Text("Nothing in feed yet.")),
@@ -194,6 +198,8 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
               isSelected[type] = !isSelected[type];
               if(isSelected[type]) filterTypeSelected.add(type);
               else filterTypeSelected.remove(type);
+              list.clear();
+              getData(0, filterTypeSelected);
               print("Selected = " + filterTypeSelected.join(", ")); // Print all selected type
             });
           },
@@ -226,7 +232,7 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
   }
 
   _pageConfig(){
-    getData(0);
+    getData(0,filterTypeSelected);
     socket.off('onAccept');
     socket.off('onNewNotification');
     socket.off('onNewAccept');
@@ -273,12 +279,12 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
     );
   }
 
-  getData(int offset) async {
+  getData(int offset, List<String> filter) async {
     try{
-      feed = await Feeds().getFeed(offset);
+      feed = await Feeds().getFeed(offset,filter,currentUser.uid);
       print(feed);
       list = (list ?? []) + feed.feeds;
-      currentI = feed.Offset;
+//      currentI = feed.Offset;
       setState(() { });
     }catch(error){
       print(error );
@@ -291,11 +297,11 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
         return SizedBox(height: 8.0);
       },
         physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-        itemCount: feed.isMore ? currentI + 1: currentI,
+        itemCount: feed.isMore ? list.length + 1: list.length,
         itemBuilder: (context, i) {
-          print(i);
-          if(i >= currentI ){
-            getData(feed.Offset);
+//          print(i);
+          if(i >= list.length ){
+            getData(feed.Offset,filterTypeSelected);
             return Padding(
               padding: EdgeInsets.all(8.0),
               child: Center(
@@ -307,7 +313,7 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
               ),
             );
           }else{
-            if(!feed.isMore && i+1 == currentI)
+            if(!feed.isMore && i+1 == list.length)
               return Column(
                 children: [
                   _buildRow(list[i]),
@@ -323,7 +329,26 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
   Widget _buildRow(Feed data) {
     return FeedCardTile(
       data: data,
+      onCardPressed:() => onCardPress(data) ,
     );
+  }
+
+  void onCardPress(Feed data){
+    if(data.routes.role == "0"){
+      Navigator.push(context, MaterialPageRoute(
+          builder: (context) => CreateRoute_Join(data: data.routes))).then((value) async {
+        list.clear();
+        _pageConfig();
+        await widget.setSate();
+      });
+    }else{
+      Navigator.push(context, MaterialPageRoute(
+          builder: (context) => CreateRoute(data: data.routes))).then((value) async {
+        list.clear();
+        _pageConfig();
+        await widget.setSate();
+      });
+    }
   }
 
 }

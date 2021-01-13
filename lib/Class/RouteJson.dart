@@ -85,6 +85,7 @@ class Routes {
     data['amount'] = this.amount;
     data['date'] = this.date;
     data['id'] = this.id;
+    data['_id'] = this.uid;
     data['match'] = this.match;
     data['role'] = this.role;
     data['vehicle'] = this.vehicle == null ? null : this.vehicle.toJson();
@@ -96,10 +97,12 @@ class Routes {
   }
 
   // save routes information to DB
-  Future<bool> SaveRoute_toDB(User user) async{
+  Future<bool> SaveRoute_toDB(User user,Routes data) async{
     try{
         Map<String, dynamic> temp = user.toJson();
         temp['detail'] = this.toJson();
+        temp['other'] = data != null ? data.toJson() : null;
+        print(temp);
         Http.Response response = await httpClass.reqHttp("/api/routes/SaveRoutes",temp);
         print(response.body);
         if( response.statusCode == 400 ){
@@ -120,7 +123,8 @@ class Routes {
         'to_id' : data.routes.uid,
         'toid' : data.user.uid,
         'form_id' : data0.uid,
-        'formid' : data0.id };
+        'formid' : data0.id
+      };
       Http.Response response = await httpClass.reqHttp("/api/routes/request",temp);
       if(response.statusCode == 400 ){
         return Future.value(false);

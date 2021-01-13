@@ -20,9 +20,9 @@ class Feeds{
     isMore = json['isMore'];
   }
 
-  Future<Feeds> getFeed(int offset) async {
+  Future<Feeds> getFeed(int offset, List<String> filter,String userid) async {
     try{
-      Http.Response response = await httpClass.reqHttp("/api/routes/feeds", { "offset" : offset });
+      Http.Response response = await httpClass.reqHttp("/api/routes/feeds", { "offset" : offset , "filter" :  filter,"id": userid });
       if(response.statusCode == 400 ){
         return Future.value(null);
       }else{
