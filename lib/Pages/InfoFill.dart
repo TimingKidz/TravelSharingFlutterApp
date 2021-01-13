@@ -59,78 +59,83 @@ class _InfoFillState extends State<InfoFill> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Stack(
-          children: <Widget>[
-            Form(
-              key: _formKey,
-              child: isActivity ? activityForm() : infoForm(),
-            ),
-            Card(
-              elevation: 2.0,
-              margin: EdgeInsets.all(0.0),
-              color: Theme.of(context).colorScheme.darkBlue,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(30.0),
-                      bottomRight: Radius.circular(30.0)
-                  )
+    return WillPopScope(
+      onWillPop: () async {
+        if(isActivity){
+          setState(() {
+            isActivity = !isActivity;
+          });
+          return false;
+        }else{
+          return true;
+        }
+      },
+      child: Scaffold(
+        floatingActionButton: FloatingActionButton.extended(
+          elevation: 2,
+          highlightElevation: 2,
+          icon: Icon(Final_Data.tag.first == "Travel & Activity" ? (isActivity ? Icons.check : Icons.arrow_forward_sharp) : Icons.check),
+          label: Text(Final_Data.tag.first == "Travel & Activity" ? (isActivity ? "Finish" : "Next") : "Finish"),
+          onPressed: (){
+            if(_formKey.currentState.validate()){
+              if(Final_Data.tag.first == "Travel & Activity"){
+                setState(() {
+                  isActivity = !isActivity;
+                });
+              }else{
+                _SavetoDB();
+              }
+            }
+          },
+          heroTag: null,
+        ),
+          body: Stack(
+            children: <Widget>[
+              Form(
+                key: _formKey,
+                child: isActivity ? activityForm() : infoForm(),
               ),
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.only(left: 4.0, top: 4.0, bottom: 16.0, right: 4.0),
-                child: SafeArea(
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.arrow_back),
-                        tooltip: AppLocalizations.instance.text("back"),
-                        iconSize: 26.0,
-                        color: Colors.white,
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                      SizedBox(width: 16.0),
-                      Text(
-                        AppLocalizations.instance.text("InfoFormTitle"),
-                        style: TextStyle(
-                          // fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
+              Card(
+                elevation: 2.0,
+                margin: EdgeInsets.all(0.0),
+                color: Theme.of(context).colorScheme.darkBlue,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(30.0),
+                        bottomRight: Radius.circular(30.0)
+                    )
+                ),
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.only(left: 4.0, top: 4.0, bottom: 16.0, right: 4.0),
+                  child: SafeArea(
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.arrow_back),
+                          tooltip: AppLocalizations.instance.text("back"),
+                          iconSize: 26.0,
                           color: Colors.white,
+                          onPressed: () => Navigator.of(context).maybePop(),
                         ),
-                        // textAlign: TextAlign.center,
-                      )
-                    ],
+                        SizedBox(width: 16.0),
+                        Text(
+                          AppLocalizations.instance.text("InfoFormTitle"),
+                          style: TextStyle(
+                            // fontWeight: FontWeight.bold,
+                            fontSize: 20.0,
+                            color: Colors.white,
+                          ),
+                          // textAlign: TextAlign.center,
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            Positioned.fill(
-              bottom: 16,
-              right: 16,
-              child: Align(
-                alignment: Alignment.bottomRight,
-                child: FloatingActionButton.extended(
-                  elevation: 2,
-                  highlightElevation: 2,
-                  icon: Icon(Icons.check),
-                  label: Text("Finish"),
-                  onPressed: (){
-                    if(_formKey.currentState.validate()){
-                      if(Final_Data.tag.first == "Travel & Activity"){
-                        setState(() {
-                          isActivity = !isActivity;
-                        });
-                      }else{
-                        _SavetoDB();
-                      }
-                    }
-              },
-                  heroTag: null,
-                ),
-              ),
-            )
-          ],
-        )
+            ],
+          )
+      ),
     );
   }
 
@@ -168,6 +173,7 @@ class _InfoFillState extends State<InfoFill> {
         CardDropdown(
           labelText: 'Tag',
           listItems: tagList,
+          initData: Final_Data.tag.first,
           dropdownTileBuild: (value) {
             return DropdownMenuItem(
               value: value,
@@ -180,7 +186,9 @@ class _InfoFillState extends State<InfoFill> {
             );
           },
           onChanged: (text) {
-            Final_Data.tag = [text];
+            setState(() {
+              Final_Data.tag = [text];
+            });
           },
         ),
         SizedBox(height: 8.0),
@@ -204,19 +212,17 @@ class _InfoFillState extends State<InfoFill> {
         SizedBox(height: 8.0),
         CardDatePicker(
             labelText: 'วันเดินทาง',
+            initDateTime: DateTime.parse(Final_Data.date),
             onDatePick: (date) {
               Final_Data.date = date;
             },
-            additionWidget: widget.Role == 0
-                ? CardTextField(
-              notNull: false,
+            additionWidget: CardTextField(
               labelText: 'ช่วง',
               type: TextInputType.number,
               onChanged: (text) {
                 Final_Data.range = text;
               },
             )
-                : null
         ),
         SizedBox(height: 8.0),
         widget.Role == 0
@@ -225,6 +231,7 @@ class _InfoFillState extends State<InfoFill> {
             Expanded(
               child: CardTextField(
                 notNull: true,
+                initValue: Final_Data.amount ?? "",
                 labelText: 'ต้องการคนไปด้วย',
                 type: TextInputType.number,
                 onChanged: (text) {
@@ -235,7 +242,7 @@ class _InfoFillState extends State<InfoFill> {
             SizedBox(width: 8.0),
             Expanded(
               child: CardTextField(
-                notNull: false,
+                initValue: Final_Data.cost ?? "",
                 labelText: 'ราคา',
                 type: TextInputType.number,
                 onChanged: (text) {
@@ -246,21 +253,21 @@ class _InfoFillState extends State<InfoFill> {
             )
           ],
         )
-            : Expanded(
-          child: CardTextField(
-            notNull: true,
-            labelText: 'จำนวนคนไปด้วย',
-            type: TextInputType.number,
-            onChanged: (text) {
-              Final_Data.amount = text;
-            },
-          ),
-        ),
+            : CardTextField(
+              notNull: true,
+              initValue: Final_Data.amount ?? "",
+              labelText: 'จำนวนคนไปด้วย',
+              type: TextInputType.number,
+              onChanged: (text) {
+                Final_Data.amount = text;
+              },
+            ),
         if(widget.Role == 0)
           SizedBox(height: 8.0),
         if(widget.Role == 0)
           CardDropdown(
             labelText: 'ยานพาหนะที่จะใช้',
+            initData: Final_Data.vehicle,
             listItems: currentUser.vehicle,
             dropdownTileBuild: (value) {
               return DropdownMenuItem(
@@ -289,7 +296,6 @@ class _InfoFillState extends State<InfoFill> {
     double _imageSize = MediaQuery.of(context).size.width - 16;
     return SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(8.0, MediaQuery.of(context).size.height * 0.135, 8.0, 8.0),
-      physics: BouncingScrollPhysics(),
       child: Column(
         children: [
           Material(
@@ -317,13 +323,16 @@ class _InfoFillState extends State<InfoFill> {
               child: Container(
                 width: _imageSize,
                 height: _imageSize,
+                color: Colors.black12,
                 child: Icon(Icons.add_a_photo),
               ),
             ),
           ),
-          TextFormField(
-            minLines: 3,
-            maxLines: 10,
+          SizedBox(height: 8.0),
+          CardTextField(
+            labelText: "อธิบายกิจกรรมของคุณ",
+            minLines: 5,
+            maxLines: 8,
             onChanged: (text){
               description = text;
             },
@@ -385,7 +394,8 @@ class _InfoFillState extends State<InfoFill> {
         role: widget.Role.toString(),
         vehicle: widget.Role == 0 ? Final_Data.vehicle : Vehicle(),
         tag: Final_Data.tag,
-        cost: widget.Role == 0 ? (Final_Data.cost ?? 0) : 0, range: Final_Data.range ?? 0
+        cost: widget.Role == "0" ? Final_Data.cost : "0",
+        range: Final_Data.range
     );
     Final_Data.SaveRoute_toDB(user).then((x){
       Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as Http;
@@ -27,9 +29,10 @@ class Routes {
   String cost;
   Vehicle vehicle;
   List<dynamic> tag;
+  String imgpath;
+  String description;
 
-
-  Routes({this.uid,this.id,this.routes, this.src,this.dst,this.amount,this.date,this.isMatch,this.match,this.role,this.vehicle,this.tag, this.cost, this.range});
+  Routes({this.uid,this.id,this.routes, this.src,this.dst,this.amount,this.date,this.isMatch,this.match,this.role,this.vehicle,this.tag, this.cost, this.range, this.description});
 
   Routes.fromJson(Map<String, dynamic> json) {
     uid = json['_id'];
@@ -70,6 +73,8 @@ class Routes {
     tag = json['tag'];
     left = json['left'];
     cost = json['cost'].toString();
+    imgpath = json['imgpath'];
+    description = json['description'];
   }
 
   Map<String, dynamic> toJson() {
@@ -84,8 +89,9 @@ class Routes {
     data['role'] = this.role;
     data['vehicle'] = this.vehicle == null ? null : this.vehicle.toJson();
     data['tag'] = this.tag;
-    data['range'] = int.parse(this.range);
-    data['cost'] = int.parse(this.cost);
+    data['range'] = range != null ? int.parse(this.range) : 0;
+    data['cost'] = cost != null ? int.parse(this.cost) : 0;
+    data['description'] = this.description;
     return data;
   }
 

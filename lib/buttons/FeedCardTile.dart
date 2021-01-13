@@ -176,8 +176,9 @@ class FeedCardTileState extends State<FeedCardTile> {
                           shape: CircleBorder(),
                           clipBehavior: Clip.antiAlias,
                           color: Colors.transparent,
-                          child: Ink.image(
-                            image: widget.data.user.imgpath != null ? Image.network("${httpClass.API_IP}${widget.data.user.imgpath}").image : Icons.person,
+                          child: widget.data.user.imgpath != null
+                              ? Ink.image(
+                            image: Image.network("${httpClass.API_IP}${widget.data.user.imgpath}").image,
                             fit: BoxFit.cover,
                             width: 48.0,
                             height: 48.0,
@@ -186,7 +187,18 @@ class FeedCardTileState extends State<FeedCardTile> {
                                 swipeUpDialog(context, ProfileInfo(data: widget.data.user));
                               },
                             ),
-                          ),
+                          )
+                              : InkWell(
+                            onTap: () {
+                              swipeUpDialog(context, ProfileInfo(data: widget.data.user));
+                            },
+                            child: Container(
+                              width: 48.0,
+                              height: 48.0,
+                              color: Colors.grey,
+                              child: Icon(Icons.person, color: Colors.white),
+                            ),
+                          )
                         )
                       ),
                     )

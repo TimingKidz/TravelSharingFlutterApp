@@ -15,49 +15,76 @@ class _VerificationPageState extends State<VerificationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(isEdit ? "Your Email" : "Student Verification", style: Theme.of(context).textTheme.headline4),
-            SizedBox(height: 24),
-            if(isEdit)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                child: Form(
-                  key: _formKey,
-                  child: TextFormField(
-                    keyboardType: TextInputType.emailAddress,
-                    onChanged: (text){
-                      email = text;
+    return WillPopScope(
+      onWillPop: () async {
+        if(isEdit){
+          setState(() {
+            isEdit = !isEdit;
+          });
+          return false;
+        }else{
+          return true;
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Stack(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(isEdit ? "Your Email" : "Student Verification", style: Theme.of(context).textTheme.headline4),
+                  SizedBox(height: 24),
+                  if(isEdit)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                      child: Form(
+                        key: _formKey,
+                        child: CardTextField(
+                          notNull: true,
+                          maxLines: 1,
+                          minLines: 1,
+                          isFromVerification: true,
+                          isStudentEmail: true,
+                          onChanged: (text){
+                            email = text;
+                          },
+                        )
+                      ),
+                    ),
+                  if(!isEdit)
+                    for(Widget w in verificationPage())
+                      w,
+                  SizedBox(height: 40),
+                  RaisedButton(
+                    elevation: 2,
+                    highlightElevation: 2,
+                    padding: EdgeInsets.all(16.0),
+                    textColor: Colors.white,
+                    onPressed: (){
+                      if(isEdit && _formKey.currentState.validate()){
+                        isEdit = !isEdit;
+                      }
+                      setState(() {});
                     },
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    color: Colors.green,
+                    child: Text(isEdit ? "RESEND OTP" : "VERIFY"),
                   ),
+                ],
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 4.0, top: 4.0, bottom: 16.0, right: 4.0),
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () => Navigator.of(context).maybePop(),
                 ),
               ),
-            if(!isEdit)
-              for(Widget w in verificationPage())
-                w,
-            SizedBox(height: 40),
-            RaisedButton(
-              elevation: 2,
-              highlightElevation: 2,
-              padding: EdgeInsets.all(16.0),
-              textColor: Colors.white,
-              onPressed: (){
-                if(isEdit && _formKey.currentState.validate()){
-                  isEdit = !isEdit;
-                }
-                setState(() {});
-              },
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              color: Colors.green,
-              child: Text(isEdit ? "RESEND OTP" : "VERIFY"),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -79,24 +106,24 @@ class _VerificationPageState extends State<VerificationPage> {
             ]
         ),
       ),
+      SizedBox(height: 8.0),
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Wrong email?"),
-          TextButton(
-            onPressed: (){
+          Text("Wrong email? "),
+          GestureDetector(
+            onTap: (){
               setState(() {
                 isEdit = true;
               });
             },
-            style: TextButton.styleFrom(
-                primary: Theme.of(context).accentColor,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0)
-                ),
-                padding: EdgeInsets.all(0.0)
+            child: Text(
+              "EDIT",
+              style: TextStyle(
+                color: Theme.of(context).accentColor,
+                fontWeight: FontWeight.bold
+              ),
             ),
-            child: Text("EDIT"),
           )
         ],
       ),
@@ -140,22 +167,24 @@ class _VerificationPageState extends State<VerificationPage> {
           },
         ),
       ),
+      SizedBox(height: 16.0),
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Didn't receive the code?"),
-          TextButton(
-            onPressed: (){
-
+          Text("Didn't receive the code? "),
+          GestureDetector(
+            onTap: (){
+              setState(() {
+                isEdit = true;
+              });
             },
-            style: TextButton.styleFrom(
-                primary: Theme.of(context).accentColor,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0)
-                ),
-                padding: EdgeInsets.all(0.0)
+            child: Text(
+              "RESEND",
+              style: TextStyle(
+                  color: Theme.of(context).accentColor,
+                  fontWeight: FontWeight.bold
+              ),
             ),
-            child: Text("RESEND"),
           )
         ],
       ),

@@ -199,6 +199,8 @@ class SignUpPageState extends State<SignUpPage> {
       SizedBox(height: 8.0),
       CardTextField(
         notNull: true,
+        isStudentEmail: true,
+        maxLines: 1,
         labelText: "Student Email",
         onChanged: (data) => userData.username = data,
       ),

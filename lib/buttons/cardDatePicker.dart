@@ -8,6 +8,7 @@ import 'package:travel_sharing/buttons/cardTextField.dart';
 class CardDatePicker extends StatefulWidget {
   final String labelText;
   final Function onDatePick;
+  final DateTime initDateTime;
   final bool isJustDate;
   final bool isBirthday;
   final Widget additionWidget;
@@ -15,7 +16,7 @@ class CardDatePicker extends StatefulWidget {
   CardDatePicker({
     this.labelText,
     this.onDatePick,
-    this.isJustDate, this.isBirthday, this.additionWidget
+    this.isJustDate, this.isBirthday, this.additionWidget, this.initDateTime
   });
 
   @override
@@ -24,13 +25,14 @@ class CardDatePicker extends StatefulWidget {
 }
 
 class CardDatePickerState extends State<CardDatePicker> {
-  DateTime updatedDate = DateTime.now();
+  DateTime updatedDate;
   var dateText = TextEditingController();
   var timeText = TextEditingController();
   bool isBirthday;
 
   @override
   void initState() {
+    updatedDate = widget.initDateTime ?? DateTime.now();
     dateText.text = dateShow();
     timeText.text = '${DateFormat('HH:mm').format(updatedDate)}';
     isBirthday = widget.isBirthday == null ? false : widget.isBirthday;
@@ -110,7 +112,7 @@ class CardDatePickerState extends State<CardDatePicker> {
                                 );
                                 updatedDate = updateTime;
                               }
-                              timeText.text = '${DateFormat('HH:mm น.').format(updatedDate)}';
+                              timeText.text = '${DateFormat('HH:mm').format(updatedDate)}';
                               widget.onDatePick(updatedDate.toIso8601String());
                             });
                           },

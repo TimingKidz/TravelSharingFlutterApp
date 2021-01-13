@@ -224,7 +224,7 @@ class User {
       image = img.copyResize(image,
           width: 512,
           height: 512);
-      Http.StreamedResponse response = await httpClass.reqHttpMedia(image,this.uid,"profile");
+      Http.StreamedResponse response = await httpClass.reqHttpMedia(image,this.uid,"profile","/api/user/profile");
       if(response.statusCode == 400){
         return Future.value(false);
       }else{
@@ -236,18 +236,21 @@ class User {
     }
   }
 
-  Future<bool> uploadStudentCard(File file)async{
+  Future<bool> uploadImg(File file, String routeID)async{
     try{
       img.Image image = img.decodeImage(file.readAsBytesSync());
-      Http.StreamedResponse response = await httpClass.reqHttpMedia(image,this.uid,"card");
+      image = img.copyResize(image,
+          width: 512,
+          height: 512);
+      Http.StreamedResponse response = await httpClass.reqHttpMedia(image,this.uid,routeID,"/api/user/img");
       if(response.statusCode == 400){
         return Future.value(false);
       }else{
+        print("upload succesful");
         return Future.value(true);
       }
     }catch (err){
       throw("can't connect" + err);
     }
   }
-
 }

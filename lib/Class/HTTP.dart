@@ -37,10 +37,11 @@ class HTTP{
     }
   }
 
-  Future<Http.StreamedResponse> reqHttpMedia(img.Image image,String dir,String filename)async{
+  Future<Http.StreamedResponse> reqHttpMedia(img.Image image,String dir,String filename, String path)async{
     try{
+      var url = this.API_IP + path;
         Http.MultipartRequest request = Http.MultipartRequest(
-          'POST', Uri.parse("${API_IP}/api/user/${filename}"),
+          'POST', Uri.parse(url),
         );
         request.files.add(
           Http.MultipartFile.fromBytes(

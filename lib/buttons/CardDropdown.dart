@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 
 class CardDropdown extends StatefulWidget {
   final String labelText;
+  final dynamic initData;
   final List<dynamic> listItems;
   final Function dropdownTileBuild;
   final Function onChanged;
 
-  const CardDropdown({Key key, this.labelText, this.listItems, this.onChanged, @required this.dropdownTileBuild}) : super(key: key);
+  const CardDropdown({Key key, this.labelText, this.listItems, this.onChanged, @required this.dropdownTileBuild, this.initData}) : super(key: key);
 
   @override
   _CardDropdownState createState() => _CardDropdownState();
@@ -20,7 +21,7 @@ class _CardDropdownState extends State<CardDropdown> {
   @override
   void initState() {
     super.initState();
-    dropdownValue = widget.listItems[0];
+    dropdownValue = widget.initData ?? widget.listItems[0];
   }
 
   @override
