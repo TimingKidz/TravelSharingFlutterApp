@@ -58,8 +58,15 @@ class AccountState extends State<Account> {
                   children: <Widget>[
                     CircleAvatar(
                       radius: 64,
+                      backgroundColor: Colors.grey,
                       child: ClipOval(
-                        child: currentUser.imgpath != null ? Image.network("${httpClass.API_IP}${currentUser.imgpath}") : Container(),
+                        child: currentUser.imgpath != null
+                            ? Image.network("${httpClass.API_IP}${currentUser.imgpath}")
+                            : Container(
+                          width: 128.0,
+                          height: 128.0,
+                          child: Icon(Icons.person, color: Colors.white, size: 64),
+                        ),
                       ),
                     ),
                     SizedBox(

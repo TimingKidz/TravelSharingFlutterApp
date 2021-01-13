@@ -130,23 +130,27 @@ class SignUpPageState extends State<SignUpPage> {
                             ],
                           ),
                           SizedBox(height: 16.0),
-                          CircleAvatar(
-                              radius: 64,
-                              child: Material(
-                                shape: CircleBorder(),
-                                color: Colors.grey,
-                                child: InkWell(
-                                  onTap: (){
-                                    getImage();
-                                  },
-                                  customBorder: CircleBorder(),
-                                  child: ClipOval(
-                                      child: selectedImage != null ? Image.file(selectedImage) : Container(
-                                        width: double.infinity,
-                                        height: double.infinity,
-                                        child: Icon(Icons.add_a_photo),
-                                      )
-                                  ),
+                          Material(
+                              shape: CircleBorder(),
+                              clipBehavior: Clip.antiAlias,
+                              color: Colors.grey,
+                              child: InkWell(
+                                onTap: (){
+                                  getImage();
+                                },
+                                child: ClipOval(
+                                    child: selectedImage != null
+                                        ? Ink.image(
+                                      image: Image.file(selectedImage).image,
+                                      width: 128.0,
+                                      height: 128.0,
+                                      fit: BoxFit.cover,
+                                    )
+                                        : Container(
+                                      width: 128.0,
+                                      height: 128.0,
+                                      child: Icon(Icons.add_a_photo, color: Colors.white),
+                                    )
                                 ),
                               )
                           ),

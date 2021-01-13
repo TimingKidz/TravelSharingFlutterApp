@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:travel_sharing/Class/RouteJson.dart';
+import 'package:travel_sharing/main.dart';
 
 void normalDialog(BuildContext context, String title, Widget content, List<Widget> actions){
   showDialog(
@@ -12,6 +14,73 @@ void normalDialog(BuildContext context, String title, Widget content, List<Widge
         title: Text(title),
         content: content,
         actions: actions,
+      );
+    },
+  );
+}
+
+void activityInfoDialog(BuildContext context, Routes data){
+  showDialog(
+    context: context,
+    // barrierDismissible: false,
+    builder: (BuildContext context) {
+      return Dialog(
+        elevation: 1.0,
+        backgroundColor: Theme.of(context).accentColor,
+        insetPadding: EdgeInsets.all(16.0),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0)
+        ),
+        child: Wrap(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Material(
+                      elevation: 1,
+                      color: Colors.white,
+                      shape: CircleBorder(),
+                      child: InkWell(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Icon(Icons.clear),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 8.0),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.black12,
+                      borderRadius: BorderRadius.circular(20.0)
+                    ),
+                    width: MediaQuery.of(context).size.width - 32 - 16,
+                    height: MediaQuery.of(context).size.width - 32 - 16,
+                    child: data.imgpath != null ? Image.network("${httpClass.API_IP}${data.imgpath}") : Icon(Icons.broken_image, color: Colors.white),
+                  ),
+                  if(data.description != null)
+                    SizedBox(height: 8.0),
+                  if(data.description != null)
+                    Container(
+                      padding: EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).canvasColor,
+                          borderRadius: BorderRadius.circular(20.0)
+                      ),
+                      width: MediaQuery.of(context).size.width - 32 - 16,
+                      child: Text(
+                        data.description
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
       );
     },
   );

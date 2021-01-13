@@ -175,29 +175,23 @@ class FeedCardTileState extends State<FeedCardTile> {
                         child: Material(
                           shape: CircleBorder(),
                           clipBehavior: Clip.antiAlias,
-                          color: Colors.transparent,
-                          child: widget.data.user.imgpath != null
-                              ? Ink.image(
-                            image: Image.network("${httpClass.API_IP}${widget.data.user.imgpath}").image,
-                            fit: BoxFit.cover,
-                            width: 48.0,
-                            height: 48.0,
-                            child: InkWell(
-                              onTap: () {
-                                swipeUpDialog(context, ProfileInfo(data: widget.data.user));
-                              },
-                            ),
-                          )
-                              : InkWell(
+                          color: Colors.grey,
+                          child: InkWell(
                             onTap: () {
                               swipeUpDialog(context, ProfileInfo(data: widget.data.user));
                             },
-                            child: Container(
+                            child: widget.data.user.imgpath != null
+                                ? Ink.image(
+                              image: Image.network("${httpClass.API_IP}${widget.data.user.imgpath}").image,
+                              fit: BoxFit.cover,
                               width: 48.0,
                               height: 48.0,
-                              color: Colors.grey,
-                              child: Icon(Icons.person, color: Colors.white),
-                            ),
+                            )
+                                : Container(
+                                width: 48.0,
+                                height: 48.0,
+                                child: Icon(Icons.person, color: Colors.white),
+                              ),
                           )
                         )
                       ),

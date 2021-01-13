@@ -26,9 +26,14 @@ class ProfileInfo extends StatelessWidget {
                 alignment: Alignment.center,
                 child: CircleAvatar(
                   radius: 64,
+                  backgroundColor: Colors.grey,
                   child: ClipOval(
-                    child: Image.network(
-                      "${httpClass.API_IP}${data.imgpath}",
+                    child: data.imgpath != null
+                        ? Image.network("${httpClass.API_IP}${data.imgpath}")
+                        : Container(
+                      width: 128.0,
+                      height: 128.0,
+                      child: Icon(Icons.person, color: Colors.white, size: 64),
                     ),
                   ),
                 ),

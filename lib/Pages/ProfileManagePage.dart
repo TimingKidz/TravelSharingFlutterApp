@@ -60,24 +60,44 @@ class ProfileManagePageState extends State<ProfileManagePage> {
                           //   radius: 64.0,
                           // ),
                           isEdit
-                          ? CircleAvatar(
-                                radius: 64,
-//                                 backgroundColor: Colors.transparent,
-                                child: InkWell(
-                                  onTap: (){
-                                    getImage();
-                                  },
-                                  child: ClipOval(
-                                      child: selectedImage != null ? Image.file(selectedImage): currentUser.imgpath != null ? Image.network(url) : Container()
+                              ? Material(
+                            shape: CircleBorder(),
+                            clipBehavior: Clip.antiAlias,
+                            color: Colors.grey,
+                            child: InkWell(
+                                onTap: (){
+                                  getImage();
+                                },
+                                child: ClipOval(
+                                  child: selectedImage != null
+                                      ? Ink.image(
+                                    image: Image.file(selectedImage).image,
+                                    width: 128.0,
+                                    height: 128.0,
+                                    fit: BoxFit.cover,
+                                  )
+                                      : Container(
+                                      width: 128.0,
+                                      height: 128.0,
+                                      child: currentUser.imgpath != null
+                                          ? Ink.image(image: Image.network(url).image)
+                                          : Icon(Icons.add_a_photo, color: Colors.white)
                                   ),
                                 )
-                            )
-                          :  CircleAvatar(
-                              radius: 64,
-                              // backgroundColor: Colors.transparent,
-                              child: ClipOval(
-                                  child: currentUser.imgpath != null ? Image.network(url) : Container()
+                            ),
+                          )
+                              :  CircleAvatar(
+                            radius: 64,
+                            backgroundColor: Colors.grey,
+                            child: ClipOval(
+                              child: currentUser.imgpath != null
+                                  ? Image.network(url)
+                                  : Container(
+                                width: 128.0,
+                                height: 128.0,
+                                child: Icon(Icons.person, color: Colors.white, size: 64),
                               ),
+                            ),
                           ),
                           SizedBox(
                             height: 16.0,

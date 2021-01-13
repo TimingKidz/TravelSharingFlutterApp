@@ -18,8 +18,9 @@ class ReqMapCard extends StatefulWidget {
   final Function onAcceptPressed;
   final Function onDeclinePressed;
   final bool isPress;
+  final Function onCardPressed;
 
-  const ReqMapCard({Key key, this.isPress,this.url,this.data, this.onAcceptPressed, this.onDeclinePressed, this.userData}) : super(key: key);
+  const ReqMapCard({Key key, this.isPress,this.url,this.data, this.onAcceptPressed, this.onDeclinePressed, this.userData, this.onCardPressed}) : super(key: key);
 
   @override
   _ReqMapCardState createState() => _ReqMapCardState();
@@ -30,228 +31,240 @@ class _ReqMapCardState extends State<ReqMapCard> {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(20.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          Expanded(
-            child: Stack(
-              children: [
-                Container(
-                  height: double.infinity,
-                  child: Image.network(
-                      widget.url,
-                      fit: BoxFit.cover
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: SizedBox(
-                    width: 48,
-                    child: RawMaterialButton(
-                      elevation: 1,
-                      highlightElevation: 1,
-                      onPressed: (){
-                        Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => MapView(paiDuay: widget.data.routes, chuan: widget.userData.routes)));
-                      },
-                      shape: CircleBorder(),
-                      fillColor: Colors.white,
-                      child: Icon(Icons.map),
+      child: FlatButton(
+        padding: EdgeInsets.all(0.0),
+        onPressed: () => widget.onCardPressed(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            Expanded(
+              child: Stack(
+                children: [
+                  Container(
+                    height: double.infinity,
+                    child: Ink.image(
+                      fit: BoxFit.cover,
+                      image: Image.network(widget.url).image,
                     ),
                   ),
-                ),
-              ],
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: SizedBox(
+                      width: 48,
+                      child: RawMaterialButton(
+                        elevation: 1,
+                        highlightElevation: 1,
+                        onPressed: (){
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => MapView(paiDuay: widget.data.routes, chuan: widget.userData.routes)));
+                        },
+                        shape: CircleBorder(),
+                        fillColor: Colors.white,
+                        child: Icon(Icons.map),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Container(
-              padding: EdgeInsets.all(16.0),
-              width: double.infinity,
-              child: Wrap(
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(bottom: 16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Flexible(
-                                  child: Container(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text('ปลายทาง', style: TextStyle(fontSize: 10.0)),
-                                        SizedBox(height: 5.0),
-                                        Text(widget.data.routes.dst, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-                                        SizedBox(height: 16.0),
-                                        Text('ต้นทาง', style: TextStyle(fontSize: 10.0)),
-                                        SizedBox(height: 5.0),
-                                        Text(widget.data.routes.src, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                // Vehicle Icon, Date and Time
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Icon(Icons.drive_eta, size: 32.0),
-                                    SizedBox(height: 8.0),
-                                    Container(
-                                      padding: EdgeInsets.all(4.0),
-                                      decoration: BoxDecoration(
-                                          border: Border.all(color: Colors.black),
-                                          borderRadius: BorderRadius.circular(
-                                              10.0)
-                                      ),
+            Container(
+                padding: EdgeInsets.all(16.0),
+                width: double.infinity,
+                child: Wrap(
+                  children: <Widget>[
+                    Column(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(bottom: 16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Flexible(
+                                    child: Container(
                                       child: Column(
-                                        children: <Widget>[
-                                          Text(
-                                            DateManage().datetimeFormat("day", widget.data.routes.date) + " " + DateManage().datetimeFormat("month", widget.data.routes.date),
-                                            style: TextStyle(
-                                                fontSize: 10.0
-                                            ),
-                                          ),
-                                          Text(DateManage().datetimeFormat("time", widget.data.routes.date))
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text('ปลายทาง', style: TextStyle(fontSize: 10.0)),
+                                          SizedBox(height: 5.0),
+                                          Text(widget.data.routes.dst, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                                          SizedBox(height: 16.0),
+                                          Text('ต้นทาง', style: TextStyle(fontSize: 10.0)),
+                                          SizedBox(height: 5.0),
+                                          Text(widget.data.routes.src, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
                                         ],
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 16.0),
-                            InkWell(
-                              onTap: (){
-                                swipeUpDialog(
-                                    context,
-                                    ProfileInfo(
-                                        data: widget.data.user,
-                                        isHost: false
-                                    )
-                                );
-                              },
-                              borderRadius: BorderRadius.circular(20.0),
-                              child: Row(
-                                children: <Widget>[
-                                  CircleAvatar(
-                                    radius: 20,
-                                    child: ClipOval(
-                                      child: widget.data.user.imgpath != null ? Image.network("${httpClass.API_IP}${widget.data.user.imgpath}") : Container(),
-                                    ),
                                   ),
-                                  SizedBox(width: 8.0),
+                                  // Vehicle Icon, Date and Time
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(widget.data.user.name, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-                                      Row(
-                                        children: [
-                                          RatingBarIndicator(
-                                            rating:  widget.data.user.reviewSummary.amount == 0 ? 0.0: widget.data.user.reviewSummary.totalscore/widget.data.user.reviewSummary.amount,
-                                            itemBuilder: (context, index) => Icon(
-                                              Icons.star,
-                                              color: Colors.amber,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Icon(Icons.drive_eta, size: 32.0),
+                                      SizedBox(height: 8.0),
+                                      Container(
+                                        padding: EdgeInsets.all(4.0),
+                                        decoration: BoxDecoration(
+                                            border: Border.all(color: Colors.black),
+                                            borderRadius: BorderRadius.circular(
+                                                10.0)
+                                        ),
+                                        child: Column(
+                                          children: <Widget>[
+                                            Text(
+                                              DateManage().datetimeFormat("day", widget.data.routes.date) + " " + DateManage().datetimeFormat("month", widget.data.routes.date),
+                                              style: TextStyle(
+                                                  fontSize: 10.0
+                                              ),
                                             ),
-                                            itemCount: 5,
-                                            itemSize: 16.0,
-                                            direction: Axis.horizontal,
-                                          ),
-                                          SizedBox(width: 4.0),
-                                          Text(widget.data.user.reviewSummary.amount == 0 ? "0.0": (widget.data.user.reviewSummary.totalscore/widget.data.user.reviewSummary.amount).toString(), style: TextStyle(fontSize: 10.0)),
-                                          SizedBox(width: 4.0),
-                                          Container(
-                                            padding: EdgeInsets.symmetric(horizontal: 2.0),
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(20.0),
-                                                border: Border.all(color: Colors.black, width: 0.5)
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                Icon(Icons.people, size: 10.0),
-                                                SizedBox(width: 2.0),
-                                                Text(widget.data.user.reviewSummary.amount.toString(), style: TextStyle(fontSize: 10.0)),
-                                                SizedBox(width: 1.0),
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      )
+                                            Text(DateManage().datetimeFormat("time", widget.data.routes.date))
+                                          ],
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ],
                               ),
-                            )
+                              SizedBox(height: 16.0),
+                              InkWell(
+                                onTap: (){
+                                  swipeUpDialog(
+                                      context,
+                                      ProfileInfo(
+                                          data: widget.data.user,
+                                          isHost: false
+                                      )
+                                  );
+                                },
+                                borderRadius: BorderRadius.circular(20.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    Material(
+                                      shape: CircleBorder(),
+                                      clipBehavior: Clip.antiAlias,
+                                      color: Colors.grey,
+                                      child: ClipOval(
+                                          child: Container(
+                                            width: 40.0,
+                                            height: 40.0,
+                                            child: widget.data.user.imgpath != null
+                                                ? Ink.image(image: Image.network("${httpClass.API_IP}${widget.data.user.imgpath}").image)
+                                                : Icon(Icons.person, color: Colors.white, size: 20),
+                                          )
+                                      ),
+                                    ),
+                                    SizedBox(width: 8.0),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(widget.data.user.name, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                                        Row(
+                                          children: [
+                                            RatingBarIndicator(
+                                              rating:  widget.data.user.reviewSummary.amount == 0 ? 0.0: widget.data.user.reviewSummary.totalscore/widget.data.user.reviewSummary.amount,
+                                              itemBuilder: (context, index) => Icon(
+                                                Icons.star,
+                                                color: Colors.amber,
+                                              ),
+                                              itemCount: 5,
+                                              itemSize: 16.0,
+                                              direction: Axis.horizontal,
+                                            ),
+                                            SizedBox(width: 4.0),
+                                            Text(widget.data.user.reviewSummary.amount == 0 ? "0.0": (widget.data.user.reviewSummary.totalscore/widget.data.user.reviewSummary.amount).toString(), style: TextStyle(fontSize: 10.0)),
+                                            SizedBox(width: 4.0),
+                                            Container(
+                                              padding: EdgeInsets.symmetric(horizontal: 2.0),
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(20.0),
+                                                  border: Border.all(color: Colors.black, width: 0.5)
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Icon(Icons.people, size: 10.0),
+                                                  SizedBox(width: 2.0),
+                                                  Text(widget.data.user.reviewSummary.amount.toString(), style: TextStyle(fontSize: 10.0)),
+                                                  SizedBox(width: 1.0),
+                                                ],
+                                              ),
+                                            )
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Row(
+                          children: <Widget>[
+                            if(!widget.isPress)
+                            Expanded(
+                              child: RaisedButton(
+                                highlightElevation: 0.0,
+                                padding: EdgeInsets.all(16.0),
+                                color: Colors.red,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                child: Text('ปฏิเสธ', style: TextStyle(color: Colors.white)),
+                                onPressed: () => widget.onDeclinePressed(),
+                              ),
+                            ),
+                            if(!widget.isPress)
+                            SizedBox(width: 16.0),
+                            if(!widget.isPress)
+                            Expanded(
+                              child: RaisedButton(
+                                highlightElevation: 0.0,
+                                padding: EdgeInsets.all(16.0),
+                                color: Colors.green,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                child: Text('ยอมรับ', style: TextStyle(color: Colors.white)),
+                                onPressed: () => widget.onAcceptPressed() ,
+                              ),
+                            ),
+                            if(widget.isPress)
+                            Expanded(
+                              child: RaisedButton(
+                                highlightElevation: 0.0,
+                                padding: EdgeInsets.all(16.0),
+                                color: Colors.green,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    if (widget.isPress)
+                                      SizedBox(
+                                        width: 16.0,
+                                        height: 16.0,
+                                        child: CircularProgressIndicator(strokeWidth: 2,valueColor: AlwaysStoppedAnimation(Colors.white),),
+                                      ),
+                                    if (widget.isPress)
+                                      SizedBox( width: 20,),
+                                    Text("Loading...", style: TextStyle(color: Colors.white,)),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ],
                         ),
-                      ),
-                      Row(
-                        children: <Widget>[
-                          if(!widget.isPress)
-                          Expanded(
-                            child: RaisedButton(
-                              highlightElevation: 0.0,
-                              padding: EdgeInsets.all(16.0),
-                              color: Colors.red,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              child: Text('ปฏิเสธ', style: TextStyle(color: Colors.white)),
-                              onPressed: () => widget.onDeclinePressed(),
-                            ),
-                          ),
-                          if(!widget.isPress)
-                          SizedBox(width: 16.0),
-                          if(!widget.isPress)
-                          Expanded(
-                            child: RaisedButton(
-                              highlightElevation: 0.0,
-                              padding: EdgeInsets.all(16.0),
-                              color: Colors.green,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              child: Text('ยอมรับ', style: TextStyle(color: Colors.white)),
-                              onPressed: () => widget.onAcceptPressed() ,
-                            ),
-                          ),
-                          if(widget.isPress)
-                          Expanded(
-                            child: RaisedButton(
-                              highlightElevation: 0.0,
-                              padding: EdgeInsets.all(16.0),
-                              color: Colors.green,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  if (widget.isPress)
-                                    SizedBox(
-                                      width: 16.0,
-                                      height: 16.0,
-                                      child: CircularProgressIndicator(strokeWidth: 2,valueColor: AlwaysStoppedAnimation(Colors.white),),
-                                    ),
-                                  if (widget.isPress)
-                                    SizedBox( width: 20,),
-                                  Text("Loading...", style: TextStyle(color: Colors.white,)),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  )
-                ],
-              )
-          ),
-        ],
+                      ],
+                    )
+                  ],
+                )
+            ),
+          ],
+        ),
       ),
     );
   }

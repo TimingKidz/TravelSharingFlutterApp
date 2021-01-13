@@ -13,8 +13,7 @@ class CardInformationState extends State<CardInformation> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.all(8.0),
-      elevation: 2.0,
+      margin: EdgeInsets.all(0.0),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0)
       ),
