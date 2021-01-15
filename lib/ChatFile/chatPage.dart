@@ -88,7 +88,6 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
     return Scaffold(
         body: Stack(
           children: <Widget>[
-
             Padding(
               padding: EdgeInsets.only(top: 80),
               child: Column(
@@ -152,25 +151,6 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
           ],
         )
     );
-    return
-      Scaffold(
-          appBar: AppBar(
-            title: Text("TKZ"),
-            automaticallyImplyLeading: true,
-          ),
-          backgroundColor: Colors.white,
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              if(messagesReverseList.isNotEmpty)
-              Expanded(
-                child: _chatListView(),
-              ),
-              if(widget.isHistory == null ? true : !widget.isHistory)
-              _chatBottomBar()
-            ],
-          )
-        );
   }
 
   bool isBottom;
@@ -321,10 +301,18 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
             if(message.isDuplicate)
               SizedBox(width: 32.0),
             if(!message.isDuplicate)
-              CircleAvatar(
-                radius: 16,
+              Material(
+                shape: CircleBorder(),
+                clipBehavior: Clip.antiAlias,
+                color: Colors.grey,
                 child: ClipOval(
-                  child: message.imgpath != null ? Image.network("${httpClass.API_IP}${message.imgpath}") : Container(),
+                  child: Container(
+                      width: 32.0,
+                      height: 32.0,
+                      child: message.imgpath != null
+                          ? Ink.image(image: NetworkImage("${httpClass.API_IP}${message.imgpath}"))
+                          : Icon(Icons.person, color: Colors.white, size: 16.0)
+                  ),
                 ),
               ),
             Flexible(

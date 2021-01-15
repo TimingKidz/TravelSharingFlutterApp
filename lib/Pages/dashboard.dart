@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:travel_sharing/Class/Travel_Info.dart';
 import 'package:travel_sharing/Dialog.dart';
 import 'package:travel_sharing/Pages/JoinMap.dart';
@@ -26,6 +27,7 @@ class _Dashboard extends State<Dashboard> {
   LocationData Locations;
   List<Travel_Info> _joinList  = null;
   List<Travel_Info> _invitedList = null;
+  final SlidableController slidableController = SlidableController();
   // GlobalKey actionKey = GlobalKey();
   // double height;
   // bool isJoinPage = true;
@@ -146,7 +148,6 @@ class _Dashboard extends State<Dashboard> {
         elevation: 2.0,
         child: Icon(Icons.add),
         onPressed: isJoinPage ? _callJoinMap : _callInviteMap,
-        // Scafford.of(context).showSnackBar(SnackBar(content: Text("Please add vehicle before proceed to this action."))
         backgroundColor: isJoinPage ? Theme.of(context).accentColor : Theme.of(context).accentColor,
         heroTag: null,
       ),
@@ -189,6 +190,9 @@ class _Dashboard extends State<Dashboard> {
                           onPressed: () {
                             setState(() {
                               isJoinPage = true;
+                              if (slidableController.activeState != null) {
+                                slidableController.activeState.close();
+                              }
                             });
                           },
                         ),
@@ -211,6 +215,9 @@ class _Dashboard extends State<Dashboard> {
                           onPressed: () {
                             setState(() {
                               isJoinPage = false;
+                              if (slidableController.activeState != null) {
+                                slidableController.activeState.close();
+                              }
                             });
                           },
                         ),
@@ -282,6 +289,7 @@ class _Dashboard extends State<Dashboard> {
     print(data);
     return DashboardCardTile(
       data: data,
+      controller: slidableController,
       status: data.routes.status,
       onCardPressed: () => _onCardPressed(data),
       onDeletePressed: () async {
@@ -345,13 +353,12 @@ class _Dashboard extends State<Dashboard> {
 
   _callInviteMap() async{
     if(currentUser.vehicle.isEmpty){
-      normalDialog(context,
+      alertDialog(context,
           "No vehicle",
-          Text("Please add your vehicle.\n\n Account > Vehicle Management",
-          textAlign: TextAlign.center),
+          Text("Please add your vehicle.\nAccount -> Vehicle Management"),
         <Widget>[
           FlatButton(
-            child: Text('Ok'),
+            child: Text('OK'),
             onPressed: () async {
               Navigator.of(context).pop();
             },

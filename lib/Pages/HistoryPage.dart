@@ -128,16 +128,10 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget _buildRow(Travel_Info data) {
     return ListTile(
       onTap: (){
-        if(data.routes.role == "0")  Navigator.pushNamed(context,"/MatchInfo", arguments: {
-          "uid" : data.routes.uid,
-          "data" : data,
-          "isHistory" : true
-        }).then((value) => _pageConfig());
-        else   Navigator.pushNamed(context,"/MatchInfo", arguments: {
-          "uid" : data.routes.match.first,
-          "data" : data,
-          "isHistory" : true
-        }).then((value) =>  _pageConfig());
+        if(data.routes.role == "0")  Navigator.push(context, MaterialPageRoute(
+            builder: (context) => Matchinformation(uid: data.routes.uid, data: data , isHistory:  true))).then((value) => _pageConfig());
+        else   Navigator.push(context, MaterialPageRoute(
+            builder: (context) => Matchinformation(uid: data.routes.match.first, data: data , isHistory:  true))).then((value) =>  _pageConfig());
       },
       title: Row(
         mainAxisAlignment: MainAxisAlignment.start,

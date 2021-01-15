@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
@@ -9,6 +10,7 @@ import 'package:travel_sharing/Class/User.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/buttons/CardDropdown.dart';
+import 'package:travel_sharing/buttons/CardPicker.dart';
 import 'package:travel_sharing/buttons/cardDatePicker.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
 import 'package:travel_sharing/localization.dart';
@@ -56,6 +58,7 @@ class _InfoFillState extends State<InfoFill> {
     Final_Data.src = widget.src;
     Final_Data.dst = widget.dst;
     Final_Data.tag = [tagList.first];
+    Final_Data.vehicle = widget.Role == 0 ? (Vehicle().defaultVehicle() ?? currentUser.vehicle.first) : null;
     if(widget.data != null){
       Final_Data.tag = widget.data.tag;
       Final_Data.date = DateTime.parse(widget.data.date).toLocal().toString();
@@ -198,6 +201,28 @@ class _InfoFillState extends State<InfoFill> {
             });
           },
         ),
+        if(widget.Role == 0)
+          SizedBox(height: 8.0),
+        if(widget.Role == 0)
+          CardDropdown(
+            labelText: 'ยานพาหนะที่จะใช้',
+            initData: Final_Data.vehicle,
+            listItems: currentUser.vehicle,
+            dropdownTileBuild: (value) {
+              return DropdownMenuItem(
+                value: value,
+                child: Text(
+                  "${value.brand} ${value.model} - ${value.license}",
+                  style: TextStyle(
+                      fontSize: 18.0
+                  ),
+                ),
+              );
+            },
+            onChanged: (data) {
+              Final_Data.vehicle = data;
+            },
+          ),
         SizedBox(height: 8.0),
         CardTextField(
           notNull: true,
@@ -222,25 +247,19 @@ class _InfoFillState extends State<InfoFill> {
             initDateTime: DateTime.parse(Final_Data.date),
             onDatePick: (date) {
               Final_Data.date = date;
-            },
-            additionWidget: CardTextField(
-              labelText: 'ช่วง',
-              type: TextInputType.number,
-              onChanged: (text) {
-                Final_Data.range = text;
-              },
-            )
+            }
         ),
         SizedBox(height: 8.0),
-        widget.Role == 0
-            ? Row(
+        Row(
           children: [
             Expanded(
               child: CardTextField(
                 notNull: true,
                 initValue: Final_Data.amount ?? "",
-                labelText: 'ต้องการคนไปด้วย',
+                labelText: widget.Role == 0 ? 'ต้องการคนไปด้วย (คน)' : 'จำนวนคนไปด้วย (คน)',
                 type: TextInputType.number,
+                maxLength: 2,
+                inputFormat: [FilteringTextInputFormatter.digitsOnly],
                 onChanged: (text) {
                   Final_Data.amount = text;
                 },
@@ -248,49 +267,30 @@ class _InfoFillState extends State<InfoFill> {
             ),
             SizedBox(width: 8.0),
             Expanded(
-              child: CardTextField(
-                initValue: Final_Data.cost ?? "",
-                labelText: 'ราคา',
-                type: TextInputType.number,
-                onChanged: (text) {
-                  print(text);
-                  Final_Data.cost = text;
+              child: CardPicker(
+                labelText: "ช่วง (นาที)",
+                initItem: Final_Data.range,
+                itemsList: ["15", "30", "45", "60"],
+                onChange: (text){
+                  Final_Data.range = text;
                 },
               ),
             )
           ],
-        )
-            : CardTextField(
-              notNull: true,
-              initValue: Final_Data.amount ?? "",
-              labelText: 'จำนวนคนไปด้วย',
-              type: TextInputType.number,
-              onChanged: (text) {
-                Final_Data.amount = text;
-              },
-            ),
+        ),
         if(widget.Role == 0)
           SizedBox(height: 8.0),
         if(widget.Role == 0)
-          CardDropdown(
-            labelText: 'ยานพาหนะที่จะใช้',
-            initData: Final_Data.vehicle,
-            listItems: currentUser.vehicle,
-            dropdownTileBuild: (value) {
-              return DropdownMenuItem(
-                value: value,
-                child: Text(
-                  "${value.brand} ${value.model} - ${value.license}",
-                  style: TextStyle(
-                      fontSize: 18.0
-                  ),
-                ),
-              );
-            },
-            onChanged: (data) {
-              Final_Data.vehicle = data;
-            },
-          ),
+          CardTextField(
+          initValue: Final_Data.cost ?? "",
+          labelText: 'ราคา (฿)',
+          type: TextInputType.number,
+          inputFormat: [FilteringTextInputFormatter.digitsOnly],
+          onChanged: (text) {
+            print(text);
+            Final_Data.cost = text;
+          },
+        ),
         SizedBox(height: 72)
       ],
     );
@@ -399,7 +399,7 @@ class _InfoFillState extends State<InfoFill> {
         isMatch: false,
         match: List(),
         role: widget.Role.toString(),
-        vehicle: widget.Role == 0 ? Final_Data.vehicle : Vehicle(),
+        vehicle: widget.Role == 0 ? Final_Data.vehicle : Vehicle(type: int.parse(Final_Data.amount) > 1 ? "People" : "Person"),
         tag: Final_Data.tag,
         cost: widget.Role == 0 ? Final_Data.cost : "0",
         range: Final_Data.range,

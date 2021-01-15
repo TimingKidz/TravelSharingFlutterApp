@@ -196,12 +196,18 @@ class _Matchinformation extends State<Matchinformation> {
                                     child: Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        CircleAvatar(
-                                          radius: 32,
+                                        Material(
+                                          shape: CircleBorder(),
+                                          clipBehavior: Clip.antiAlias,
+                                          color: Colors.grey,
                                           child: ClipOval(
-                                            child: Image.network(
-                                              "${httpClass.API_IP}${tripDetails.hostUser.imgpath}",
-                                            ),
+                                              child: Container(
+                                                width: 64.0,
+                                                height: 64.0,
+                                                child: tripDetails.hostUser.imgpath != null
+                                                    ? Ink.image(image: Image.network("${httpClass.API_IP}${tripDetails.hostUser.imgpath}").image)
+                                                    : Icon(Icons.person, color: Colors.white, size: 32.0),
+                                              )
                                           ),
                                         ),
                                         SizedBox(width: 16.0),
@@ -325,7 +331,7 @@ class _Matchinformation extends State<Matchinformation> {
                 Text(isEndTrip ? 'Loading...':'End Trip', style: TextStyle(color: Colors.white,))
               ],
             ),
-            onPressed: () => isEndTrip ? null : normalDialog(
+            onPressed: () => isEndTrip ? null : alertDialog(
               this.context,
               'Are you sure',
               Text("This action couldn't be undone. Would you like to end this trip ?"),
@@ -419,21 +425,40 @@ class _Matchinformation extends State<Matchinformation> {
             child: Material(
               shape: CircleBorder(),
               clipBehavior: Clip.antiAlias,
-              color: Colors.transparent,
-              child: Ink.image(
-                image: NetworkImage(
-                    "${httpClass.API_IP}${user.imgpath}"
-                ),
-                fit: BoxFit.cover,
-                width: 64.0,
-                height: 64.0,
-                child: InkWell(
+              color: Colors.grey,
+              child: InkWell(
                   onTap: () {
                     swipeUpDialog(context, ProfileInfo(data: user, isHost: currentUser.uid == tripDetails.hostUser.uid, kickFunct :() => kickOut(user,routes) ));
                   },
-                ),
+                  child: ClipOval(
+                    child: Container(
+                        width: 64.0,
+                        height: 64.0,
+                        child: user.imgpath != null
+                            ? Ink.image(image: NetworkImage("${httpClass.API_IP}${user.imgpath}"))
+                            : Icon(Icons.person, color: Colors.white, size: 32.0)
+                    ),
+                  )
               ),
-            ),
+            )
+            // Material(
+            //   shape: CircleBorder(),
+            //   clipBehavior: Clip.antiAlias,
+            //   color: Colors.transparent,
+            //   child: Ink.image(
+            //     image: NetworkImage(
+            //         "${httpClass.API_IP}${user.imgpath}"
+            //     ),
+            //     fit: BoxFit.cover,
+            //     width: 64.0,
+            //     height: 64.0,
+            //     child: InkWell(
+            //       onTap: () {
+            //         swipeUpDialog(context, ProfileInfo(data: user, isHost: currentUser.uid == tripDetails.hostUser.uid, kickFunct :() => kickOut(user,routes) ));
+            //       },
+            //     ),
+            //   ),
+            // ),
           )
         ),
         SizedBox(width: 8.0)

@@ -2,7 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/main.dart';
 
-void normalDialog(BuildContext context, String title, Widget content, List<Widget> actions){
+void normalDialog(BuildContext context, Widget child){
+  showDialog(
+    context: context,
+    builder: (BuildContext context){
+      return Dialog(
+        elevation: 1.0,
+        backgroundColor: Theme.of(context).accentColor,
+        insetPadding: EdgeInsets.all(16.0),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0)
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: child,
+      );
+    }
+  );
+}
+
+void alertDialog(BuildContext context, String title, Widget content, List<Widget> actions){
   showDialog(
     context: context,
     barrierDismissible: false,
@@ -58,6 +76,7 @@ void activityInfoDialog(BuildContext context, Routes data){
                         color: Colors.black12,
                       borderRadius: BorderRadius.circular(20.0)
                     ),
+                    clipBehavior: Clip.antiAlias,
                     width: MediaQuery.of(context).size.width - 32 - 16,
                     height: MediaQuery.of(context).size.width - 32 - 16,
                     child: data.imgpath != null ? Image.network("${httpClass.API_IP}${data.imgpath}") : Icon(Icons.broken_image, color: Colors.white),
@@ -183,5 +202,35 @@ void swipeUpDialog(BuildContext context, Widget route){
             );
           },
         ),
+  );
+}
+
+Future<void> deleteDialog(BuildContext context, Function action) async {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0)
+        ),
+        title: Text('Are you sure you want to delete'),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('No'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          FlatButton(
+            child: Text('Yes'),
+            onPressed: (){
+              action();
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
   );
 }

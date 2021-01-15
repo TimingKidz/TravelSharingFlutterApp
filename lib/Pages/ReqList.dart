@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/MapStaticRequest.dart';
 import 'package:travel_sharing/Class/Req_Info.dart';
 import 'package:travel_sharing/Class/Travel_Info.dart';
+import 'package:travel_sharing/Dialog.dart';
 import 'package:travel_sharing/Pages/Matchinformation.dart';
 import 'package:travel_sharing/UI/NotificationBarSettings.dart';
 import 'package:travel_sharing/UI/ReqMapCard.dart';
@@ -148,6 +149,7 @@ class _ReqListstate extends State<ReqList> {
       isPress : isPress[data.routes.uid],
       onAcceptPressed: () => _onAcceptPressed(data),
       onDeclinePressed: () => _onDeclinePressed(data),
+      onCardPressed: () => activityInfoDialog(context, data.routes),
     );
     // }else{
     //   return Center(

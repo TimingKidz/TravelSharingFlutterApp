@@ -4,10 +4,12 @@ import '../main.dart';
 
 class DateManage{
   String datetimeFormat(String check, String date) {
-    var datetimeFromDB = DateTime.parse(date).toLocal();
+    var datetimeFromDB = check == "picker" ? DateTime.parse(date) : DateTime.parse(date).toLocal();
     String locale = prefs.getString("lang");
     if(check == "full") {
       return DateFormat('d MMM yyyy | HH:mm', locale).format(datetimeFromDB);
+    }else if(check == "picker"){
+      return DateFormat('d MMM yyyy', locale).format(datetimeFromDB);
     }else if(check == "date"){
       return DateFormat('d MMMM yyyy', locale).format(datetimeFromDB);
     }else if(check == "day"){

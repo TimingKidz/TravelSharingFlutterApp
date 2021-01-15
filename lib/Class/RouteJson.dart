@@ -69,7 +69,7 @@ class Routes {
     role = json['role'];
     status = json['status'];
     print(json["vehicle"]['id']);
-    vehicle = json["vehicle"]["id"] is Map<String,dynamic> ? Vehicle.fromJson(json["vehicle"]['id']) : Vehicle() ;
+    vehicle = json["vehicle"]["id"] is Map<String,dynamic> ? Vehicle.fromJson(json["vehicle"]['id']) : Vehicle(type:json["vehicle"]['type']) ;
     tag = json['tag'];
     left = json['left'];
     cost = json['cost'].toString();

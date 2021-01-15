@@ -10,6 +10,7 @@ import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Pages/InfoFill.dart';
 import 'package:travel_sharing/Pages/dashboard.dart';
+import 'package:travel_sharing/UI/NotificationBarSettings.dart';
 import 'package:travel_sharing/main.dart';
 
 class MapView extends StatefulWidget {
@@ -51,8 +52,8 @@ class _MapView extends State<MapView> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _mapController.dispose();
+    notificationBarIconLight();
     super.dispose();
   }
 
@@ -80,6 +81,7 @@ class _MapView extends State<MapView> {
 
   @override
   Widget build(BuildContext context) {
+    notificationBarIconDark();
     return Scaffold(
       body: Stack(
         children: <Widget>[

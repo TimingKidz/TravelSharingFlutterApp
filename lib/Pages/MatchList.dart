@@ -221,7 +221,7 @@ class _MatchListstate extends State<MatchList> {
       isreq: isreq.contains(data.routes.uid),
       isPress: isPress[data.routes.uid],
       onButtonPressed: () async => _onButtonPressed(data),
-      onCardPressed: () =>  activityInfoDialog(context, data.routes),
+      onCardPressed: () => activityInfoDialog(context, data.routes),
     );
   }
 

@@ -6,6 +6,7 @@ import 'package:travel_sharing/custom_color_scheme.dart';
 class CardTextField extends StatefulWidget {
   final String labelText;
   final String initValue;
+  final String hint;
   final TextInputType type;
   final List<TextInputFormatter> inputFormat;
   final bool isPhoneValidator;
@@ -15,9 +16,10 @@ class CardTextField extends StatefulWidget {
   final Function onChanged;
   final int minLines;
   final int maxLines;
+  final int maxLength;
   final bool notNull;
 
-  const CardTextField({Key key, this.labelText, this.initValue, @required this.onChanged, this.type, this.notNull, this.inputFormat, this.isPhoneValidator, this.minLines, this.maxLines, this.isEmailValidator, this.isFromVerification, this.isStudentEmail}) : super(key: key);
+  const CardTextField({Key key, this.labelText, this.initValue, @required this.onChanged, this.type, this.notNull, this.inputFormat, this.isPhoneValidator, this.minLines, this.maxLines, this.isEmailValidator, this.isFromVerification, this.isStudentEmail, this.maxLength, this.hint}) : super(key: key);
   CardTextFieldState createState() => CardTextFieldState();
 }
 
@@ -38,62 +40,66 @@ class CardTextFieldState extends State<CardTextField> {
           )
               : BorderSide.none
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            if(widget.labelText != null)
-              Padding(
-                padding: EdgeInsets.only(left: 16.0, top: 12.0),
-                child: Text(widget.labelText, style: TextStyle(color: isEmpty ? Colors.red : Colors.black.withOpacity(0.6))),
-              ),
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    validator: (val){
-                      String result;
-                      if(widget.notNull ?? false) result = validateNull(val);
-                      if(widget.isPhoneValidator ?? false) result = validatePhone(val);
-                      else if(widget.isEmailValidator ?? false) result = validateEmail(val);
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              if(widget.labelText != null)
+                Text(widget.labelText, style: TextStyle(color: isEmpty ? Colors.red : Colors.black.withOpacity(0.6))),
+              if(widget.labelText != null)
+                SizedBox(height: 12.0),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      validator: (val){
+                        String result;
+                        if(widget.notNull ?? false) result = validateNull(val);
+                        if(widget.isPhoneValidator ?? false) result = validatePhone(val);
+                        else if(widget.isEmailValidator ?? false) result = validateEmail(val);
 
-                      if(result == null){
-                        setState(() {
-                          isEmpty = false;
-                        });
-                        return null;
-                      }else{
-                        setState(() {
-                          isEmpty = true;
-                        });
-                        return "";
-                      }
-                    },
-                    inputFormatters: widget.inputFormat,
-                    keyboardType: widget.type,
-                    maxLength: widget.isPhoneValidator != null ? (widget.isPhoneValidator ? 10 : null) : null,
-                    minLines: widget.minLines,
-                    maxLines: widget.maxLines,
-                    onChanged: (text){
-                      widget.onChanged((widget.isStudentEmail ?? false) ? "$text@cmu.ac.th" : text);
-                    },
-                    initialValue: widget.initValue ?? "",
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      counterText: "",
-                      // hintText: "...",
-                      contentPadding: EdgeInsets.symmetric(horizontal: 15),
-                      errorStyle: TextStyle(height: 0),
+                        if(result == null){
+                          setState(() {
+                            isEmpty = false;
+                          });
+                          return null;
+                        }else{
+                          setState(() {
+                            isEmpty = true;
+                          });
+                          return "";
+                        }
+                      },
+                      inputFormatters: widget.inputFormat,
+                      keyboardType: widget.type,
+                      maxLength: widget.maxLength,
+                      minLines: widget.minLines,
+                      maxLines: widget.maxLines,
+                      onChanged: (text){
+                        widget.onChanged((widget.isStudentEmail ?? false) ? "$text@cmu.ac.th" : text);
+                      },
+                      initialValue: widget.initValue ?? "",
+                      decoration: InputDecoration(
+                        // border: InputBorder.none,
+                        counterText: "",
+                        hintText: widget.hint ?? "",
+                        contentPadding: EdgeInsets.only(bottom: 4.0),
+                        isDense: true,
+                        errorStyle: TextStyle(height: 0),
 //                hintText: 'Source',
+                      ),
                     ),
                   ),
-                ),
-                if(widget.isStudentEmail ?? false)
-                  Text("@cmu.ac.th", style: TextStyle(fontSize: 18.0)),
-                if(widget.isStudentEmail ?? false)
-                  SizedBox(width: 16.0)
-              ],
-            ),
-          ],
+                  if(widget.isStudentEmail ?? false)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text("@cmu.ac.th", style: TextStyle(fontSize: 18.0)),
+                    ),
+                ],
+              ),
+            ],
+          ),
         )
     );
   }

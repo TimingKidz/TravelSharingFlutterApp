@@ -15,13 +15,14 @@ class MapStaticRequest{
       if ( i != user.routes.length - 1){
         path += "|";
       }
-    };
+    }
+    if(other != null)
     for(int i = 0 ; i< other.routes.length ;i++){
       marker += "${other.routes[i].latitude},${other.routes[i].longitude}";
       if ( i != other.routes.length - 1){
         marker += "|";
       }
-    };
+    }
     print(url+path+marker+end);
     return url+path+marker+end;
   }

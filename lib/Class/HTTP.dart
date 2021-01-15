@@ -16,6 +16,7 @@ class HTTP{
     header = {'Content-Type': 'application/json; charset=UTF-8','auth' : tmp};
     mediaHeader = {"Content-type": "multipart/form-data", "auth" : tmp };
   }
+
   Future<Http.Response> reqHttp(String path,Map<String,dynamic> data) async {
     try{
       var url = this.API_IP + path;

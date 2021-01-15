@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:google_directions_api/google_directions_api.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as Http;
@@ -91,5 +93,30 @@ class Vehicle {
       }
     }
     return null;
+  }
+
+  IconData getTypeIcon(String type){
+    switch(type){
+      case "Car": {
+        return Icons.drive_eta;
+      }
+      break;
+      case "Motorcycle": {
+        return Icons.motorcycle;
+      }
+      break;
+      case "Person": {
+        return Icons.person;
+      }
+      break;
+      case "People": {
+        return Icons.people;
+      }
+      break;
+      default: {
+        return null;
+      }
+      break;
+    }
   }
 }

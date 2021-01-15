@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travel_sharing/Class/DateManage.dart';
 import 'package:travel_sharing/Class/Match_Info.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
+import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/Dialog.dart';
 import 'package:travel_sharing/Class/Travel_Info.dart';
 import 'package:travel_sharing/Pages/mapview.dart';
@@ -103,7 +104,7 @@ class _MatchMapCardState extends State<MatchMapCard> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: <Widget>[
-                                      Icon(Icons.drive_eta, size: 32.0),
+                                      Icon(Vehicle().getTypeIcon(widget.data.routes.vehicle.type), size: 32.0),
                                       SizedBox(height: 8.0),
                                       Container(
                                         padding: EdgeInsets.all(4.0),

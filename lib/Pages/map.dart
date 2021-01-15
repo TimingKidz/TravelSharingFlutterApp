@@ -351,7 +351,7 @@ class _CreateRoutestate extends State<CreateRoute> {
                                           },
                                         ),
                                         Text(
-                                          "ต้องการปรับแต่งแผนที่ตามที่ต้องการ",
+                                          "เพิ่มจุดที่ต้องการผ่าน",
                                           style: TextStyle(
                                               color: Colors.white
                                           ),

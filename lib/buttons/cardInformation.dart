@@ -19,13 +19,13 @@ class CardInformationState extends State<CardInformation> {
       ),
       child: Container(
         width: double.infinity,
-        margin: EdgeInsets.all(16.0),
+        margin: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(widget.labelText, style: TextStyle(color: Colors.black.withOpacity(0.6))),
-            SizedBox(height: 8.0),
-            Text(widget.infoText)
+            SizedBox(height: 12.0),
+            Text(widget.infoText, style: Theme.of(context).textTheme.subtitle1)
           ],
         ),
       ),

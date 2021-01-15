@@ -163,7 +163,7 @@ class NotificationsPageState extends State<NotificationsPage>{
             direction: DismissDirection.endToStart,
             confirmDismiss: (direction) async{
               bool isDelete = false;
-              normalDialog(
+              alertDialog(
                 this.context,
                 'Are you sure',
                 Text("This action couldn't be undone. Would you like to end this trip ?"),

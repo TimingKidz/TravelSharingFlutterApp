@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:travel_sharing/Class/DateManage.dart';
 import 'package:travel_sharing/Class/Feed.dart';
+import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/Dialog.dart';
 import 'package:travel_sharing/UI/ProfileInfo.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
@@ -25,10 +26,6 @@ class FeedCardTile extends StatefulWidget {
 
 class FeedCardTileState extends State<FeedCardTile> {
   BorderRadius cardBorder = BorderRadius.circular(20.0);
-  Map<String,IconData> type = {
-    "Car" : Icons.drive_eta,
-    "Motorcycle" : Icons.motorcycle,
-  };
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +60,7 @@ class FeedCardTileState extends State<FeedCardTile> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
-                                  Icon(  type[widget.data.routes.vehicle.type] ?? (int.parse(widget.data.routes.amount) > 1 ? Icons.people : Icons.person), size: 32.0,),
+                                  Icon(Vehicle().getTypeIcon(widget.data.routes.vehicle.type), size: 32.0,),
 
                                   SizedBox(height: 8.0),
                                   Container(
@@ -132,6 +129,41 @@ class FeedCardTileState extends State<FeedCardTile> {
                             ],
                           ),
                         ),
+                        if(widget.data.routes.imgpath != null)
+                          Column(
+                            children: [
+                              SizedBox(height: 8.0),
+                              Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.black12,
+                                    borderRadius: BorderRadius.circular(20.0)
+                                ),
+                                clipBehavior: Clip.antiAlias,
+                                width: MediaQuery.of(context).size.width - 32 - 8,
+                                height: MediaQuery.of(context).size.width - 32 - 8,
+                                child: widget.data.routes.imgpath != null ? Image.network("${httpClass.API_IP}${widget.data.routes.imgpath}") : Icon(Icons.broken_image, color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        if(widget.data.routes.description.isNotEmpty)
+                          Column(
+                            children: [
+                              SizedBox(height: 8.0),
+                              Container(
+                                padding: EdgeInsets.all(16.0),
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).canvasColor,
+                                    borderRadius: BorderRadius.circular(20.0)
+                                ),
+                                width: MediaQuery.of(context).size.width - 32 - 8,
+                                child: Text(
+                                    widget.data.routes.description
+                                ),
+                              ),
+                            ],
+                          ),
+                        if(widget.data.routes.imgpath != null && widget.data.routes.description.isNotEmpty)
+                          SizedBox(height: 32.0),
                         Container(
                           margin: EdgeInsets.fromLTRB(0.0, 0.0, 12.0, 0.0),
                           padding: EdgeInsets.symmetric(

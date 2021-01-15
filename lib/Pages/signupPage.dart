@@ -253,10 +253,9 @@ class SignUpPageState extends State<SignUpPage> {
       CardTextField(
         notNull: true,
         labelText: "Phone",
+        maxLength: 10,
         isPhoneValidator: true,
-        inputFormat: <TextInputFormatter>[
-           FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-        ],
+        inputFormat: [FilteringTextInputFormatter.digitsOnly],
         type: TextInputType.phone,
         onChanged: (val) => userData.phone = val,
       ),

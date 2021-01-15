@@ -6,6 +6,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_sign_in/widgets.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:travel_sharing/Class/DateManage.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/buttons/cardInformation.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
@@ -103,7 +104,7 @@ class ProfileManagePageState extends State<ProfileManagePage> {
                             height: 16.0,
                           ),
                           RatingBarIndicator(
-                            rating: 4.75,
+                            rating: currentUser.reviewSummary.totalscore,
                             itemBuilder: (context, index) => Icon(
                               Icons.star,
                               color: Colors.amber,
@@ -142,9 +143,16 @@ class ProfileManagePageState extends State<ProfileManagePage> {
             ),
           ),
           Expanded(
-            child: ListView(
+            child: ListView.separated(
+              separatorBuilder: (context, _){
+                return SizedBox(height: 8.0);
+              },
+              padding: EdgeInsets.all(8.0),
               physics: BouncingScrollPhysics(),
-              children: infoField(),
+              itemCount: infoField().length,
+              itemBuilder: (context, i){
+                return infoField()[i];
+              },
             ),
           )
         ],
@@ -216,31 +224,47 @@ class ProfileManagePageState extends State<ProfileManagePage> {
           initValue: currentUser.gender,
           onChanged: (val) => editUser.gender = val,
         ),
+        SizedBox(height: 8.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
             FlatButton(
-              child: Text(AppLocalizations.instance.text("cancel")),
-              onPressed: (){
-                setState(() {
-
-                  setEditDataDefault();
-                  isEdit = false;
-                  selectedImage = null;
-                });
-              },
-            ),
-            FlatButton(
-              child: Text(AppLocalizations.instance.text("ok")),
+              padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 64.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)
+              ),
+              color: Colors.green,
+              child: Text(AppLocalizations.instance.text("ok"), style: TextStyle(color: Colors.white)),
               onPressed: () async {
-
                 print(editUser.toJson());
                 isEdit = false;
                 await editUser.editUser();
                 getData();
                 selectedImage = null;
               },
-            )
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Material(
+              borderRadius: BorderRadius.circular(20.0),
+              clipBehavior: Clip.antiAlias,
+              child: InkWell(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+                  child: Text(AppLocalizations.instance.text("cancel")),
+                ),
+                onTap: () {
+                  setState(() {
+                    setEditDataDefault();
+                    isEdit = false;
+                    selectedImage = null;
+                  });
+                },
+              ),
+            ),
           ],
         ),
       ];
@@ -255,12 +279,20 @@ class ProfileManagePageState extends State<ProfileManagePage> {
           infoText: currentUser.name,
         ),
         CardInformation(
+          labelText: "วันเกิด",
+          infoText: DateManage().datetimeFormat("date", currentUser.birthDate),
+        ),
+        CardInformation(
           labelText: AppLocalizations.instance.text("faculty"),
           infoText: currentUser.faculty,
         ),
         CardInformation(
           labelText: AppLocalizations.instance.text("gender"),
           infoText: currentUser.gender,
+        ),
+        CardInformation(
+          labelText: "เบอร์โทร",
+          infoText: "0903310276",
         ),
       ];
     }

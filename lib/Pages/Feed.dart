@@ -147,16 +147,48 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20.0)
                           ),
-                          child: ListView.separated(
-                            separatorBuilder: (context, _) {
-                              return SizedBox(width: 4.0);
-                            },
-                            scrollDirection: Axis.horizontal,
-                            padding: EdgeInsets.all(4.0),
-                            itemCount: filterTypeList.length,
-                            itemBuilder: (context, i) {
-                              return filterType(filterTypeList[i]);
-                            },
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: ListView.separated(
+                                  separatorBuilder: (context, i) {
+                                    if(i == 1) return Text(" | ", style: TextStyle(fontSize: 28.0, color: Theme.of(context).primaryColor));
+                                    return SizedBox(width: 4.0);
+                                  },
+                                  scrollDirection: Axis.horizontal,
+                                  padding: EdgeInsets.all(4.0),
+                                  itemCount: filterTypeList.length,
+                                  itemBuilder: (context, i) {
+                                    return filterType(filterTypeList[i]);
+                                  },
+                                ),
+                              ),
+                              if(filterTypeSelected.isNotEmpty)
+                              SizedBox(
+                                height: 32,
+                                width: 32,
+                                child: Material(
+                                  color: Colors.white,
+                                  shape: CircleBorder(
+                                    side: BorderSide(
+                                      color: Theme.of(context).primaryColor,
+                                      width: 1.5
+                                    )
+                                  ),
+                                  clipBehavior: Clip.antiAlias,
+                                  child: InkWell(
+                                    onTap: (){
+                                      setState(() {
+                                        list.clear();
+                                        getData(0, filterTypeSelected);
+                                      });
+                                    },
+                                    child: Icon(Icons.check, color: Theme.of(context).primaryColor),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 8.0)
+                            ],
                           )
                         ),
                       ),
@@ -198,8 +230,10 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
               isSelected[type] = !isSelected[type];
               if(isSelected[type]) filterTypeSelected.add(type);
               else filterTypeSelected.remove(type);
-              list.clear();
-              getData(0, filterTypeSelected);
+              if(filterTypeSelected.isEmpty){
+                list.clear();
+                getData(0, filterTypeSelected);
+              }
               print("Selected = " + filterTypeSelected.join(", ")); // Print all selected type
             });
           },

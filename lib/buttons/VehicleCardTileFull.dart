@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
+import 'package:travel_sharing/Dialog.dart';
 import 'package:travel_sharing/UI/PlainBGInfo.dart';
 import 'package:travel_sharing/buttons/PlainBGTextField.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
@@ -88,7 +89,11 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
                           child: InkWell(
                             child: SizedBox(width: 32, height: 32, child: Icon(Icons.delete)),
                             onTap: () {
-                              _deleteDialog();
+                              deleteDialog(context, () async {
+                                await widget.data.deleteVehicle();
+                                Navigator.of(context).pop();
+                                widget.setState();
+                              });
                             },
                           ),
                         ),
@@ -119,34 +124,6 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
       color: widget.data.color,
       type: widget.data.type,
       isDefault: widget.data.isDefault
-    );
-  }
-
-  Future<void> _deleteDialog() async {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Are you sure you want to delete'),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('No'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            FlatButton(
-              child: Text('Yes'),
-              onPressed: () async {
-                await widget.data.deleteVehicle();
-                Navigator.of(context).pop();
-                widget.setState();
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 
