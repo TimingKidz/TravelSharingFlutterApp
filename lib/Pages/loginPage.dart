@@ -106,17 +106,21 @@ class LoginPageState extends State<LoginPage> {
         );
         firebaseAuth = await u.FirebaseAuth.instance.signInWithCredential(a);
         await httpClass.getNewHeader();
-        bool isRegister = await User().getCurrentuser(googleUser.id) != null ? true : false;
-        if (isRegister){
-          String tokenID = await firebaseMessaging.getToken();
-          currentUser =  await User().getCurrentuser(googleUser.id);
-          await currentUser.updateToken(tokenID);
-          if( socket != null ){
-            socket.io.options['extraHeaders'] = {'uid': currentUser.uid,'auth' : httpClass.header['auth']};
+        currentUser = await User().getCurrentuser(googleUser.id);
+        if (currentUser != null){
+          if(currentUser.isVerify){
+            String tokenID = await firebaseMessaging.getToken();
+//          currentUser =  await User().getCurrentuser(googleUser.id);
+            await currentUser.updateToken(tokenID);
+            if( socket != null ){
+              socket.io.options['extraHeaders'] = {'uid': currentUser.uid,'auth' : httpClass.header['auth']};
+            }
+            initsocket();
+            navigationBarColorWhite();
+            Navigator.pushReplacementNamed(context,"/homeNavigation");
+          }else{
+            Navigator.pushReplacementNamed(context,"/VerificationPage");
           }
-          initsocket();
-          navigationBarColorWhite();
-          Navigator.pushReplacementNamed(context,"/homeNavigation");
         }else{
           navigationBarColorWhite();
           Navigator.pushReplacementNamed(context,"/SignUp");

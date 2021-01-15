@@ -97,7 +97,7 @@ class Routes {
   }
 
   // save routes information to DB
-  Future<bool> SaveRoute_toDB(User user,Routes data) async{
+  Future<Routes> SaveRoute_toDB(User user,Routes data) async{
     try{
         Map<String, dynamic> temp = user.toJson();
         temp['detail'] = this.toJson();
@@ -106,9 +106,9 @@ class Routes {
         Http.Response response = await httpClass.reqHttp("/api/routes/SaveRoutes",temp);
         print(response.body);
         if( response.statusCode == 400 ){
-          return Future.value(false);
+          return Future.value(null);
         }else{
-          return Future.value(true);
+          return Future.value(Routes.fromJson(jsonDecode(response.body)));
         }
     }catch(error){
       print(error);

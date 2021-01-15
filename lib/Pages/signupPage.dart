@@ -206,7 +206,7 @@ class SignUpPageState extends State<SignUpPage> {
         isStudentEmail: true,
         maxLines: 1,
         labelText: "Student Email",
-        onChanged: (data) => userData.username = data,
+        onChanged: (data) => userData.mailcmu = data,
       ),
       SizedBox(height: 8.0),
       Row(
@@ -258,7 +258,7 @@ class SignUpPageState extends State<SignUpPage> {
            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
         ],
         type: TextInputType.phone,
-        onChanged: (val) => print(val),
+        onChanged: (val) => userData.phone = val,
       ),
       SizedBox(height: 72)
     ];
@@ -311,19 +311,22 @@ class SignUpPageState extends State<SignUpPage> {
 
   _Nextpage() async {
     userData.token = await firebaseMessaging.getToken();
+    print(userData.toJson());
     bool isSuccesful = await userData.Register();
     if( isSuccesful ){
       currentUser = await User().getCurrentuser(googleUser.id);
       if ( selectedImage != null){
         await currentUser.uploadProfile(selectedImage);
       }
-//    await currentUser.uploadStudentCard(file);
-      currentUser = await User().getCurrentuser(googleUser.id);
-      await httpClass.getNewHeader();
-      initsocket();
-      Navigator.pushReplacementNamed(context,"/homeNavigation");
+//      currentUser = await User().getCurrentuser(googleUser.id);
+      Navigator.pushReplacementNamed(context,"/VerificationPage");
+
+//      await httpClass.getNewHeader();
+//      initsocket();
+//      Navigator.pushReplacementNamed(context,"/homeNavigation");
     }else{
       isPress = false;
+      print("please try again");
       setState(() { });
     }
 

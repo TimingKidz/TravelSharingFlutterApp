@@ -241,13 +241,101 @@ class NotificationsPageState extends State<NotificationsPage>{
             childrenPadding: EdgeInsets.all(16.0),
             expandedAlignment: Alignment.centerLeft,
             children: <Widget>[
-              Text(data.Message),
+              for(Child each in data.child)
+                Container(
+                  child: Row(
+                    children: <Widget>[
+                      Text(each.type),
+                      Text(each.message)
+                    ],
+                  ),
+                )
+
+
               // Text('Birth of the Sun'),
               // Text('Earth is Born'),
             ],
           ),
         );
       // do something
+        break;
+      case "notification":
+        return Theme(
+          data: ThemeData(
+              accentColor: Colors.black,
+              dividerColor: Colors.transparent
+          ),
+          child: ExpansionTile(
+            title: Row(
+              children: [
+                Icon(Icons.announcement),
+                SizedBox(width: 16.0),
+                Flexible(
+                  child:  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        data.Title,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 18.0
+                        ),
+                      ),
+                      SizedBox(height: 8.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            data.src ?? "Source",
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 12.0
+                            ),
+                          ),
+                          Icon(Icons.navigate_next_outlined),
+                          Text(
+                            data.dst ?? "Destination",
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 12.0
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+            subtitle: Padding(
+              padding: EdgeInsets.only(top: 8.0),
+              child: Text(
+                DateManage().datetimeFormat("full", data.date),
+                style: TextStyle(
+                    fontSize: 10.0
+                ),
+              ),
+            ),
+            childrenPadding: EdgeInsets.all(16.0),
+            expandedAlignment: Alignment.centerLeft,
+            children: <Widget>[
+              for(Child each in data.child)
+                Container(
+                  child: Row(
+                    children: <Widget>[
+                      Text(each.type),
+                      Text(each.message)
+                    ],
+                  ),
+                )
+
+
+              // Text('Birth of the Sun'),
+              // Text('Earth is Born'),
+            ],
+          ),
+        );
+        // do something
         break;
       case "review":
         return Theme(
@@ -376,7 +464,15 @@ class NotificationsPageState extends State<NotificationsPage>{
             childrenPadding: EdgeInsets.all(16.0),
             expandedAlignment: Alignment.centerLeft,
             children: <Widget>[
-              Text(data.Message),
+              for(Child each in data.child)
+                Container(
+                  child: Row(
+                    children: <Widget>[
+                      Text(each.type),
+                      Text(each.message)
+                    ],
+                  ),
+                )
               // Text('Birth of the Sun'),
               // Text('Earth is Born'),
             ],

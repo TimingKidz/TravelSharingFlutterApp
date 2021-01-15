@@ -7,25 +7,30 @@ import 'package:travel_sharing/main.dart';
 
 class Notifications{
   String Title;
-  String Message;
+  String tripid;
   String sender;
   String tag;
   String date;
   String uid;
   String src;
   String dst;
+  List<Child> child;
 
-  Notifications({this.Title, this.Message , this.date ,this.sender,this.tag, this.dst, this.src});
+  Notifications({this.Title, this.tripid , this.date ,this.sender,this.tag, this.dst, this.src});
 
   Notifications.fromJson(Map<String, dynamic> json) {
     uid = json['_id'];
     Title = json['title'];
-    Message = json['message'];
+    tripid = json['tripid'];
     date = json['date'];
     tag = json['tag'];
     sender = json['sender'] ?? " ";
     src = json['src'];
     dst = json['dst'];
+    child = List();
+    json['child'].forEach((x){
+        child.add(Child.fromJson(x));
+    });
   }
 
   Future<List<Notifications>> getNotification(String id,bool isNeed2Update) async {
@@ -38,9 +43,13 @@ class Notifications{
           return Future.value(null);
         }else{
           List<dynamic> data = jsonDecode(response.body);
+          print(data);
           List<Notifications> Notifications_List = List();
           data.forEach((x) {
-            Notifications_List.add(Notifications.fromJson(x));
+            Notifications tmp = Notifications.fromJson(x);
+            if(tmp.child.isNotEmpty){
+              Notifications_List.add(tmp);
+            }
           });
           return Future.value(Notifications_List);
         }
@@ -67,5 +76,23 @@ class Notifications{
       print(error);
       throw("can't connect Match_List");
     }
+  }
+}
+
+
+class Child {
+  String type;
+  String message;
+  int count;
+  String timestamp;
+
+  Child(
+      {this.type, this.message, this.count, this.timestamp});
+
+  Child.fromJson(Map<String, dynamic> json) {
+    type = json['type'];
+    message = json['message'];
+    count = json['count'];
+    timestamp = json['timestamp'];
   }
 }

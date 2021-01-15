@@ -9,7 +9,7 @@ import 'package:travel_sharing/Class/Review.dart';
 
 class User {
   String name;
-  String username;
+  String mailcmu;
   String email;
   String id;
   String uid;
@@ -21,13 +21,14 @@ class User {
   String imgpath;
   String birthDate;
   ReviewSummary reviewSummary;
+  String phone;
+  bool isVerify ;
 
-
-  User({this.name,this.username,this.birthDate, this.email,this.id,this.uid,this.faculty,this.gender,this.vehicle,this.token,this.status,this.imgpath,this.reviewSummary});
+  User({this.name,this.mailcmu,this.birthDate, this.email,this.id,this.uid,this.faculty,this.gender,this.vehicle,this.token,this.status,this.imgpath,this.reviewSummary,this.phone,this.isVerify});
 
   User.fromJson(Map<String, dynamic> json) {
     name = json['name'];
-    username = json['username'];
+    mailcmu = json['mailcmu'];
     email = json['email'];
     id = json['id'];
     uid = json['_id'];
@@ -47,12 +48,14 @@ class User {
     imgpath = json['imgpath'];
     reviewSummary = ReviewSummary.fromJson(json['Review']);
     birthDate = json['birthDate'];
+    phone = json['phone'];
+    isVerify = json['isVerify'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['name'] = this.name;
-    data['username'] =this.username;
+    data['mailcmu'] =this.mailcmu;
     data['email'] = this.email;
     data['id']= this.id;
     data['_id'] = this.uid;
@@ -61,6 +64,7 @@ class User {
     data['vehicle'] = this.vehicle;
     data['token'] = this.token;
     data['birthDate'] = this.birthDate;
+    data['phone'] = this.phone;
     return data;
   }
 
@@ -240,8 +244,8 @@ class User {
     try{
       img.Image image = img.decodeImage(file.readAsBytesSync());
       image = img.copyResize(image,
-          width: 512,
-          height: 512);
+          width: 1080,
+          height: 1080);
       Http.StreamedResponse response = await httpClass.reqHttpMedia(image,this.uid,routeID,"/api/user/img");
       if(response.statusCode == 400){
         return Future.value(false);
@@ -253,4 +257,9 @@ class User {
       throw("can't connect" + err);
     }
   }
+
+
+
+
+
 }

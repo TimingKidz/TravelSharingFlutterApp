@@ -20,6 +20,7 @@ import 'package:travel_sharing/Pages/Matchinformation.dart';
 import 'package:travel_sharing/Pages/NotificationsPage.dart';
 import 'package:travel_sharing/Pages/ProfileManagePage.dart';
 import 'package:travel_sharing/Pages/ReqList.dart';
+import 'package:travel_sharing/Pages/VerificationPage.dart';
 import 'package:travel_sharing/Pages/homeNavigation.dart';
 import 'package:travel_sharing/Pages/InfoFill.dart';
 import 'package:travel_sharing/Pages/mapview.dart';
@@ -163,7 +164,8 @@ class MyApp extends StatelessWidget {
           '/Profile' : (context) => ProfileManagePage(),
           '/ratingPage' : (context) => RatingPage(),
           '/ReqList' : (context) => ReqList(),
-          '/SignUp' : (context) => SignUpPage()
+          '/SignUp' : (context) => SignUpPage(),
+          '/VerificationPage': (context) => VerificationPage(),
         },
       );
   }

@@ -1,29 +1,59 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:travel_sharing/Class/MailVerification.dart';
+import 'package:travel_sharing/Class/User.dart';
+import 'package:travel_sharing/UI/NotificationBarSettings.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
+import 'package:travel_sharing/main.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class VerificationPage extends StatefulWidget {
   @override
   _VerificationPageState createState() => _VerificationPageState();
 }
 
-class _VerificationPageState extends State<VerificationPage> {
+class _VerificationPageState extends State<VerificationPage>{
   final _formKey = GlobalKey<FormState>();
-  String currentText;
+  String currentText ="";
   bool isEdit = false;
-  String email = "thutgtz@gmail.com";
+  MailVerification mailVerification = new MailVerification();
+  String email = "";
+  StreamController<ErrorAnimationType> errorController;
+  TextEditingController textEditingController =new TextEditingController();
+  bool isLoading = false;
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    notificationBarIconLight();
+    super.dispose();
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    email = currentUser.mailcmu;
+    errorController =  StreamController<ErrorAnimationType>();
+  }
+  @override
   Widget build(BuildContext context) {
+    notificationBarIconDark();
     return WillPopScope(
       onWillPop: () async {
         if(isEdit){
           setState(() {
             isEdit = !isEdit;
+            textEditingController =new TextEditingController();
+            errorController =  StreamController<ErrorAnimationType>();
           });
           return false;
         }else{
-          return true;
+            await googleSignIn.disconnect();
+            Navigator.pushReplacementNamed(context,"/login");
+            return false;
         }
       },
       child: Scaffold(
@@ -57,6 +87,9 @@ class _VerificationPageState extends State<VerificationPage> {
                     for(Widget w in verificationPage())
                       w,
                   SizedBox(height: 40),
+                  if(isLoading)
+                    CircularProgressIndicator(),
+                  if(!isLoading)
                   RaisedButton(
                     elevation: 2,
                     highlightElevation: 2,
@@ -64,7 +97,10 @@ class _VerificationPageState extends State<VerificationPage> {
                     textColor: Colors.white,
                     onPressed: (){
                       if(isEdit && _formKey.currentState.validate()){
-                        isEdit = !isEdit;
+                        Navigator.of(context).maybePop();
+                      } else if(!isEdit){
+                        isLoading = true;
+                        _Verify();
                       }
                       setState(() {});
                     },
@@ -132,6 +168,7 @@ class _VerificationPageState extends State<VerificationPage> {
         padding: const EdgeInsets.symmetric(horizontal: 64.0, vertical: 8.0),
         child: PinCodeTextField(
           appContext: context,
+          keyboardType: TextInputType.number,
           length: 4,
           obscureText: false,
           animationType: AnimationType.fade,
@@ -149,16 +186,18 @@ class _VerificationPageState extends State<VerificationPage> {
           ),
           animationDuration: Duration(milliseconds: 300),
           enableActiveFill: true,
-          // errorAnimationController: errorController,
+           controller: textEditingController,
+           errorAnimationController: errorController,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           onCompleted: (v) {
             print("Completed");
           },
-          onChanged: (value) {
-            print(value);
-            setState(() {
-              currentText = value;
-            });
-          },
+//          onChanged: (value) {
+//            print(value);
+//            setState(() {
+//              currentText = value;
+//            });
+//          },
           beforeTextPaste: (text) {
             print("Allowing to paste $text");
             //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
@@ -168,15 +207,16 @@ class _VerificationPageState extends State<VerificationPage> {
         ),
       ),
       SizedBox(height: 16.0),
+      if(mailVerification.count != null)
+      Text("Remaining ${mailVerification.count} " + (mailVerification.count > 1 ? "times":"time")),
+      SizedBox(height: 16.0),
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text("Didn't receive the code? "),
           GestureDetector(
             onTap: (){
-              setState(() {
-                isEdit = true;
-              });
+              // resend
             },
             child: Text(
               "RESEND",
@@ -189,5 +229,54 @@ class _VerificationPageState extends State<VerificationPage> {
         ],
       ),
     ];
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+
+  initsocket(){
+    socket = IO.io(httpClass.API_IP,
+        IO.OptionBuilder()
+            .setTransports(['websocket']) // for Flutter or Dart VM
+            .enableReconnection()
+            .disableAutoConnect()
+            .setExtraHeaders({'uid': currentUser.uid,'auth' : httpClass.header['auth']})
+            .build());
+    socket = socket.connect();
+    socket.onConnect((_) {
+      print('connect');
+    });
+  }
+
+  _Verify() async {
+      MailVerification().verify(textEditingController.text,currentUser).then((value) async {
+        if(value != null){
+          print('${value.message}  ${value.count}');
+          mailVerification = value;
+          if(value.message == "succesful" ){
+            currentUser = await User().getCurrentuser(googleUser.id);
+            await httpClass.getNewHeader();
+            initsocket();
+            Navigator.pushReplacementNamed(context,"/homeNavigation");
+          }else if(value.message == "resend"){
+            errorController.add(ErrorAnimationType.shake);
+            textEditingController.clear();
+            setState(() {});
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("The verification code has been resend.")));
+          }else if(value.message == "wrong" ){
+            errorController.add(ErrorAnimationType.shake);
+            textEditingController.clear();
+            setState(() {});
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Wrong verification code. !!")));
+          }else{
+            errorController.add(ErrorAnimationType.shake);
+            setState(() {});
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("The verification code has been expired.")));
+          }
+        }else{
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not send verification code.")));
+        }
+        isLoading = false;
+      });
   }
 }

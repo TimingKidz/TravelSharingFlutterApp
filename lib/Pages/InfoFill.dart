@@ -32,7 +32,7 @@ class InfoFill extends StatefulWidget {
 class _InfoFillState extends State<InfoFill> {
   GoogleMapController _mapController;
   Routes Final_Data = new Routes();
-  List<String> tagList = ["Travel", "T&A"];
+  List<String> tagList = ["Travel", "Travel & Activity"];
   final _formKey = GlobalKey<FormState>();
   bool isActivity = false;
 
@@ -61,7 +61,7 @@ class _InfoFillState extends State<InfoFill> {
       Final_Data.date = DateTime.parse(widget.data.date).toLocal().toString();
       Final_Data.range = widget.data.range;
     }
-    print(widget.data.date);
+//    print(widget.data.date);
   }
 
   @override
@@ -81,11 +81,11 @@ class _InfoFillState extends State<InfoFill> {
         floatingActionButton: FloatingActionButton.extended(
           elevation: 2,
           highlightElevation: 2,
-          icon: Icon(Final_Data.tag.first == "Travel & Activity" ? (isActivity ? Icons.check : Icons.arrow_forward_sharp) : Icons.check),
-          label: Text(Final_Data.tag.first == "Travel & Activity" ? (isActivity ? "Finish" : "Next") : "Finish"),
+          icon: Icon(isActivity ? Icons.check : Icons.arrow_forward_sharp),
+          label: Text(isActivity ? "Finish" : "Next"),
           onPressed: (){
             if(_formKey.currentState.validate()){
-              if(Final_Data.tag.first == "Travel & Activity"){
+              if(!isActivity){
                 setState(() {
                   isActivity = !isActivity;
                 });
@@ -296,7 +296,7 @@ class _InfoFillState extends State<InfoFill> {
     );
   }
 
-  String description;
+  String description = "";
   File selectedImage;
 
   Widget activityForm(){
@@ -401,12 +401,27 @@ class _InfoFillState extends State<InfoFill> {
         role: widget.Role.toString(),
         vehicle: widget.Role == 0 ? Final_Data.vehicle : Vehicle(),
         tag: Final_Data.tag,
-        cost: widget.Role == "0" ? Final_Data.cost : "0",
-        range: Final_Data.range
+        cost: widget.Role == 0 ? Final_Data.cost : "0",
+        range: Final_Data.range,
+        description: description
     );
 
     Final_Data.SaveRoute_toDB(user,widget.data).then((x){
-      Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
+      if(x != null){
+        if(selectedImage != null){
+          currentUser.uploadImg(selectedImage, x.uid).then((value){
+            if(value){
+              Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
+            }else{
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not upload image.")));
+            }
+          });
+        }else{
+          Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
+        }
+      }else{
+       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not create route.")));
+      }
     });
   }
 }

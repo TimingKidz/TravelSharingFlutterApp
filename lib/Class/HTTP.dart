@@ -7,7 +7,7 @@ import 'package:image/image.dart' as img;
 
 class HTTP{
 //  final String API_IP = "https://68.183.226.229";
-  final String API_IP = "http://10.80.27.188:3000";
+  final String API_IP = "http://10.80.24.44:3000";
   Map<String,String>  header ;
   Map<String,String>  mediaHeader ;
 
@@ -16,7 +16,6 @@ class HTTP{
     header = {'Content-Type': 'application/json; charset=UTF-8','auth' : tmp};
     mediaHeader = {"Content-type": "multipart/form-data", "auth" : tmp };
   }
-
   Future<Http.Response> reqHttp(String path,Map<String,dynamic> data) async {
     try{
       var url = this.API_IP + path;
