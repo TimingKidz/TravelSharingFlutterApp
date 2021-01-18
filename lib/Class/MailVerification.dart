@@ -31,6 +31,34 @@ class MailVerification{
     }
   }
 
+  Future<String> changeMail(String newMail,User user)async{
+    try{
+      Http.Response response = await httpClass.reqHttp("/api/user/changeMail",{"newmailcmu" : newMail,"oldmailcmu" : user.mailcmu ,"_id": user.uid });
+      if(response.statusCode == 400){
+        return Future.value("Can not change. Please try again.");
+      }else{
+        Map<String,dynamic> tmp = jsonDecode(response.body);
+        return Future.value(tmp['message']);
+      }
+    }catch (err){
+      throw("can't connect" + err);
+    }
+  }
+
+  Future<bool> resend(User user)async{
+    try{
+      Http.Response response = await httpClass.reqHttp("/api/user/resendCode",{"_id": user.uid });
+      if(response.statusCode == 400){
+        return Future.value(false);
+      }else{
+        return Future.value(true);
+      }
+    }catch (err){
+      throw("can't connect" + err);
+    }
+  }
+
+
 
 
 }

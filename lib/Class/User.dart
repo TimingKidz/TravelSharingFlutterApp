@@ -78,7 +78,6 @@ class User {
         if(response.statusCode == 404 ){
           return Future.value(null);
         }else{
-          print(jsonDecode(response.body));
           return Future.value(User.fromJson(jsonDecode(response.body)));
         }
       }
@@ -87,16 +86,29 @@ class User {
     }
   }
 
+  Future<bool> amiOnline() async{
+    try{
+      Http.Response response = await httpClass.reqHttp("/api/user/amiOnline",{ "id":this.uid });
+      if(response.statusCode == 400){
+        return Future.value(false);
+      }else{
+          return Future.value(jsonDecode(response.body)['amiOnline']);
+      }
+    }catch(error){
+      throw("can't connect getuser"+error.toString());
+    }
+  }
+
   // register for new user
-  Future<bool> Register() async {
+  Future<String> Register() async {
     try{
 //      if(await getCurrentuser(this.id) == null){
         Http.Response response = await httpClass.reqHttp("/api/user/register",this.toJson());
         if(response.statusCode == 400 ){
-          return Future.value(false);
+          return Future.value("Can not Register. Please try again.");
         }else{
-          print("Register Succesful : ${response.body}");
-          return Future.value(true);
+          Map<String,dynamic> tmp = jsonDecode(response.body);
+          return Future.value(tmp['message']);
         }
 //      }else{
 //        return Future.value(true);
@@ -171,17 +183,17 @@ class User {
     }
   }
 
-  Future<void> updateToken(String tokenID) async {
+  Future<bool> updateToken(String tokenID) async {
     try{
       this.token = tokenID;
       Http.Response response = await httpClass.reqHttp("/api/routes/updateToken",{"id":this.uid, "token_id": tokenID});
       if(response.statusCode == 400 ){
-        return Future.value(null);
+        return Future.value(false);
       }else{
         if(response.statusCode == 404){
-          return Future.value(null);
+          return Future.value(false);
         }else{
-          print(jsonDecode(response.body));
+          return Future.value(true);
         }
       }
     }catch(err){

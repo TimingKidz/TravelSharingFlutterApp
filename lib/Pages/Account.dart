@@ -21,6 +21,7 @@ class Account extends StatefulWidget {
 }
 
 class AccountState extends State<Account> {
+  bool isLoading = false;
 
   @override
   void setState(fn) {
@@ -224,6 +225,9 @@ class AccountState extends State<Account> {
       SizedBox(
         height: 32.0,
       ),
+      if(isLoading)
+        CircularProgressIndicator(),
+      if(!isLoading)
       ListTile(
         title: Center(
           child: Text(
@@ -240,13 +244,21 @@ class AccountState extends State<Account> {
   }
 
   Future<void> _handleSignOut() async {
-    socket = socket.disconnect();
-    socket.destroy();
-    socket.dispose();
-    googleUser = await googleSignIn.disconnect();
-    await currentUser.updateToken(" ");
-    Navigator.of(context)
-        .pushNamedAndRemoveUntil('/login', ModalRoute.withName('/'));
+    isLoading = true;
+    currentUser.updateToken(" ").then((value) async {
+      if(value){
+        socket = socket.disconnect();
+        socket.destroy();
+        socket.dispose();
+        googleUser = await googleSignIn.disconnect();
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('/login', ModalRoute.withName('/'));
+      }else{
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not sign out. Please try again.")));
+        setState(() { isLoading = false; });
+      }
+    });
+
   }
 
 }

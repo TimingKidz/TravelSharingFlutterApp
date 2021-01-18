@@ -55,33 +55,69 @@ class _Matchinformation extends State<Matchinformation> {
 
   _pageConfig(bool isNeed2Update){
     getData(isNeed2Update);
-    socket.off('onAccept');
-    socket.off('onNewAccept');
-    socket.off('onNewMatch');
-    socket.off('onNewMessage');
-    socket.off('onRequest');
-    socket.off('onNewNotification');
-    socket.off('onTripEnd');
-    socket.off('onKick');
+    if( !isHistory ){
+      socket.off('onAccept');
+      socket.off('onNewAccept');
+      socket.off('onNewMatch');
+      socket.off('onNewMessage');
+      socket.off('onRequest');
+      socket.off('onNewNotification');
+      socket.off('onTripEnd');
+      socket.off('onKick');
 
-    socket.on('onNewNotification', (data) {
-      currentUser.status.navbarNoti = true;
-    });
 
-    socket.on('onKick', (data) async {
-      print("onkick");
-      if (widget.data.uid == data['tripid']) {
-        await getData(true);
-      }
-    });
+      socket.on('onTripEnd', (data) {
+        if (widget.data.uid == data['tripid']) {
+          unPopDialog(
+            this.context,
+            'Closed',
+            Text("This trip has been closed."),
+            <Widget>[
+              FlatButton(
+                child: Text('Ok'),
+                onPressed: () async {
+                  Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
+                },
+              ),
+            ],
+          );
+        }
+      });
 
-    socket.on('onNewAccept', (data) async {
-      print("onNewAccecpt");
-      if (widget.data.uid == data['tripid']) {
-        await getData(true);
-      }
-    });
+      socket.on('onNewNotification', (data) {
+        currentUser.status.navbarNoti = true;
+      });
 
+      socket.on('onKick', (data) async {
+        print("onkick");
+        if (widget.data.uid == data['tripid']) {
+          if(widget.data.uid == data['kick']){
+            unPopDialog(
+              this.context,
+              'Removed',
+              Text("You has been removed."),
+              <Widget>[
+                FlatButton(
+                  child: Text('Ok'),
+                  onPressed: () async {
+                    Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
+                  },
+                ),
+              ],
+            );
+          }else{
+            await getData(true);
+          }
+        }
+      });
+
+      socket.on('onNewAccept', (data) async {
+        print("onNewAccecpt");
+        if (widget.data.uid == data['tripid']) {
+          await getData(true);
+        }
+      });
+    }
     firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
           if(  (message['data']['tag'] != widget.data.uid && message['data']['page'] == '/MatchInformation') ||  message['data']['page'] != '/MatchInformation' ){

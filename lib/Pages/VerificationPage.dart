@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:travel_sharing/Class/MailVerification.dart';
 import 'package:travel_sharing/Class/User.dart';
+import 'package:travel_sharing/Dialog.dart';
 import 'package:travel_sharing/UI/NotificationBarSettings.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
 import 'package:travel_sharing/main.dart';
@@ -24,6 +25,7 @@ class _VerificationPageState extends State<VerificationPage>{
   StreamController<ErrorAnimationType> errorController;
   TextEditingController textEditingController =new TextEditingController();
   bool isLoading = false;
+  bool isResend = false;
 
   @override
   void dispose() {
@@ -48,6 +50,7 @@ class _VerificationPageState extends State<VerificationPage>{
             isEdit = !isEdit;
             textEditingController =new TextEditingController();
             errorController =  StreamController<ErrorAnimationType>();
+            mailVerification = new MailVerification();
           });
           return false;
         }else{
@@ -96,13 +99,14 @@ class _VerificationPageState extends State<VerificationPage>{
                     padding: EdgeInsets.all(16.0),
                     textColor: Colors.white,
                     onPressed: (){
+                      isLoading = true;
+                      setState(() {});
                       if(isEdit && _formKey.currentState.validate()){
-                        Navigator.of(context).maybePop();
+                        _changeMail();
                       } else if(!isEdit){
-                        isLoading = true;
+//                        isLoading = true;
                         _Verify();
                       }
-                      setState(() {});
                     },
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
@@ -215,8 +219,9 @@ class _VerificationPageState extends State<VerificationPage>{
         children: [
           Text("Didn't receive the code? "),
           GestureDetector(
-            onTap: (){
-              // resend
+            onTap: isResend ? null : (){
+              setState(() {isResend = true;});
+              _resend();
             },
             child: Text(
               "RESEND",
@@ -231,8 +236,6 @@ class _VerificationPageState extends State<VerificationPage>{
     ];
   }
 
-  @override
-  bool get wantKeepAlive => true;
 
   initsocket(){
     socket = IO.io(httpClass.API_IP,
@@ -246,8 +249,51 @@ class _VerificationPageState extends State<VerificationPage>{
     socket.onConnect((_) {
       print('connect');
     });
+    socket.on("toManyOnline",(value) async {
+      socket = socket.disconnect();
+      socket.destroy();
+      socket.dispose();
+      googleUser = await googleSignIn.disconnect();
+      unPopDialog(
+        this.context,
+        'Accept',
+        Text("You already online with other device."),
+        <Widget>[
+          FlatButton(
+            child: Text('Ok'),
+            onPressed: () async {
+              Navigator.pushReplacementNamed(context,"/login");
+            },
+          ),
+        ],
+      );
+    });
   }
 
+  _resend() async {
+    MailVerification().resend(currentUser).then((value){
+      if(value){
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("New OTP has been send.")));
+      }else{
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not resend. Please try again.")));
+      }
+      isResend = false;
+    });
+  }
+
+  _changeMail() async {
+    MailVerification().changeMail(email, currentUser).then((value){
+      if(value == "Succesful"){
+        currentUser.mailcmu = email;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("New OTP has been send to your new mail.")));
+      }else{
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(value)));
+      }
+      isLoading = false;
+      Navigator.of(context).maybePop();
+    });
+  }
+  
   _Verify() async {
       MailVerification().verify(textEditingController.text,currentUser).then((value) async {
         if(value != null){
@@ -255,9 +301,33 @@ class _VerificationPageState extends State<VerificationPage>{
           mailVerification = value;
           if(value.message == "succesful" ){
             currentUser = await User().getCurrentuser(googleUser.id);
-            await httpClass.getNewHeader();
-            initsocket();
-            Navigator.pushReplacementNamed(context,"/homeNavigation");
+            if(currentUser != null){
+              if(await currentUser.amiOnline()){
+                unPopDialog(
+                  this.context,
+                  'Accept',
+                  Text("You already online with other device."),
+                  <Widget>[
+                    FlatButton(
+                      child: Text('Ok'),
+                      onPressed: () async {
+                        Navigator.pushReplacementNamed(context,"/login");
+                      },
+                    ),
+                  ],
+                );
+              }else{
+                await httpClass.getNewHeader();
+                if( socket != null ){
+                  socket.io.options['extraHeaders'] = {'uid': currentUser.uid,'auth' : httpClass.header['auth']};
+                }
+                initsocket();
+                Navigator.pushReplacementNamed(context,"/homeNavigation");
+              }
+            }else{
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not login.")));
+              Navigator.pushReplacementNamed(context,"/login");
+            }
           }else if(value.message == "resend"){
             errorController.add(ErrorAnimationType.shake);
             textEditingController.clear();

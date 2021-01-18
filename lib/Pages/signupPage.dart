@@ -294,38 +294,19 @@ class SignUpPageState extends State<SignUpPage> {
     }
   }
 
-  initsocket(){
-    socket = IO.io(httpClass.API_IP,
-        IO.OptionBuilder()
-            .setTransports(['websocket']) // for Flutter or Dart VM
-            .enableReconnection()
-            .disableAutoConnect()
-            .setExtraHeaders({'uid': currentUser.uid,'auth' : httpClass.header['auth']})
-            .build());
-    socket = socket.connect();
-    socket.onConnect((_) {
-      print('connect');
-    });
-  }
-
   _Nextpage() async {
     userData.token = await firebaseMessaging.getToken();
     print(userData.toJson());
-    bool isSuccesful = await userData.Register();
-    if( isSuccesful ){
+    String isSuccesful = await userData.Register();
+    if( isSuccesful == "Succesful" ) {
       currentUser = await User().getCurrentuser(googleUser.id);
-      if ( selectedImage != null){
+      if (selectedImage != null) {
         await currentUser.uploadProfile(selectedImage);
       }
-//      currentUser = await User().getCurrentuser(googleUser.id);
-      Navigator.pushReplacementNamed(context,"/VerificationPage");
-
-//      await httpClass.getNewHeader();
-//      initsocket();
-//      Navigator.pushReplacementNamed(context,"/homeNavigation");
+      Navigator.pushReplacementNamed(context, "/VerificationPage");
     }else{
       isPress = false;
-      print("please try again");
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(isSuccesful)));
       setState(() { });
     }
 

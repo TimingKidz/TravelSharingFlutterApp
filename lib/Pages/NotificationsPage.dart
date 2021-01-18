@@ -47,6 +47,7 @@ class NotificationsPageState extends State<NotificationsPage>{
     socket.off('onTripEnd');
     socket.off('onKick');
 
+    // remove all page except dashboard
     socket.on('onKick', (data){
       currentUser.status.navbarTrip = true;
       widget.setSate();

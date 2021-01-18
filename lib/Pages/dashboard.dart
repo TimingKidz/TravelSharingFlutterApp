@@ -109,10 +109,8 @@ class _Dashboard extends State<Dashboard> {
       _deletejoinCard(data['tripid']);
     });
     socket.on('onTripEnd', (data) {
-
       _deletejoinCard(data['tripid']);
     });
-
     socket.on('onRequest', (data) {
       _updateCardStatus(data['tripid']);
     });
