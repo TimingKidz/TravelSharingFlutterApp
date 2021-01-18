@@ -86,7 +86,6 @@ class _RouteMapCardState extends State<RouteMapCard> {
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                  padding: EdgeInsets.all(16.0),
                   width: double.infinity,
                   height: MediaQuery.of(context).size.height * 0.45,
                   decoration: BoxDecoration(
@@ -94,6 +93,7 @@ class _RouteMapCardState extends State<RouteMapCard> {
                     borderRadius: BorderRadius.vertical(top: Radius.circular(20.0))
                   ),
                   child: ListView(
+                    padding: EdgeInsets.all(16.0),
                     physics: BouncingScrollPhysics(),
                     children: <Widget>[
                       Container(
@@ -161,8 +161,8 @@ class _RouteMapCardState extends State<RouteMapCard> {
                                         borderRadius: BorderRadius.circular(20.0)
                                     ),
                                     clipBehavior: Clip.antiAlias,
-                                    width: MediaQuery.of(context).size.width - 32 - 8,
-                                    height: MediaQuery.of(context).size.width - 32 - 8,
+                                    width: MediaQuery.of(context).size.width - 32 - 32,
+                                    height: MediaQuery.of(context).size.width - 32 - 32,
                                     child: widget.data.routes.imgpath != null ? Image.network("${httpClass.API_IP}${widget.data.routes.imgpath}") : Icon(Icons.broken_image, color: Colors.white),
                                   ),
                                 ],
