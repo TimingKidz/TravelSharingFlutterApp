@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:travel_sharing/Class/DropdownVar.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -34,7 +35,6 @@ class InfoFill extends StatefulWidget {
 class _InfoFillState extends State<InfoFill> {
   GoogleMapController _mapController;
   Routes Final_Data = new Routes();
-  List<String> tagList = ["Travel", "Travel & Activity"];
   final _formKey = GlobalKey<FormState>();
   bool isActivity = false;
 
@@ -57,7 +57,7 @@ class _InfoFillState extends State<InfoFill> {
     Final_Data.date =  DateTime.now().toString();
     Final_Data.src = widget.src;
     Final_Data.dst = widget.dst;
-    Final_Data.tag = [tagList.first];
+    Final_Data.tag = [DropdownVar().tagList.first];
     Final_Data.vehicle = widget.Role == 0 ? (Vehicle().defaultVehicle() ?? currentUser.vehicle.first) : null;
     if(widget.data != null){
       Final_Data.tag = widget.data.tag;
@@ -182,7 +182,7 @@ class _InfoFillState extends State<InfoFill> {
         SizedBox(height: 8.0),
         CardDropdown(
           labelText: 'Tag',
-          listItems: tagList,
+          listItems: DropdownVar().tagList,
           initData: Final_Data.tag.first,
           dropdownTileBuild: (value) {
             return DropdownMenuItem(
@@ -352,7 +352,9 @@ class _InfoFillState extends State<InfoFill> {
   PickedFile image;
 
   Future getImage() async {
-    image = await ImagePicker().getImage(source: ImageSource.gallery);
+    image = await ImagePicker().getImage(
+      source: ImageSource.gallery,
+    );
     if(image != null)
       await _cropImage();
   }
@@ -360,6 +362,10 @@ class _InfoFillState extends State<InfoFill> {
   Future<Null> _cropImage() async {
     File croppedFile = await ImageCropper.cropImage(
         sourcePath: image.path,
+        compressFormat: ImageCompressFormat.jpg,
+        compressQuality: 75,
+        maxHeight: 1080,
+        maxWidth: 1080,
         aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
         androidUiSettings: AndroidUiSettings(
             toolbarTitle: 'Crop Image',

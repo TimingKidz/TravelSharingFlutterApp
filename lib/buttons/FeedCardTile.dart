@@ -29,210 +29,257 @@ class FeedCardTileState extends State<FeedCardTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.white,
+    return Container(
       margin: EdgeInsets.symmetric(horizontal: 8.0),
-      shape: RoundedRectangleBorder(
-          borderRadius: cardBorder
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: cardBorder,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 2,
+            offset: Offset(0.0, 0.0), //(x,y)
+          ),
+        ],
       ),
       child: FlatButton(
-          padding: EdgeInsets.only(top: 0.0),
+          padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
           shape: RoundedRectangleBorder(
               borderRadius: cardBorder
           ),
           onPressed: () {
             widget.onCardPressed();
           },
-          child: Column(
+          child: Stack(
             children: <Widget>[
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-                child: Stack(
-                  children: <Widget>[
-                    Column(
+              widget.data.routes.imgpath != null || widget.data.routes.description.isNotEmpty
+              ? Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Row(
                       children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Row(
-                            children: <Widget>[
-                              // Date, Time, and People
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Icon(Vehicle().getTypeIcon(widget.data.routes.vehicle.type), size: 32.0,),
-
-                                  SizedBox(height: 8.0),
-                                  Container(
-                                    padding: EdgeInsets.all(4.0),
-                                    decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.black),
-                                        borderRadius: BorderRadius.circular(
-                                            10.0)
-                                    ),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Text(
-                                          DateManage().datetimeFormat("day", widget.data.routes.date) + " " + DateManage().datetimeFormat("month", widget.data.routes.date),
-                                          style: TextStyle(
-                                              fontSize: 10.0
-                                          ),
-                                        ),
-                                        Text(DateManage().datetimeFormat("time", widget.data.routes.date))
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(height: 8.0),
-                                  Text(
-                                      widget.data.routes.role == "1"
-                                          ? "ไปด้วย"
-                                          : "ต้องการ"
-                                  ),
-                                  Text(
-                                    widget.data.routes.role == "1"
-                                        ? '${widget.data.routes.amount} คน'
-                                        : '${int.parse(
-                                        widget.data.routes.amount) -
-                                        widget.data.routes.match.length} คน',
-                                  )
-                                ],
-                              ),
-                              SizedBox(width: 16.0),
-                              // Source and Destination
-                              Flexible(
-                                child: Container(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
-                                    children: <Widget>[
-                                      Text('ปลายทาง',
-                                          style: TextStyle(fontSize: 10.0)),
-                                      SizedBox(height: 5.0),
-                                      Text(widget.data.routes.dst,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(fontSize: 20.0,
-                                              fontWeight: FontWeight.bold)),
-                                      SizedBox(height: 16.0),
-                                      Text('ต้นทาง', style: TextStyle(
-                                          fontSize: 10.0,
-                                          color: Colors.black54)),
-                                      SizedBox(height: 5.0),
-                                      Text(widget.data.routes.src,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(fontSize: 14.0,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black54)),
-                                    ],
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        if(widget.data.routes.imgpath != null)
-                          Column(
-                            children: [
-                              SizedBox(height: 8.0),
-                              Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.black12,
-                                    borderRadius: BorderRadius.circular(20.0)
-                                ),
-                                clipBehavior: Clip.antiAlias,
-                                width: MediaQuery.of(context).size.width - 32 - 8,
-                                height: MediaQuery.of(context).size.width - 32 - 8,
-                                child: widget.data.routes.imgpath != null ? Image.network("${httpClass.API_IP}${widget.data.routes.imgpath}") : Icon(Icons.broken_image, color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        if(widget.data.routes.description.isNotEmpty)
-                          Column(
-                            children: [
-                              SizedBox(height: 8.0),
-                              Container(
-                                padding: EdgeInsets.all(16.0),
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context).canvasColor,
-                                    borderRadius: BorderRadius.circular(20.0)
-                                ),
-                                width: MediaQuery.of(context).size.width - 32 - 8,
-                                child: Text(
-                                    widget.data.routes.description
-                                ),
-                              ),
-                            ],
-                          ),
-                        if(widget.data.routes.imgpath != null && widget.data.routes.description.isNotEmpty)
-                          SizedBox(height: 32.0),
-                        Container(
-                          margin: EdgeInsets.fromLTRB(0.0, 0.0, 12.0, 0.0),
-                          padding: EdgeInsets.symmetric(
-                              vertical: 4.0, horizontal: 44.0),
-                          alignment: Alignment.centerRight,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            // color: widget.data.role == "1" ? Theme.of(context).primaryColor : Theme.of(context).accentColor,
-                            color: Theme
-                                .of(context)
-                                .canvasColor,
-                            borderRadius: BorderRadius.circular(16.0),
-                          ),
-                          // child: widget.data.role == "1"
-                          //     ? Text("ไปด้วย")
-                          //     : Text("ชวน"),
-                          child: Text(widget.data.user.name),
-                        ),
+                        leftWidget(),
+                        SizedBox(width: 16.0),
+                        Flexible(child: Container(child: mainInfo()))
                       ],
                     ),
-                    // Type badge
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: Material(
-                        elevation: 1,
-                        borderRadius: BorderRadius.circular(20.0),
-                        color: Theme
-                            .of(context)
-                            .accentColor,
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(widget.data.routes.tag.first, style: TextStyle(fontSize: 12,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold)),
-                        ),
+                  ),
+                  if(widget.data.routes.description.isNotEmpty)
+                    tripImage(),
+                  if(widget.data.routes.imgpath != null)
+                    tripDescription(),
+                  SizedBox(height: 8.0),
+                  Align(alignment: Alignment.centerRight, child: profile())
+                ],
+              )
+              : Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: leftWidget(),
+                  ),
+                  Flexible(
+                    child: Container(
+                      width: double.infinity,
+                      child: Column(
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: mainInfo()
+                            ),
+                          ),
+                          Align(alignment: Alignment.centerRight,child: profile())
+                        ],
                       ),
                     ),
-                    Positioned.fill(
-                      child: Align(
-                        alignment: Alignment.bottomRight,
-                        child: Material(
-                          shape: CircleBorder(),
-                          clipBehavior: Clip.antiAlias,
-                          color: Colors.grey,
-                          child: InkWell(
-                            onTap: () {
-                              swipeUpDialog(context, ProfileInfo(data: widget.data.user));
-                            },
-                            child: widget.data.user.imgpath != null
-                                ? Ink.image(
-                              image: Image.network("${httpClass.API_IP}${widget.data.user.imgpath}").image,
-                              fit: BoxFit.cover,
-                              width: 48.0,
-                              height: 48.0,
-                            )
-                                : Container(
-                                width: 48.0,
-                                height: 48.0,
-                                child: Icon(Icons.person, color: Colors.white),
-                              ),
-                          )
-                        )
-                      ),
-                    )
-                  ],
-                ),
+                  )
+                ],
               ),
+              badge() // Type badge
             ],
           )
+      ),
+    );
+  }
+
+  // Date, Time, and People Widget
+  Widget leftWidget(){
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Icon(Vehicle().getTypeIcon(widget.data.routes.vehicle.type), size: 32.0),
+        SizedBox(height: 8.0),
+        Container(
+          padding: EdgeInsets.all(4.0),
+          decoration: BoxDecoration(
+              border: Border.all(color: Colors.black),
+              borderRadius: BorderRadius.circular(
+                  10.0)
+          ),
+          child: Column(
+            children: <Widget>[
+              Text(
+                DateManage().datetimeFormat("day", widget.data.routes.date) + " " + DateManage().datetimeFormat("month", widget.data.routes.date),
+                style: TextStyle(
+                    fontSize: 10.0
+                ),
+              ),
+              Text(DateManage().datetimeFormat("time", widget.data.routes.date))
+            ],
+          ),
+        ),
+        if(widget.data.routes.role == "0")
+          SizedBox(height: 12.0),
+        if(widget.data.routes.role == "0")
+          Text(widget.data.routes.cost == "0" ? "FREE" :"฿${widget.data.routes.cost}"),
+        SizedBox(height: 8.0),
+        Text(
+          widget.data.routes.role == "1"
+              ? "ไปด้วย"
+              : "ต้องการ",
+          style: TextStyle(fontSize: 12.0),
+        ),
+        Text(
+          widget.data.routes.role == "1"
+              ? '${widget.data.routes.amount} คน'
+              : '${int.parse(
+              widget.data.routes.amount) -
+              widget.data.routes.match.length} คน',
+          style: TextStyle(fontSize: 12.0),
+        )
+      ],
+    );
+  }
+
+  // Source and Destination widget
+  Widget mainInfo(){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment
+          .start,
+      children: <Widget>[
+        Text('ปลายทาง',
+            style: TextStyle(fontSize: 10.0)),
+        SizedBox(height: 8.0),
+        Text(widget.data.routes.dst,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 20.0,
+                fontWeight: FontWeight.bold)),
+        SizedBox(height: 24.0),
+        Text('ต้นทาง', style: TextStyle(
+            fontSize: 10.0,
+            color: Colors.black54)),
+        SizedBox(height: 8.0),
+        Text(widget.data.routes.src,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 14.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.black54)),
+      ],
+    );
+  }
+
+  Widget tripImage(){
+    return Column(
+      children: [
+        SizedBox(height: 8.0),
+        Ink(
+          padding: EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+              color: Theme.of(context).canvasColor,
+              borderRadius: BorderRadius.circular(20.0)
+          ),
+          width: MediaQuery.of(context).size.width - 32 - 8,
+          child: Text(
+              widget.data.routes.description
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget tripDescription(){
+    return Column(
+      children: [
+        SizedBox(height: 8.0),
+        Container(
+          decoration: BoxDecoration(
+              color: Colors.black12,
+              borderRadius: BorderRadius.circular(20.0)
+          ),
+          clipBehavior: Clip.antiAlias,
+          width: MediaQuery.of(context).size.width - 32 - 8,
+          height: MediaQuery.of(context).size.width - 32 - 8,
+          child: widget.data.routes.imgpath != null ? Image.network("${httpClass.API_IP}${widget.data.routes.imgpath}") : Icon(Icons.broken_image, color: Colors.white),
+        ),
+      ],
+    );
+  }
+
+  Widget profile(){
+    return Stack(
+      alignment: Alignment.bottomRight,
+      children: [
+        Wrap(
+          children: [
+            Container(
+              margin: EdgeInsets.fromLTRB(0.0, 0.0, 12.0, 0.0),
+              child: Ink(
+                padding: EdgeInsets.fromLTRB(8.0, 4.0, 40.0, 4.0),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).canvasColor,
+                  borderRadius: BorderRadius.circular(16.0),
+                ),
+                child: Text(widget.data.user.name, textAlign: TextAlign.end, style: TextStyle(fontSize: 12.0)),
+              ),
+            ),
+          ],
+        ),
+        Material(
+            shape: CircleBorder(),
+            clipBehavior: Clip.antiAlias,
+            color: Colors.grey,
+            child: InkWell(
+              onTap: () {
+                swipeUpDialog(context, ProfileInfo(data: widget.data.user));
+              },
+              child: widget.data.user.imgpath != null
+                  ? Ink.image(
+                image: Image.network("${httpClass.API_IP}${widget.data.user.imgpath}").image,
+                fit: BoxFit.cover,
+                width: 48.0,
+                height: 48.0,
+              )
+                  : Container(
+                width: 48.0,
+                height: 48.0,
+                child: Icon(Icons.person, color: Colors.white),
+              ),
+            )
+        )
+      ],
+    );
+  }
+
+  Widget badge(){
+    return Align(
+      alignment: Alignment.topRight,
+      child: Material(
+        elevation: 1,
+        borderRadius: BorderRadius.circular(20.0),
+        color: Theme
+            .of(context)
+            .accentColor,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+          child: Text(widget.data.routes.tag.first, style: TextStyle(fontSize: 12,
+              color: Colors.white,
+              fontWeight: FontWeight.bold)),
+        ),
       ),
     );
   }

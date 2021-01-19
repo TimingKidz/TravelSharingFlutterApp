@@ -12,6 +12,7 @@ import 'package:travel_sharing/Class/Travel_Info.dart';
 import 'package:travel_sharing/Pages/mapview.dart';
 import 'package:travel_sharing/UI/ProfileInfo.dart';
 import 'package:travel_sharing/main.dart';
+import 'package:travel_sharing/custom_color_scheme.dart';
 
 class MatchMapCard extends StatefulWidget {
   final String url;
@@ -63,6 +64,25 @@ class _MatchMapCardState extends State<MatchMapCard> {
                         shape: CircleBorder(),
                         fillColor: Colors.white,
                         child: Icon(Icons.map),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Material(
+                      elevation: 1,
+                      borderRadius: BorderRadius.circular(20.0),
+                      color: Theme.of(context).colorScheme.success,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                        child: Text(
+                          "Offer",
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
                       ),
                     ),
                   ),

@@ -10,8 +10,9 @@ class Req_Info {
   Routes routes;
   User user;
   String reqid;
+  bool isOffer;
 
-  Req_Info({this.routes,this.user,this.reqid});
+  Req_Info({this.routes,this.user,this.reqid,this.isOffer});
 
   Req_Info.fromJson(Map<String, dynamic> json) {
     routes = Routes.fromJson(json['detail']);
@@ -28,11 +29,12 @@ class Req_Info {
         if(response.statusCode == 404){
           return Future.value(null);
         }else{
-          List<dynamic> Data = jsonDecode(response.body);
+          Map<String, dynamic> Data = jsonDecode(response.body);
           List<Req_Info> Req_Info_List = List();
-          Data.forEach((x) {
+          Data["req"].forEach((x) {
             if(x['detail'] != null){
               Req_Info tmp = Req_Info.fromJson(x);
+              tmp.isOffer = Data["offer"].contains(tmp.routes.uid);
               Req_Info_List.add(tmp);
             }
           });

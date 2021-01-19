@@ -11,6 +11,7 @@ import 'package:travel_sharing/Dialog.dart';
 import 'package:travel_sharing/Pages/mapview.dart';
 import 'package:travel_sharing/UI/ProfileInfo.dart';
 import 'package:travel_sharing/main.dart';
+import 'package:travel_sharing/custom_color_scheme.dart';
 
 class ReqMapCard extends StatefulWidget {
   final String url;
@@ -62,6 +63,25 @@ class _ReqMapCardState extends State<ReqMapCard> {
                         shape: CircleBorder(),
                         fillColor: Colors.white,
                         child: Icon(Icons.map),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Material(
+                      elevation: 1,
+                      borderRadius: BorderRadius.circular(20.0),
+                      color: Theme.of(context).colorScheme.success,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                        child: Text(
+                          "Offer",
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
                       ),
                     ),
                   ),

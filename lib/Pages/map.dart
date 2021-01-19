@@ -330,6 +330,18 @@ class _CreateRoutestate extends State<CreateRoute> {
                                         ),
                                       ),
                                     ),
+                                  ),
+                                if(isSelected && !isChooseOnMap)
+                                  ClipOval(
+                                    child: Material(
+                                      child: InkWell(
+                                        child: SizedBox(width: 64, height: 64, child: Icon(Icons.add)),
+                                        onTap: () {
+                                          isChooseOnMap = !isChooseOnMap;
+                                          setState(() {});
+                                        },
+                                      ),
+                                    ),
                                   )
                               ],
                             ),
@@ -444,64 +456,121 @@ class _CreateRoutestate extends State<CreateRoute> {
     );
   }
 
+  // Widget _buildListView(){
+  //   return ListView.separated(
+  //     separatorBuilder: (context, _) {
+  //       return SizedBox(width: 8.0);
+  //     },
+  //     physics: BouncingScrollPhysics(),
+  //     scrollDirection: Axis.horizontal,
+  //     itemCount: wayPoint.length+1,
+  //     itemBuilder: (context, i) {
+  //       if(i == wayPoint.length){
+  //         return ClipOval(
+  //           child: Material(
+  //             child: InkWell(
+  //               child: SizedBox(width: 64, height: 64, child: Icon(Icons.add)),
+  //               onTap: () {
+  //                 isChooseOnMap = !isChooseOnMap;
+  //                 setState(() {});
+  //               },
+  //             ),
+  //           ),
+  //         );
+  //       }
+  //       return Stack(
+  //         alignment: Alignment.topRight,
+  //         children: [
+  //           ClipOval(
+  //             child: Material(
+  //               child: SizedBox(
+  //                   width: 64,
+  //                   height: 64,
+  //                   child: Center(
+  //                       child: Text(
+  //                           "${i+1}",
+  //                       style: TextStyle(
+  //                         fontWeight: FontWeight.bold
+  //                       ),
+  //                       )
+  //                   )
+  //               ),
+  //             ),
+  //           ),
+  //           ClipOval(
+  //             child: Material(
+  //               color: Colors.red,
+  //               child: InkWell(
+  //                 child: SizedBox(width: 20, height: 20, child: Icon(Icons.clear, color: Colors.white, size: 12)),
+  //                 onTap: () async {
+  //                   wayPoint.removeAt(i);
+  //                   _drawLine();
+  //                   setState(() { });
+  //                 },
+  //               ),
+  //             ),
+  //           )
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+
   Widget _buildListView(){
-    return ListView.separated(
-      separatorBuilder: (context, _) {
-        return SizedBox(width: 8.0);
+    return ReorderableListView(
+      // separatorBuilder: (context, _) {
+      //   return SizedBox(width: 8.0);
+      // },
+      // physics: BouncingScrollPhysics(),
+      onReorder: (int oldIndex, int newIndex){
+        setState(() {
+          if(newIndex > oldIndex){
+            newIndex -= 1;
+          }
+          final items = wayPoint.removeAt(oldIndex);
+          wayPoint.insert(newIndex, items);
+        });
+        print(wayPoint);
       },
-      physics: BouncingScrollPhysics(),
       scrollDirection: Axis.horizontal,
-      itemCount: wayPoint.length+1,
-      itemBuilder: (context, i) {
-        if(i == wayPoint.length){
-          return ClipOval(
-            child: Material(
-              child: InkWell(
-                child: SizedBox(width: 64, height: 64, child: Icon(Icons.add)),
-                onTap: () {
-                  isChooseOnMap = !isChooseOnMap;
-                  setState(() {});
-                },
-              ),
-            ),
-          );
-        }
-        return Stack(
-          alignment: Alignment.topRight,
-          children: [
-            ClipOval(
-              child: Material(
-                child: SizedBox(
-                    width: 64,
-                    height: 64,
-                    child: Center(
-                        child: Text(
+      children: [
+        for(i = 0; i < wayPoint.length; i++)
+          Stack(
+            key: UniqueKey(),
+            alignment: Alignment.topRight,
+            children: [
+              ClipOval(
+                child: Material(
+                  child: SizedBox(
+                      width: 64,
+                      height: 64,
+                      child: Center(
+                          child: Text(
                             "${i+1}",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold
-                        ),
-                        )
-                    )
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold
+                            ),
+                          )
+                      )
+                  ),
                 ),
               ),
-            ),
-            ClipOval(
-              child: Material(
-                color: Colors.red,
-                child: InkWell(
-                  child: SizedBox(width: 20, height: 20, child: Icon(Icons.clear, color: Colors.white, size: 12)),
-                  onTap: () async {
-                    wayPoint.removeAt(i);
-                    _drawLine();
-                    setState(() { });
-                    // TODO: Implement remove selected pin.
-                  },
+              ClipOval(
+                child: Material(
+                  color: Colors.red,
+                  child: InkWell(
+                    child: SizedBox(width: 20, height: 20, child: Icon(Icons.clear, color: Colors.white, size: 12)),
+                    onTap: () async {
+                      wayPoint.removeAt(i);
+                      _drawLine();
+                      setState(() { });
+                    },
+                  ),
                 ),
-              ),
-            )
-          ],
-        );
-      },
+              )
+            ],
+          ),
+      ],
     );
   }
   // ----------------------------------------------------------------------------

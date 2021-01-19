@@ -7,7 +7,10 @@ import 'package:google_sign_in/widgets.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:travel_sharing/Class/DateManage.dart';
+import 'package:travel_sharing/Class/DropdownVar.dart';
 import 'package:travel_sharing/Class/User.dart';
+import 'package:travel_sharing/buttons/CardDropdown.dart';
+import 'package:travel_sharing/buttons/cardDatePicker.dart';
 import 'package:travel_sharing/buttons/cardInformation.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
 import 'package:travel_sharing/localization.dart';
@@ -103,15 +106,39 @@ class ProfileManagePageState extends State<ProfileManagePage> {
                           SizedBox(
                             height: 16.0,
                           ),
-                          RatingBarIndicator(
-                            rating: currentUser.reviewSummary.totalscore,
-                            itemBuilder: (context, index) => Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                            ),
-                            itemCount: 5,
-                            itemSize: 30.0,
-                            direction: Axis.horizontal,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              RatingBarIndicator(
+                                rating: currentUser.reviewSummary.amount == 0 ? 0.0: currentUser.reviewSummary.totalscore/currentUser.reviewSummary.amount,
+                                itemBuilder: (context, index) => Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                ),
+                                itemCount: 5,
+                                itemSize: 30.0,
+                                direction: Axis.horizontal,
+                              ),
+                              SizedBox(width: 4.0),
+                              Text(currentUser.reviewSummary.amount == 0 ? "0.0": (currentUser.reviewSummary.totalscore/currentUser.reviewSummary.amount).toString(), style: TextStyle(fontSize: 16.0, color: Colors.white)),
+                              SizedBox(width: 4.0),
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 2.0),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    border: Border.all(color: Colors.white, width: 0.5)
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.people, size: 14.0, color: Colors.white),
+                                    SizedBox(width: 2.0),
+                                    Text(currentUser.reviewSummary.amount.toString(), style: TextStyle(fontSize: 14.0, color: Colors.white)),
+                                    SizedBox(width: 1.0),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -207,22 +234,43 @@ class ProfileManagePageState extends State<ProfileManagePage> {
       return [
         CardInformation(
           labelText: AppLocalizations.instance.text("email"),
-          infoText: currentUser.email,
+          infoText: currentUser.mailcmu,
         ),
         CardTextField(
           labelText: AppLocalizations.instance.text("name"),
           initValue: currentUser.name,
           onChanged: (val) => editUser.name = val,
         ),
-        CardTextField(
+        CardDatePicker(
+          labelText: "วันเกิด",
+          initDateTime: DateTime.parse(currentUser.birthDate).toLocal(),
+          isBirthday: true,
+          isJustDate: true,
+          onDatePick: (time){
+            editUser.birthDate = time;
+          },
+        ),
+        CardDropdown(
+          initData: currentUser.faculty,
+          listItems: DropdownVar().facultyList,
           labelText: AppLocalizations.instance.text("faculty"),
-          initValue: currentUser.faculty,
-          onChanged: (val) => editUser.faculty = val,
+          dropdownTileBuild: (value) {
+            return DropdownMenuItem(
+              value: value,
+              child: Text(value),
+            );
+          },
+          onChanged: (data) => editUser.faculty = data,
         ),
         CardTextField(
           labelText: AppLocalizations.instance.text("gender"),
           initValue: currentUser.gender,
           onChanged: (val) => editUser.gender = val,
+        ),
+        CardTextField(
+          labelText: "เบอร์โทร",
+          initValue: currentUser.phone,
+          onChanged: (val) => editUser.phone = val,
         ),
         SizedBox(height: 8.0),
         Row(
@@ -272,7 +320,7 @@ class ProfileManagePageState extends State<ProfileManagePage> {
       return [
         CardInformation(
           labelText: AppLocalizations.instance.text("email"),
-          infoText: currentUser.email,
+          infoText: currentUser.mailcmu,
         ),
         CardInformation(
           labelText: AppLocalizations.instance.text("name"),
@@ -292,7 +340,7 @@ class ProfileManagePageState extends State<ProfileManagePage> {
         ),
         CardInformation(
           labelText: "เบอร์โทร",
-          infoText: "0903310276",
+          infoText: currentUser.phone,
         ),
       ];
     }

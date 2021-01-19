@@ -255,9 +255,10 @@ class User {
   Future<bool> uploadImg(File file, String routeID)async{
     try{
       img.Image image = img.decodeImage(file.readAsBytesSync());
-      image = img.copyResize(image,
-          width: 1080,
-          height: 1080);
+      // image = img.copyResize(image,
+      //     width: 1080,
+      //     height: 1080,
+      // );
       Http.StreamedResponse response = await httpClass.reqHttpMedia(image,this.uid,routeID,"/api/user/img");
       if(response.statusCode == 400){
         return Future.value(false);

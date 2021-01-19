@@ -7,6 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:google_sign_in/widgets.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:travel_sharing/Class/DropdownVar.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Pages/homeNavigation.dart';
 import 'package:travel_sharing/Pages/loginPage.dart';
@@ -26,31 +27,6 @@ class SignUpPageState extends State<SignUpPage> {
   // User user = new User(name: googleUser.displayName,email: googleUser.email,id: googleUser.id,token: await firebaseMessaging.getToken());
   User userData = new User(name: googleUser.displayName,email: googleUser.email,id: googleUser.id);
   final _formKey = GlobalKey<FormState>();
-  List<String> genderList = ["Male", "Female", "LGBTQ"];
-  List<String> facultyList = [
-    "Mass Communication",
-    "Agriculture",
-    "Dentistry",
-    "Associated Medical Science",
-    "Law",
-    "Business Administration",
-    "Nursing",
-    "Medicine",
-    "Pharmacy",
-    "Humanities",
-    "Political Science and Public Administration",
-    "Fine Arts",
-    "Science",
-    "Engineering",
-    "Education",
-    "Economics",
-    "Architecture",
-    "Social Sciences",
-    "Veterinary Medicine",
-    "Public Health",
-    "Agro-Industry",
-    "College of Art, Media and Technology",
-  ];
   File selectedImage;
   bool isPress = false;
 
@@ -63,9 +39,9 @@ class SignUpPageState extends State<SignUpPage> {
 
   @override
   void initState() {
-    facultyList.sort();
-    userData.gender = genderList.first;
-    userData.faculty = facultyList.first;
+    userData.gender = DropdownVar().genderList.first;
+    userData.faculty = DropdownVar().facultyList.first;
+    userData.birthDate = DateTime.now().toString();
     super.initState();
   }
 
@@ -213,7 +189,7 @@ class SignUpPageState extends State<SignUpPage> {
         children: [
           Expanded(
             child: CardDropdown(
-              listItems: genderList,
+              listItems: DropdownVar().genderList,
               labelText: "Gender",
               dropdownTileBuild: (value) {
                 return DropdownMenuItem(
@@ -239,7 +215,7 @@ class SignUpPageState extends State<SignUpPage> {
       ),
       SizedBox(height: 8.0),
       CardDropdown(
-        listItems: facultyList,
+        listItems: DropdownVar().facultyList,
         labelText: "Faculty",
         dropdownTileBuild: (value) {
           return DropdownMenuItem(

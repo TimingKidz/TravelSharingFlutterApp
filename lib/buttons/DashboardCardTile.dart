@@ -47,11 +47,19 @@ class DashboardCardTileState extends State<DashboardCardTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.white,
+    return Container(
       margin: EdgeInsets.all(0.0),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0)
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 2,
+            offset: Offset(0.0, 0.0), //(x,y)
+          ),
+        ],
       ),
       clipBehavior: Clip.antiAlias,
       child: Slidable(

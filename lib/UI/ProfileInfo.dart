@@ -114,7 +114,6 @@ class ProfileInfo extends StatelessWidget {
                       ],
                     ),
                   ),
-                  SizedBox(width: 4.0),
                 ],
               ),
             ),
@@ -126,7 +125,7 @@ class ProfileInfo extends StatelessWidget {
             ),
           if(data.vehicle.isNotEmpty)
             SizedBox(height: 16.0),
-          PlainBGInfo(label: "Email", info: data.email),
+          PlainBGInfo(label: "Email", info: data.mailcmu),
           SizedBox(height: 16.0),
           PlainBGInfo(label: "Faculty", info: data.faculty),
           SizedBox(height: 16.0),

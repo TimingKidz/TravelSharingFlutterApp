@@ -1,4 +1,6 @@
 
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +20,8 @@ class NotificationsPage extends StatefulWidget{
   NotificationsPageState createState() => NotificationsPageState();
 }
 
-class NotificationsPageState extends State<NotificationsPage>{
-  List<Notifications> notifications = null;
+class NotificationsPageState extends State<NotificationsPage> with TickerProviderStateMixin{
+  List<Notifications> notifications;
 
 
   @override
@@ -87,6 +89,18 @@ class NotificationsPageState extends State<NotificationsPage>{
   getData(bool Need2Update) async {
     try{
       notifications = await Notifications().getNotification(currentUser.uid,Need2Update) ?? [];
+      // Sorted by child timestamp
+      notifications.sort((current, next) {
+        // Find lastest timestamp in List<Child>
+        String curMax = current.child.reduce((cur, next) => cur.timestamp.compareTo(next.timestamp) > 0 ? cur : next).timestamp;
+        String nextMax = next.child.reduce((cur, next) => cur.timestamp.compareTo(next.timestamp) > 0 ? cur : next).timestamp;
+        return nextMax.compareTo(curMax);
+      });
+      // Last timestamp for display
+      for(var each in notifications){
+        each.lastStamp = each.child.reduce((cur, next) => cur.timestamp.compareTo(next.timestamp) > 0 ? cur : next).timestamp;
+      }
+      print(notifications);
       setState(() { });
     }catch(error){
       print(error );
@@ -207,6 +221,7 @@ class NotificationsPageState extends State<NotificationsPage>{
   }
 
   Widget _buildRow(Notifications data) {
+    bool isOpen = false;
     switch (data.tag) {
       case "announcement":
         return Theme(
@@ -311,28 +326,49 @@ class NotificationsPageState extends State<NotificationsPage>{
             subtitle: Padding(
               padding: EdgeInsets.only(top: 8.0),
               child: Text(
-                DateManage().datetimeFormat("full", data.date),
+                DateManage().datetimeFormat("full", data.lastStamp),
                 style: TextStyle(
                     fontSize: 10.0
                 ),
               ),
             ),
-            childrenPadding: EdgeInsets.all(16.0),
+            // childrenPadding: EdgeInsets.all(8.0),
             expandedAlignment: Alignment.centerLeft,
             children: <Widget>[
               for(Child each in data.child)
-                Container(
-                  child: Row(
-                    children: <Widget>[
-                      Text(each.type),
-                      Text(each.message)
-                    ],
+                Card(
+                  margin: EdgeInsets.all(0.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(0.0)
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(each.type),
+                            SizedBox(height: 4.0),
+                            Text(each.message, style: TextStyle(fontSize: 12.0))
+                          ],
+                        ),
+                        Material(
+                          elevation: 1.0,
+                          shape: CircleBorder(),
+                          clipBehavior: Clip.antiAlias,
+                          color: Colors.red,
+                          textStyle: TextStyle(color: Colors.white),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(each.count.toString()),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 )
-
-
-              // Text('Birth of the Sun'),
-              // Text('Earth is Born'),
             ],
           ),
         );

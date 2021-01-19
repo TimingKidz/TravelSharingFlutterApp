@@ -7,8 +7,9 @@ import 'package:travel_sharing/main.dart';
 class Match_Info {
   Routes routes;
   User user;
+  bool isOffer;
 
-  Match_Info({this.routes,this.user});
+  Match_Info({this.routes,this.user,this.isOffer});
 
   Match_Info.fromJson(Map<String, dynamic> json) {
     routes = Routes.fromJson(json);
@@ -25,10 +26,11 @@ class Match_Info {
           return Future.value(null);
         }else{
           print(jsonDecode(response.body));
-          List<dynamic> data = jsonDecode(response.body);
+          Map<String, dynamic> data = jsonDecode(response.body);
           List< Match_Info > Match_Info_List = List();
-          data.forEach((x) {
+          data["match"].forEach((x) {
             Match_Info tmp = Match_Info.fromJson(x);
+            tmp.isOffer = data["offer"].contains(tmp.routes.uid);
             Match_Info_List.add(tmp);
           });
           return Future.value(Match_Info_List);

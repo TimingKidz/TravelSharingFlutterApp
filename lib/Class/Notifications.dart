@@ -14,9 +14,10 @@ class Notifications{
   String uid;
   String src;
   String dst;
+  String lastStamp;
   List<Child> child;
 
-  Notifications({this.Title, this.tripid , this.date ,this.sender,this.tag, this.dst, this.src});
+  Notifications({this.Title, this.tripid , this.date ,this.sender,this.tag, this.dst, this.src, this.lastStamp});
 
   Notifications.fromJson(Map<String, dynamic> json) {
     uid = json['_id'];

@@ -89,15 +89,40 @@ class AccountState extends State<Account> {
                             builder: (context) => ReviewView(user: currentUser)));
                       },
                       borderRadius: BorderRadius.circular(20.0),
-                      child: RatingBarIndicator(
-                        rating: currentUser.reviewSummary.amount == 0 ? 0.0 :  currentUser.reviewSummary.totalscore/currentUser.reviewSummary.amount,
-                        itemBuilder: (context, index) => Icon(
-                          Icons.star,
-                          color: Colors.amber,
-                        ),
-                        itemCount: 5,
-                        itemSize: 30.0,
-                        direction: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          RatingBarIndicator(
+                            rating: currentUser.reviewSummary.amount == 0 ? 0.0: currentUser.reviewSummary.totalscore/currentUser.reviewSummary.amount,
+                            itemBuilder: (context, index) => Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
+                            itemCount: 5,
+                            itemSize: 30.0,
+                            direction: Axis.horizontal,
+                          ),
+                          SizedBox(width: 4.0),
+                          Text(currentUser.reviewSummary.amount == 0 ? "0.0": (currentUser.reviewSummary.totalscore/currentUser.reviewSummary.amount).toString(), style: TextStyle(fontSize: 16.0, color: Colors.white)),
+                          SizedBox(width: 4.0),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 2.0),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20.0),
+                                border: Border.all(color: Colors.white, width: 0.5)
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.people, size: 14.0, color: Colors.white),
+                                SizedBox(width: 2.0),
+                                Text(currentUser.reviewSummary.amount.toString(), style: TextStyle(fontSize: 14.0, color: Colors.white)),
+                                SizedBox(width: 1.0),
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 4.0),
+                        ],
                       ),
                     ),
                     SizedBox(

@@ -144,9 +144,9 @@ class _Dashboard extends State<Dashboard> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         elevation: 2.0,
-        child: Icon(Icons.add),
+        child: Icon(Icons.add, color: isJoinPage ? Colors.black : Colors.white),
         onPressed: isJoinPage ? _callJoinMap : _callInviteMap,
-        backgroundColor: isJoinPage ? Theme.of(context).accentColor : Theme.of(context).accentColor,
+        backgroundColor: isJoinPage ? Theme.of(context).accentColor : Theme.of(context).primaryColor,
         heroTag: null,
       ),
       body: Stack(
@@ -157,7 +157,6 @@ class _Dashboard extends State<Dashboard> {
           // AppBar
           Card(
             // key: actionKey,
-            elevation: 2.0,
             margin: EdgeInsets.all(0.0),
             color: isJoinPage ? Theme.of(context).colorScheme.darkBlue : Theme.of(context).colorScheme.amber,
             shape: RoundedRectangleBorder(
