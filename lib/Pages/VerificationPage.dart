@@ -48,6 +48,7 @@ class _VerificationPageState extends State<VerificationPage>{
         if(isEdit){
           setState(() {
             isEdit = !isEdit;
+            email = currentUser.mailcmu;
             textEditingController =new TextEditingController();
             errorController =  StreamController<ErrorAnimationType>();
             mailVerification = new MailVerification();
@@ -249,7 +250,7 @@ class _VerificationPageState extends State<VerificationPage>{
     socket.onConnect((_) {
       print('connect');
     });
-    socket.on("toManyOnline",(value) async {
+    socket.on("tooManyOnline",(value) async {
       socket = socket.disconnect();
       socket.destroy();
       socket.dispose();
@@ -295,58 +296,63 @@ class _VerificationPageState extends State<VerificationPage>{
   }
   
   _Verify() async {
-      MailVerification().verify(textEditingController.text,currentUser).then((value) async {
-        if(value != null){
-          print('${value.message}  ${value.count}');
-          mailVerification = value;
-          if(value.message == "succesful" ){
-            currentUser = await User().getCurrentuser(googleUser.id);
-            if(currentUser != null){
-              if(await currentUser.amiOnline()){
-                unPopDialog(
-                  this.context,
-                  'Accept',
-                  Text("You already online with other device."),
-                  <Widget>[
-                    FlatButton(
-                      child: Text('Ok'),
-                      onPressed: () async {
-                        Navigator.pushReplacementNamed(context,"/login");
-                      },
-                    ),
-                  ],
-                );
-              }else{
-                await httpClass.getNewHeader();
-                if( socket != null ){
-                  socket.io.options['extraHeaders'] = {'uid': currentUser.uid,'auth' : httpClass.header['auth']};
+      if(textEditingController.text != ""){
+        MailVerification().verify(textEditingController.text,currentUser).then((value) async {
+          if(value != null){
+            print('${value.message}  ${value.count}');
+            mailVerification = value;
+            if(value.message == "succesful" ){
+              currentUser = await User().getCurrentuser(googleUser.id);
+              if(currentUser != null){
+                if(await currentUser.amiOnline()){
+                  unPopDialog(
+                    this.context,
+                    'Accept',
+                    Text("You already online with other device."),
+                    <Widget>[
+                      FlatButton(
+                        child: Text('Ok'),
+                        onPressed: () async {
+                          Navigator.pushReplacementNamed(context,"/login");
+                        },
+                      ),
+                    ],
+                  );
+                }else{
+                  await httpClass.getNewHeader();
+                  if( socket != null ){
+                    socket.io.options['extraHeaders'] = {'uid': currentUser.uid,'auth' : httpClass.header['auth']};
+                  }
+                  initsocket();
+                  Navigator.pushReplacementNamed(context,"/homeNavigation");
                 }
-                initsocket();
-                Navigator.pushReplacementNamed(context,"/homeNavigation");
+              }else{
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not login.")));
+                Navigator.pushReplacementNamed(context,"/login");
               }
+            }else if(value.message == "resend"){
+              errorController.add(ErrorAnimationType.shake);
+              textEditingController.clear();
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("The verification code has been resend.")));
+            }else if(value.message == "wrong" ) {
+              errorController.add(ErrorAnimationType.shake);
+              textEditingController.clear();
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Wrong verification code. !!")));
+            }else if( value.message == "expired" ){
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Code has been expired. Press resend to send new OTP!!")));
             }else{
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not login.")));
-              Navigator.pushReplacementNamed(context,"/login");
+              errorController.add(ErrorAnimationType.shake);
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("The verification code has been expired.")));
             }
-          }else if(value.message == "resend"){
-            errorController.add(ErrorAnimationType.shake);
-            textEditingController.clear();
-            setState(() {});
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("The verification code has been resend.")));
-          }else if(value.message == "wrong" ){
-            errorController.add(ErrorAnimationType.shake);
-            textEditingController.clear();
-            setState(() {});
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Wrong verification code. !!")));
           }else{
-            errorController.add(ErrorAnimationType.shake);
-            setState(() {});
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("The verification code has been expired.")));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not send verification code.")));
           }
-        }else{
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not send verification code.")));
-        }
-        isLoading = false;
-      });
+        });
+      }else{
+        errorController.add(ErrorAnimationType.shake);
+      }
+      setState(() {  isLoading = false; });
   }
 }

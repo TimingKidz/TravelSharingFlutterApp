@@ -93,7 +93,7 @@ class LoginPageState extends State<LoginPage> {
     socket.onConnect((_) {
       print('connect');
     });
-    socket.on("toManyOnline",(value) async {
+    socket.on("tooManyOnline",(value) async {
       socket = socket.disconnect();
       socket.destroy();
       socket.dispose();

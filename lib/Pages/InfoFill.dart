@@ -37,6 +37,7 @@ class _InfoFillState extends State<InfoFill> {
   Routes Final_Data = new Routes();
   final _formKey = GlobalKey<FormState>();
   bool isActivity = false;
+  bool isLoading = false;
 
   @override
   void setState(fn) {
@@ -85,15 +86,20 @@ class _InfoFillState extends State<InfoFill> {
         floatingActionButton: FloatingActionButton.extended(
           elevation: 2,
           highlightElevation: 2,
-          icon: Icon(isActivity ? Icons.check : Icons.arrow_forward_sharp),
-          label: Text(isActivity ? "Finish" : "Next"),
-          onPressed: (){
+          icon: isLoading ? SizedBox(
+            width: 16.0,
+            height: 16.0,
+            child: CircularProgressIndicator(strokeWidth: 2,valueColor: AlwaysStoppedAnimation(Colors.black),),
+          ) : Icon(isActivity ? Icons.check : Icons.arrow_forward_sharp),
+          label: isLoading ? Text("Loading...") : Text(isActivity ? "Finish" : "Next"),
+          onPressed: isLoading ? null : (){
             if(_formKey.currentState.validate()){
               if(!isActivity){
                 setState(() {
                   isActivity = !isActivity;
                 });
               }else{
+                setState(() { isLoading = true; });
                 _SavetoDB();
               }
             }
@@ -427,6 +433,7 @@ class _InfoFillState extends State<InfoFill> {
           Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
         }
       }else{
+        setState(() { isLoading = false; });
        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not create route.")));
       }
     });

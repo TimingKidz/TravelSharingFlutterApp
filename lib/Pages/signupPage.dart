@@ -271,6 +271,7 @@ class SignUpPageState extends State<SignUpPage> {
   }
 
   _Nextpage() async {
+    userData.mailcmu = userData.mailcmu.toLowerCase();
     userData.token = await firebaseMessaging.getToken();
     print(userData.toJson());
     String isSuccesful = await userData.Register();

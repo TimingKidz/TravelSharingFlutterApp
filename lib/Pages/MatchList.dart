@@ -156,10 +156,12 @@ class _MatchListstate extends State<MatchList> {
       _MatchList =  await Match_Info().getMatchList(widget.data.routes,isNeed2Update) ?? [];
       if( isreq == null) {
         isreq = await User().getisReq(widget.data.id, widget.data.uid) ?? [];
-       _MatchList.forEach((element) {
-          isPress[element.routes.uid] = false;
-       });
       }
+      _MatchList.forEach((element) {
+        if( isPress[element.routes.uid] == null){
+            isPress[element.routes.uid] = false;
+        }
+      });
       setState(() {});
     }catch(error){
       print(error);

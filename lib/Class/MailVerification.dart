@@ -20,7 +20,7 @@ class MailVerification{
 
   Future<MailVerification> verify(String code,User user)async{
     try{
-      Http.Response response = await httpClass.reqHttp("/api/user/verify",{"code" : code,"mailcmu" : user.mailcmu,"_id":user.uid });
+      Http.Response response = await httpClass.reqHttp("/api/user/verify",{"code" : code,"mailcmu" : user.mailcmu.toLowerCase(),"_id":user.uid });
       if(response.statusCode == 400){
         return Future.value(null);
       }else{
@@ -33,7 +33,7 @@ class MailVerification{
 
   Future<String> changeMail(String newMail,User user)async{
     try{
-      Http.Response response = await httpClass.reqHttp("/api/user/changeMail",{"newmailcmu" : newMail,"oldmailcmu" : user.mailcmu ,"_id": user.uid });
+      Http.Response response = await httpClass.reqHttp("/api/user/changeMail",{"newmailcmu" : newMail.toLowerCase(),"oldmailcmu" : user.mailcmu.toLowerCase() ,"_id": user.uid });
       if(response.statusCode == 400){
         return Future.value("Can not change. Please try again.");
       }else{

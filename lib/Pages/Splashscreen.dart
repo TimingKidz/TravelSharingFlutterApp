@@ -91,7 +91,7 @@ class SplashscreenState extends State<Splashscreen> {
     socket.onConnect((_) {
       print('connect');
     });
-    socket.on("toManyOnline",(value) async {
+    socket.on("tooManyOnline",(value) async {
       socket = socket.disconnect();
       socket.destroy();
       socket.dispose();

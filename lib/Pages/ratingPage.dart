@@ -19,6 +19,7 @@ class RatingPageState extends State<RatingPage> {
   Map<String, bool> isSelected = Map();
   EachReview review = new EachReview(sender: currentUser.uid,name: currentUser.name,imgpath: currentUser.imgpath);
   double rate = 5.0;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -101,6 +102,9 @@ class RatingPageState extends State<RatingPage> {
             ),
           ),
           SizedBox(height: 128.0),
+          if(isLoading)
+            CircularProgressIndicator(),
+          if(!isLoading)
           RaisedButton(
             highlightElevation: 0.0,
             padding: EdgeInsets.all(16.0),
@@ -112,9 +116,18 @@ class RatingPageState extends State<RatingPage> {
             onPressed: ()  async {
               review.tag = ratingTypeSelected;
               review.score = rate;
+              setState(() {
+                isLoading = true;
+              });
               await review.sendReview(widget.sendToid,widget.notiId).then((value) {
-                if( value )  Navigator.of(context).pop();
-                // else ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not send a Review.")));
+                if( value ){
+                  Navigator.of(context).pop();
+                } else{
+                  setState(() {
+                    isLoading = false;
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not send a Review.")));
+                }
               });
             },
           )
