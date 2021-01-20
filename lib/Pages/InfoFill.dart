@@ -59,6 +59,7 @@ class _InfoFillState extends State<InfoFill> {
     Final_Data.dst = widget.dst;
     Final_Data.tag = [DropdownVar().tagList.first];
     Final_Data.vehicle = widget.Role == 0 ? (Vehicle().defaultVehicle() ?? currentUser.vehicle.first) : null;
+    Final_Data.range = "15";
     if(widget.data != null){
       Final_Data.tag = widget.data.tag;
       Final_Data.date = DateTime.parse(widget.data.date).toLocal().toString();
