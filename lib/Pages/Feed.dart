@@ -10,6 +10,7 @@ import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:travel_sharing/buttons/DashboardCardTile.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
+import 'package:travel_sharing/Dialog.dart';
 
 
 class FeedPage extends StatefulWidget {
@@ -376,12 +377,28 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
         await widget.setSate();
       });
     }else{
-      Navigator.push(context, MaterialPageRoute(
-          builder: (context) => CreateRoute(data: data.routes))).then((value) async {
-        list.clear();
-        _pageConfig();
-        await widget.setSate();
-      });
+      if(currentUser.vehicle.isEmpty){
+        alertDialog(context,
+          "No vehicle",
+          Text("Please add your vehicle.\nAccount -> Vehicle Management"),
+          <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () async {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      }else{
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => CreateRoute(data: data.routes))).then((value) async {
+          list.clear();
+          _pageConfig();
+          await widget.setSate();
+        });
+      }
+
     }
   }
 

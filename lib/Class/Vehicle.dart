@@ -95,22 +95,22 @@ class Vehicle {
     return null;
   }
 
-  IconData getTypeIcon(String type){
+  Widget getTypeIcon(String type,double scale){
     switch(type){
       case "Car": {
-        return Icons.drive_eta;
+        return  Image.asset("assets/icons/Cars.png", scale: scale-9, filterQuality: FilterQuality.medium);
       }
       break;
       case "Motorcycle": {
-        return Icons.motorcycle;
+        return  Image.asset("assets/icons/Motocycle.png", scale: scale, filterQuality: FilterQuality.medium);
       }
       break;
       case "Person": {
-        return Icons.person;
+        return Icon(Icons.person, size: 32.0);
       }
       break;
       case "People": {
-        return Icons.people;
+        return Icon(Icons.people, size: 32.0);
       }
       break;
       default: {

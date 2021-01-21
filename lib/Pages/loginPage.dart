@@ -111,6 +111,7 @@ class LoginPageState extends State<LoginPage> {
         if (currentUser != null){
           if(currentUser.isVerify){
             if(await currentUser.amiOnline()){
+              googleUser = await googleSignIn.signOut();
               unPopDialog(
                 this.context,
                 'Accept',

@@ -116,8 +116,8 @@ class Routes {
   }
 
   // send request to selected routes ( data is current user routes , data0 is who current user select routes )
-  Future<bool> Request(Match_Info data , Travel_Info data0)async {
-    // try{
+  Future<String> Request(Match_Info data , Travel_Info data0)async {
+     try{
       Map<String,dynamic> temp = {
         'detail' : data0.routes.toJson(),
         'to_id' : data.routes.uid,
@@ -127,14 +127,14 @@ class Routes {
       };
       Http.Response response = await httpClass.reqHttp("/api/routes/request",temp);
       if(response.statusCode == 400 ){
-        return Future.value(false);
+        return Future.value(null);
       }else{
-        print("Req Succesful : ${response.body}");
-        return Future.value(true);
+        Map<String,dynamic> tmp = jsonDecode(response.body);
+        return Future.value(tmp['message']);
       }
-    // }catch(error){
-    //   throw("can't connect");
-    // }
+     }catch(error){
+       throw("can't connect");
+     }
   }
 
   Future<List<Travel_Info>> getHistory(String userID) async {
@@ -157,9 +157,6 @@ class Routes {
         return Future.value(historyList);
       }
     }
-    // }catch(err){
-    //   throw("can't connect" + err);
-    // }
   }
 
 }

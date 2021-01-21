@@ -27,7 +27,7 @@ class VehicleCardTileMinState extends State<VehicleCardTileMin> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Icon(Icons.motorcycle),
+                    Vehicle().getTypeIcon(widget.data.type,41),
                     SizedBox(width: 8.0),
                     Text(
                       widget.data.type,

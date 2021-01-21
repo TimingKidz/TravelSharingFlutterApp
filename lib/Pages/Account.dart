@@ -275,7 +275,7 @@ class AccountState extends State<Account> {
         socket = socket.disconnect();
         socket.destroy();
         socket.dispose();
-        googleUser = await googleSignIn.disconnect();
+        googleUser = await googleSignIn.signOut();
         Navigator.of(context)
             .pushNamedAndRemoveUntil('/login', ModalRoute.withName('/'));
       }else{

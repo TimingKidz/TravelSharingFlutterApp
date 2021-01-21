@@ -121,6 +121,7 @@ class SplashscreenState extends State<Splashscreen> {
         if (currentUser != null){
           if(currentUser.isVerify){
             if(await currentUser.amiOnline()){
+              googleUser = await googleSignIn.signOut();
               unPopDialog(
                 this.context,
                 'Accept',

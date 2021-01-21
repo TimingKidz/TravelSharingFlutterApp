@@ -75,7 +75,7 @@ class DashboardCardTileState extends State<DashboardCardTile> {
               await normalDialog(context,
                 RouteMapCard(
                   data: widget.data,
-                  url: MapStaticRequest().getMapUrl(widget.data.routes, null))
+                  url: widget.data.routes.role == "0" ? MapStaticRequest().invite_getMapUrl(widget.data.routes) : MapStaticRequest().join_getMapUrl(widget.data.routes))
               );
             },
           ),

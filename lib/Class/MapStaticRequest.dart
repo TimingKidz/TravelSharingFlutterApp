@@ -1,3 +1,4 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travel_sharing/Class/Match_Info.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/Travel_Info.dart';
@@ -23,6 +24,44 @@ class MapStaticRequest{
         marker += "|";
       }
     }
+    print(url+path+marker+end);
+    return url+path+marker+end;
+  }
+
+  String join_getMapUrl(Routes user){
+    String url ="http://maps.googleapis.com/maps/api/staticmap?size=512x1980&key=${api_key}";
+    String marker =  "&markers=|";
+    String end = "&sensor=false";
+    if(user != null)
+      for(int i = 0 ; i< user.routes.length ;i++){
+        marker += "${user.routes[i].latitude},${user.routes[i].longitude}";
+        if ( i != user.routes.length - 1){
+          marker += "|";
+        }
+      }
+    print(url+marker+end);
+    return url+marker+end;
+  }
+
+  String invite_getMapUrl(Routes user){
+    String url ="http://maps.googleapis.com/maps/api/staticmap?size=512x1980&key=${api_key}";
+    String path = "&path=";
+    String marker =  "&markers=|";
+    String end = "&sensor=false";
+    for(int i = 0 ; i< user.routes.length ;i++){
+      path += "${user.routes[i].latitude},${user.routes[i].longitude}";
+      if ( i != user.routes.length - 1){
+        path += "|";
+      }
+    }
+    List<LatLng> other = [user.routes.first,user.routes.last];
+    if(other != null)
+      for(int i = 0 ; i< other.length ;i++){
+        marker += "${other[i].latitude},${other[i].longitude}";
+        if ( i != other.length - 1){
+          marker += "|";
+        }
+      }
     print(url+path+marker+end);
     return url+path+marker+end;
   }

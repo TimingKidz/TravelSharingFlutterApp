@@ -286,6 +286,7 @@ class _VerificationPageState extends State<VerificationPage>{
               currentUser = await User().getCurrentuser(googleUser.id);
               if(currentUser != null){
                 if(await currentUser.amiOnline()){
+                  googleUser = await googleSignIn.signOut();
                   unPopDialog(
                     this.context,
                     'Accept',

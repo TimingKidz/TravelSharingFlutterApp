@@ -70,39 +70,8 @@ class _CreateRoutestate extends State<CreateRoute> {
   @override
   void initState() {
     super.initState();
-    if(widget.data != null){
-        MarkerId markerId = MarkerId("other src");
-        Marker marker =  Marker(
-            markerId: markerId,
-            position:  widget.data.routes.first,
-            infoWindow: InfoWindow(title: widget.data.src)
-        );
-        _markers[markerId] = marker;
-        markerId = MarkerId("other dst");
-        marker =  Marker(
-            markerId: markerId,
-            position:  widget.data.routes.last,
-            infoWindow: InfoWindow(title: widget.data.dst)
-        );
-        _markers[markerId] = marker;
-
-        var left = min( widget.data.routes.first.latitude,  widget.data.routes.last.latitude);
-        var right = max( widget.data.routes.first.latitude,  widget.data.routes.last.latitude);
-        var top = max( widget.data.routes.first.longitude,  widget.data.routes.last.longitude);
-        var bottom = min( widget.data.routes.first.longitude,  widget.data.routes.last.longitude);
-
-        left = min(left, current_Location.latitude);
-        right = max(right, current_Location.latitude);
-        top = max(top, current_Location.longitude);
-        bottom = min(bottom, current_Location.longitude);
-
-        bounds = LatLngBounds(
-          southwest: LatLng(left, bottom),
-          northeast: LatLng(right, top),
-        );
-    }
-    getLocation();
     _pageConfig();
+    getLocation();
   }
 
   void selectedMethod(dynamic result){
@@ -162,7 +131,7 @@ class _CreateRoutestate extends State<CreateRoute> {
                 target:current_Location,
                 zoom: 15,
               ),
-              markers:  Set<Marker>.of(_markers.values),
+              markers: isWantCustom ? Set() : Set<Marker>.of(_markers.values) ,
               polylines: isSelected ? lines : finalLines,
               zoomControlsEnabled: false,
               myLocationEnabled: true,
@@ -589,7 +558,7 @@ class _CreateRoutestate extends State<CreateRoute> {
     isSelected = true;
     setState(() { });
   }
-  _pageConfig(){
+  _pageConfig() async {
     if(widget.data != null){
       socket.off('onAccept');
       socket.off('onNewNotification');
@@ -640,6 +609,41 @@ class _CreateRoutestate extends State<CreateRoute> {
           showNotification(message);
         }
     );
+
+    if(widget.data != null){
+      MarkerId markerId = MarkerId("other src");
+      Marker marker =  Marker(
+          markerId: markerId,
+          position:  widget.data.routes.first,
+          infoWindow: InfoWindow(title: widget.data.src),
+          icon:  await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(3,3)), 'assets/icons/person.png')
+    );
+    _markers[markerId] = marker;
+    markerId = MarkerId("other dst");
+    marker =  Marker(
+        markerId: markerId,
+        position:  widget.data.routes.last,
+        infoWindow: InfoWindow(title: widget.data.dst),
+        icon:  await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(3,3)), 'assets/icons/dst_paiduay.png')
+    );
+    _markers[markerId] = marker;
+    setState(() { });
+
+    var left = min( widget.data.routes.first.latitude,  widget.data.routes.last.latitude);
+    var right = max( widget.data.routes.first.latitude,  widget.data.routes.last.latitude);
+    var top = max( widget.data.routes.first.longitude,  widget.data.routes.last.longitude);
+    var bottom = min( widget.data.routes.first.longitude,  widget.data.routes.last.longitude);
+
+    left = min(left, current_Location.latitude);
+    right = max(right, current_Location.latitude);
+    top = max(top, current_Location.longitude);
+    bottom = min(bottom, current_Location.longitude);
+
+    bounds = LatLngBounds(
+    southwest: LatLng(left, bottom),
+    northeast: LatLng(right, top),
+    );
+  }
   }
 
   getLocation() async{
@@ -761,7 +765,7 @@ class _CreateRoutestate extends State<CreateRoute> {
   }
 
 
-  Src_OR_Dst(LatLng point,String name){
+  Src_OR_Dst(LatLng point,String name) async {
     if(is_src){ // select source state
       Map_Latlng["src"] = point ;
       Map_Placename["src"] = name;
@@ -770,7 +774,8 @@ class _CreateRoutestate extends State<CreateRoute> {
       Marker marker =  Marker(
           markerId: markerId,
           position:  Map_Latlng["src"],
-          infoWindow: InfoWindow(title: Map_Placename["src"])
+          infoWindow: InfoWindow(title: Map_Placename["src"]),
+          icon:  await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(3,3)), 'assets/icons/car.png')
       );
       _markers[markerId] = marker;
     }else{ // select destination state
@@ -781,7 +786,8 @@ class _CreateRoutestate extends State<CreateRoute> {
       Marker marker =  Marker(
           markerId: markerId,
           position:  Map_Latlng["dst"],
-          infoWindow: InfoWindow(title: Map_Placename["dst"])
+          infoWindow: InfoWindow(title: Map_Placename["dst"]),
+          icon:  await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(3,3)), 'assets/icons/dst_chuan.png')
       );
       _markers[markerId] = marker;
     }

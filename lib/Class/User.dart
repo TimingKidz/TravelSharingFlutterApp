@@ -141,7 +141,7 @@ class User {
 //    }
   }
 
-  Future<bool> AcceptReq(String Reqid,String Currentid,String Current_id) async {
+  Future<String> AcceptReq(String Reqid,String Currentid,String Current_id) async {
     try{
       Map<String, dynamic> temp = {
         'Reqid' : Reqid,
@@ -149,13 +149,10 @@ class User {
         'userRoute_id' : Current_id };
       Http.Response response = await httpClass.reqHttp("/api/routes/AcceptRequest",temp);
       if(response.statusCode == 400 ){
-        return Future.value(false);
+        return Future.value(null);
       }else{
-        if(response.statusCode == 404){
-          return Future.value(false);
-        }else{
-          return Future.value(true);
-        }
+        Map<String,dynamic> tmp = jsonDecode(response.body);
+        return Future.value(tmp['message']);
       }
     }catch(error){
       throw("can't connect");

@@ -205,14 +205,19 @@ class _ReqListstate extends State<ReqList> {
     setState((){ });
     currentUser.AcceptReq(data.reqid,widget.data.id,widget.data.uid)
     .then((v)async{
-      var value = true;
-      if(value){
-        if(widget.isFromMatchinfo){
-          Navigator.of(context).pop(false);
-          setState(() { });
+      if(v != null){
+        if(v == "success"){
+          if(widget.isFromMatchinfo){
+            Navigator.of(context).pop(false);
+          }else{
+            Navigator.of(context).pop(true);
+          }
         }else{
-          Navigator.of(context).pop(true);
+          isPress[data.routes.uid] = false;
+          await getData(true);
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(v)));
         }
+
       }else{
         isPress[data.routes.uid] = false;
         await getData(true);
