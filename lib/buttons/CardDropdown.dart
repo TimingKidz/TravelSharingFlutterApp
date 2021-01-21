@@ -17,15 +17,77 @@ class CardDropdown extends StatefulWidget {
 class _CardDropdownState extends State<CardDropdown> {
   GlobalKey _key = GlobalKey();
   dynamic dropdownValue;
+  double _height;
+  bool isOpen = false;
 
   @override
   void initState() {
     super.initState();
     dropdownValue = widget.initData ?? widget.listItems[0];
+    int _len = widget.listItems.length;
+    if(_len > 4){
+      _height = 192.0;
+    }else{
+      _height = 192.0 - (_len * 48);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0)
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          InkWell(
+            onTap: (){
+              setState(() {
+                isOpen = !isOpen;
+              });
+            },
+            child: Container(
+              width: double.infinity,
+              padding: EdgeInsets.fromLTRB(16.0, 12.0, 12.0, 12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(widget.labelText, style: TextStyle(color: Colors.black.withOpacity(0.6))),
+                  SizedBox(height: 12.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(widget.dropdownTileBuild(dropdownValue).data, style: Theme.of(context).textTheme.subtitle1),
+                      Icon(Icons.arrow_drop_down_circle)
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if(isOpen)
+          Divider(height: 1),
+          AnimatedContainer(
+            height: isOpen ? _height : 0.0,
+            duration: Duration(milliseconds: 300),
+            curve: Curves.fastOutSlowIn,
+            child: Scrollbar(
+              child: ListView.builder(
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                physics: BouncingScrollPhysics(),
+                itemCount: widget.listItems.length,
+                itemBuilder: (context, i){
+                  return dropdownItem(widget.listItems[i]);
+                },
+              ),
+            )
+          )
+        ],
+      ),
+    );
     return Card(
       key: _key,
         margin: EdgeInsets.all(0.0),
@@ -60,6 +122,22 @@ class _CardDropdownState extends State<CardDropdown> {
     );
   }
 
+  Widget dropdownItem(dynamic value){
+    return InkWell(
+      onTap: (){
+        dropdownValue = value;
+        widget.onChanged(dropdownValue);
+        setState(() {
+          isOpen = !isOpen;
+        });
+      },
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(16.0),
+        child: widget.dropdownTileBuild(value),
+      ),
+    );
+  }
 }
 
 // class _CardDropdownState extends State<CardDropdown> {

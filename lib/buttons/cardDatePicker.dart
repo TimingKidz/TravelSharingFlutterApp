@@ -62,7 +62,12 @@ class CardDatePickerState extends State<CardDatePicker> {
                     onTap: () async {
                       DateTime datePick = await callDatePicker();
                       setState(() {
-                        if(datePick != null) updatedDate = datePick;
+                        if(datePick != null){
+                          var pickDate = DateTime(
+                              datePick.year, datePick.month, datePick.day, updatedDate.hour, updatedDate.minute
+                          );
+                          updatedDate = pickDate;
+                        }
                         dateText.text = dateShow();
                         widget.onDatePick(updatedDate.toIso8601String());
                       });

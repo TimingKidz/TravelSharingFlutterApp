@@ -110,10 +110,7 @@ class VehicleAddFormState extends State<VehicleAddForm> {
         listItems: vehicleType,
         labelText: "Type",
         dropdownTileBuild: (value) {
-          return DropdownMenuItem(
-            value: value,
-            child: Text(value),
-          );
+          return Text(value);
         },
         onChanged: (data) => vehicleData.type = data,
       ),

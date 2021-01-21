@@ -93,25 +93,6 @@ class LoginPageState extends State<LoginPage> {
     socket.onConnect((_) {
       print('connect');
     });
-    socket.on("tooManyOnline",(value) async {
-      socket = socket.disconnect();
-      socket.destroy();
-      socket.dispose();
-      googleUser = await googleSignIn.disconnect();
-      unPopDialog(
-        this.context,
-        'Accept',
-        Text("You already online with other device."),
-        <Widget>[
-          FlatButton(
-            child: Text('Ok'),
-            onPressed: () async {
-              Navigator.pushReplacementNamed(context,"/login");
-            },
-          ),
-        ],
-      );
-    });
   }
 
   Future<void> _handleSignIn() async {

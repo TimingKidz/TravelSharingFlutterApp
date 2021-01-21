@@ -192,10 +192,7 @@ class SignUpPageState extends State<SignUpPage> {
               listItems: DropdownVar().genderList,
               labelText: "Gender",
               dropdownTileBuild: (value) {
-                return DropdownMenuItem(
-                  value: value,
-                  child: Text(value),
-                );
+                return Text(value);
               },
               onChanged: (data) => userData.gender = data,
             ),
@@ -218,10 +215,7 @@ class SignUpPageState extends State<SignUpPage> {
         listItems: DropdownVar().facultyList,
         labelText: "Faculty",
         dropdownTileBuild: (value) {
-          return DropdownMenuItem(
-            value: value,
-            child: Text(value),
-          );
+          return Text(value);
         },
         onChanged: (data) => userData.faculty = data,
       ),

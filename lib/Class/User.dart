@@ -92,7 +92,7 @@ class User {
       if(response.statusCode == 400){
         return Future.value(false);
       }else{
-          return Future.value(jsonDecode(response.body)['amiOnline']);
+        return Future.value(jsonDecode(response.body)['amiOnline']);
       }
     }catch(error){
       throw("can't connect getuser"+error.toString());

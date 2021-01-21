@@ -61,6 +61,7 @@ class _InfoFillState extends State<InfoFill> {
     Final_Data.tag = [DropdownVar().tagList.first];
     Final_Data.vehicle = widget.Role == 0 ? (Vehicle().defaultVehicle() ?? currentUser.vehicle.first) : null;
     Final_Data.range = "15";
+    Final_Data.amount = "1";
     if(widget.data != null){
       Final_Data.tag = widget.data.tag;
       Final_Data.date = DateTime.parse(widget.data.date).toLocal().toString();
@@ -192,15 +193,7 @@ class _InfoFillState extends State<InfoFill> {
           listItems: DropdownVar().tagList,
           initData: Final_Data.tag.first,
           dropdownTileBuild: (value) {
-            return DropdownMenuItem(
-              value: value,
-              child: Text(
-                value,
-                style: TextStyle(
-                    fontSize: 18.0
-                ),
-              ),
-            );
+            return Text(value);
           },
           onChanged: (text) {
             setState(() {
@@ -216,15 +209,7 @@ class _InfoFillState extends State<InfoFill> {
             initData: Final_Data.vehicle,
             listItems: currentUser.vehicle,
             dropdownTileBuild: (value) {
-              return DropdownMenuItem(
-                value: value,
-                child: Text(
-                  "${value.brand} ${value.model} - ${value.license}",
-                  style: TextStyle(
-                      fontSize: 18.0
-                  ),
-                ),
-              );
+              return Text("${value.brand} ${value.model} - ${value.license}");
             },
             onChanged: (data) {
               Final_Data.vehicle = data;
@@ -260,14 +245,11 @@ class _InfoFillState extends State<InfoFill> {
         Row(
           children: [
             Expanded(
-              child: CardTextField(
-                notNull: true,
-                initValue: Final_Data.amount ?? "",
+              child: CardPicker(
                 labelText: widget.Role == 0 ? 'ต้องการคนไปด้วย (คน)' : 'จำนวนคนไปด้วย (คน)',
-                type: TextInputType.number,
-                maxLength: 2,
-                inputFormat: [FilteringTextInputFormatter.digitsOnly],
-                onChanged: (text) {
+                initItem: Final_Data.amount,
+                itemsList: [for(int i = 1; i <= 40; i++) "$i"],
+                onChange: (text){
                   Final_Data.amount = text;
                 },
               ),

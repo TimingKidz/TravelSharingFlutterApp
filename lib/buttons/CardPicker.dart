@@ -51,12 +51,12 @@ class _CardPickerState extends State<CardPicker> {
                     },
                     child: Icon(Icons.navigate_before, color: beforeEnable ? Colors.black : Colors.black26),
                   ),
-                  SizedBox(width: 4.0),
+                  SizedBox(width: 16.0),
                   Text(
                     selectedItem,
                     style: Theme.of(context).textTheme.subtitle1
                   ),
-                  SizedBox(width: 4.0),
+                  SizedBox(width: 16.0),
                   GestureDetector(
                     onTap: !nextEnable ? null : (){
                       setState(() {

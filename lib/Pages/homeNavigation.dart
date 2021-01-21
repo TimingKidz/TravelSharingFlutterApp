@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:travel_sharing/Dialog.dart';
 import 'package:travel_sharing/Pages/Account.dart';
 import 'package:travel_sharing/Pages/Feed.dart';
 import 'package:travel_sharing/Pages/NotificationsPage.dart';
@@ -106,6 +107,27 @@ class HomeNavigationState extends State<HomeNavigation> {
   @override
   void initState() {
     super.initState();
+    socket.on("tooManyOnline",(value) async {
+      print("tooManyOnline");
+      socket = socket.disconnect();
+      socket.destroy();
+      socket.dispose();
+      googleUser = await googleSignIn.disconnect();
+      unPopDialog(
+        this.context,
+        'Accept',
+        Text("You already online with other device."),
+        <Widget>[
+          FlatButton(
+            child: Text('Ok'),
+            onPressed: () async {
+              Navigator.of(context)
+                  .pushNamedAndRemoveUntil('/login', ModalRoute.withName('/'));
+            },
+          ),
+        ],
+      );
+    });
   }
 
   List<Widget> pageRoute(){

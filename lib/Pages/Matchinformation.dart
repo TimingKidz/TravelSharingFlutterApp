@@ -506,7 +506,7 @@ class _Matchinformation extends State<Matchinformation> {
     try{
     if(!isHistory) tripDetails =  await TripDetails().getDetails(widget.uid,widget.data.uid,isNeed2Update);
     else tripDetails =  await TripDetails().getHistory(widget.uid);
-    _createMarkers();
+    if(tripDetails != null) _createMarkers();
     setState(() {});
     }catch(error){
       print("$error from Matchinfo");

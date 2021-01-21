@@ -229,8 +229,6 @@ class ProfileManagePageState extends State<ProfileManagePage> {
     );
   }
 
-  bool isOpen = false;
-
   List<Widget> infoField() {
     if(isEdit){
       return [
@@ -257,10 +255,7 @@ class ProfileManagePageState extends State<ProfileManagePage> {
           listItems: DropdownVar().facultyList,
           labelText: AppLocalizations.instance.text("faculty"),
           dropdownTileBuild: (value) {
-            return DropdownMenuItem(
-              value: value,
-              child: Text(value),
-            );
+            return Text(value);
           },
           onChanged: (data) => editUser.faculty = data,
         ),
@@ -274,93 +269,6 @@ class ProfileManagePageState extends State<ProfileManagePage> {
           initValue: currentUser.phone,
           onChanged: (val) => editUser.phone = val,
         ),
-        // Card(
-        //   margin: EdgeInsets.zero,
-        //   shape: RoundedRectangleBorder(
-        //     borderRadius: BorderRadius.circular(20.0)
-        //   ),
-        //   clipBehavior: Clip.antiAlias,
-        //   child: Theme(
-        //     data: ThemeData(
-        //         accentColor: Colors.black,
-        //         dividerColor: Colors.transparent
-        //     ),
-        //     child: ExpansionTile(
-        //       key: UniqueKey(),
-        //       title: Text("Hello"),
-        //       children: [
-        //         ListView(
-        //           shrinkWrap: true,
-        //           padding: EdgeInsets.zero,
-        //           physics: BouncingScrollPhysics(),
-        //           children: [
-        //             for(int i = 0; i < 10; i++)
-        //             ListTile(
-        //               onTap: (){
-        //                 setState(() {
-        //
-        //                 });
-        //               },
-        //               title: Text("JJJJ"),
-        //             )
-        //           ],
-        //         )
-        //       ],
-        //     ),
-        //   ),
-        // ),
-        // Card(
-        //   margin: EdgeInsets.zero,
-        //   shape: RoundedRectangleBorder(
-        //       borderRadius: BorderRadius.circular(20.0)
-        //   ),
-        //   clipBehavior: Clip.antiAlias,
-        //   child: Column(
-        //     children: [
-        //       InkWell(
-        //         onTap: (){
-        //           setState(() {
-        //             isOpen = !isOpen;
-        //           });
-        //         },
-        //         child: Container(
-        //           width: double.infinity,
-        //           padding: EdgeInsets.all(16.0),
-        //           child: Text("Hello"),
-        //         ),
-        //       ),
-        //       AnimatedContainer(
-        //         height: isOpen ? 200.0 : 0.0,
-        //         duration: Duration(milliseconds: 300),
-        //         curve: Curves.fastOutSlowIn,
-        //         child: Column(
-        //           children: [
-        //             InkWell(
-        //               onTap: (){
-        //
-        //               },
-        //               child: Container(
-        //                 width: double.infinity,
-        //                 padding: EdgeInsets.all(16.0),
-        //                 child: Text("Hello"),
-        //               ),
-        //             ),
-        //             InkWell(
-        //               onTap: (){
-        //
-        //               },
-        //               child: Container(
-        //                 width: double.infinity,
-        //                 padding: EdgeInsets.all(16.0),
-        //                 child: Text("Hello"),
-        //               ),
-        //             ),
-        //           ],
-        //         ),
-        //       )
-        //     ],
-        //   ),
-        // ),
         SizedBox(height: 8.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,

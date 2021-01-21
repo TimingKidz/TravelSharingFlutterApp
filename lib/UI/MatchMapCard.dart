@@ -67,6 +67,7 @@ class _MatchMapCardState extends State<MatchMapCard> {
                       ),
                     ),
                   ),
+                  if(widget.data.isOffer)
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Material(
@@ -119,34 +120,7 @@ class _MatchMapCardState extends State<MatchMapCard> {
                                       ),
                                     ),
                                   ),
-                                  // Vehicle Icon, Date and Time
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Icon(Vehicle().getTypeIcon(widget.data.routes.vehicle.type), size: 32.0),
-                                      SizedBox(height: 8.0),
-                                      Container(
-                                        padding: EdgeInsets.all(4.0),
-                                        decoration: BoxDecoration(
-                                            border: Border.all(color: Colors.black),
-                                            borderRadius: BorderRadius.circular(
-                                                10.0)
-                                        ),
-                                        child: Column(
-                                          children: <Widget>[
-                                            Text(
-                                              DateManage().datetimeFormat("day", widget.data.routes.date) + " " + DateManage().datetimeFormat("month", widget.data.routes.date),
-                                              style: TextStyle(
-                                                  fontSize: 10.0
-                                              ),
-                                            ),
-                                            Text(DateManage().datetimeFormat("time", widget.data.routes.date))
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                  rightWidget()
                                 ],
                               ),
                               SizedBox(height: 16.0),
@@ -258,6 +232,56 @@ class _MatchMapCardState extends State<MatchMapCard> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget rightWidget(){
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        // Icon(Vehicle().getTypeIcon(widget.data.routes.vehicle.type), size: 32.0),
+        Image.asset("assets/icons/Motocycle.png", scale: 32.0, filterQuality: FilterQuality.medium),
+        SizedBox(height: 8.0),
+        Container(
+          padding: EdgeInsets.all(4.0),
+          decoration: BoxDecoration(
+              border: Border.all(color: Colors.black),
+              borderRadius: BorderRadius.circular(
+                  10.0)
+          ),
+          child: Column(
+            children: <Widget>[
+              Text(
+                DateManage().datetimeFormat("day", widget.data.routes.date) + " " + DateManage().datetimeFormat("month", widget.data.routes.date),
+                style: TextStyle(
+                    fontSize: 10.0
+                ),
+              ),
+              Text(DateManage().datetimeFormat("time", widget.data.routes.date))
+            ],
+          ),
+        ),
+        if(widget.data.routes.role == "0")
+          SizedBox(height: 12.0),
+        if(widget.data.routes.role == "0")
+          Text(widget.data.routes.cost == "0" ? "FREE" :"฿${widget.data.routes.cost}"),
+        SizedBox(height: 8.0),
+        Text(
+          widget.data.routes.role == "1"
+              ? "ไปด้วย"
+              : "ต้องการ",
+          style: TextStyle(fontSize: 12.0),
+        ),
+        Text(
+          widget.data.routes.role == "1"
+              ? '${widget.data.routes.amount} คน'
+              : '${int.parse(
+              widget.data.routes.amount) -
+              widget.data.routes.match.length} คน',
+          style: TextStyle(fontSize: 12.0),
+        )
+      ],
     );
   }
 }
