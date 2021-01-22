@@ -98,7 +98,7 @@ class Routes {
 
   // save routes information to DB
   Future<Routes> SaveRoute_toDB(User user,Routes data) async{
-    try{
+//    try{
         Map<String, dynamic> temp = user.toJson();
         temp['detail'] = this.toJson();
         temp['other'] = data != null ? data.toJson() : null;
@@ -110,9 +110,9 @@ class Routes {
         }else{
           return Future.value(Routes.fromJson(jsonDecode(response.body)));
         }
-    }catch(error){
-      print(error);
-    }
+//    }catch(error){
+//      print("$error 5555");
+//    }
   }
 
   // send request to selected routes ( data is current user routes , data0 is who current user select routes )

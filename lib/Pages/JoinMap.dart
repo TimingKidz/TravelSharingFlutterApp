@@ -65,6 +65,13 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
    locationSubscription.cancel();
     super.dispose();
   }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    mapinit();
+  }
   @override
   void initState() {
     super.initState();
@@ -73,6 +80,58 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
     _pageConfig();
   }
 
+  mapinit() async{
+    if(widget.data != null){
+      Polyline line = Polyline(
+        points: widget.data.routes,
+        geodesic: true,
+        polylineId: PolylineId("mejor ruta"),
+        color: Theme.of(context).accentColor.withOpacity(0.5),
+        width: 4,
+      );
+      lines.add(line);
+      MarkerId markerId = MarkerId("other src");
+      Marker marker =  Marker(
+          markerId: markerId,
+          position:  widget.data.routes.first,
+          infoWindow: InfoWindow(title: widget.data.src),
+          icon:  await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(3,3)), 'assets/icons/car.png')
+    );
+    _markers[markerId] = marker;
+    markerId = MarkerId("other dst");
+    marker =  Marker(
+    markerId: markerId,
+    position:  widget.data.routes.last,
+    infoWindow: InfoWindow(title: widget.data.dst),
+    icon:  await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(3,3)), 'assets/icons/dst_chuan.png')
+
+    );
+    _markers[markerId] = marker;
+    setState(() { });
+
+    var left = min( widget.data.routes.first.latitude,  widget.data.routes.last.latitude);
+    var right = max( widget.data.routes.first.latitude,  widget.data.routes.last.latitude);
+    var top = max( widget.data.routes.first.longitude,  widget.data.routes.last.longitude);
+    var bottom = min( widget.data.routes.first.longitude,  widget.data.routes.last.longitude);
+
+    lines.first.points.forEach((point) {
+    left = min(left, point.latitude);
+    right = max(right, point.latitude);
+    top = max(top, point.longitude);
+    bottom = min(bottom, point.longitude);
+    });
+
+    left = min(left, current_Location.latitude);
+    right = max(right, current_Location.latitude);
+    top = max(top, current_Location.longitude);
+    bottom = min(bottom, current_Location.longitude);
+
+    bounds = LatLngBounds(
+    southwest: LatLng(left, bottom),
+    northeast: LatLng(right, top),
+    );
+  }
+  }
 //------------------------------------ UI---------------------------------------
   @override
   Widget build(BuildContext context) {
@@ -331,56 +390,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
         }
     );
 
-    if(widget.data != null){
-      Polyline line = Polyline(
-        points: widget.data.routes,
-        geodesic: true,
-        polylineId: PolylineId("mejor ruta"),
-        color: Colors.blue.withOpacity(0.5),
-        width: 4,
-      );
-      lines.add(line);
-      MarkerId markerId = MarkerId("other src");
-      Marker marker =  Marker(
-          markerId: markerId,
-          position:  widget.data.routes.first,
-          infoWindow: InfoWindow(title: widget.data.src),
-          icon:  await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(3,3)), 'assets/icons/car.png')
-      );
-      _markers[markerId] = marker;
-      markerId = MarkerId("other dst");
-      marker =  Marker(
-          markerId: markerId,
-          position:  widget.data.routes.last,
-          infoWindow: InfoWindow(title: widget.data.dst),
-          icon:  await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(3,3)), 'assets/icons/dst_chuan.png')
 
-      );
-      _markers[markerId] = marker;
-      setState(() { });
-
-      var left = min( widget.data.routes.first.latitude,  widget.data.routes.last.latitude);
-      var right = max( widget.data.routes.first.latitude,  widget.data.routes.last.latitude);
-      var top = max( widget.data.routes.first.longitude,  widget.data.routes.last.longitude);
-      var bottom = min( widget.data.routes.first.longitude,  widget.data.routes.last.longitude);
-
-      lines.first.points.forEach((point) {
-        left = min(left, point.latitude);
-        right = max(right, point.latitude);
-        top = max(top, point.longitude);
-        bottom = min(bottom, point.longitude);
-      });
-
-      left = min(left, current_Location.latitude);
-      right = max(right, current_Location.latitude);
-      top = max(top, current_Location.longitude);
-      bottom = min(bottom, current_Location.longitude);
-
-      bounds = LatLngBounds(
-        southwest: LatLng(left, bottom),
-        northeast: LatLng(right, top),
-      );
-    }
   }
 
   getLocation() async{

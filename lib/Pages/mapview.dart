@@ -70,7 +70,7 @@ class _MapView extends State<MapView> {
       points: widget.chuan.routes,
       geodesic: true,
       polylineId: PolylineId("mejor ruta"),
-      color: Colors.blue,
+      color: Theme.of(context).accentColor.withOpacity(0.5),
       width: 4,
     );
     setState(() {
@@ -112,20 +112,25 @@ class _MapView extends State<MapView> {
     );
   }
 
-  _createMarkers() {
+  _createMarkers() async {
     Markers.clear();
     Markers.add(
       Marker(
-        markerId: MarkerId("1"),
+        markerId: MarkerId("src"),
         position: widget.paiDuay.routes.first,
-        infoWindow: InfoWindow(title: "Roca 123"),
+        infoWindow: InfoWindow(title: widget.paiDuay.src),
+        icon: widget.paiDuay.role == "0" ?  await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(3,3)), 'assets/icons/car.png') :
+          await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(3,3)), 'assets/icons/person.png')
       ),
     );
     Markers.add(
       Marker(
-        markerId: MarkerId("2"),
+        markerId: MarkerId("dst"),
         position: widget.paiDuay.routes.last,
-        infoWindow: InfoWindow(title: "Roca 123"),
+        infoWindow: InfoWindow(title: widget.paiDuay.dst),
+          icon: widget.paiDuay.role == "0" ?  await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(3,3)), 'assets/icons/dst_chuan.png') :
+          await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(3,3)), 'assets/icons/dst_paiduay.png')
+
       ),
     );
     setState(() {});
@@ -138,7 +143,9 @@ class _MapView extends State<MapView> {
 
   _centerView(bool isFind_Direction ) async {
       await _mapController.getVisibleRegion();
-      await findDirections(isFind_Direction);
+      if(widget.chuan.role == "0"){
+        await findDirections(isFind_Direction);
+      }
 
       Routes temp = widget.paiDuay;
       var left = min(temp.routes.first.latitude, temp.routes.last.latitude);
@@ -146,12 +153,15 @@ class _MapView extends State<MapView> {
       var top = max(temp.routes.first.longitude, temp.routes.last.longitude);
       var bottom = min(temp.routes.first.longitude, temp.routes.last.longitude);
 
-      lines.first.points.forEach((point) {
-        left = min(left, point.latitude);
-        right = max(right, point.latitude);
-        top = max(top, point.longitude);
-        bottom = min(bottom, point.longitude);
-      });
+      if(widget.chuan.role == "0"){
+        lines.first.points.forEach((point) {
+          left = min(left, point.latitude);
+          right = max(right, point.latitude);
+          top = max(top, point.longitude);
+          bottom = min(bottom, point.longitude);
+        });
+      }
+
       bounds = LatLngBounds(
         southwest: LatLng(left, bottom),
         northeast: LatLng(right, top),

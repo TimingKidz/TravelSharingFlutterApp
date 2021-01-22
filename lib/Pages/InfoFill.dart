@@ -396,7 +396,7 @@ class _InfoFillState extends State<InfoFill> {
         role: widget.Role.toString(),
         vehicle: widget.Role == 0 ? Final_Data.vehicle : Vehicle(type: int.parse(Final_Data.amount) > 1 ? "People" : "Person"),
         tag: Final_Data.tag,
-        cost: widget.Role == 0 ? Final_Data.cost : "0",
+        cost: widget.Role == 0 ? ( Final_Data.cost == "" ? "0" : Final_Data.cost ): "0",
         range: Final_Data.range,
         description: description
     );

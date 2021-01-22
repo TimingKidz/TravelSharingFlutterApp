@@ -88,6 +88,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/icons/
+    - assets/marker/
     - assets/locale/localization_en.json
     - assets/locale/localization_th.json
   #   - images/a_dot_burr.jpeg

@@ -17,7 +17,6 @@ import 'package:travel_sharing/Pages/InfoFill.dart';
 import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
 
-
 class CreateRoute extends StatefulWidget {
   final Routes data;
   const CreateRoute({Key key, this.data}) : super(key: key);
@@ -44,6 +43,7 @@ class _CreateRoutestate extends State<CreateRoute> {
   bool isWantCustom = false;
   bool isPreview = false;
   Set<Polyline> lines = Set();
+  Set<Marker> mark = Set();
   Set<Polyline> finalLines = Set();
   int pointNo = 0;
   int i = 0;
@@ -52,6 +52,7 @@ class _CreateRoutestate extends State<CreateRoute> {
   List<LatLng> tmp = List();
   StreamSubscription<LocationData> locationSubscription;
   LatLngBounds bounds;
+  List<BitmapDescriptor> markerSet = List();
 
   @override
   void setState(fn) {
@@ -131,7 +132,7 @@ class _CreateRoutestate extends State<CreateRoute> {
                 target:current_Location,
                 zoom: 15,
               ),
-              markers: isWantCustom ? Set() : Set<Marker>.of(_markers.values) ,
+              markers: isSelected ? Set<Marker>.of(_markers.values).union(mark) : Set<Marker>.of(_markers.values) ,
               polylines: isSelected ? lines : finalLines,
               zoomControlsEnabled: false,
               myLocationEnabled: true,
@@ -300,7 +301,7 @@ class _CreateRoutestate extends State<CreateRoute> {
                                       ),
                                     ),
                                   ),
-                                if(isSelected && !isChooseOnMap)
+                                if(isSelected && !isChooseOnMap && wayPoint.length < 15)
                                   ClipOval(
                                     child: Material(
                                       child: InkWell(
@@ -498,12 +499,13 @@ class _CreateRoutestate extends State<CreateRoute> {
           }
           final items = wayPoint.removeAt(oldIndex);
           wayPoint.insert(newIndex, items);
+          _drawLine();
         });
         print(wayPoint);
       },
       scrollDirection: Axis.horizontal,
       children: [
-        for(i = 0; i < wayPoint.length; i++)
+        for(int j = 0; j < wayPoint.length; j++)
           Stack(
             key: UniqueKey(),
             alignment: Alignment.topRight,
@@ -515,7 +517,7 @@ class _CreateRoutestate extends State<CreateRoute> {
                       height: 64,
                       child: Center(
                           child: Text(
-                            "${i+1}",
+                            "${j+1}",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold
                             ),
@@ -530,7 +532,8 @@ class _CreateRoutestate extends State<CreateRoute> {
                   child: InkWell(
                     child: SizedBox(width: 20, height: 20, child: Icon(Icons.clear, color: Colors.white, size: 12)),
                     onTap: () async {
-                      wayPoint.removeAt(i);
+                      print("sadsadsad $j");
+                      wayPoint.removeAt(j);
                       _drawLine();
                       setState(() { });
                     },
@@ -545,16 +548,20 @@ class _CreateRoutestate extends State<CreateRoute> {
   // ----------------------------------------------------------------------------
 
   _drawLine(){
-    Polyline line = Polyline(
-      patterns: [PatternItem.dot],
-      points: [Map_Latlng["src"]]+wayPoint+[Map_Latlng["dst"]],
-      geodesic: true,
-      polylineId: PolylineId("mejor ruta"),
-      color: Colors.blue,
-      width: 4,
-    );
-    lines.clear();
-    lines.add(line);
+    print(markerSet.length);
+    int j = 0;
+    mark.clear();
+    wayPoint.forEach((element) async {
+      MarkerId markerId = MarkerId(j.toString());
+      Marker marker =  Marker(
+        markerId: markerId,
+        position:  element,
+        infoWindow: InfoWindow(title: j.toString()),
+        icon: markerSet[j]
+      );
+      mark.add(marker);
+      j++;
+    });
     isSelected = true;
     setState(() { });
   }
@@ -644,6 +651,10 @@ class _CreateRoutestate extends State<CreateRoute> {
     northeast: LatLng(right, top),
     );
   }
+    for ( int x = 0 ; x < 15 ; x++) {
+      BitmapDescriptor tmp =await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(3,3)), 'assets/marker/marker_${x+1}.png');
+      markerSet.add(tmp);
+    }
   }
 
   getLocation() async{
@@ -680,8 +691,8 @@ class _CreateRoutestate extends State<CreateRoute> {
         points: tmp,
         geodesic: true,
         polylineId: PolylineId("mejor ruta"),
-        color: Colors.blue,
-        width: 4,
+        color: Theme.of(context).accentColor.withOpacity(0.5),
+        width: 5,
       ));
     }
 
@@ -710,7 +721,8 @@ class _CreateRoutestate extends State<CreateRoute> {
     // go to fill all information in next page before save to DB
     if(isPreview){
       Navigator.push(context, MaterialPageRoute(
-          builder: (context) => InfoFill(routes: tmp,
+          builder: (context) => InfoFill(
+              routes: [Map_Latlng["src"]]+tmp+[Map_Latlng["dst"]],
               bounds:bounds,
               Markers : Set<Marker>.of(_markers.values),
               lines :finalLines,
@@ -719,8 +731,6 @@ class _CreateRoutestate extends State<CreateRoute> {
               data: widget.data,
               Role: Role))).then((value) => setState(() { }));
     }
-
-
   }
 
   OnMove_End() async {
@@ -798,8 +808,11 @@ class _CreateRoutestate extends State<CreateRoute> {
   // set Map controller
   void _onMapCreated(GoogleMapController controller){
     _mapController = controller;
-    Future.delayed(new Duration(milliseconds: 100), () async {
-      await _mapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, 50));
-    });
+    if(bounds != null){
+      Future.delayed(new Duration(milliseconds: 100), () async {
+        await _mapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, 50));
+      });
+    }
+
   }
 }
