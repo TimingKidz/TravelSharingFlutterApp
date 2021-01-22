@@ -246,9 +246,10 @@ class _InfoFillState extends State<InfoFill> {
           children: [
             Expanded(
               child: CardPicker(
-                labelText: widget.Role == 0 ? 'ต้องการคนไปด้วย (คน)' : 'จำนวนคนไปด้วย (คน)',
+                labelText: widget.Role == 0 ? 'ต้องการคนไปด้วย' : 'จำนวนคนไปด้วย',
+                unit: "คน",
                 initItem: Final_Data.amount,
-                itemsList: [for(int i = 1; i <= 40; i++) "$i"],
+                itemsList: [for(int i = 1; i <= 10; i++) "$i"],
                 onChange: (text){
                   Final_Data.amount = text;
                 },
@@ -257,8 +258,11 @@ class _InfoFillState extends State<InfoFill> {
             SizedBox(width: 8.0),
             Expanded(
               child: CardPicker(
-                labelText: "ช่วง (นาที)",
+                labelText: "ช่วง",
+                unit: "นาที",
                 initItem: Final_Data.range,
+                tipsText: "ช่วงเวลาบวกลบจากเวลาที่คุณต้องการเดินทาง เพื่อเพิ่มโอกาสในการจับคู่กับคนอื่นมากขึ้น ยิ่งช่วงกว้าง ยิ่งเพิ่มโอกาส เช่น \n\n"
+                    "เดินทางเวลา 12:00 และเลือกช่วง 15 นาที คุณจะถูกจับคู่กับคนที่เดินทางในช่วง 11:45 - 12:15",
                 itemsList: ["15", "30", "45", "60"],
                 onChange: (text){
                   Final_Data.range = text;

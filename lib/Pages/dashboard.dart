@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -141,13 +142,60 @@ class _Dashboard extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
+    // FloatingActionButton(
+    //   elevation: 2.0,
+    //   child: Icon(Icons.add, color: isJoinPage ? Colors.black : Colors.white),
+    //   onPressed: isJoinPage ? _callJoinMap : _callInviteMap,
+    //   backgroundColor: isJoinPage ? Theme.of(context).accentColor : Theme.of(context).primaryColor,
+    //   heroTag: null,
+    // );
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        elevation: 2.0,
-        child: Icon(Icons.add, color: isJoinPage ? Colors.black : Colors.white),
-        onPressed: isJoinPage ? _callJoinMap : _callInviteMap,
-        backgroundColor: isJoinPage ? Theme.of(context).accentColor : Theme.of(context).primaryColor,
-        heroTag: null,
+      floatingActionButton: OpenContainer(
+        closedBuilder: (context, openWidget){
+          return InkWell(
+            onTap: (){
+              if(currentUser.vehicle.isEmpty && !isJoinPage)
+                alertDialog(context,
+                  "No vehicle",
+                  Text("Please add your vehicle.\nAccount -> Vehicle Management"),
+                  <Widget>[
+                    FlatButton(
+                      child: Text('OK'),
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              else
+                openWidget();
+            },
+            child: SizedBox(
+              height: 56.0,
+              width: 56.0,
+              child: Center(
+                child: Icon(
+                  Icons.add,
+                  color: isJoinPage ? Colors.black : Colors.white,
+                ),
+              ),
+            ),
+          );
+        },
+        onClosed: (close) async {
+          _pageConfig(currentUser.status.navbarTrip);
+          currentUser.status.navbarTrip = false;
+          await widget.setSate();
+        },
+        openBuilder: (context, closeWidget){
+          return isJoinPage ? CreateRoute_Join() : CreateRoute();
+        },
+        closedShape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(56.0 / 2),
+          ),
+        ),
+        closedColor: isJoinPage ? Theme.of(context).accentColor : Theme.of(context).primaryColor,
       ),
       body: Stack(
         children: <Widget>[
@@ -155,73 +203,78 @@ class _Dashboard extends State<Dashboard> {
             child: _widgetOptions(),
           ),
           // AppBar
-          Card(
-            // key: actionKey,
-            margin: EdgeInsets.all(0.0),
-            color: isJoinPage ? Theme.of(context).colorScheme.darkBlue : Theme.of(context).colorScheme.amber,
+          Material(
+            elevation: 1.0,
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(30.0),
-                    bottomRight: Radius.circular(30.0)
-                ),
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(30.0),
+                  bottomRight: Radius.circular(30.0)
+              ),
             ),
-            child: Container(
-                padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0, top: 8.0),
-                child: SafeArea(
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: RaisedButton(
-                          elevation: 0.0,
-                          highlightElevation: 0.0,
-                          padding: EdgeInsets.all(16.0),
-                          color: isJoinPage ? Colors.white : Colors.transparent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                            side: BorderSide(
-                              color: !isJoinPage ? Colors.white : Colors.transparent,
-                              width: 1.0,
+            clipBehavior: Clip.antiAlias,
+            child: AnimatedContainer(
+              // key: actionKey,
+              duration: Duration(milliseconds: 200),
+              margin: EdgeInsets.all(0.0),
+              color: isJoinPage ? Theme.of(context).colorScheme.darkBlue : Theme.of(context).colorScheme.amber,
+              child: Padding(
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0, top: 8.0),
+                  child: SafeArea(
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: RaisedButton(
+                            elevation: 0.0,
+                            highlightElevation: 0.0,
+                            padding: EdgeInsets.all(16.0),
+                            color: isJoinPage ? Colors.white : Colors.transparent,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              side: BorderSide(
+                                color: !isJoinPage ? Colors.white : Colors.transparent,
+                                width: 1.0,
+                              ),
                             ),
+                            child: Text(AppLocalizations.instance.text("PaiDuay"), style: TextStyle(color: !isJoinPage ? Colors.white : Colors.black)),
+                            onPressed: () {
+                              setState(() {
+                                isJoinPage = true;
+                                if (slidableController.activeState != null) {
+                                  slidableController.activeState.close();
+                                }
+                              });
+                            },
                           ),
-                          child: Text(AppLocalizations.instance.text("PaiDuay"), style: TextStyle(color: !isJoinPage ? Colors.white : Colors.black)),
-                          onPressed: () {
-                            setState(() {
-                              isJoinPage = true;
-                              if (slidableController.activeState != null) {
-                                slidableController.activeState.close();
-                              }
-                            });
-                          },
                         ),
-                      ),
-                      SizedBox(width: 16.0),
-                      Expanded(
-                        child: RaisedButton(
-                          elevation: 0.0,
-                          highlightElevation: 0.0,
-                          padding: EdgeInsets.all(16.0),
-                          color: isJoinPage ? Colors.transparent : Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                            side: BorderSide(
-                              color: isJoinPage ? Colors.white : Colors.transparent,
-                              width: 1.0,
+                        SizedBox(width: 16.0),
+                        Expanded(
+                          child: RaisedButton(
+                            elevation: 0.0,
+                            highlightElevation: 0.0,
+                            padding: EdgeInsets.all(16.0),
+                            color: isJoinPage ? Colors.transparent : Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              side: BorderSide(
+                                color: isJoinPage ? Colors.white : Colors.transparent,
+                                width: 1.0,
+                              ),
                             ),
+                            child: Text(AppLocalizations.instance.text("Chuan"), style: TextStyle(color: isJoinPage ? Colors.white : Colors.black)),
+                            onPressed: () {
+                              setState(() {
+                                isJoinPage = false;
+                                if (slidableController.activeState != null) {
+                                  slidableController.activeState.close();
+                                }
+                              });
+                            },
                           ),
-                          child: Text(AppLocalizations.instance.text("Chuan"), style: TextStyle(color: isJoinPage ? Colors.white : Colors.black)),
-                          onPressed: () {
-                            setState(() {
-                              isJoinPage = false;
-                              if (slidableController.activeState != null) {
-                                slidableController.activeState.close();
-                              }
-                            });
-                          },
                         ),
-                      ),
-                    ],
-                  ),
-                )
+                      ],
+                    ),
+                  )
+              ),
             ),
           ),
         ],

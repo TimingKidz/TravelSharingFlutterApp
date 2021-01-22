@@ -46,7 +46,7 @@ class User {
       status = Status.fromJson(json['status']);
     }
     imgpath = json['imgpath'];
-    reviewSummary = ReviewSummary.fromJson(json['Review']);
+    reviewSummary = json['Review'] == null ? null : ReviewSummary.fromJson(json['Review']);
     birthDate = json['birthDate'];
     phone = json['phone'];
     isVerify = json['isVerify'];
@@ -268,8 +268,21 @@ class User {
     }
   }
 
-
-
-
-
+  Future<User> getHost(String id) async{
+    try{
+      Http.Response response = await httpClass.reqHttp("/api/user/getOtherUser",{ "id":id });
+      print(jsonDecode(response.body));
+      if(response.statusCode == 400){
+        return Future.value(null);
+      }else{
+        if(response.statusCode == 404 ){
+          return Future.value(null);
+        }else{
+          return Future.value(User.fromJson(jsonDecode(response.body)));
+        }
+      }
+    }catch(error){
+      throw("can't connect gethost"+error.toString());
+    }
+  }
 }

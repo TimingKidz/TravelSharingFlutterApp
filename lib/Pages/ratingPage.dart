@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:travel_sharing/Class/Review.dart';
+import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/UI/NotificationBarSettings.dart';
 import 'package:travel_sharing/main.dart';
 
@@ -20,6 +21,7 @@ class RatingPageState extends State<RatingPage> {
   EachReview review = new EachReview(sender: currentUser.uid,name: currentUser.name,imgpath: currentUser.imgpath);
   double rate = 5.0;
   bool isLoading = false;
+  User host;
 
   @override
   void initState() {
@@ -27,9 +29,18 @@ class RatingPageState extends State<RatingPage> {
     for(String each in ratingTypeList){
       isSelected.addAll({each: false});
     }
+    getData();
     super.initState();
   }
 
+  Future<void> getData() async {
+    try{
+      host = await User().getHost(widget.sendToid);
+      setState(() {});
+    }catch(error){
+      print("$error from RatingPage");
+    }
+  }
 
   @override
   void dispose() {
@@ -41,6 +52,7 @@ class RatingPageState extends State<RatingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
@@ -58,6 +70,27 @@ class RatingPageState extends State<RatingPage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          CircleAvatar(
+            radius: 64,
+            backgroundColor: Colors.grey,
+            child: ClipOval(
+              child: host?.imgpath != null
+                  ? Image.network("${httpClass.API_IP}${host.imgpath}")
+                  : Container(
+                width: 128.0,
+                height: 128.0,
+                child: Icon(Icons.person, color: Colors.white, size: 64),
+              ),
+            ),
+          ),
+          SizedBox(height: 16.0),
+          Text(
+            host?.name ?? "",
+            style: TextStyle(
+                fontSize: 18.0
+            ),
+          ),
+          SizedBox(height: 128.0),
           Text(
             "ให้คะแนนคนขับรถ",
             style: TextStyle(fontSize: 18.0),
@@ -101,7 +134,7 @@ class RatingPageState extends State<RatingPage> {
               ],
             ),
           ),
-          SizedBox(height: 128.0),
+          SizedBox(height: 64.0),
           if(isLoading)
             CircularProgressIndicator(),
           if(!isLoading)

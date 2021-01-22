@@ -15,6 +15,7 @@ class _ReviewCardState extends State<ReviewCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20))
       ),
@@ -29,6 +30,7 @@ class _ReviewCardState extends State<ReviewCard> {
                 CircleAvatar(
                   radius: 16,
                   child: ClipOval(
+                    clipBehavior: Clip.antiAlias,
                     child: widget.data.imgpath != null ? Image.network("${httpClass.API_IP}${widget.data.imgpath}") : Container(),
                   ),
                 ),

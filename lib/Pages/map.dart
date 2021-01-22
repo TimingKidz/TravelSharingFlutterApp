@@ -10,8 +10,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:latlong/latlong.dart' as l;
 import 'package:location/location.dart' ;
 import "package:google_maps_webservice/places.dart" as p;
+import 'package:reorderables/reorderables.dart';
 import 'package:travel_sharing/Class/NearbyPlace.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
+import 'package:travel_sharing/Dialog.dart';
 import 'package:travel_sharing/Pages/LocationSearchBar.dart';
 import 'package:travel_sharing/Pages/InfoFill.dart';
 import 'package:travel_sharing/localization.dart';
@@ -301,18 +303,6 @@ class _CreateRoutestate extends State<CreateRoute> {
                                       ),
                                     ),
                                   ),
-                                if(isSelected && !isChooseOnMap && wayPoint.length < 15)
-                                  ClipOval(
-                                    child: Material(
-                                      child: InkWell(
-                                        child: SizedBox(width: 64, height: 64, child: Icon(Icons.add)),
-                                        onTap: () {
-                                          isChooseOnMap = !isChooseOnMap;
-                                          setState(() {});
-                                        },
-                                      ),
-                                    ),
-                                  )
                               ],
                             ),
                             if(!isSelected && !isChooseOnMap)
@@ -342,7 +332,48 @@ class _CreateRoutestate extends State<CreateRoute> {
                                     ),
                                     IconButton(
                                       onPressed: (){
-                                        // TODO: Show info of how this button work.
+                                        normalDialog(
+                                          context,
+                                          Wrap(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Column(
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(left: 8.0),
+                                                          child: Text("Tips", style: Theme.of(context).textTheme.subtitle1),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 36,
+                                                          width: 36,
+                                                          child: Material(
+                                                            elevation: 2,
+                                                            color: Colors.white,
+                                                            shape: CircleBorder(),
+                                                            clipBehavior: Clip.antiAlias,
+                                                            child: InkWell(
+                                                              onTap: () => Navigator.of(context).pop(),
+                                                              child: Icon(Icons.clear),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 8.0),
+                                                      child: Text("เส้นทางที่สร้างให้อาจจะไม่ตรงใจกับคุณ ฟีเจอร์นี้จึงอนุญาติให้คุณได้เพิ่มจุดที่ต้องการผ่านเอง เพื่อให้ได้เส้นทางตรงกับที่คุณต้องการมากขึ้น"),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        );
                                       },
                                       icon: Icon(Icons.info, color: Colors.white),
                                     )
@@ -426,121 +457,74 @@ class _CreateRoutestate extends State<CreateRoute> {
     );
   }
 
-  // Widget _buildListView(){
-  //   return ListView.separated(
-  //     separatorBuilder: (context, _) {
-  //       return SizedBox(width: 8.0);
-  //     },
-  //     physics: BouncingScrollPhysics(),
-  //     scrollDirection: Axis.horizontal,
-  //     itemCount: wayPoint.length+1,
-  //     itemBuilder: (context, i) {
-  //       if(i == wayPoint.length){
-  //         return ClipOval(
-  //           child: Material(
-  //             child: InkWell(
-  //               child: SizedBox(width: 64, height: 64, child: Icon(Icons.add)),
-  //               onTap: () {
-  //                 isChooseOnMap = !isChooseOnMap;
-  //                 setState(() {});
-  //               },
-  //             ),
-  //           ),
-  //         );
-  //       }
-  //       return Stack(
-  //         alignment: Alignment.topRight,
-  //         children: [
-  //           ClipOval(
-  //             child: Material(
-  //               child: SizedBox(
-  //                   width: 64,
-  //                   height: 64,
-  //                   child: Center(
-  //                       child: Text(
-  //                           "${i+1}",
-  //                       style: TextStyle(
-  //                         fontWeight: FontWeight.bold
-  //                       ),
-  //                       )
-  //                   )
-  //               ),
-  //             ),
-  //           ),
-  //           ClipOval(
-  //             child: Material(
-  //               color: Colors.red,
-  //               child: InkWell(
-  //                 child: SizedBox(width: 20, height: 20, child: Icon(Icons.clear, color: Colors.white, size: 12)),
-  //                 onTap: () async {
-  //                   wayPoint.removeAt(i);
-  //                   _drawLine();
-  //                   setState(() { });
-  //                 },
-  //               ),
-  //             ),
-  //           )
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
-
   Widget _buildListView(){
-    return ReorderableListView(
-      // separatorBuilder: (context, _) {
-      //   return SizedBox(width: 8.0);
-      // },
-      // physics: BouncingScrollPhysics(),
+    return ReorderableRow(
       onReorder: (int oldIndex, int newIndex){
         setState(() {
-          if(newIndex > oldIndex){
-            newIndex -= 1;
-          }
           final items = wayPoint.removeAt(oldIndex);
           wayPoint.insert(newIndex, items);
           _drawLine();
         });
         print(wayPoint);
       },
-      scrollDirection: Axis.horizontal,
+      buildDraggableFeedback: (context, _, widget) => widget,
+      footer: wayPoint.length < 15
+          ? Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: ClipOval(
+        child: Material(
+            child: InkWell(
+              child: SizedBox(width: 64, height: 64, child: Icon(Icons.add)),
+              onTap: () {
+                isChooseOnMap = !isChooseOnMap;
+                setState(() {});
+              },
+            ),
+        ),
+      ),
+          )
+          : Container(),
       children: [
-        for(int j = 0; j < wayPoint.length; j++)
-          Stack(
+        for(int i = 0; i < wayPoint.length; i++)
+          Padding(
             key: UniqueKey(),
-            alignment: Alignment.topRight,
-            children: [
-              ClipOval(
-                child: Material(
-                  child: SizedBox(
-                      width: 64,
-                      height: 64,
-                      child: Center(
-                          child: Text(
-                            "${j+1}",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold
-                            ),
-                          )
-                      )
+            padding: i == 0 || i == (wayPoint.length - 1)
+                ? (i == 0 ? EdgeInsets.only(right: 4.0) : EdgeInsets.only(left: 4.0))
+                : EdgeInsets.symmetric(horizontal: 4.0),
+            child: Stack(
+              alignment: Alignment.topRight,
+              children: [
+                ClipOval(
+                  child: Material(
+                    child: SizedBox(
+                        width: 64,
+                        height: 64,
+                        child: Center(
+                            child: Text(
+                              "${i+1}",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold
+                              ),
+                            )
+                        )
+                    ),
                   ),
                 ),
-              ),
-              ClipOval(
-                child: Material(
-                  color: Colors.red,
-                  child: InkWell(
-                    child: SizedBox(width: 20, height: 20, child: Icon(Icons.clear, color: Colors.white, size: 12)),
-                    onTap: () async {
-                      print("sadsadsad $j");
-                      wayPoint.removeAt(j);
-                      _drawLine();
-                      setState(() { });
-                    },
+                ClipOval(
+                  child: Material(
+                    color: Colors.red,
+                    child: InkWell(
+                      child: SizedBox(width: 20, height: 20, child: Icon(Icons.clear, color: Colors.white, size: 12)),
+                      onTap: () async {
+                        wayPoint.removeAt(i);
+                        _drawLine();
+                        setState(() { });
+                      },
+                    ),
                   ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
       ],
     );

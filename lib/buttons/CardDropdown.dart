@@ -28,7 +28,7 @@ class _CardDropdownState extends State<CardDropdown> {
     if(_len > 4){
       _height = 192.0;
     }else{
-      _height = 192.0 - (_len * 48);
+      _height = _len * 48.0;
     }
   }
 

@@ -8,7 +8,7 @@ void normalDialog(BuildContext context, Widget child){
     builder: (BuildContext context){
       return Dialog(
         elevation: 1.0,
-        backgroundColor: Theme.of(context).accentColor,
+        // backgroundColor: Theme.of(context).accentColor,
         insetPadding: EdgeInsets.all(16.0),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0)

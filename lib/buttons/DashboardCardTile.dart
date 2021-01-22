@@ -178,21 +178,7 @@ class DashboardCardTileState extends State<DashboardCardTile> {
                       ),
                       // Notification badge
                       if(widget.status)
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: Material(
-                            elevation: 1,
-                            borderRadius: BorderRadius.circular(20.0),
-                            color: Colors.red,
-                            child: SizedBox(
-                              width: 20.0,
-                              height: 20.0,
-                              child: Center(
-                                child: Text("!", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                              ),
-                            ),
-                          ),
-                        ),
+                        notificationBadge(),
                        Positioned.fill(
                          child:  Align(
                            alignment: Alignment.bottomRight,
@@ -213,6 +199,45 @@ class DashboardCardTileState extends State<DashboardCardTile> {
                 ),
               ],
             )
+        ),
+      ),
+    );
+  }
+
+  Widget notificationBadge(){
+    return Align(
+      alignment: Alignment.topRight,
+      child: Stack(
+        alignment: Alignment.topRight,
+        children: [
+          Icon(Icons.notifications),
+          Material(
+            elevation: 1,
+            borderRadius: BorderRadius.circular(20.0),
+            color: Colors.red,
+            child: SizedBox(
+              width: 12.0,
+              height: 12.0,
+              child: Center(
+                child: Text("!", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 6.0)),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+    return Align(
+      alignment: Alignment.topRight,
+      child: Material(
+        elevation: 1,
+        borderRadius: BorderRadius.circular(20.0),
+        color: Colors.red,
+        child: SizedBox(
+          width: 20.0,
+          height: 20.0,
+          child: Center(
+            child: Text("!", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          ),
         ),
       ),
     );

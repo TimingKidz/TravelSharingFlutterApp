@@ -36,6 +36,7 @@ class Review {
     uid = json['data']['_id'];
     id = json['data']['id'];
     totalscore = json['data']['totalscore'].toDouble();
+    amount = json['data']['amount'];
     offset = json['offset'];
     isMore = json['isMore'];
     tag = json['data']['tag'];

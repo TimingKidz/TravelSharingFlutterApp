@@ -4,14 +4,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travel_sharing/ChatFile/chatPage.dart';
+import 'package:travel_sharing/Class/DateManage.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/Travel_Info.dart';
 import 'package:travel_sharing/Class/TripDetails.dart';
 import 'package:travel_sharing/Class/User.dart';
+import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/Dialog.dart';
 import 'package:travel_sharing/Pages/ReqList.dart';
 import 'package:travel_sharing/UI/ProfileInfo.dart';
-import 'package:travel_sharing/buttons/VehicleCardTileMin.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 import 'package:travel_sharing/main.dart';
 
@@ -247,25 +248,48 @@ class _Matchinformation extends State<Matchinformation> {
                                           ),
                                         ),
                                         SizedBox(width: 16.0),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              tripDetails.hostUser.name,
-                                              style: TextStyle(
-                                                  fontSize: 18.0,
-                                                  fontWeight: FontWeight.bold
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                tripDetails.hostUser.name,
+                                                style: TextStyle(
+                                                    fontSize: 18.0,
+                                                    fontWeight: FontWeight.bold
+                                                ),
                                               ),
-                                            ),
-                                            SizedBox(height: 8.0),
-                                            Text(
-                                                tripDetails.routes.vehicle.brand +
-                                                    " " +
-                                                    tripDetails.routes.vehicle.model +
-                                                    " | " +
-                                                    tripDetails.routes.vehicle.license
-                                            )
-                                          ],
+                                              SizedBox(height: 8.0),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Flexible(
+                                                    child: Container(
+                                                      padding: EdgeInsets.only(right: 8.0),
+                                                      child: Text(
+                                                        "${tripDetails.routes.vehicle.brand} ${tripDetails.routes.vehicle.model}",
+                                                        // overflow: TextOverflow.ellipsis,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(5.0),
+                                                        border: Border.all(color: Colors.black)
+                                                    ),
+                                                    child: Row(
+                                                      children: [
+                                                        Vehicle().getTypeIcon(tripDetails.routes.vehicle.type, 64),
+                                                        SizedBox(width: 4.0),
+                                                        Text("${tripDetails.routes.vehicle.license}"),
+                                                      ],
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ],
+                                          ),
                                         )
                                       ],
                                     ),
@@ -288,8 +312,10 @@ class _Matchinformation extends State<Matchinformation> {
   List<Widget> listView() {
     return [
       // VehicleCardTileMin(data: tripDetails.hostUser.vehicle.first, cardMargin: 4.0),
-      // SizedBox(height: 8.0),
+      detailsWidget(),
+      SizedBox(height: 8.0),
       Card(
+        margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0)
         ),
@@ -322,6 +348,7 @@ class _Matchinformation extends State<Matchinformation> {
       SizedBox(height: 8.0),
       Expanded(
         child: Card(
+          margin: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0)
           ),
@@ -393,6 +420,64 @@ class _Matchinformation extends State<Matchinformation> {
         ),
       SizedBox(height: 16.0),
     ];
+  }
+
+  Widget detailsWidget(){
+    return Card(
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0)
+      ),
+      child: Container(
+          padding: EdgeInsets.all(16.0),
+          width: double.infinity,
+          child: Column(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('ปลายทาง', style: TextStyle(fontSize: 10.0)),
+                          SizedBox(height: 4.0),
+                          Text(tripDetails.routes.dst, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 8.0),
+                          Text('ต้นทาง', style: TextStyle(fontSize: 10.0)),
+                          SizedBox(height: 4.0),
+                          Text(tripDetails.routes.src, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8.0),
+                  Container(
+                    padding: EdgeInsets.all(4.0),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.circular(
+                            10.0)
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          DateManage().datetimeFormat("day", widget.data.routes.date) + " " + DateManage().datetimeFormat("month", widget.data.routes.date),
+                          style: TextStyle(
+                              fontSize: 10.0
+                          ),
+                        ),
+                        Text(DateManage().datetimeFormat("time", widget.data.routes.date))
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          )
+      ),
+    );
   }
 
   Future<void> endTrip() async {
