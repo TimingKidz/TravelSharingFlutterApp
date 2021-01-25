@@ -337,100 +337,177 @@ class _Dashboard extends State<Dashboard> {
 
   Widget _buildRow(Travel_Info data) {
     print(data);
-    return DashboardCardTile(
-      data: data,
-      controller: slidableController,
-      status: data.routes.status,
-      onCardPressed: () => _onCardPressed(data),
-      onDeletePressed: () async {
-        await data.deleteTravel();
-        if(data.routes.role == "0"){
-          _deleteinviteCard(data.uid);
-        }else{
-          _deletejoinCard(data.uid);
-        }
-      },
-    );
-  }
-
-  _onCardPressed(Travel_Info data) async {
-    if( data.routes.role == "1" ){
-      if( data.routes.match.isNotEmpty ){
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) => Matchinformation(uid: data.routes.match.first,data: data,))).then((value) async {
-          _pageConfig(currentUser.status.navbarTrip);
-          currentUser.status.navbarTrip = false;
-          await widget.setSate();
-        });
-      }else{
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) => MatchList(data: data))).then((value) async {
-            _pageConfig(currentUser.status.navbarTrip);
-            currentUser.status.navbarTrip = false;
-            await widget.setSate();
-        });
-      }
-    }else{
-      if( data.routes.match.isNotEmpty){
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) => Matchinformation(uid: data.uid, data: data))).then((value) async {
-          _pageConfig(currentUser.status.navbarTrip);
-          currentUser.status.navbarTrip = false;
-          await widget.setSate();
-        });
-      }else{
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) => ReqList(data: data,isFromMatchinfo: false,))).then((value) async {
-          if(value){
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 2,
+            offset: Offset(0.0, 0.0), //(x,y)
+          ),
+        ],
+      ),
+      child: OpenContainer(
+        tappable: false,
+        closedElevation: 0.0,
+        closedShape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0)
+        ),
+        closedBuilder: (BuildContext _, VoidCallback openWidget){
+          return DashboardCardTile(
+            data: data,
+            controller: slidableController,
+            status: data.routes.status,
+            onCardPressed: () => openWidget(),
+            onDeletePressed: () async {
+              await data.deleteTravel();
+              if(data.routes.role == "0"){
+                _deleteinviteCard(data.uid);
+              }else{
+                _deletejoinCard(data.uid);
+              }
+            },
+          );
+        },
+        openBuilder: (BuildContext _, VoidCallback closeWidget){
+          return _onCardPressedWidget(data);
+        },
+        onClosed: (value) async {
+          if(data.routes.role == "0" && data.routes.match.isEmpty && (value ?? false)){
             loadingDialog(context,"Please wait...");
             await _pageConfig(currentUser.status.navbarTrip);
             currentUser.status.navbarTrip = false;
             _invitedList.forEach((element) {
               if(element.uid == data.uid){
                 Navigator.of(context).pop();
-                _onCardPressed(element);
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => Matchinformation(uid: element.uid, data: element))).then((value) async {
+                  _pageConfig(currentUser.status.navbarTrip);
+                  currentUser.status.navbarTrip = false;
+                  await widget.setSate();
+                });
               }
             });
-          }else{
-            await _pageConfig(currentUser.status.navbarTrip);
-            currentUser.status.navbarTrip = false;
-            await widget.setSate();
           }
-        });
+          _pageConfig(currentUser.status.navbarTrip);
+          currentUser.status.navbarTrip = false;
+          await widget.setSate();
+
+        },
+      ),
+    );
+    // return DashboardCardTile(
+    //   data: data,
+    //   controller: slidableController,
+    //   status: data.routes.status,
+    //   onCardPressed: () => _onCardPressed(data),
+    //   onDeletePressed: () async {
+    //     await data.deleteTravel();
+    //     if(data.routes.role == "0"){
+    //       _deleteinviteCard(data.uid);
+    //     }else{
+    //       _deletejoinCard(data.uid);
+    //     }
+    //   },
+    // );
+  }
+
+  Widget _onCardPressedWidget(Travel_Info data) {
+    if(data.routes.role == "1"){
+      if(data.routes.match.isNotEmpty){
+        return Matchinformation(uid: data.routes.match.first, data: data);
+      }else{
+        return MatchList(data: data);
+      }
+    }else{
+      if(data.routes.match.isNotEmpty){
+        return Matchinformation(uid: data.uid, data: data);
+      }else{
+        return ReqList(data: data, isFromMatchinfo: false);
       }
     }
   }
 
-  _callInviteMap() async{
-    if(currentUser.vehicle.isEmpty){
-      alertDialog(context,
-          "No vehicle",
-          Text("Please add your vehicle.\nAccount -> Vehicle Management"),
-        <Widget>[
-          FlatButton(
-            child: Text('OK'),
-            onPressed: () async {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    }else{
-      Navigator.push(context, MaterialPageRoute(
-          builder: (context) => CreateRoute())).then((value) async {
-        _pageConfig(currentUser.status.navbarTrip);
-        currentUser.status.navbarTrip = false;
-        await widget.setSate();
-      });
-    }
-  }
-
-  _callJoinMap() async{
-    Navigator.push(context, MaterialPageRoute(
-        builder: (context) => CreateRoute_Join())).then((value) async {
-      _pageConfig(currentUser.status.navbarTrip);
-      currentUser.status.navbarTrip = false;
-      await widget.setSate();
-    });
-  }
+  // _onCardPressed(Travel_Info data) async {
+  //   if( data.routes.role == "1" ){
+  //     if( data.routes.match.isNotEmpty ){
+  //       Navigator.push(context, MaterialPageRoute(
+  //           builder: (context) => Matchinformation(uid: data.routes.match.first,data: data,))).then((value) async {
+  //         _pageConfig(currentUser.status.navbarTrip);
+  //         currentUser.status.navbarTrip = false;
+  //         await widget.setSate();
+  //       });
+  //     }else{
+  //       Navigator.push(context, MaterialPageRoute(
+  //           builder: (context) => MatchList(data: data))).then((value) async {
+  //           _pageConfig(currentUser.status.navbarTrip);
+  //           currentUser.status.navbarTrip = false;
+  //           await widget.setSate();
+  //       });
+  //     }
+  //   }else{
+  //     if( data.routes.match.isNotEmpty){
+  //       Navigator.push(context, MaterialPageRoute(
+  //           builder: (context) => Matchinformation(uid: data.uid, data: data))).then((value) async {
+  //         _pageConfig(currentUser.status.navbarTrip);
+  //         currentUser.status.navbarTrip = false;
+  //         await widget.setSate();
+  //       });
+  //     }else{
+  //       Navigator.push(context, MaterialPageRoute(
+  //           builder: (context) => ReqList(data: data,isFromMatchinfo: false,))).then((value) async {
+  //         if(value){
+  //           loadingDialog(context,"Please wait...");
+  //           await _pageConfig(currentUser.status.navbarTrip);
+  //           currentUser.status.navbarTrip = false;
+  //           _invitedList.forEach((element) {
+  //             if(element.uid == data.uid){
+  //               Navigator.of(context).pop();
+  //               _onCardPressed(element);
+  //             }
+  //           });
+  //         }else{
+  //           await _pageConfig(currentUser.status.navbarTrip);
+  //           currentUser.status.navbarTrip = false;
+  //           await widget.setSate();
+  //         }
+  //       });
+  //     }
+  //   }
+  // }
+  //
+  // _callInviteMap() async{
+  //   if(currentUser.vehicle.isEmpty){
+  //     alertDialog(context,
+  //         "No vehicle",
+  //         Text("Please add your vehicle.\nAccount -> Vehicle Management"),
+  //       <Widget>[
+  //         FlatButton(
+  //           child: Text('OK'),
+  //           onPressed: () async {
+  //             Navigator.of(context).pop();
+  //           },
+  //         ),
+  //       ],
+  //     );
+  //   }else{
+  //     Navigator.push(context, MaterialPageRoute(
+  //         builder: (context) => CreateRoute())).then((value) async {
+  //       _pageConfig(currentUser.status.navbarTrip);
+  //       currentUser.status.navbarTrip = false;
+  //       await widget.setSate();
+  //     });
+  //   }
+  // }
+  //
+  // _callJoinMap() async{
+  //   Navigator.push(context, MaterialPageRoute(
+  //       builder: (context) => CreateRoute_Join())).then((value) async {
+  //     _pageConfig(currentUser.status.navbarTrip);
+  //     currentUser.status.navbarTrip = false;
+  //     await widget.setSate();
+  //   });
+  // }
 }

@@ -1,8 +1,4 @@
-
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:travel_sharing/Class/DateManage.dart';
@@ -214,7 +210,12 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
           child: ExpansionTile(
             title: Row(
               children: [
-                Icon(Icons.announcement),
+                // Icon(Icons.announcement),
+                SizedBox(
+                    width: 32.0,
+                    height: 32.0,
+                    child: getTypeIcon("announcement")
+                ),
                 SizedBox(width: 16.0),
                 Flexible(
                   child: Text(
@@ -246,7 +247,6 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
             ],
           ),
         );
-      // do something
         break;
       case "notification":
         return Theme(
@@ -257,7 +257,12 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
           child: ExpansionTile(
             title: Row(
               children: [
-                Icon(Icons.announcement),
+                // Icon(Icons.announcement),
+                SizedBox(
+                    width: 32.0,
+                    height: 32.0,
+                    child: getTypeIcon("notification")
+                ),
                 SizedBox(width: 16.0),
                 Flexible(
                   child:  Column(
@@ -327,6 +332,7 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
                             Text(each.message, style: TextStyle(fontSize: 12.0))
                           ],
                         ),
+                        if(each.count > 1)
                         Material(
                           elevation: 1.0,
                           shape: CircleBorder(),
@@ -345,7 +351,6 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
             ],
           ),
         );
-        // do something
         break;
       case "review":
         return Theme(
@@ -362,7 +367,12 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
             trailing: Icon(Icons.navigate_next),
             title: Row(
               children: [
-                Icon(Icons.rate_review),
+                // Icon(Icons.rate_review),
+                SizedBox(
+                    width: 32.0,
+                    height: 32.0,
+                    child: getTypeIcon("review")
+                ),
                 SizedBox(width: 16.0),
                 Flexible(
                   child: Column(
@@ -412,7 +422,6 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
             ),
           ),
         );
-        // do something
         break;
       case "alert":
         return Theme(
@@ -423,7 +432,12 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
           child: ExpansionTile(
             title: Row(
               children: [
-                Icon(Icons.error),
+                // Icon(Icons.error),
+                SizedBox(
+                    width: 32.0,
+                    height: 32.0,
+                    child: getTypeIcon("alert")
+                ),
                 SizedBox(width: 16.0),
                 Flexible(
                   child: Column(
@@ -481,10 +495,33 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
             ],
           ),
         );
-        // do something
         break;
     }
+  }
 
+  Widget getTypeIcon(String type){
+    switch(type){
+      case "announcement": {
+        return Image.asset("assets/icons/announcement.png", filterQuality: FilterQuality.medium);
+      }
+      break;
+      case "notification": {
+        return Image.asset("assets/icons/trip.png", filterQuality: FilterQuality.medium);
+      }
+      break;
+      case "review": {
+        return Image.asset("assets/icons/review.png", filterQuality: FilterQuality.medium);
+      }
+      break;
+      case "alert": {
+        return Image.asset("assets/icons/alert.png", filterQuality: FilterQuality.medium);
+      }
+      break;
+      default: {
+        return null;
+      }
+      break;
+    }
   }
 
 }

@@ -47,159 +47,143 @@ class DashboardCardTileState extends State<DashboardCardTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(0.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 2,
-            offset: Offset(0.0, 0.0), //(x,y)
-          ),
-        ],
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Slidable(
-        controller: widget.controller,
-        actionPane: SlidableDrawerActionPane(),
-        actionExtentRatio: 0.25,
-        actions: [
-          IconSlideAction(
-            caption: 'More',
-            color: Colors.black45,
-            icon: Icons.more_horiz,
-            onTap: () async {
-              await normalDialog(context,
-                RouteMapCard(
-                  data: widget.data,
-                  url: widget.data.routes.role == "0" ? MapStaticRequest().invite_getMapUrl(widget.data.routes) : MapStaticRequest().join_getMapUrl(widget.data.routes))
-              );
-            },
-          ),
-        ],
-        secondaryActions: <Widget>[
-          if(widget.data.routes.match.isEmpty)
-          IconSlideAction(
-            caption: 'Delete',
-            color: Colors.red,
-            icon: Icons.delete,
-            onTap: () {
-              deleteDialog(context, () => widget.onDeletePressed());
-            },
-          ),
-        ],
-        child: FlatButton(
-            padding: EdgeInsets.only(top: 0.0),
-            onPressed: () {
-              widget.onCardPressed();
-            },
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-                  child: Stack(
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Row(
-                              children: <Widget>[
-                                // Date, Time, and People
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Column(
-                                      children: <Widget>[
-                                        Text(
-                                          DateManage().datetimeFormat("day", widget.data.routes.date),
-                                          style: TextStyle(
-                                              fontSize: 32.0
-                                          ),
+    return Slidable(
+      controller: widget.controller,
+      actionPane: SlidableDrawerActionPane(),
+      actionExtentRatio: 0.25,
+      actions: [
+        IconSlideAction(
+          caption: 'More',
+          color: Colors.black45,
+          icon: Icons.more_horiz,
+          onTap: () async {
+            await normalDialog(context,
+              RouteMapCard(
+                data: widget.data,
+                url: widget.data.routes.role == "0" ? MapStaticRequest().invite_getMapUrl(widget.data.routes) : MapStaticRequest().join_getMapUrl(widget.data.routes))
+            );
+          },
+        ),
+      ],
+      secondaryActions: <Widget>[
+        if(widget.data.routes.match.isEmpty)
+        IconSlideAction(
+          caption: 'Delete',
+          color: Colors.red,
+          icon: Icons.delete,
+          onTap: () {
+            deleteDialog(context, () => widget.onDeletePressed());
+          },
+        ),
+      ],
+      child: FlatButton(
+          padding: EdgeInsets.only(top: 0.0),
+          onPressed: () {
+            widget.onCardPressed();
+          },
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+                child: Stack(
+                  children: <Widget>[
+                    Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Row(
+                            children: <Widget>[
+                              // Date, Time, and People
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Column(
+                                    children: <Widget>[
+                                      Text(
+                                        DateManage().datetimeFormat("day", widget.data.routes.date),
+                                        style: TextStyle(
+                                            fontSize: 32.0
                                         ),
-                                        Text(
-                                          DateManage().datetimeFormat("month", widget.data.routes.date),
-                                          style: TextStyle(
-                                              fontSize: 22.0
-                                          ),
+                                      ),
+                                      Text(
+                                        DateManage().datetimeFormat("month", widget.data.routes.date),
+                                        style: TextStyle(
+                                            fontSize: 22.0
                                         ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 8.0),
-                                    Container(
-                                      padding: EdgeInsets.all(4.0),
-                                      decoration: BoxDecoration(
-                                          border: Border.all(color: Colors.black),
-                                          borderRadius: BorderRadius.circular(10.0)
                                       ),
-                                      child: Column(
-                                        children: <Widget>[
-                                          Text(DateManage().datetimeFormat("time", widget.data.routes.date))
-                                        ],
-                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 8.0),
+                                  Container(
+                                    padding: EdgeInsets.all(4.0),
+                                    decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.black),
+                                        borderRadius: BorderRadius.circular(10.0)
                                     ),
-                                    SizedBox(height: 8.0),
-                                    Text(
-                                        widget.data.routes.role == "1" ? "ไปด้วย" : "ต้องการ"
-                                    ),
-                                    Text(
-                                      widget.data.routes.role == "1"
-                                          ? '${widget.data.routes.amount} คน'
-                                          : '${widget.data.routes.left} คน',
-                                    )
-                                  ],
-                                ),
-                                SizedBox(width: 16.0),
-                                // Source and Destination
-                                Flexible(
-                                  child: Container(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        Text('ปลายทาง', style: TextStyle(fontSize: 10.0)),
-                                        SizedBox(height: 5.0),
-                                        Text(widget.data.routes.dst, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-                                        SizedBox(height: 16.0),
-                                        Text('ต้นทาง', style: TextStyle(fontSize: 10.0, color: Colors.black54)),
-                                        SizedBox(height: 5.0),
-                                        Text(widget.data.routes.src, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold, color: Colors.black54)),
+                                        Text(DateManage().datetimeFormat("time", widget.data.routes.date))
                                       ],
                                     ),
                                   ),
-                                )
-                              ],
-                            ),
+                                  SizedBox(height: 8.0),
+                                  Text(
+                                      widget.data.routes.role == "1" ? "ไปด้วย" : "ต้องการ"
+                                  ),
+                                  Text(
+                                    widget.data.routes.role == "1"
+                                        ? '${widget.data.routes.amount} คน'
+                                        : '${widget.data.routes.left} คน',
+                                  )
+                                ],
+                              ),
+                              SizedBox(width: 16.0),
+                              // Source and Destination
+                              Flexible(
+                                child: Container(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text('ปลายทาง', style: TextStyle(fontSize: 10.0)),
+                                      SizedBox(height: 5.0),
+                                      Text(widget.data.routes.dst, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                                      SizedBox(height: 16.0),
+                                      Text('ต้นทาง', style: TextStyle(fontSize: 10.0, color: Colors.black54)),
+                                      SizedBox(height: 5.0),
+                                      Text(widget.data.routes.src, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold, color: Colors.black54)),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
                           ),
-                        ],
-                      ),
-                      // Notification badge
-                      if(widget.status)
-                        notificationBadge(),
-                       Positioned.fill(
-                         child:  Align(
-                           alignment: Alignment.bottomRight,
-                           child: Material(
-                             elevation: 1,
-                             borderRadius: BorderRadius.circular(20.0),
-                             color: statColors[widget.data.status],
-                             child: Container(
-                               padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0) ,
-                               child: Text(widget.data.status, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                             ),
-
+                        ),
+                      ],
+                    ),
+                    // Notification badge
+                    if(widget.status)
+                      notificationBadge(),
+                     Positioned.fill(
+                       child:  Align(
+                         alignment: Alignment.bottomRight,
+                         child: Material(
+                           elevation: 1,
+                           borderRadius: BorderRadius.circular(20.0),
+                           color: statColors[widget.data.status],
+                           child: Container(
+                             padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0) ,
+                             child: Text(widget.data.status, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                            ),
+
                          ),
                        ),
-                    ],
-                  ),
+                     ),
+                  ],
                 ),
-              ],
-            )
-        ),
+              ),
+            ],
+          )
       ),
     );
   }

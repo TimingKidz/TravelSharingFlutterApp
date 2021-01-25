@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/Feed.dart';
@@ -69,8 +70,7 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
               child: list.isNotEmpty
                   ? RefreshIndicator(
                 onRefresh: () async {
-                  list.clear();
-                  getData(0,filterTypeSelected);
+                  getData(0,filterTypeSelected, false);
                 },
                 child: _buildListView(),
               )
@@ -180,8 +180,7 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
                                   child: InkWell(
                                     onTap: (){
                                       setState(() {
-                                        list.clear();
-                                        getData(0, filterTypeSelected);
+                                        getData(0, filterTypeSelected, true);
                                       });
                                     },
                                     child: Icon(Icons.check, color: Theme.of(context).primaryColor),
@@ -233,7 +232,7 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
               else filterTypeSelected.remove(type);
               if(filterTypeSelected.isEmpty){
                 list.clear();
-                getData(0, filterTypeSelected);
+                getData(0, filterTypeSelected, false);
               }
               print("Selected = " + filterTypeSelected.join(", ")); // Print all selected type
             });
@@ -267,7 +266,7 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
   }
 
   _pageConfig(){
-    getData(0,filterTypeSelected);
+    getData(0,filterTypeSelected, true);
     socket.off('onAccept');
     socket.off('onNewNotification');
     socket.off('onNewAccept');
@@ -314,9 +313,10 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
     );
   }
 
-  getData(int offset, List<String> filter) async {
+  getData(int offset, List<String> filter, bool isClear) async {
     try{
       feed = await Feeds().getFeed(offset,filter,currentUser.uid);
+      if(isClear && list != null) list.clear();
       print(feed);
       list = (list ?? []) + feed.feeds;
 //      currentI = feed.Offset;
@@ -331,12 +331,13 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
       separatorBuilder: (context, _){
         return SizedBox(height: 8.0);
       },
+        padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 40.0),
         physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         itemCount: feed.isMore ? list.length + 1: list.length,
         itemBuilder: (context, i) {
 //          print(i);
           if(i >= list.length ){
-            getData(feed.Offset,filterTypeSelected);
+            getData(feed.Offset,filterTypeSelected, false);
             return Padding(
               padding: EdgeInsets.all(8.0),
               child: Center(
@@ -362,44 +363,99 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
   }
 
   Widget _buildRow(Feed data) {
-    return FeedCardTile(
-      data: data,
-      onCardPressed:() => onCardPress(data) ,
-    );
-  }
-
-  void onCardPress(Feed data){
-    if(data.routes.role == "0"){
-      Navigator.push(context, MaterialPageRoute(
-          builder: (context) => CreateRoute_Join(data: data.routes))).then((value) async {
-        list.clear();
-        _pageConfig();
-        await widget.setSate();
-      });
-    }else{
-      if(currentUser.vehicle.isEmpty){
-        alertDialog(context,
-          "No vehicle",
-          Text("Please add your vehicle.\nAccount -> Vehicle Management"),
-          <Widget>[
-            FlatButton(
-              child: Text('OK'),
-              onPressed: () async {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      }else{
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) => CreateRoute(data: data.routes))).then((value) async {
-          list.clear();
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 2,
+            offset: Offset(0.0, 0.0), //(x,y)
+          ),
+        ],
+      ),
+      child: OpenContainer(
+        tappable: false,
+        closedElevation: 0.0,
+        closedShape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0)
+        ),
+        closedBuilder: (BuildContext _, VoidCallback openWidget){
+          return FeedCardTile(
+            data: data,
+            onCardPressed: () {
+              if(currentUser.vehicle.isEmpty){
+                alertDialog(context,
+                  "No vehicle",
+                  Text("Please add your vehicle.\nAccount -> Vehicle Management"),
+                  <Widget>[
+                    FlatButton(
+                      child: Text('OK'),
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              }else{
+                openWidget();
+              }
+            },
+          );
+        },
+        openBuilder: (BuildContext _, VoidCallback closeWidget){
+          if(data.routes.role == "0"){
+            return CreateRoute_Join(data: data.routes);
+          }else{
+            return CreateRoute(data: data.routes);
+          }
+        },
+        onClosed: (value) async {
+          // list.clear();
           _pageConfig();
           await widget.setSate();
-        });
-      }
-
-    }
+        },
+      ),
+    );
+    // return FeedCardTile(
+    //   data: data,
+    //   onCardPressed:() => onCardPress(data) ,
+    // );
   }
+
+  // void onCardPress(Feed data){
+  //   if(data.routes.role == "0"){
+  //     Navigator.push(context, MaterialPageRoute(
+  //         builder: (context) => CreateRoute_Join(data: data.routes))).then((value) async {
+  //       list.clear();
+  //       _pageConfig();
+  //       await widget.setSate();
+  //     });
+  //   }else{
+  //     if(currentUser.vehicle.isEmpty){
+  //       alertDialog(context,
+  //         "No vehicle",
+  //         Text("Please add your vehicle.\nAccount -> Vehicle Management"),
+  //         <Widget>[
+  //           FlatButton(
+  //             child: Text('OK'),
+  //             onPressed: () async {
+  //               Navigator.of(context).pop();
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     }else{
+  //       Navigator.push(context, MaterialPageRoute(
+  //           builder: (context) => CreateRoute(data: data.routes))).then((value) async {
+  //         list.clear();
+  //         _pageConfig();
+  //         await widget.setSate();
+  //       });
+  //     }
+  //
+  //   }
+  // }
 
 }

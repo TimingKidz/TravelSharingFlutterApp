@@ -30,19 +30,19 @@ class FeedCardTileState extends State<FeedCardTile> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: cardBorder,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 2,
-            offset: Offset(0.0, 0.0), //(x,y)
-          ),
-        ],
-      ),
+      // margin: EdgeInsets.symmetric(horizontal: 8.0),
+      // decoration: BoxDecoration(
+      //   color: Colors.white,
+      //   borderRadius: cardBorder,
+      //   boxShadow: [
+      //     BoxShadow(
+      //       color: Colors.grey.withOpacity(0.2),
+      //       spreadRadius: 1,
+      //       blurRadius: 2,
+      //       offset: Offset(0.0, 0.0), //(x,y)
+      //     ),
+      //   ],
+      // ),
       child: FlatButton(
           padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
           shape: RoundedRectangleBorder(

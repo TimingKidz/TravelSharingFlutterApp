@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_directions_api/google_directions_api.dart';
@@ -23,11 +24,12 @@ class CardDatePicker extends StatefulWidget {
 
 }
 
-class CardDatePickerState extends State<CardDatePicker> {
+class CardDatePickerState extends State<CardDatePicker> with TickerProviderStateMixin {
   DateTime updatedDate;
   var dateText = TextEditingController();
   var timeText = TextEditingController();
   bool isBirthday;
+  AnimationController _controller;
 
   @override
   void initState() {
@@ -35,7 +37,38 @@ class CardDatePickerState extends State<CardDatePicker> {
     dateText.text = dateShow();
     timeText.text = '${DateFormat('HH:mm').format(updatedDate)}';
     isBirthday = widget.isBirthday == null ? false : widget.isBirthday;
+    _controller = AnimationController(
+      value: 0.0,
+      duration: const Duration(milliseconds: 150),
+      reverseDuration: const Duration(milliseconds: 75),
+      vsync: this,
+    )..addStatusListener((AnimationStatus status) {
+      setState(() {
+        // setState needs to be called to trigger a rebuild because
+        // the 'HIDE FAB'/'SHOW FAB' button needs to be updated based
+        // the latest value of [_controller.status].
+      });
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  bool get _isAnimationRunningForwardsOrComplete {
+    switch (_controller.status) {
+      case AnimationStatus.forward:
+      case AnimationStatus.completed:
+        return true;
+      case AnimationStatus.reverse:
+      case AnimationStatus.dismissed:
+        return false;
+    }
+    assert(false);
+    return null;
   }
 
   @override
@@ -60,7 +93,9 @@ class CardDatePickerState extends State<CardDatePicker> {
                     controller: dateText,
                     readOnly: true,
                     onTap: () async {
+                      _controller.forward();
                       DateTime datePick = await callDatePicker();
+                      _controller.reverse();
                       setState(() {
                         if(datePick != null){
                           var pickDate = DateTime(
@@ -105,7 +140,9 @@ class CardDatePickerState extends State<CardDatePicker> {
                       controller: timeText,
                       readOnly: true,
                       onTap: () async {
+                        _controller.forward();
                         TimeOfDay timePick = await callTimePicker();
+                        _controller.reverse();
                         setState(() {
                           if(timePick != null) {
                             var updateTime = DateTime(
@@ -162,7 +199,16 @@ class CardDatePickerState extends State<CardDatePicker> {
       builder: (BuildContext context, Widget child) {
         return Theme(
           data: ThemeData(primarySwatch: Theme.of(context).colorScheme.primary),
-          child: child,
+          child: AnimatedBuilder(
+            animation: _controller,
+            builder: (BuildContext context, Widget child) {
+              return FadeScaleTransition(
+                animation: _controller,
+                child: child,
+              );
+            },
+            child: child,
+          ),
         );
       },
     );
@@ -180,7 +226,16 @@ class CardDatePickerState extends State<CardDatePicker> {
       builder: (BuildContext context, Widget child) {
         return Theme(
           data: ThemeData(primarySwatch: Theme.of(context).colorScheme.primary),
-          child: child,
+          child: AnimatedBuilder(
+            animation: _controller,
+            builder: (BuildContext context, Widget child) {
+              return FadeScaleTransition(
+                animation: _controller,
+                child: child,
+              );
+            },
+            child: child,
+          ),
         );
       },
     );
