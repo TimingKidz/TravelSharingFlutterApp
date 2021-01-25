@@ -240,8 +240,7 @@ class _MatchMapCardState extends State<MatchMapCard> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        // Icon(Vehicle().getTypeIcon(widget.data.routes.vehicle.type), size: 32.0),
-        Image.asset("assets/icons/Motocycle.png", scale: 32.0, filterQuality: FilterQuality.medium),
+        Vehicle().getTypeIcon(widget.data.routes.vehicle.type, 32),
         SizedBox(height: 8.0),
         Container(
           padding: EdgeInsets.all(4.0),

@@ -106,6 +106,8 @@ class FeedCardTileState extends State<FeedCardTile> {
     );
   }
 
+  GlobalKey _tooltipKey = GlobalKey();
+
   // Date, Time, and People Widget
   Widget leftWidget(){
     return Column(
@@ -113,7 +115,29 @@ class FeedCardTileState extends State<FeedCardTile> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         SizedBox(height: 8.0),
-        Vehicle().getTypeIcon(widget.data.routes.vehicle.type,32),
+        widget.data.routes.role == "0"
+            ? InkWell(
+          borderRadius: BorderRadius.circular(10.0),
+          onTap: () {
+            final dynamic tooltip = _tooltipKey.currentState;
+            tooltip.ensureTooltipVisible();
+            Future.delayed(Duration(milliseconds: 1500), () => tooltip.deactivate());
+          },
+          child: Tooltip(
+            key: _tooltipKey,
+            message: "${widget.data.routes.vehicle.brand} ${widget.data.routes.vehicle.model}",
+            child: SizedBox(
+                width: 40.0,
+                height: 40.0,
+                child: Vehicle().getTypeIcon(widget.data.routes.vehicle.type,32)
+            ),
+          ),
+        )
+            : SizedBox(
+            width: 40.0,
+            height: 40.0,
+            child: Vehicle().getTypeIcon(widget.data.routes.vehicle.type,32)
+        ),
         SizedBox(height: 8.0),
         Container(
           padding: EdgeInsets.all(4.0),

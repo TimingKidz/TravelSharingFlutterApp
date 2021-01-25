@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:travel_sharing/Class/DateManage.dart';
 import 'package:travel_sharing/Class/Notifications.dart';
 import 'package:travel_sharing/Dialog.dart';
@@ -171,49 +172,31 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
         physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         itemCount: notifications.length,
         itemBuilder: (context, i) {
-          if(notifications[i].tag == "review")
+          if(notifications[i].tag == "review" || notifications[i].tag == "notification")
             return _buildRow(notifications[i]);
-          return Dismissible(
+          return Slidable(
             key: UniqueKey(),
-            direction: DismissDirection.endToStart,
-            confirmDismiss: (direction) async{
-              bool isDelete = false;
-              alertDialog(
-                this.context,
-                'Are you sure',
-                Text("This action couldn't be undone. Would you like to end this trip ?"),
-                <Widget>[
-                  FlatButton(
-                    child: Text('No'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  FlatButton(
-                    child: Text('Yes'),
-                    onPressed: () async {
+            actionPane: SlidableDrawerActionPane(),
+            actionExtentRatio: 0.25,
+            secondaryActions: <Widget>[
+                IconSlideAction(
+                  caption: 'Delete',
+                  color: Colors.red,
+                  icon: Icons.delete,
+                  onTap: () {
+                    deleteDialog(context, () {
                       notifications[i].deleteNotification(currentUser.uid).then((value){
                         if(value){
-                          isDelete = true;
                           notifications.removeAt(i);
-                          Navigator.of(context).pop();
-                          setState(() {  });
+                          setState(() {});
                         }else{
                           print("error");
                         }
                       });
-                    },
-                  ),
-                ],
-              );
-              return isDelete;
-            },
-            background: Container(
-              color: Theme.of(context).accentColor,
-              alignment: Alignment.centerRight,
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Icon(Icons.delete, color: Colors.white),
-            ),
+                    });
+                  },
+                ),
+            ],
             child: _buildRow(notifications[i]),
           );
         }
@@ -221,7 +204,6 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
   }
 
   Widget _buildRow(Notifications data) {
-    bool isOpen = false;
     switch (data.tag) {
       case "announcement":
         return Theme(
@@ -259,17 +241,8 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
             children: <Widget>[
               for(Child each in data.child)
                 Container(
-                  child: Row(
-                    children: <Widget>[
-                      Text(each.type),
-                      Text(each.message)
-                    ],
-                  ),
+                  child: Text(each.message),
                 )
-
-
-              // Text('Birth of the Sun'),
-              // Text('Earth is Born'),
             ],
           ),
         );
@@ -503,15 +476,8 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
             children: <Widget>[
               for(Child each in data.child)
                 Container(
-                  child: Row(
-                    children: <Widget>[
-                      Text(each.type),
-                      Text(each.message)
-                    ],
-                  ),
+                  child: Text(each.message),
                 )
-              // Text('Birth of the Sun'),
-              // Text('Earth is Born'),
             ],
           ),
         );

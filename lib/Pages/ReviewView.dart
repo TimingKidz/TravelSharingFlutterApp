@@ -31,6 +31,8 @@ class _ReviewViewState extends State<ReviewView> {
       review =  await Review().getReview(widget.user.uid,offset);
       reviewList = (reviewList ?? []) + review.review;
       currentI = review.offset;
+      print(review.totalscore);
+      print(review.amount);
       setState((){});
     }catch(error){
       print(error);
@@ -42,11 +44,8 @@ class _ReviewViewState extends State<ReviewView> {
       body: Stack(
         children: <Widget>[
           reviewList != null ?
-          Padding(
-            padding: EdgeInsets.only(top: 100),
-            child: review.review.isNotEmpty ? _buildListView() : Center(
-              child: Text("No reviews in your account yet."),
-            ),
+          reviewList.isNotEmpty ? _buildListView() : Center(
+            child: Text("No reviews in your account yet."),
           ) : Padding(
             padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.09),
             child: Center(
@@ -63,7 +62,7 @@ class _ReviewViewState extends State<ReviewView> {
           ),
           Card(
             elevation: 2.0,
-            margin: EdgeInsets.all(0.0),
+            margin: EdgeInsets.zero,
             color: Theme.of(context).primaryColor,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -79,35 +78,43 @@ class _ReviewViewState extends State<ReviewView> {
                   children: [
                     Stack(
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            SizedBox(
-                              height: 8.0,
-                            ),
-                            RatingBarIndicator(
-                              rating:  review != null ? review.totalscore : 0.0,
-                              itemBuilder: (context, index) => Icon(
-                                Icons.star,
-                                color: Colors.amber,
-                              ),
-                              itemCount: 5,
-                              itemSize: 30.0,
-                              direction: Axis.horizontal,
-                            ),
-                            SizedBox(
-                              height: 16.0,
-                            ),
-                            Row(
+                        if(review != null)
+                          Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.star),
-                                SizedBox(width: 8.0),
-                                Text( review != null ? review.totalscore.toString() : "5.0")
+                                RatingBarIndicator(
+                                  rating: review.amount == 0 ? 0.0 : review.totalscore/review.amount,
+                                  itemBuilder: (context, index) => Icon(
+                                    Icons.star,
+                                    color: Colors.amber,
+                                  ),
+                                  itemCount: 5,
+                                  itemSize: 24.0,
+                                  direction: Axis.horizontal,
+                                ),
+                                SizedBox(width: 4.0),
+                                Text( review.amount == 0 ? "0.0": (review.totalscore/review.amount).toString(), style: TextStyle(fontSize: 16.0, color: Colors.white)),
+                                SizedBox(width: 4.0),
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 2.0),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                      border: Border.all(color: Colors.white, width: 0.5)
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.people, size: 14.0, color: Colors.white),
+                                      SizedBox(width: 2.0),
+                                      Text(review.amount.toString(), style: TextStyle(fontSize: 14.0, color: Colors.white)),
+                                      SizedBox(width: 1.0),
+                                    ],
+                                  ),
+                                ),
                               ],
-                            )
-                          ],
-                        ),
+                            ),
+                          ),
                         IconButton(
                           icon: Icon(Icons.arrow_back),
                           iconSize: 26.0,
@@ -146,8 +153,12 @@ class _ReviewViewState extends State<ReviewView> {
   }
 
   Widget _buildListView() {
-    return ListView.builder(
-        physics: BouncingScrollPhysics(),
+    return ListView.separated(
+      separatorBuilder: (context, _){
+        return SizedBox(height: 8.0);
+      },
+        padding: EdgeInsets.fromLTRB(8.0, 112.0, 8.0, 8.0),
+        physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         itemCount: review.isMore ? currentI+1 : currentI,
         itemBuilder: (context, i) {
           if(i >= currentI ){
