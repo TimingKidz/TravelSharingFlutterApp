@@ -37,6 +37,8 @@ class _Matchinformation extends State<Matchinformation> {
 //  String uid;
 //  Travel_Info Data;
   bool isHistory;
+  List<Map<String,BitmapDescriptor>> markerSet = List();
+  List<Color> colors = List();
 
   @override
   void setState(fn) {
@@ -51,6 +53,7 @@ class _Matchinformation extends State<Matchinformation> {
     super.initState();
     isHistory = widget.isHistory == null ? false : widget.isHistory;
     _pageConfig(widget.data.routes.status);
+    colors = [Color(0xFFFFF100),Color(0xFFFF8C00),Color(0xFFE81123),Color(0xFFEC008C)];
   }
 
   _pageConfig(bool isNeed2Update){
@@ -442,20 +445,21 @@ class _Matchinformation extends State<Matchinformation> {
               return SizedBox(width: 8.0);
             }
           }else{
-            return _buildRow(tripDetails.subUser[i-1],tripDetails.subRoutes[i-1]);
+            return _buildRow(tripDetails.subUser[i-1],tripDetails.subRoutes[i-1],colors[i]);
           }
         }
     );
   }
 
-  Widget _buildRow(User user,Routes routes) {
+
+  Widget _buildRow(User user,Routes routes,Color color) {
     return Row(
       children: [
         Container(
           padding: EdgeInsets.fromLTRB(0.0, 0.0, 8.0, 8.0),
           child: Container(
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.red, width: 2.0),
+              border: Border.all(color: color, width: 2.0),
               shape: BoxShape.circle,
             ),
             child: Material(
@@ -503,14 +507,19 @@ class _Matchinformation extends State<Matchinformation> {
   }
 
   Future<void> getData(bool isNeed2Update) async {
-    try{
+//    try{
     if(!isHistory) tripDetails =  await TripDetails().getDetails(widget.uid,widget.data.uid,isNeed2Update);
     else tripDetails =  await TripDetails().getHistory(widget.uid);
+    for ( int x = 0 ; x < 4 ; x++) {
+      BitmapDescriptor src = await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(3,3)), 'assets/marker/color_${x+1}.png');
+      BitmapDescriptor dst = await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(3,3)), 'assets/marker/dst_color_${x+1}.png');
+      markerSet.add({"src" : src , "dst" : dst });
+    }
     if(tripDetails != null) _createMarkers();
     setState(() {});
-    }catch(error){
-      print("$error from Matchinfo");
-    }
+//    }catch(error){
+//      print("$error from Matchinfo");
+//    }
   }
 
   kickOut(User user,Routes routes ) async {
@@ -525,7 +534,7 @@ class _Matchinformation extends State<Matchinformation> {
       points: tripDetails.routes.routes,
       geodesic: true,
       polylineId: PolylineId("mejor ruta"),
-      color: Colors.blue,
+      color: Theme.of(context).accentColor.withOpacity(0.5),
       width: 4,
     );
     setState(() {
@@ -542,6 +551,7 @@ class _Matchinformation extends State<Matchinformation> {
           markerId: MarkerId("1"),
           position: tripDetails.subRoutes[i].routes.first,
           infoWindow: InfoWindow(title:"dst : ${tripDetails.subUser[i].name}"),
+          icon : markerSet[i]['src']
         ),
       );
       Markers.add(
@@ -549,6 +559,7 @@ class _Matchinformation extends State<Matchinformation> {
           markerId: MarkerId("2"),
           position: tripDetails.subRoutes[i].routes.last,
           infoWindow: InfoWindow(title: "src : ${tripDetails.subUser[i].name}"),
+          icon: markerSet[i]['dst']
         ),
       );
     }
@@ -556,6 +567,7 @@ class _Matchinformation extends State<Matchinformation> {
   }
 
   void _onMapCreated(GoogleMapController controller) async{
+    print(markerSet.length);
     _mapController = controller;
     await _centerView(true);
   }
