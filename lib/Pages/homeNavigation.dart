@@ -40,9 +40,13 @@ class HomeNavigation extends StatefulWidget {
               )
           ],
         ),
+//      title: Text('Notification'),
+        title: Text('การแจ้งเตือน'),
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.view_agenda),
+//      title: Text('Feed'),
+        title: Text('ฟีด'),
       ),
       BottomNavigationBarItem(
         icon: new Stack(
@@ -73,9 +77,13 @@ class HomeNavigation extends StatefulWidget {
               )
           ],
         ),
+//      title: Text('On going'),
+        title: Text('การเดินทาง'),
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.account_circle),
+//      title: Text('Account'),
+        title: Text('บัญชี'),
       ),
     ];
   }
