@@ -74,6 +74,7 @@ class _InfoFillState extends State<InfoFill> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
         if(isActivity){
           setState(() {
             isActivity = !isActivity;
@@ -410,16 +411,20 @@ class _InfoFillState extends State<InfoFill> {
         if(selectedImage != null){
           currentUser.uploadImg(selectedImage, x.uid).then((value){
             if(value){
+              ScaffoldMessenger.of(context).removeCurrentSnackBar();
               Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
             }else{
+              ScaffoldMessenger.of(context).removeCurrentSnackBar();
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not upload image.")));
             }
           });
         }else{
+          ScaffoldMessenger.of(context).removeCurrentSnackBar();
           Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
         }
       }else{
         setState(() { isLoading = false; });
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not create route.")));
       }
     });

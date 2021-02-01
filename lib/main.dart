@@ -37,7 +37,7 @@ import 'Pages/dashboard.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:travel_sharing/localization.dart';
 
-final String api_key = "AIzaSyBQCf89JOkrq2ECa6Ko8LBQaMO8A7rJt9Q";
+final String api_key = "AIzaSyAliND7BvhVjHbwLA3eUFpcGaaTLAJmaw4";
 GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['profile', 'email']);
 final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();

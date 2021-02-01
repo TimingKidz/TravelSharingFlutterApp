@@ -57,6 +57,7 @@ class _ReqListstate extends State<ReqList> {
     notificationBarIconDark();
     return WillPopScope(
         onWillPop: () async {
+          ScaffoldMessenger.of(context).removeCurrentSnackBar();
           Navigator.of(context).pop(false);
       return false;
     },
@@ -215,12 +216,14 @@ class _ReqListstate extends State<ReqList> {
         }else{
           isPress[data.routes.uid] = false;
           await getData(true);
+          ScaffoldMessenger.of(context).removeCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(v)));
         }
 
       }else{
         isPress[data.routes.uid] = false;
         await getData(true);
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not accept please try again.")));
       }
     });
@@ -236,6 +239,7 @@ class _ReqListstate extends State<ReqList> {
         isPress[data.routes.uid] = false;
       }else{
         print("error");
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not decline please try again.")));
       }
       await getData(true);

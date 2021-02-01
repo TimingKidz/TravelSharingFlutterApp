@@ -75,6 +75,7 @@ class Routes {
     cost = json['cost'].toString();
     imgpath = json['imgpath'];
     description = json['description'];
+    range = json['range'].toString();
   }
 
   Map<String, dynamic> toJson() {

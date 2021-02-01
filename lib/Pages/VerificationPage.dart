@@ -255,8 +255,10 @@ class _VerificationPageState extends State<VerificationPage>{
   _resend() async {
     MailVerification().resend(currentUser).then((value){
       if(value){
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("New OTP has been send.")));
       }else{
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not resend. Please try again.")));
       }
       isResend = false;
@@ -267,8 +269,10 @@ class _VerificationPageState extends State<VerificationPage>{
     MailVerification().changeMail(email, currentUser).then((value){
       if(value == "Succesful"){
         currentUser.mailcmu = email;
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("New OTP has been send to your new mail.")));
       }else{
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(value)));
       }
       isLoading = false;
@@ -295,6 +299,7 @@ class _VerificationPageState extends State<VerificationPage>{
                       FlatButton(
                         child: Text('Ok'),
                         onPressed: () async {
+                          ScaffoldMessenger.of(context).removeCurrentSnackBar();
                           Navigator.pushReplacementNamed(context,"/login");
                         },
                       ),
@@ -306,11 +311,12 @@ class _VerificationPageState extends State<VerificationPage>{
                     socket.io.options['extraHeaders'] = {'uid': currentUser.uid,'auth' : httpClass.header['auth']};
                   }
                   initsocket();
+                  ScaffoldMessenger.of(context).removeCurrentSnackBar();
                   Navigator.pushReplacementNamed(context,"/homeNavigation");
                 }
               }else{
+                ScaffoldMessenger.of(context).removeCurrentSnackBar();
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not login.")));
-                Navigator.pushReplacementNamed(context,"/login");
               }
             }else if(value.message == "resend"){
               errorController.add(ErrorAnimationType.shake);
@@ -319,16 +325,20 @@ class _VerificationPageState extends State<VerificationPage>{
             }else if(value.message == "wrong" ) {
               errorController.add(ErrorAnimationType.shake);
               textEditingController.clear();
+              ScaffoldMessenger.of(context).removeCurrentSnackBar();
               ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text("Wrong verification code. !!")));
             }else if( value.message == "expired" ){
+              ScaffoldMessenger.of(context).removeCurrentSnackBar();
               ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text("Code has been expired. Press resend to send new OTP!!")));
             }else{
               errorController.add(ErrorAnimationType.shake);
+              ScaffoldMessenger.of(context).removeCurrentSnackBar();
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("The verification code has been expired.")));
             }
           }else{
+            ScaffoldMessenger.of(context).removeCurrentSnackBar();
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not send verification code.")));
           }
         });

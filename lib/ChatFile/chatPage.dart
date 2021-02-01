@@ -85,71 +85,79 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Stack(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(top: 80),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  if(messagesReverseList.isNotEmpty)
-                    Expanded(
-                      child: _chatListView(),
-                    ),
-                  if(widget.isHistory == null ? true : !widget.isHistory)
-                    _chatBottomBar(),
-                  if(widget.isHistory == null ? false : widget.isHistory)
-                    Container(
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.all(8.0),
-                      width: double.infinity,
-                      color: Colors.black.withOpacity(0.2),
-                      child: Text("You can only view chat history"),
-                    )
-                ],
-              ),
-            ),
-            Card(
-              elevation: 2.0,
-              margin: EdgeInsets.all(0.0),
-              color: Theme.of(context).colorScheme.darkBlue,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(30.0),
-                      bottomRight: Radius.circular(30.0)
-                  )
-              ),
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.only(left: 4.0, top: 4.0, bottom: 16.0, right: 4.0),
-                child: SafeArea(
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.arrow_back),
-                        tooltip: "back",
-                        iconSize: 26.0,
-                        color: Colors.white,
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                      SizedBox(width: 16.0),
-                      Text(
-                        "Group Chat",
-                        style: TextStyle(
-                          // fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
-                          color: Colors.white,
+    return  WillPopScope(
+      onWillPop: () async {
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
+        Navigator.of(context).pop();
+        return false;
+      },
+      child:
+        Scaffold(
+            body: Stack(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(top: 80),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      if(messagesReverseList.isNotEmpty)
+                        Expanded(
+                          child: _chatListView(),
                         ),
-                        // textAlign: TextAlign.center,
-                      )
+                      if(widget.isHistory == null ? true : !widget.isHistory)
+                        _chatBottomBar(),
+                      if(widget.isHistory == null ? false : widget.isHistory)
+                        Container(
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.all(8.0),
+                          width: double.infinity,
+                          color: Colors.black.withOpacity(0.2),
+                          child: Text("You can only view chat history"),
+                        )
                     ],
                   ),
                 ),
-              ),
-            ),
-          ],
-        )
+                Card(
+                  elevation: 2.0,
+                  margin: EdgeInsets.all(0.0),
+                  color: Theme.of(context).colorScheme.darkBlue,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(30.0),
+                          bottomRight: Radius.circular(30.0)
+                      )
+                  ),
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.only(left: 4.0, top: 4.0, bottom: 16.0, right: 4.0),
+                    child: SafeArea(
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.arrow_back),
+                            tooltip: "back",
+                            iconSize: 26.0,
+                            color: Colors.white,
+                            onPressed: () => Navigator.of(context).maybePop(),
+                          ),
+                          SizedBox(width: 16.0),
+                          Text(
+                            "Group Chat",
+                            style: TextStyle(
+                              // fontWeight: FontWeight.bold,
+                              fontSize: 20.0,
+                              color: Colors.white,
+                            ),
+                            // textAlign: TextAlign.center,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )
+        ),
     );
   }
 
@@ -414,6 +422,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver  {
                   debugPrint('Send');
                   await Message().sendMessage(widget.tripid,textController.text, currentUser.uid, currentUser.name,widget.currentTripid, currentUser.imgpath).then((value) {
                     if(!value){
+                      ScaffoldMessenger.of(context).removeCurrentSnackBar();
                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not send the message.")));
                     }else{
                       textController.clear();

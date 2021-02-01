@@ -72,19 +72,22 @@ class _Matchinformation extends State<Matchinformation> {
 
       socket.on('onTripEnd', (data) {
         if (widget.data.uid == data['tripid']) {
-          unPopDialog(
-            this.context,
-            'Closed',
-            Text("This trip has been closed."),
-            <Widget>[
-              FlatButton(
-                child: Text('Ok'),
-                onPressed: () async {
-                  Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
-                },
-              ),
-            ],
-          );
+          if(mounted) {
+            unPopDialog(
+              this.context,
+              'Closed',
+              Text("This trip has been closed."),
+              <Widget>[
+                FlatButton(
+                  child: Text('Ok'),
+                  onPressed: () async {
+                    Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
+                  },
+                ),
+              ],
+            );
+          }
+
         }
       });
 
@@ -96,19 +99,21 @@ class _Matchinformation extends State<Matchinformation> {
         print("onkick");
         if (widget.data.uid == data['tripid']) {
           if(widget.data.uid == data['kick']){
-            unPopDialog(
-              this.context,
-              'Removed',
-              Text("You has been removed."),
-              <Widget>[
-                FlatButton(
-                  child: Text('Ok'),
-                  onPressed: () async {
-                    Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
-                  },
-                ),
-              ],
-            );
+            if(mounted) {
+              unPopDialog(
+                this.context,
+                'Removed',
+                Text("You has been removed."),
+                <Widget>[
+                  FlatButton(
+                    child: Text('Ok'),
+                    onPressed: () async {
+                      Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
+                    },
+                  ),
+                ],
+              );
+            }
           }else{
             await getData(true);
           }
@@ -144,6 +149,9 @@ class _Matchinformation extends State<Matchinformation> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        socket.off('onTripEnd');
+        socket.off('onKick');
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
         if(isHistory)  Navigator.of(context).pop();
           else Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
         return false;
@@ -213,6 +221,7 @@ class _Matchinformation extends State<Matchinformation> {
                                   iconSize: 26.0,
                                   color: Colors.white,
                                   onPressed: (){
+                                    ScaffoldMessenger.of(context).removeCurrentSnackBar();
                                     Navigator.push(context, MaterialPageRoute(
                                         builder: (context) => ChatPage(tripid: widget.uid,currentTripid: widget.data.uid, isHistory: isHistory))).then((value){
                                       _pageConfig(false);
@@ -495,6 +504,7 @@ class _Matchinformation extends State<Matchinformation> {
     tmp['subuser'] = subuser;
 
    currentUser.endTrip(tmp).then((value){
+     ScaffoldMessenger.of(context).removeCurrentSnackBar();
         if(value)
           Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
         else ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not End Trip.")));
@@ -517,6 +527,7 @@ class _Matchinformation extends State<Matchinformation> {
                     child: InkWell(
                       child: SizedBox(width: 64, height: 64, child: Icon(Icons.add)),
                       onTap: () {
+                        ScaffoldMessenger.of(context).removeCurrentSnackBar();
                         Navigator.push(context, MaterialPageRoute(
                             builder: (context) => ReqList(data: widget.data,isFromMatchinfo: true,))).then((value){
                           _pageConfig(false);
@@ -592,7 +603,7 @@ class _Matchinformation extends State<Matchinformation> {
   }
 
   Future<void> getData(bool isNeed2Update) async {
-//    try{
+    try{
     if(!isHistory) tripDetails =  await TripDetails().getDetails(widget.uid,widget.data.uid,isNeed2Update);
     else tripDetails =  await TripDetails().getHistory(widget.uid);
     for ( int x = 0 ; x < 4 ; x++) {
@@ -602,14 +613,21 @@ class _Matchinformation extends State<Matchinformation> {
     }
     if(tripDetails != null) _createMarkers();
     setState(() {});
-//    }catch(error){
-//      print("$error from Matchinfo");
-//    }
+    }catch(error){
+      print("$error from Matchinfo");
+    }
   }
 
   kickOut(User user,Routes routes ) async {
-    await tripDetails.kickOut(user.uid,routes.uid,"ขอโทษครับ");
-    await getData(false);
+    await tripDetails.kickOut(user.uid,routes.uid,"ขอโทษครับ").then((value)async{
+      if(value){
+        await getData(false);
+      }else{
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not remove.")));
+      }
+    });
+
   }
 
   // find direction to destination
@@ -661,7 +679,7 @@ class _Matchinformation extends State<Matchinformation> {
     await _mapController.getVisibleRegion();
     await findDirections(isFind_Direction);
 
-    Routes temp = widget.data.routes;
+    Routes temp = tripDetails.routes;
     var left = min(temp.routes.first.latitude, temp.routes.last.latitude);
     var right = max(temp.routes.first.latitude, temp.routes.last.latitude);
     var top = max(temp.routes.first.longitude, temp.routes.last.longitude);

@@ -105,29 +105,37 @@ class HomeNavigationState extends State<HomeNavigation> {
   }
 
   @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    socket.on("tooManyOnline",(value) async {
+      if(mounted) {
+        print("tooManyOnline");
+        socket = socket.disconnect();
+        socket.destroy();
+        socket.dispose();
+        googleUser = await googleSignIn.signOut();
+        unPopDialog(
+          this.context,
+          'Accept',
+          Text("You already online with other device."),
+          <Widget>[
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () async {
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil('/login', ModalRoute.withName('/'));
+              },
+            ),
+          ],
+        );
+      }
+    });
+  }
+
+  @override
   void initState() {
     super.initState();
-    socket.on("tooManyOnline",(value) async {
-      print("tooManyOnline");
-      socket = socket.disconnect();
-      socket.destroy();
-      socket.dispose();
-      googleUser = await googleSignIn.disconnect();
-      unPopDialog(
-        this.context,
-        'Accept',
-        Text("You already online with other device."),
-        <Widget>[
-          FlatButton(
-            child: Text('Ok'),
-            onPressed: () async {
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil('/login', ModalRoute.withName('/'));
-            },
-          ),
-        ],
-      );
-    });
   }
 
   List<Widget> pageRoute(){

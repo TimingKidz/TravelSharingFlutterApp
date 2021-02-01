@@ -50,6 +50,7 @@ class SignUpPageState extends State<SignUpPage> {
     return WillPopScope(
       onWillPop: () async {
         await googleSignIn.disconnect();
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
         Navigator.pushReplacementNamed(context,"/login");
         return false;
       },
@@ -274,9 +275,11 @@ class SignUpPageState extends State<SignUpPage> {
       if (selectedImage != null) {
         await currentUser.uploadProfile(selectedImage);
       }
+      ScaffoldMessenger.of(context).removeCurrentSnackBar();
       Navigator.pushReplacementNamed(context, "/VerificationPage");
     }else{
       isPress = false;
+      ScaffoldMessenger.of(context).removeCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(isSuccesful)));
       setState(() { });
     }

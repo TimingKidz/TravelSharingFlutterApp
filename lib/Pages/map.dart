@@ -84,7 +84,7 @@ class _CreateRoutestate extends State<CreateRoute> {
         if (result) {
           isChooseOnMap = true;
         }else {
-          Src_OR_Dst(current_Location, "Current Location");
+          Src_OR_Dst(current_Location, "Current Location",is_src);
           _mapController.animateCamera(CameraUpdate.newCameraPosition(
               CameraPosition(target: current_Location, zoom: 18)));
         }
@@ -720,6 +720,7 @@ class _CreateRoutestate extends State<CreateRoute> {
   OnMove_End() async {
     if (isChooseOnMap){
       if( isSet_Marker && Marker_Location != null){
+        bool isSrc = is_src;
         NearbyPlace place = null; String name = ""; double min = double.maxFinite;
         List<NearbyPlace> tmp = await NearbyPlace().getNearbyPlace(Marker_Location.latitude, Marker_Location.longitude);
         tmp.forEach((element) {
@@ -735,7 +736,7 @@ class _CreateRoutestate extends State<CreateRoute> {
         if(place!=null) {
           Marker_Location = place.location;
         }
-        Src_OR_Dst(Marker_Location,name);
+        Src_OR_Dst(Marker_Location,name,isSrc);
       }
     }
   }
@@ -745,11 +746,12 @@ class _CreateRoutestate extends State<CreateRoute> {
   }
 
   Future<void> _Searchbar(Map<String, dynamic> result) async {
+    bool isSrc = is_src;
     p.PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(result['place_id']);
     debugPrint(result['place_id']);
     final lat = detail.result.geometry.location.lat;
     final lng = detail.result.geometry.location.lng;
-    Src_OR_Dst(LatLng(lat,lng), detail.result.name);
+    Src_OR_Dst(LatLng(lat,lng), detail.result.name,isSrc);
     _mapController.animateCamera(CameraUpdate.newCameraPosition(
         CameraPosition(target: LatLng(lat,lng), zoom: 18)));
   }
@@ -759,8 +761,8 @@ class _CreateRoutestate extends State<CreateRoute> {
   }
 
 
-  Src_OR_Dst(LatLng point,String name) async {
-    if(is_src){ // select source state
+  Src_OR_Dst(LatLng point,String name, bool isSrc) async {
+    if(isSrc){ // select source state
       Map_Latlng["src"] = point ;
       Map_Placename["src"] = name;
       src_Textcontroller.text = name;

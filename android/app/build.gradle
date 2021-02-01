@@ -37,7 +37,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.cmu.TravelSharing"
+        applicationId "com.cmu.TACtivity"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()

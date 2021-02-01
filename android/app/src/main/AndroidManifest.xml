@@ -10,7 +10,7 @@
 
     <application
         android:name=".Application"
-        android:label="TActivity"
+        android:label="TACtivity"
         android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
         <activity

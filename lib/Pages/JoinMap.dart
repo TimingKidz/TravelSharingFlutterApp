@@ -326,7 +326,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
         if (result) {
           isChooseOnMap = true;
         }else {
-          Src_OR_Dst(current_Location, "Current Location");
+          Src_OR_Dst(current_Location, "Current Location",is_src);
           _mapController.animateCamera(CameraUpdate.newCameraPosition(
               CameraPosition(target: current_Location, zoom: 18)));
         }
@@ -433,6 +433,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
     print(i++);
     if (isChooseOnMap){
       if( isSet_Marker && Marker_Location != null){
+        bool isSrc = is_src;
         NearbyPlace place = null;
         String name = "";
         double min = double.maxFinite;
@@ -448,7 +449,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
           }
         });
         if(place!=null) { Marker_Location = place.location; }
-        Src_OR_Dst(Marker_Location,name);
+        Src_OR_Dst(Marker_Location,name,isSrc);
       }
     }
   }
@@ -458,17 +459,18 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
   }
 
   Future<void> _Searchbar(Map<String, dynamic> result) async {
+    bool isSrc = is_src;
     p.PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(result['place_id']);
     debugPrint(result['place_id']);
     final lat = detail.result.geometry.location.lat;
     final lng = detail.result.geometry.location.lng;
-    Src_OR_Dst(LatLng(lat,lng), detail.result.name);
+    Src_OR_Dst(LatLng(lat,lng), detail.result.name,isSrc);
     _mapController.animateCamera(CameraUpdate.newCameraPosition(
         CameraPosition(target: LatLng(lat,lng), zoom: 18)));
   }
 
-  Src_OR_Dst(LatLng point,String name) async {
-    if(is_src){ // select source state
+  Src_OR_Dst(LatLng point,String name,bool isSrc) async {
+    if(isSrc){ // select source state
       Map_Latlng["src"] = point ;
       Map_Placename["src"] = name;
       src_Textcontroller.text = name;

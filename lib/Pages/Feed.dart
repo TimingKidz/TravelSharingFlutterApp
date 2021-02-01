@@ -385,19 +385,20 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
           return FeedCardTile(
             data: data,
             onCardPressed: () {
-              if(currentUser.vehicle.isEmpty){
-                alertDialog(context,
-                  "No vehicle",
-                  Text("Please add your vehicle.\nAccount -> Vehicle Management"),
-                  <Widget>[
-                    FlatButton(
-                      child: Text('OK'),
-                      onPressed: () async {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
+              if(data.routes.role == "1" && currentUser.vehicle.isEmpty){
+                  alertDialog(context,
+                    "No vehicle",
+                    Text("Please add your vehicle.\nAccount -> Vehicle Management"),
+                    <Widget>[
+                      FlatButton(
+                        child: Text('OK'),
+                        onPressed: () async {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+
               }else{
                 openWidget();
               }

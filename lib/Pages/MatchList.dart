@@ -116,53 +116,65 @@ class _MatchListstate extends State<MatchList> {
   @override
   Widget build(BuildContext context) {
     notificationBarIconDark();
-    return  Scaffold(
-        body: SafeArea(
-          child: Stack(
-            children: [
-              Center(
-                child: SizedBox(
-                    height: double.infinity, // card height
-                    child: _widgetOptions()
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 4.0, top: 4.0, bottom: 16.0, right: 4.0),
-                child: IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () => Navigator.of(context).maybePop(),
-                ),
-              ),
-              if( _MatchList != null )
-              if(_MatchList.isNotEmpty )
-              Positioned.fill(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: 32.0),
-                    child: Text("$_index/${_MatchList.length}"),
+    return  WillPopScope(
+      onWillPop: () async {
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
+        Navigator.of(context).pop();
+        return false;
+      },
+      child:
+        Scaffold(
+            body: SafeArea(
+              child: Stack(
+                children: [
+                  Center(
+                    child: SizedBox(
+                        height: double.infinity, // card height
+                        child: _widgetOptions()
+                    ),
                   ),
-                ),
-              )
-            ],
-          ),
-        )
+                  Padding(
+                    padding: EdgeInsets.only(left: 4.0, top: 4.0, bottom: 16.0, right: 4.0),
+                    child: IconButton(
+                      icon: Icon(Icons.arrow_back),
+                      onPressed: () => Navigator.of(context).maybePop(),
+                    ),
+                  ),
+                  if( _MatchList != null )
+                  if(_MatchList.isNotEmpty )
+                  Positioned.fill(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: 32.0),
+                        child: Text("$_index/${_MatchList.length}"),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
+        ),
     );
   }
 
   // get Match list of current routes
   Future<void> getData(bool isNeed2Update) async {
     try{
-      _MatchList =  await Match_Info().getMatchList(widget.data.routes,isNeed2Update) ?? [];
+      List<Match_Info> tmp_MatchList = await Match_Info().getMatchList(widget.data.routes,isNeed2Update) ?? [];
       if( isreq == null) {
-        isreq = await User().getisReq(widget.data.id, widget.data.uid) ?? [];
+        List<String> tmp_isreq = await User().getisReq(widget.data.id, widget.data.uid) ?? [];
+        isreq = tmp_isreq;
       }
+      _MatchList = tmp_MatchList;
       _MatchList.forEach((element) {
         if( isPress[element.routes.uid] == null){
             isPress[element.routes.uid] = false;
         }
       });
-      setState(() {});
+      setState(() {
+
+      });
     }catch(error){
       print(error);
     }
@@ -235,9 +247,11 @@ class _MatchListstate extends State<MatchList> {
         if(value == "success"){
           isreq.add(data.routes.uid);
         }else{
+          ScaffoldMessenger.of(context).removeCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(value)));
         }
       }else{
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not send request please try again.")));
       }
       isPress[data.routes.uid] = false;
