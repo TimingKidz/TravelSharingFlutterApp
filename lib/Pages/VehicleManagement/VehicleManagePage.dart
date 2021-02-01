@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/Pages/VehicleManagement/VehicleAddForm.dart';
 import 'package:travel_sharing/buttons/VehicleCardTileFull.dart';
@@ -27,7 +26,7 @@ class VehicleManagePageState extends State<VehicleManagePage> {
             Padding(
               padding: EdgeInsets.only(top: 70),
               child: currentUser.vehicle.isNotEmpty ? _buildListView() : Center(
-                child: Text("No vehicle yet."),
+                child: Text(AppLocalizations.instance.text("vehicleempty")),
               ),
             ),
             Card(

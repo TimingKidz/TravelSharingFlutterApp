@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/Pages/HistoryPage.dart';
 import 'package:travel_sharing/Pages/LanguageSelect.dart';
@@ -11,7 +9,6 @@ import 'package:travel_sharing/Pages/ReviewView.dart';
 import 'package:travel_sharing/Pages/VehicleManagement/VehicleManagePage.dart';
 import 'package:travel_sharing/buttons/VehicleCardTileMin.dart';
 import 'package:travel_sharing/main.dart';
-import 'package:travel_sharing/custom_color_scheme.dart';
 import 'package:travel_sharing/localization.dart';
 
 class Account extends StatefulWidget {
@@ -104,7 +101,7 @@ class AccountState extends State<Account> {
                             direction: Axis.horizontal,
                           ),
                           SizedBox(width: 4.0),
-                          Text(currentUser.reviewSummary.amount == 0 ? "0.0": (currentUser.reviewSummary.totalscore/currentUser.reviewSummary.amount).toString(), style: TextStyle(fontSize: 16.0, color: Colors.white)),
+                          Text(currentUser.reviewSummary.amount == 0 ? "0.0": (currentUser.reviewSummary.totalscore/currentUser.reviewSummary.amount).toStringAsPrecision(2), style: TextStyle(fontSize: 16.0, color: Colors.white)),
                           SizedBox(width: 4.0),
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 2.0),
@@ -142,14 +139,6 @@ class AccountState extends State<Account> {
             ),
           )
         ],
-      ),
-    );
-    return Scaffold(
-      body: Center(
-        child: RaisedButton(
-          onPressed: _handleSignOut,
-          child: Text('Sign Out'),
-        ),
       ),
     );
   }
@@ -279,7 +268,7 @@ class AccountState extends State<Account> {
         Navigator.of(context)
             .pushNamedAndRemoveUntil('/login', ModalRoute.withName('/'));
       }else{
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not sign out. Please try again.")));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.instance.text("signoutErr"))));
         setState(() { isLoading = false; });
       }
     });

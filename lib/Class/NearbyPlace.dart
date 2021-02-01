@@ -1,9 +1,6 @@
 import 'dart:convert';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:travel_sharing/Class/Match_Info.dart';
-import 'package:travel_sharing/Class/RouteJson.dart';
-import 'package:travel_sharing/Class/Travel_Info.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:http/http.dart' as Http;
 
@@ -20,7 +17,7 @@ class NearbyPlace{
 
   Future<List<NearbyPlace>> getNearbyPlace(double lat,double long) async{
 //    try{
-      String url ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${long}&radius=30&key=${api_key}";
+      String url ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$lat,$long&radius=30&key=$api_key";
       Http.Response response = await Http.get(url);
       if(response.statusCode == 200 ){
         print(jsonDecode(response.body));

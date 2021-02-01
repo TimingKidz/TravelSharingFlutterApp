@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as Http;
 import 'package:travel_sharing/main.dart';
 import 'package:http_parser/http_parser.dart';
@@ -11,7 +10,7 @@ final String API_IP = "https://68.183.226.229";
   Map<String,String>  header ;
   Map<String,String>  mediaHeader ;
 
-  Future<Map<String,String>> getNewHeader() async {
+  Future<void> getNewHeader() async {
     String tmp = await firebaseAuth.user.getIdToken();
     header = {'Content-Type': 'application/json; charset=UTF-8','auth' : tmp};
     mediaHeader = {"Content-type": "multipart/form-data", "auth" : tmp };
@@ -58,7 +57,7 @@ final String API_IP = "https://68.183.226.229";
           print("refresh tokennnnnnnnnnnnnnnnnnnnnnn");
           await getNewHeader();
           request = Http.MultipartRequest(
-            'POST', Uri.parse("${API_IP}/api/user/${filename}"),
+            'POST', Uri.parse("$API_IP/api/user/$filename"),
           );
           request.files.add(
             Http.MultipartFile.fromBytes(

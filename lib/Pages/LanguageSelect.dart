@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
-import 'package:travel_sharing/main.dart';
 
 class LanguageSelect extends StatefulWidget {
   @override
@@ -64,7 +63,7 @@ class _LanguageSelectState extends State<LanguageSelect> {
                     children: [
                       IconButton(
                         icon: Icon(Icons.arrow_back),
-                        tooltip: "back",
+                        tooltip: AppLocalizations.instance.text("back"),
                         iconSize: 26.0,
                         color: Colors.white,
                         onPressed: () => Navigator.of(context).pop(),

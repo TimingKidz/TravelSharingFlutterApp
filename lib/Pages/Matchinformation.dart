@@ -14,6 +14,7 @@ import 'package:travel_sharing/Dialog.dart';
 import 'package:travel_sharing/Pages/ReqList.dart';
 import 'package:travel_sharing/UI/ProfileInfo.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
+import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
 
 class Matchinformation extends StatefulWidget {
@@ -50,7 +51,6 @@ class _Matchinformation extends State<Matchinformation> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     isHistory = widget.isHistory == null ? false : widget.isHistory;
     _pageConfig(widget.data.routes.status);
@@ -75,11 +75,11 @@ class _Matchinformation extends State<Matchinformation> {
           if(mounted) {
             unPopDialog(
               this.context,
-              'Closed',
-              Text("This trip has been closed."),
+              AppLocalizations.instance.text("tripClose"),
+              Text(AppLocalizations.instance.text("tripCloseDes")),
               <Widget>[
                 FlatButton(
-                  child: Text('Ok'),
+                  child: Text(AppLocalizations.instance.text("ok")),
                   onPressed: () async {
                     Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
                   },
@@ -102,11 +102,11 @@ class _Matchinformation extends State<Matchinformation> {
             if(mounted) {
               unPopDialog(
                 this.context,
-                'Removed',
-                Text("You has been removed."),
+                AppLocalizations.instance.text("tripRM"),
+                Text(AppLocalizations.instance.text("tripRMDes")),
                 <Widget>[
                   FlatButton(
-                    child: Text('Ok'),
+                    child: Text(AppLocalizations.instance.text("ok")),
                     onPressed: () async {
                       Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
                     },
@@ -196,7 +196,7 @@ class _Matchinformation extends State<Matchinformation> {
                                   children: [
                                     IconButton(
                                       icon: Icon(Icons.arrow_back),
-                                      tooltip: "back",
+                                      tooltip: AppLocalizations.instance.text("back"),
                                       iconSize: 26.0,
                                       color: Colors.white,
                                       onPressed: () {
@@ -205,7 +205,7 @@ class _Matchinformation extends State<Matchinformation> {
                                     ),
                                     SizedBox(width: 16.0),
                                     Text(
-                                      "ข้อมูลการเดินทาง",
+                                      AppLocalizations.instance.text("InfoFormTitle"),
                                       style: TextStyle(
                                         // fontWeight: FontWeight.bold,
                                         fontSize: 20.0,
@@ -217,7 +217,7 @@ class _Matchinformation extends State<Matchinformation> {
                                 ),
                                 IconButton(
                                   icon: Icon(Icons.chat_bubble),
-                                  tooltip: "Group chat",
+                                  tooltip: AppLocalizations.instance.text("groupChat"),
                                   iconSize: 26.0,
                                   color: Colors.white,
                                   onPressed: (){
@@ -341,7 +341,7 @@ class _Matchinformation extends State<Matchinformation> {
                 mainAxisAlignment:  MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    'Passenger List',
+                    AppLocalizations.instance.text("passengerTitle"),
                     style: TextStyle(
                       fontSize: 16.0,
                     ),
@@ -400,25 +400,25 @@ class _Matchinformation extends State<Matchinformation> {
                 SizedBox(
                   width: 16.0,
                   height: 16.0,
-                  child: CircularProgressIndicator(strokeWidth: 2,valueColor: AlwaysStoppedAnimation(Colors.white),),
+                  child: CircularProgressIndicator(strokeWidth: 2,valueColor: AlwaysStoppedAnimation(Colors.white)),
                 ),
                 SizedBox(width: 8.0),
-                Text(isEndTrip ? 'Loading...':'End Trip', style: TextStyle(color: Colors.white,))
+                Text(isEndTrip ? AppLocalizations.instance.text("loading"):AppLocalizations.instance.text("endTrip"), style: TextStyle(color: Colors.white))
               ],
             ),
             onPressed: () => isEndTrip ? null : alertDialog(
               this.context,
-              'Are you sure',
-              Text("This action couldn't be undone. Would you like to end this trip ?"),
+              AppLocalizations.instance.text("delTripDialogTitle"),
+              Text(AppLocalizations.instance.text("delTripDialogDes")),
               <Widget>[
                 FlatButton(
-                  child: Text('No'),
+                  child: Text(AppLocalizations.instance.text("no")),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                 ),
                 FlatButton(
-                  child: Text('Yes'),
+                  child: Text(AppLocalizations.instance.text("yes")),
                   onPressed: () async {
                     Navigator.of(context).pop();
                     isEndTrip = true;
@@ -453,11 +453,11 @@ class _Matchinformation extends State<Matchinformation> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('ปลายทาง', style: TextStyle(fontSize: 10.0)),
+                          Text(AppLocalizations.instance.text("dst"), style: TextStyle(fontSize: 10.0)),
                           SizedBox(height: 4.0),
                           Text(tripDetails.routes.dst, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
                           SizedBox(height: 8.0),
-                          Text('ต้นทาง', style: TextStyle(fontSize: 10.0)),
+                          Text(AppLocalizations.instance.text("src"), style: TextStyle(fontSize: 10.0)),
                           SizedBox(height: 4.0),
                           Text(tripDetails.routes.src, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
                         ],
@@ -619,6 +619,7 @@ class _Matchinformation extends State<Matchinformation> {
   }
 
   kickOut(User user,Routes routes ) async {
+    // TODO: User description for kick.
     await tripDetails.kickOut(user.uid,routes.uid,"ขอโทษครับ").then((value)async{
       if(value){
         await getData(false);

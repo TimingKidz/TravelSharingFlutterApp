@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:ffi';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
@@ -36,7 +34,6 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
 //  LatLng current_Location;
   LatLng Marker_Location;
   bool is_src = true;
-  Map<MarkerId, Marker> _centerMarkers = <MarkerId, Marker>{};
   Map<MarkerId, Marker> _markers = <MarkerId, Marker>{};
   Map<String,LatLng> Map_Latlng = <String,LatLng>{};
   Map<String,String> Map_Placename = <String,String>{};
@@ -68,7 +65,6 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     mapinit();
   }
@@ -220,7 +216,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
                                             isChooseOnMap = false;
                                             Navigator.of(context).push(
                                                 MaterialPageRoute(
-                                                    builder: (context) => LocationSearch(currentLocation: current_Location, hintText: "จุดเริ่มต้น ...")
+                                                    builder: (context) => LocationSearch(currentLocation: current_Location, hintText: AppLocalizations.instance.text("SrcPoint"))
                                                 )
                                             ).then((result) {
                                              selectedMethod(result);
@@ -259,7 +255,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
                                             isChooseOnMap = false;
                                             Navigator.of(context).push(
                                                 MaterialPageRoute(
-                                                    builder: (context) => LocationSearch(currentLocation: current_Location, hintText: "จุดปลายทาง ...")
+                                                    builder: (context) => LocationSearch(currentLocation: current_Location, hintText: AppLocalizations.instance.text("DstPoint"))
                                                 )
                                             ).then((result) {
                                               selectedMethod(result);
@@ -298,7 +294,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
                 children: <Widget>[
                   if( isChooseOnMap )
                     FloatingActionButton.extended(
-                      label: Text('Choose'),
+                      label: Text(AppLocalizations.instance.text("choose")),
                       onPressed: () async {
                         await OnMove_End();
                         isChooseOnMap = false;
@@ -308,7 +304,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
                     ),
                   if( Map_Latlng["src"] != null && Map_Latlng["dst"] != null && !isChooseOnMap)
                   FloatingActionButton.extended(
-                    label: Text('Preview'),
+                    label: Text(AppLocalizations.instance.text("preview")),
                     onPressed: _Fin,
                     heroTag: null,
                   ),
@@ -326,7 +322,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
         if (result) {
           isChooseOnMap = true;
         }else {
-          Src_OR_Dst(current_Location, "Current Location",is_src);
+          Src_OR_Dst(current_Location, AppLocalizations.instance.text("curLoc"), is_src);
           _mapController.animateCamera(CameraUpdate.newCameraPosition(
               CameraPosition(target: current_Location, zoom: 18)));
         }
@@ -434,7 +430,7 @@ class _CreateRoutestate_Join extends State<CreateRoute_Join> {
     if (isChooseOnMap){
       if( isSet_Marker && Marker_Location != null){
         bool isSrc = is_src;
-        NearbyPlace place = null;
+        NearbyPlace place;
         String name = "";
         double min = double.maxFinite;
         List<NearbyPlace> tmp = await NearbyPlace().getNearbyPlace(Marker_Location.latitude, Marker_Location.longitude);

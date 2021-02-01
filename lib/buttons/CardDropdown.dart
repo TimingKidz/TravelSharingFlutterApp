@@ -15,7 +15,6 @@ class CardDropdown extends StatefulWidget {
 }
 
 class _CardDropdownState extends State<CardDropdown> {
-  GlobalKey _key = GlobalKey();
   dynamic dropdownValue;
   double _height;
   bool isOpen = false;
@@ -87,38 +86,6 @@ class _CardDropdownState extends State<CardDropdown> {
           )
         ],
       ),
-    );
-    return Card(
-      key: _key,
-        margin: EdgeInsets.all(0.0),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0)
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(left: 16.0, top: 12.0, right: 12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(widget.labelText, style: TextStyle(color: Colors.black.withOpacity(0.6))),
-              DropdownButtonHideUnderline(
-                child: DropdownButton<dynamic>(
-                  isExpanded: true,
-                  value: dropdownValue,
-                  icon: Icon(Icons.arrow_drop_down_circle),
-                  style: TextStyle(color: Colors.black),
-                  onChanged: (dynamic newValue) {
-                    setState(() {
-                      dropdownValue = newValue;
-                      widget.onChanged(dropdownValue);
-                    });
-                  },
-                  items: widget.listItems
-                      .map<DropdownMenuItem<dynamic>>(widget.dropdownTileBuild).toList(),
-                ),
-              ),
-            ],
-          ),
-        )
     );
   }
 

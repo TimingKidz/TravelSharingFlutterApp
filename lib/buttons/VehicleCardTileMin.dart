@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
+import 'package:travel_sharing/localization.dart';
 
 class VehicleCardTileMin extends StatefulWidget {
   final Vehicle data;
@@ -38,15 +39,6 @@ class VehicleCardTileMinState extends State<VehicleCardTileMin> {
                     SizedBox(width: 8.0),
                   ],
                 ),
-                // InkWell(
-                //   child: Text(
-                //     "Change Default",
-                //     style: TextStyle(color: Colors.red),
-                //   ),
-                //   onTap: (){
-                //
-                //   },
-                // )
               ],
             ),
             SizedBox(height: 4.0),
@@ -55,25 +47,25 @@ class VehicleCardTileMinState extends State<VehicleCardTileMin> {
               children: <Widget>[
                 Column(
                   children: <Widget>[
-                    Text('ทะเบียน', style: TextStyle(color: Colors.black.withOpacity(0.7)),),
+                    Text(AppLocalizations.instance.text("license"), style: TextStyle(color: Colors.black.withOpacity(0.7)),),
                     Text(widget.data.license)
                   ],
                 ),
                 Column(
                   children: <Widget>[
-                    Text('ยี่ห้อ', style: TextStyle(color: Colors.black.withOpacity(0.7)),),
+                    Text(AppLocalizations.instance.text("brand"), style: TextStyle(color: Colors.black.withOpacity(0.7)),),
                     Text(widget.data.brand)
                   ],
                 ),
                 Column(
                   children: <Widget>[
-                    Text('รุ่น', style: TextStyle(color: Colors.black.withOpacity(0.7)),),
+                    Text(AppLocalizations.instance.text("model"), style: TextStyle(color: Colors.black.withOpacity(0.7)),),
                     Text(widget.data.model)
                   ],
                 ),
                 Column(
                   children: <Widget>[
-                    Text('สี', style: TextStyle(color: Colors.black.withOpacity(0.7)),),
+                    Text(AppLocalizations.instance.text("color"), style: TextStyle(color: Colors.black.withOpacity(0.7)),),
                     Text(widget.data.color)
                   ],
                 )

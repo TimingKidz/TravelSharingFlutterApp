@@ -1,11 +1,8 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Dialog.dart';
-import 'package:travel_sharing/Pages/homeNavigation.dart';
-import 'package:travel_sharing/Pages/signupPage.dart';
 import 'package:travel_sharing/UI/NotificationBarSettings.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:firebase_auth/firebase_auth.dart' as u;
@@ -17,7 +14,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> {
-  GoogleSignInAccount _currentUser;
   bool isLoading = false;
 
   @override
@@ -31,7 +27,7 @@ class LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account){
-      _currentUser = account;
+      googleUser = account;
     });
     googleSignIn.signInSilently();
   }

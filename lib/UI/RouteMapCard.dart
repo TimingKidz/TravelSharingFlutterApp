@@ -1,17 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travel_sharing/Class/DateManage.dart';
-import 'package:travel_sharing/Class/Match_Info.dart';
-import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
-import 'package:travel_sharing/Dialog.dart';
 import 'package:travel_sharing/Class/Travel_Info.dart';
 import 'package:travel_sharing/Pages/mapview.dart';
-import 'package:travel_sharing/UI/ProfileInfo.dart';
-import 'package:travel_sharing/buttons/VehicleCardTileMin.dart';
+import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
 
 class RouteMapCard extends StatefulWidget {
@@ -158,11 +152,11 @@ class _RouteMapCardState extends State<RouteMapCard> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('ปลายทาง', style: TextStyle(fontSize: 10.0)),
+                                    Text(AppLocalizations.instance.text("dst"), style: TextStyle(fontSize: 10.0)),
                                     SizedBox(height: 5.0),
                                     Text(widget.data.routes.dst, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
                                     SizedBox(height: 16.0),
-                                    Text('ต้นทาง', style: TextStyle(fontSize: 10.0)),
+                                    Text(AppLocalizations.instance.text("src"), style: TextStyle(fontSize: 10.0)),
                                     SizedBox(height: 5.0),
                                     Text(widget.data.routes.src, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
                                   ],
@@ -175,7 +169,7 @@ class _RouteMapCardState extends State<RouteMapCard> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
                                 widget.data.routes.role == "0"
-                                    ? Text(widget.data.routes.cost == "0" ? "FREE" :"฿${widget.data.routes.cost}")
+                                    ? Text(widget.data.routes.cost == "0" ? AppLocalizations.instance.text("free") :"฿${widget.data.routes.cost}")
                                     : Vehicle().getTypeIcon(widget.data.routes.vehicle.type, 32),
                                 SizedBox(height: 8.0),
                                 Container(

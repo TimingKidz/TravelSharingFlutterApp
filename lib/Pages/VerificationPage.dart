@@ -8,6 +8,7 @@ import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Dialog.dart';
 import 'package:travel_sharing/UI/NotificationBarSettings.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
+import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -29,13 +30,11 @@ class _VerificationPageState extends State<VerificationPage>{
 
   @override
   void dispose() {
-    // TODO: implement dispose
     notificationBarIconLight();
     super.dispose();
   }
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     email = currentUser.mailcmu;
     errorController =  StreamController<ErrorAnimationType>();
@@ -68,7 +67,7 @@ class _VerificationPageState extends State<VerificationPage>{
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(isEdit ? "Your Email" : "Student Verification", style: Theme.of(context).textTheme.headline4),
+                  Text(isEdit ? AppLocalizations.instance.text("veriEmailTitle") : AppLocalizations.instance.text("veriTitle"), style: Theme.of(context).textTheme.headline4),
                   SizedBox(height: 24),
                   if(isEdit)
                     Padding(
@@ -113,7 +112,7 @@ class _VerificationPageState extends State<VerificationPage>{
                       borderRadius: BorderRadius.circular(20.0),
                     ),
                     color: Colors.green,
-                    child: Text(isEdit ? "RESEND OTP" : "VERIFY"),
+                    child: Text(isEdit ? AppLocalizations.instance.text("resendOTP") : AppLocalizations.instance.text("verify")),
                   ),
                 ],
               ),
@@ -137,7 +136,7 @@ class _VerificationPageState extends State<VerificationPage>{
         text: TextSpan(
             children: [
               TextSpan(
-                  text: "Enter the code sent to ",
+                  text: AppLocalizations.instance.text("sendtoEmailDes"),
                   style: Theme.of(context).textTheme.bodyText2
               ),
               TextSpan(
@@ -151,7 +150,7 @@ class _VerificationPageState extends State<VerificationPage>{
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Wrong email? "),
+          Text(AppLocalizations.instance.text("wrongEmail")),
           GestureDetector(
             onTap: (){
               setState(() {
@@ -159,7 +158,7 @@ class _VerificationPageState extends State<VerificationPage>{
               });
             },
             child: Text(
-              "EDIT",
+              AppLocalizations.instance.text("edit"),
               style: TextStyle(
                 color: Theme.of(context).accentColor,
                 fontWeight: FontWeight.bold
@@ -197,12 +196,7 @@ class _VerificationPageState extends State<VerificationPage>{
           onCompleted: (v) {
             print("Completed");
           },
-//          onChanged: (value) {
-//            print(value);
-//            setState(() {
-//              currentText = value;
-//            });
-//          },
+         onChanged: (value) {},
           beforeTextPaste: (text) {
             print("Allowing to paste $text");
             //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
@@ -218,14 +212,14 @@ class _VerificationPageState extends State<VerificationPage>{
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Didn't receive the code? "),
+          Text(AppLocalizations.instance.text("resendText")),
           GestureDetector(
             onTap: isResend ? null : (){
               setState(() {isResend = true;});
               _resend();
             },
             child: Text(
-              "RESEND",
+              AppLocalizations.instance.text("resend"),
               style: TextStyle(
                   color: Theme.of(context).accentColor,
                   fontWeight: FontWeight.bold
@@ -297,7 +291,7 @@ class _VerificationPageState extends State<VerificationPage>{
                     Text("You already online with other device."),
                     <Widget>[
                       FlatButton(
-                        child: Text('Ok'),
+                        child: Text(AppLocalizations.instance.text("ok")),
                         onPressed: () async {
                           ScaffoldMessenger.of(context).removeCurrentSnackBar();
                           Navigator.pushReplacementNamed(context,"/login");

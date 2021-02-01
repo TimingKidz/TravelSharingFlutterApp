@@ -3,13 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/Feed.dart';
 import 'package:travel_sharing/Class/Feeds.dart';
-import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Pages/JoinMap.dart';
 import 'package:travel_sharing/Pages/map.dart';
 import 'package:travel_sharing/buttons/FeedCardTile.dart';
 import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
-import 'package:travel_sharing/buttons/DashboardCardTile.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 import 'package:travel_sharing/Dialog.dart';
 
@@ -27,7 +25,7 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
   GlobalKey actionKey = GlobalKey();
   double height;
   int currentI = 0;
-  List<Feed> list = null;
+  List<Feed> list;
   bool isFilter = false;
 
   List<String> filterTypeList = List();
@@ -70,11 +68,11 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
               child: list.isNotEmpty
                   ? RefreshIndicator(
                 onRefresh: () async {
-                  getData(0,filterTypeSelected, false);
+                  getData(0,filterTypeSelected, true);
                 },
                 child: _buildListView(),
               )
-                  : Center(child: Text("Nothing in feed yet.")),
+                  : Center(child: Text(AppLocalizations.instance.text("feedempty"))),
             )
                 : Padding(
               padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.09),
@@ -85,7 +83,7 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
                     children: <Widget>[
                       CircularProgressIndicator(),
                       SizedBox(height: 20.0),
-                      Text("Loading..."),
+                      Text(AppLocalizations.instance.text("loading")),
                     ],
                   )
               ),
@@ -122,7 +120,7 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
                             IconButton(
                               icon: Icon(Icons.filter_list),
                               splashRadius: 24.0,
-                              tooltip: "Filter",
+                              tooltip: AppLocalizations.instance.text("filter"),
                               iconSize: 26.0,
                               color: Colors.white,
                               onPressed: () {
@@ -237,29 +235,6 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
               print("Selected = " + filterTypeSelected.join(", ")); // Print all selected type
             });
           },
-        ),
-      ),
-    );
-    return Card(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0)
-      ),
-      color: isSelected[type] ? Theme.of(context).accentColor : Colors.white,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(20.0),
-        onTap: (){
-          setState(() {
-            isSelected[type] = !isSelected[type];
-            if(isSelected[type]) filterTypeSelected.add(type);
-            else filterTypeSelected.remove(type);
-            print("Selected = " + filterTypeSelected.join(", ")); // Print all selected type
-          });
-        },
-        child: Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text(
-              type
-          ),
         ),
       ),
     );
@@ -387,11 +362,11 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
             onCardPressed: () {
               if(data.routes.role == "1" && currentUser.vehicle.isEmpty){
                   alertDialog(context,
-                    "No vehicle",
-                    Text("Please add your vehicle.\nAccount -> Vehicle Management"),
+                    AppLocalizations.instance.text("vehicleDialogTitle"),
+                    Text(AppLocalizations.instance.text("vehicleDialogBody")),
                     <Widget>[
                       FlatButton(
-                        child: Text('OK'),
+                        child: Text(AppLocalizations.instance.text("ok")),
                         onPressed: () async {
                           Navigator.of(context).pop();
                         },
@@ -419,10 +394,6 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
         },
       ),
     );
-    // return FeedCardTile(
-    //   data: data,
-    //   onCardPressed:() => onCardPress(data) ,
-    // );
   }
 
   // void onCardPress(Feed data){

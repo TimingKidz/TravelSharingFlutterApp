@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/DateManage.dart';
-import 'package:travel_sharing/Class/History.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
 import 'package:travel_sharing/Class/Travel_Info.dart';
 import 'package:travel_sharing/Pages/Matchinformation.dart';
@@ -31,7 +30,7 @@ class _HistoryPageState extends State<HistoryPage> {
             Padding(
               padding: EdgeInsets.only(top: 80),
               child: historyReverseList.isNotEmpty ? _buildListView() : Center(
-                child: Text("Nothing in your history yet."),
+                child: Text(AppLocalizations.instance.text("historyempty")),
               ),
             ),
             Card(
@@ -116,7 +115,10 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Widget _buildListView() {
-    return ListView.builder(
+    return ListView.separated(
+      separatorBuilder: (context, _){
+        return Divider();
+      },
         physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         itemCount: historyReverseList.length,
         itemBuilder: (context, i) {
@@ -133,20 +135,21 @@ class _HistoryPageState extends State<HistoryPage> {
         else   Navigator.push(context, MaterialPageRoute(
             builder: (context) => Matchinformation(uid: data.routes.match.first, data: data , isHistory:  true))).then((value) =>  _pageConfig());
       },
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(AppLocalizations.instance.text("src"), style: TextStyle(fontSize: 10.0, color: Colors.black54)),
           Text(
             data.routes.src,
             overflow: TextOverflow.ellipsis,
           ),
-          Icon(Icons.navigate_next_outlined),
-          Flexible(
-            child: Text(
-              data.routes.dst,
-              overflow: TextOverflow.ellipsis,
-            ),
-          )
+          SizedBox(height: 4.0),
+          Text(AppLocalizations.instance.text("dst"), style: TextStyle(fontSize: 10.0, color: Colors.black54)),
+          Text(
+            data.routes.dst,
+            overflow: TextOverflow.ellipsis,
+          ),
+          SizedBox(height: 8.0)
         ],
       ),
       subtitle: Text(DateManage().datetimeFormat("full", data.routes.date)),

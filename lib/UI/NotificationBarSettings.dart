@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:travel_sharing/custom_color_scheme.dart';
 
 void notificationBarIconDark(){
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(

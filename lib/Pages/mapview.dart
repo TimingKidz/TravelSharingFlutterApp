@@ -1,15 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:latlong/latlong.dart' as l;
 import 'package:location/location.dart' ;
 import "package:google_maps_webservice/places.dart" as p;
-import 'package:flutter_polyline_points/flutter_polyline_points.dart' ;
-import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
-import 'package:travel_sharing/Pages/InfoFill.dart';
-import 'package:travel_sharing/Pages/dashboard.dart';
 import 'package:travel_sharing/UI/NotificationBarSettings.dart';
 import 'package:travel_sharing/main.dart';
 
@@ -24,23 +19,22 @@ class MapView extends StatefulWidget {
 class _MapView extends State<MapView> {
   final places = new p.GoogleMapsPlaces(apiKey: api_key);
   final l.Distance distance = new l.Distance();
-  p.GoogleMapsPlaces _places = p.GoogleMapsPlaces(apiKey: api_key);
   GoogleMapController _mapController;
   List<LatLng> routes = List();
   Set<Polyline> lines = Set();
   List<LatLng> temp = List();
   Map<LatLng,String> Name_list = Map();
-  LatLng fromPoint = null;
-  LatLng toPoint = null;
+  LatLng fromPoint;
+  LatLng toPoint;
   Set<Marker> Markers = Set();
   LocationData currentLocation ;
   Location location = Location();
   bool isSet_Marker = false;
-  LatLng current_Location ;
-  LatLngBounds bounds ;
-  p.PlacesSearchResult tmp = null;
-  LatLng src = null;
-  LatLng dst = null;
+  LatLng current_Location;
+  LatLngBounds bounds;
+  p.PlacesSearchResult tmp;
+  LatLng src;
+  LatLng dst;
 //  static int Role = 0;
 
   @override

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:travel_sharing/custom_color_scheme.dart';
 
 class CardTextField extends StatefulWidget {
   final String labelText;

@@ -3,21 +3,15 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:google_sign_in/widgets.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:travel_sharing/Class/DropdownVar.dart';
 import 'package:travel_sharing/Class/User.dart';
-import 'package:travel_sharing/Pages/homeNavigation.dart';
-import 'package:travel_sharing/Pages/loginPage.dart';
 import 'package:travel_sharing/buttons/CardDropdown.dart';
-import 'package:travel_sharing/buttons/borderTextField.dart';
 import 'package:travel_sharing/buttons/cardDatePicker.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
 import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SignUpPage extends StatefulWidget {
   SignUpPageState createState() => SignUpPageState();
@@ -151,7 +145,7 @@ class SignUpPageState extends State<SignUpPage> {
                       height: 16.0,
                       child: CircularProgressIndicator(strokeWidth: 2,valueColor: AlwaysStoppedAnimation(Colors.black),),
                     ):Icon(Icons.check),
-                    label: Text(isPress ? "Loading..." :"Finish"),
+                    label: Text(isPress ? AppLocalizations.instance.text("loading") : AppLocalizations.instance.text("finish")),
                     onPressed: isPress ? null : (){
                       if(_formKey.currentState.validate()) {
                         isPress = true;
@@ -174,7 +168,7 @@ class SignUpPageState extends State<SignUpPage> {
       CardTextField(
         notNull: true,
         initValue: googleUser.displayName,
-        labelText: "Full Name",
+        labelText: AppLocalizations.instance.text("name"),
         onChanged: (data) => userData.name = data,
       ),
       SizedBox(height: 8.0),
@@ -182,7 +176,7 @@ class SignUpPageState extends State<SignUpPage> {
         notNull: true,
         isStudentEmail: true,
         maxLines: 1,
-        labelText: "Student Email",
+        labelText: AppLocalizations.instance.text("email"),
         onChanged: (data) => userData.mailcmu = data,
       ),
       SizedBox(height: 8.0),
@@ -191,7 +185,7 @@ class SignUpPageState extends State<SignUpPage> {
           Expanded(
             child: CardDropdown(
               listItems: DropdownVar().genderList,
-              labelText: "Gender",
+              labelText: AppLocalizations.instance.text("gender"),
               dropdownTileBuild: (value) {
                 return Text(value);
               },
@@ -201,7 +195,7 @@ class SignUpPageState extends State<SignUpPage> {
           SizedBox(width: 8.0),
           Expanded(
             child: CardDatePicker(
-              labelText: "Birthday",
+              labelText: AppLocalizations.instance.text("birthday"),
               isJustDate: true,
               isBirthday: true,
               onDatePick: (date){
@@ -214,7 +208,7 @@ class SignUpPageState extends State<SignUpPage> {
       SizedBox(height: 8.0),
       CardDropdown(
         listItems: DropdownVar().facultyList,
-        labelText: "Faculty",
+        labelText: AppLocalizations.instance.text("faculty"),
         dropdownTileBuild: (value) {
           return Text(value);
         },
@@ -223,7 +217,7 @@ class SignUpPageState extends State<SignUpPage> {
       SizedBox(height: 8.0),
       CardTextField(
         notNull: true,
-        labelText: "Phone",
+        labelText: AppLocalizations.instance.text("phone"),
         maxLength: 10,
         isPhoneValidator: true,
         inputFormat: [FilteringTextInputFormatter.digitsOnly],
@@ -247,13 +241,13 @@ class SignUpPageState extends State<SignUpPage> {
         sourcePath: image.path,
         aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
         androidUiSettings: AndroidUiSettings(
-            toolbarTitle: 'Crop Image',
+            toolbarTitle: AppLocalizations.instance.text("cropimg"),
             toolbarColor: Theme.of(context).primaryColor,
             toolbarWidgetColor: Colors.white,
             initAspectRatio: CropAspectRatioPreset.square,
             lockAspectRatio: true),
         iosUiSettings: IOSUiSettings(
-            title: 'Crop Image',
+            title: AppLocalizations.instance.text("cropimg"),
             aspectRatioLockEnabled: true,
             aspectRatioPickerButtonHidden: true,
             rectX: 1,

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
@@ -36,7 +35,6 @@ class _CreateRoutestate extends State<CreateRoute> {
   bool isSet_Marker = false;
   LatLng Marker_Location;
   bool is_src = true;
-  Map<MarkerId, Marker> _centerMarkers = <MarkerId, Marker>{};
   Map<MarkerId, Marker> _markers = <MarkerId, Marker>{};
   Map<String,LatLng> Map_Latlng = <String,LatLng>{};
   Map<String,String> Map_Placename = <String,String>{};
@@ -84,7 +82,7 @@ class _CreateRoutestate extends State<CreateRoute> {
         if (result) {
           isChooseOnMap = true;
         }else {
-          Src_OR_Dst(current_Location, "Current Location",is_src);
+          Src_OR_Dst(current_Location, AppLocalizations.instance.text("curLoc"), is_src);
           _mapController.animateCamera(CameraUpdate.newCameraPosition(
               CameraPosition(target: current_Location, zoom: 18)));
         }
@@ -188,7 +186,7 @@ class _CreateRoutestate extends State<CreateRoute> {
                                   Padding(
                                     padding: EdgeInsets.only(top: 0.0),
                                     child: Text(
-                                      "Choose on map",
+                                      AppLocalizations.instance.text("ChooseOnMap"),
                                       style: TextStyle(
                                         // fontWeight: FontWeight.bold,
                                         fontSize: 20.0,
@@ -323,7 +321,7 @@ class _CreateRoutestate extends State<CreateRoute> {
                                           },
                                         ),
                                         Text(
-                                          "เพิ่มจุดที่ต้องการผ่าน",
+                                          AppLocalizations.instance.text("addPoint"),
                                           style: TextStyle(
                                               color: Colors.white
                                           ),
@@ -346,7 +344,7 @@ class _CreateRoutestate extends State<CreateRoute> {
                                                       children: [
                                                         Padding(
                                                           padding: const EdgeInsets.only(left: 8.0),
-                                                          child: Text("Tips", style: Theme.of(context).textTheme.subtitle1),
+                                                          child: Text(AppLocalizations.instance.text("tips"), style: Theme.of(context).textTheme.subtitle1),
                                                         ),
                                                         SizedBox(
                                                           height: 36,
@@ -366,7 +364,7 @@ class _CreateRoutestate extends State<CreateRoute> {
                                                     ),
                                                     Padding(
                                                       padding: const EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 8.0),
-                                                      child: Text("เส้นทางที่สร้างให้อาจจะไม่ตรงใจกับคุณ ฟีเจอร์นี้จึงอนุญาติให้คุณได้เพิ่มจุดที่ต้องการผ่านเอง เพื่อให้ได้เส้นทางตรงกับที่คุณต้องการมากขึ้น"),
+                                                      child: Text(AppLocalizations.instance.text("addPointTips")),
                                                     )
                                                   ],
                                                 ),
@@ -398,7 +396,7 @@ class _CreateRoutestate extends State<CreateRoute> {
                     if( isChooseOnMap )
                       FloatingActionButton.extended(
                         elevation: 1,
-                        label: Text('OK'),
+                        label: Text(AppLocalizations.instance.text("ok")),
                         onPressed: () async {
                           if(isSelected){
                             createRoute(Marker_Location);
@@ -416,7 +414,7 @@ class _CreateRoutestate extends State<CreateRoute> {
                       FloatingActionButton.extended(
                         elevation: 1,
                         icon: Icon(Icons.arrow_forward_sharp),
-                        label: Text('Next'),
+                        label: Text(AppLocalizations.instance.text("next")),
                         onPressed: (){
                           isPreview = false;
                           isChooseOnMap = false;
@@ -429,7 +427,7 @@ class _CreateRoutestate extends State<CreateRoute> {
                       FloatingActionButton.extended(
                         elevation: 1,
                         icon: Icon(Icons.check),
-                        label: Text('preview'),
+                        label: Text(AppLocalizations.instance.text("preview")),
                         onPressed: () async {
                           isChooseOnMap = false;
                           isWantCustom = false;
@@ -445,7 +443,7 @@ class _CreateRoutestate extends State<CreateRoute> {
                       FloatingActionButton.extended(
                         elevation: 1,
                         icon: Icon(Icons.check),
-                        label: Text('Finish'),
+                        label: Text(AppLocalizations.instance.text("finish")),
                         onPressed: _Fin,
                         heroTag: null,
                       ),
@@ -721,7 +719,7 @@ class _CreateRoutestate extends State<CreateRoute> {
     if (isChooseOnMap){
       if( isSet_Marker && Marker_Location != null){
         bool isSrc = is_src;
-        NearbyPlace place = null; String name = ""; double min = double.maxFinite;
+        NearbyPlace place; String name = ""; double min = double.maxFinite;
         List<NearbyPlace> tmp = await NearbyPlace().getNearbyPlace(Marker_Location.latitude, Marker_Location.longitude);
         tmp.forEach((element) {
           l.LatLng NearPlace_Loc = new l.LatLng(element.location.latitude,element.location.longitude);

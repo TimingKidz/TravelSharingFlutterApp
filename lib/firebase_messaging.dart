@@ -1,10 +1,8 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:http/http.dart' as Http;
 import 'package:flutter/cupertino.dart';
 
 final Map<String,String> header = <String, String>{'Content-Type': 'application/json; charset=UTF-8'};
@@ -85,8 +83,6 @@ class _FireBase_MessagingState extends State<FireBase_Messaging>{
   Future<void> sendToken(String id) async{
     print(id);
     try{
-      var url = "http://10.80.27.233:3000/api/routes/test";
-      Http.Response response = await Http.post(url,headers: header , body: jsonEncode({"id":id }));
       print(jsonEncode({"id":id }));
     }catch(error){
       throw("can't connect");

@@ -4,9 +4,7 @@ import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/Dialog.dart';
 import 'package:travel_sharing/UI/PlainBGInfo.dart';
 import 'package:travel_sharing/buttons/PlainBGTextField.dart';
-import 'package:travel_sharing/buttons/cardTextField.dart';
 import 'package:travel_sharing/localization.dart';
-import 'package:travel_sharing/main.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 
 class VehicleCardTileFull extends StatefulWidget {

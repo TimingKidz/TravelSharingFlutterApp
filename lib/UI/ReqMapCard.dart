@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travel_sharing/Class/DateManage.dart';
 import 'package:travel_sharing/Class/Req_Info.dart';
 import 'package:travel_sharing/Class/Travel_Info.dart';
@@ -10,6 +9,7 @@ import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/Dialog.dart';
 import 'package:travel_sharing/Pages/mapview.dart';
 import 'package:travel_sharing/UI/ProfileInfo.dart';
+import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
 
@@ -76,7 +76,7 @@ class _ReqMapCardState extends State<ReqMapCard> {
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
                         child: Text(
-                          "Offer",
+                          AppLocalizations.instance.text("offer"),
                           style: TextStyle(
                               fontSize: 12,
                               color: Colors.white,
@@ -109,11 +109,11 @@ class _ReqMapCardState extends State<ReqMapCard> {
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text('ปลายทาง', style: TextStyle(fontSize: 10.0)),
+                                          Text(AppLocalizations.instance.text("dst"), style: TextStyle(fontSize: 10.0)),
                                           SizedBox(height: 5.0),
                                           Text(widget.data.routes.dst, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
                                           SizedBox(height: 16.0),
-                                          Text('ต้นทาง', style: TextStyle(fontSize: 10.0)),
+                                          Text(AppLocalizations.instance.text("src"), style: TextStyle(fontSize: 10.0)),
                                           SizedBox(height: 5.0),
                                           Text(widget.data.routes.src, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
                                         ],
@@ -169,7 +169,7 @@ class _ReqMapCardState extends State<ReqMapCard> {
                                               direction: Axis.horizontal,
                                             ),
                                             SizedBox(width: 4.0),
-                                            Text(widget.data.user.reviewSummary.amount == 0 ? "0.0": (widget.data.user.reviewSummary.totalscore/widget.data.user.reviewSummary.amount).toString(), style: TextStyle(fontSize: 10.0)),
+                                            Text(widget.data.user.reviewSummary.amount == 0 ? "0.0": (widget.data.user.reviewSummary.totalscore/widget.data.user.reviewSummary.amount).toStringAsPrecision(2), style: TextStyle(fontSize: 10.0)),
                                             SizedBox(width: 4.0),
                                             Container(
                                               padding: EdgeInsets.symmetric(horizontal: 2.0),
@@ -207,7 +207,7 @@ class _ReqMapCardState extends State<ReqMapCard> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
-                                child: Text('ปฏิเสธ', style: TextStyle(color: Colors.white)),
+                                child: Text(AppLocalizations.instance.text("decline"), style: TextStyle(color: Colors.white)),
                                 onPressed: () => widget.onDeclinePressed(),
                               ),
                             ),
@@ -222,7 +222,7 @@ class _ReqMapCardState extends State<ReqMapCard> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
-                                child: Text('ยอมรับ', style: TextStyle(color: Colors.white)),
+                                child: Text(AppLocalizations.instance.text("accept"), style: TextStyle(color: Colors.white)),
                                 onPressed: () => widget.onAcceptPressed() ,
                               ),
                             ),
@@ -235,6 +235,7 @@ class _ReqMapCardState extends State<ReqMapCard> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
+                                onPressed: () {},
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
@@ -246,7 +247,7 @@ class _ReqMapCardState extends State<ReqMapCard> {
                                       ),
                                     if (widget.isPress)
                                       SizedBox( width: 20,),
-                                    Text("Loading...", style: TextStyle(color: Colors.white,)),
+                                    Text(AppLocalizations.instance.text("loading"), style: TextStyle(color: Colors.white,)),
                                   ],
                                 ),
                               ),
@@ -293,7 +294,7 @@ class _ReqMapCardState extends State<ReqMapCard> {
         if(widget.data.routes.role == "0")
           SizedBox(height: 12.0),
         if(widget.data.routes.role == "0")
-          Text(widget.data.routes.cost == "0" ? "FREE" :"฿${widget.data.routes.cost}"),
+          Text(widget.data.routes.cost == "0" ? AppLocalizations.instance.text("free") :"฿${widget.data.routes.cost}"),
         SizedBox(height: 8.0),
         Text(
           widget.data.routes.role == "1"
@@ -303,10 +304,10 @@ class _ReqMapCardState extends State<ReqMapCard> {
         ),
         Text(
           widget.data.routes.role == "1"
-              ? '${widget.data.routes.amount} คน'
+              ? '${widget.data.routes.amount} ${AppLocalizations.instance.text("personUnit")}'
               : '${int.parse(
               widget.data.routes.amount) -
-              widget.data.routes.match.length} คน',
+              widget.data.routes.match.length} ${AppLocalizations.instance.text("personUnit")}',
           style: TextStyle(fontSize: 12.0),
         )
       ],

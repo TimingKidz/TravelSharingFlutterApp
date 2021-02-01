@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:google_sign_in/widgets.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:travel_sharing/Class/DateManage.dart';
@@ -266,6 +266,9 @@ class ProfileManagePageState extends State<ProfileManagePage> {
         ),
         CardTextField(
           labelText: "เบอร์โทร",
+          maxLength: 10,
+          isPhoneValidator: true,
+          inputFormat: [FilteringTextInputFormatter.digitsOnly],
           initValue: currentUser.phone,
           onChanged: (val) => editUser.phone = val,
         ),

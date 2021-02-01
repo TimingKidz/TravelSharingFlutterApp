@@ -93,7 +93,7 @@ class _InfoFillState extends State<InfoFill> {
             height: 16.0,
             child: CircularProgressIndicator(strokeWidth: 2,valueColor: AlwaysStoppedAnimation(Colors.black),),
           ) : Icon(isActivity ? Icons.check : Icons.arrow_forward_sharp),
-          label: isLoading ? Text("Loading...") : Text(isActivity ? "Finish" : "Next"),
+          label: isLoading ? Text(AppLocalizations.instance.text("loading")) : Text(isActivity ? AppLocalizations.instance.text("finish") : AppLocalizations.instance.text("next")),
           onPressed: isLoading ? null : (){
             if(_formKey.currentState.validate()){
               if(!isActivity){
@@ -190,7 +190,7 @@ class _InfoFillState extends State<InfoFill> {
         ),
         SizedBox(height: 8.0),
         CardDropdown(
-          labelText: 'Tag',
+          labelText: AppLocalizations.instance.text("tag"),
           listItems: DropdownVar().tagList,
           initData: Final_Data.tag.first,
           dropdownTileBuild: (value) {
@@ -206,7 +206,7 @@ class _InfoFillState extends State<InfoFill> {
           SizedBox(height: 8.0),
         if(widget.Role == 0)
           CardDropdown(
-            labelText: 'ยานพาหนะที่จะใช้',
+            labelText: AppLocalizations.instance.text("selectVehicle"),
             initData: Final_Data.vehicle,
             listItems: currentUser.vehicle,
             dropdownTileBuild: (value) {
@@ -220,7 +220,7 @@ class _InfoFillState extends State<InfoFill> {
         CardTextField(
           notNull: true,
           initValue: widget.src,
-          labelText: 'ต้นทาง',
+          labelText: AppLocalizations.instance.text("src"),
           onChanged: (text) {
             Final_Data.src = text;
           },
@@ -229,14 +229,14 @@ class _InfoFillState extends State<InfoFill> {
         CardTextField(
           notNull: true,
           initValue: widget.dst,
-          labelText: 'ปลายทาง',
+          labelText: AppLocalizations.instance.text("dst"),
           onChanged: (text) {
             Final_Data.dst = text;
           },
         ),
         SizedBox(height: 8.0),
         CardDatePicker(
-            labelText: 'วันเดินทาง',
+            labelText: AppLocalizations.instance.text("dateTravel"),
             initDateTime: DateTime.parse(Final_Data.date),
             onDatePick: (date) {
               Final_Data.date = date;
@@ -247,8 +247,8 @@ class _InfoFillState extends State<InfoFill> {
           children: [
             Expanded(
               child: CardPicker(
-                labelText: widget.Role == 0 ? 'ต้องการคนไปด้วย' : 'จำนวนคนไปด้วย',
-                unit: "คน",
+                labelText: widget.Role == 0 ? AppLocalizations.instance.text("tripDemandChuan") : AppLocalizations.instance.text("tripDemandPaiDuay"),
+                unit: AppLocalizations.instance.text("personUnit"),
                 initItem: Final_Data.amount,
                 itemsList: [for(int i = 1; i <= 10; i++) "$i"],
                 onChange: (text){
@@ -259,8 +259,8 @@ class _InfoFillState extends State<InfoFill> {
             SizedBox(width: 8.0),
             Expanded(
               child: CardPicker(
-                labelText: "ช่วง",
-                unit: "นาที",
+                labelText: AppLocalizations.instance.text("timerange"),
+                unit: AppLocalizations.instance.text("minute"),
                 initItem: Final_Data.range,
                 tipsText: "ช่วงเวลาบวกลบจากเวลาที่คุณต้องการเดินทาง เพื่อเพิ่มโอกาสในการจับคู่กับคนอื่นมากขึ้น ยิ่งช่วงกว้าง ยิ่งเพิ่มโอกาส เช่น \n\n"
                     "เดินทางเวลา 12:00 และเลือกช่วง 15 นาที คุณจะถูกจับคู่กับคนที่เดินทางในช่วง 11:45 - 12:15",
@@ -277,7 +277,7 @@ class _InfoFillState extends State<InfoFill> {
         if(widget.Role == 0)
           CardTextField(
           initValue: Final_Data.cost ?? "",
-          labelText: 'ราคา (฿)',
+          labelText: AppLocalizations.instance.text("price"),
           type: TextInputType.number,
           inputFormat: [FilteringTextInputFormatter.digitsOnly],
           onChanged: (text) {
@@ -331,7 +331,7 @@ class _InfoFillState extends State<InfoFill> {
           ),
           SizedBox(height: 8.0),
           CardTextField(
-            labelText: "อธิบายกิจกรรมของคุณ",
+            labelText: AppLocalizations.instance.text("description"),
             minLines: 5,
             maxLines: 8,
             onChanged: (text){
@@ -362,13 +362,13 @@ class _InfoFillState extends State<InfoFill> {
         maxWidth: 1080,
         aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
         androidUiSettings: AndroidUiSettings(
-            toolbarTitle: 'Crop Image',
+            toolbarTitle: AppLocalizations.instance.text("cropimg"),
             toolbarColor: Theme.of(context).primaryColor,
             toolbarWidgetColor: Colors.white,
             initAspectRatio: CropAspectRatioPreset.square,
             lockAspectRatio: true),
         iosUiSettings: IOSUiSettings(
-            title: 'Crop Image',
+            title: AppLocalizations.instance.text("cropimg"),
             aspectRatioLockEnabled: true,
             aspectRatioPickerButtonHidden: true,
             rectX: 1,
@@ -415,7 +415,7 @@ class _InfoFillState extends State<InfoFill> {
               Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
             }else{
               ScaffoldMessenger.of(context).removeCurrentSnackBar();
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not upload image.")));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.instance.text("imgUploadErr"))));
             }
           });
         }else{
@@ -425,7 +425,7 @@ class _InfoFillState extends State<InfoFill> {
       }else{
         setState(() { isLoading = false; });
         ScaffoldMessenger.of(context).removeCurrentSnackBar();
-       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not create route.")));
+       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.instance.text("routeCreateErr"))));
       }
     });
   }

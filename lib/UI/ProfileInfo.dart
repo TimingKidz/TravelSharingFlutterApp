@@ -97,7 +97,7 @@ class ProfileInfo extends StatelessWidget {
                     direction: Axis.horizontal,
                   ),
                   SizedBox(width: 4.0),
-                  Text( data.reviewSummary.amount == 0 ? "0.0": (data.reviewSummary.totalscore/data.reviewSummary.amount).toString(), style: TextStyle(fontSize: 16.0)),
+                  Text( data.reviewSummary.amount == 0 ? "0.0": (data.reviewSummary.totalscore/data.reviewSummary.amount).toStringAsPrecision(2), style: TextStyle(fontSize: 16.0)),
                   SizedBox(width: 4.0),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 2.0),

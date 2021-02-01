@@ -26,8 +26,8 @@ class Dashboard extends StatefulWidget {
 class _Dashboard extends State<Dashboard> {
   Location location = Location();
   LocationData Locations;
-  List<Travel_Info> _joinList  = null;
-  List<Travel_Info> _invitedList = null;
+  List<Travel_Info> _joinList;
+  List<Travel_Info> _invitedList;
   final SlidableController slidableController = SlidableController();
   // GlobalKey actionKey = GlobalKey();
   // double height;
@@ -142,13 +142,6 @@ class _Dashboard extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    // FloatingActionButton(
-    //   elevation: 2.0,
-    //   child: Icon(Icons.add, color: isJoinPage ? Colors.black : Colors.white),
-    //   onPressed: isJoinPage ? _callJoinMap : _callInviteMap,
-    //   backgroundColor: isJoinPage ? Theme.of(context).accentColor : Theme.of(context).primaryColor,
-    //   heroTag: null,
-    // );
     return Scaffold(
       floatingActionButton: OpenContainer(
         closedBuilder: (context, openWidget){
@@ -156,11 +149,11 @@ class _Dashboard extends State<Dashboard> {
             onTap: (){
               if(currentUser.vehicle.isEmpty && !isJoinPage)
                 alertDialog(context,
-                  "No vehicle",
-                  Text("Please add your vehicle.\nAccount -> Vehicle Management"),
+                  AppLocalizations.instance.text("vehicleDialogTitle"),
+                  Text(AppLocalizations.instance.text("vehicleDialogBody")),
                   <Widget>[
                     FlatButton(
-                      child: Text('OK'),
+                      child: Text(AppLocalizations.instance.text("ok")),
                       onPressed: () async {
                         Navigator.of(context).pop();
                       },
@@ -299,7 +292,7 @@ class _Dashboard extends State<Dashboard> {
     if( _joinList != null && _invitedList != null){
       if((_joinList.isEmpty && isJoinPage) || (_invitedList.isEmpty && !isJoinPage)){
         return Center(
-          child: Text('No List'),
+          child: Text(AppLocalizations.instance.text("dashboardEmpty")),
         );
       }else{
         return _buildListView();
@@ -314,7 +307,7 @@ class _Dashboard extends State<Dashboard> {
             children: <Widget>[
               CircularProgressIndicator(),
               SizedBox(height: 20.0),
-              Text("Loading..."),
+              Text(AppLocalizations.instance.text("loading")),
             ],
           )
       ),
@@ -376,7 +369,7 @@ class _Dashboard extends State<Dashboard> {
         },
         onClosed: (value) async {
           if(data.routes.role == "0" && data.routes.match.isEmpty && (value ?? false)){
-            loadingDialog(context,"Please wait...");
+            loadingDialog(context,AppLocalizations.instance.text("pleasewait"));
             await _pageConfig(currentUser.status.navbarTrip);
             currentUser.status.navbarTrip = false;
             _invitedList.forEach((element) {
@@ -398,20 +391,6 @@ class _Dashboard extends State<Dashboard> {
         },
       ),
     );
-    // return DashboardCardTile(
-    //   data: data,
-    //   controller: slidableController,
-    //   status: data.routes.status,
-    //   onCardPressed: () => _onCardPressed(data),
-    //   onDeletePressed: () async {
-    //     await data.deleteTravel();
-    //     if(data.routes.role == "0"){
-    //       _deleteinviteCard(data.uid);
-    //     }else{
-    //       _deletejoinCard(data.uid);
-    //     }
-    //   },
-    // );
   }
 
   Widget _onCardPressedWidget(Travel_Info data) {

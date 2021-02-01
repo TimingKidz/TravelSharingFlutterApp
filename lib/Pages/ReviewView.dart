@@ -3,7 +3,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:travel_sharing/Class/Review.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/UI/ReviewCard.dart';
-import 'package:travel_sharing/main.dart';
+import 'package:travel_sharing/localization.dart';
 
 class ReviewView extends StatefulWidget {
   final User user;
@@ -16,7 +16,7 @@ class ReviewView extends StatefulWidget {
 class _ReviewViewState extends State<ReviewView> {
   Review review ;
   int currentI = 0;
-  List<EachReview> reviewList = null;
+  List<EachReview> reviewList;
 
   @override
   void initState() {
@@ -45,7 +45,7 @@ class _ReviewViewState extends State<ReviewView> {
         children: <Widget>[
           reviewList != null ?
           reviewList.isNotEmpty ? _buildListView() : Center(
-            child: Text("No reviews in your account yet."),
+            child: Text(AppLocalizations.instance.text("reviewempty")),
           ) : Padding(
             padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.09),
             child: Center(
@@ -55,7 +55,7 @@ class _ReviewViewState extends State<ReviewView> {
                   children: <Widget>[
                     CircularProgressIndicator(),
                     SizedBox(height: 20.0),
-                    Text("Loading..."),
+                    Text(AppLocalizations.instance.text("loading")),
                   ],
                 )
             ),
@@ -95,7 +95,7 @@ class _ReviewViewState extends State<ReviewView> {
                                   direction: Axis.horizontal,
                                 ),
                                 SizedBox(width: 4.0),
-                                Text( review.amount == 0 ? "0.0": (review.totalscore/review.amount).toString(), style: TextStyle(fontSize: 16.0, color: Colors.white)),
+                                Text( review.amount == 0 ? "0.0": (review.totalscore/review.amount).toStringAsPrecision(2), style: TextStyle(fontSize: 16.0, color: Colors.white)),
                                 SizedBox(width: 4.0),
                                 Container(
                                   padding: EdgeInsets.symmetric(horizontal: 2.0),

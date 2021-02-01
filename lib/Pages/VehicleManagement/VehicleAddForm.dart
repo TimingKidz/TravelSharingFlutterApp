@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:travel_sharing/Class/DropdownVar.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/buttons/CardDropdown.dart';
 import 'package:travel_sharing/buttons/cardTextField.dart';
 import 'package:travel_sharing/custom_color_scheme.dart';
-import 'package:travel_sharing/main.dart';
+import 'package:travel_sharing/localization.dart';
 
 class VehicleAddForm extends StatefulWidget {
   VehicleAddFormState createState() => VehicleAddFormState();
@@ -13,14 +14,13 @@ class VehicleAddForm extends StatefulWidget {
 class VehicleAddFormState extends State<VehicleAddForm> {
   Vehicle vehicleData = Vehicle();
   bool isChecked = true;
-  List<String> vehicleType = ["Motorcycle", "Car"];
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
     vehicleData.isDefault = false;
-    vehicleData.type = vehicleType.first;
+    vehicleData.type = DropdownVar().vehicleType.first;
   }
 
   @override
@@ -63,14 +63,14 @@ class VehicleAddFormState extends State<VehicleAddForm> {
                         children: [
                           IconButton(
                             icon: Icon(Icons.arrow_back),
-                            tooltip: "back",
+                            tooltip: AppLocalizations.instance.text("back"),
                             iconSize: 26.0,
                             color: Colors.white,
                             onPressed: () => Navigator.of(context).pop(),
                           ),
                           SizedBox(width: 16.0),
                           Text(
-                            "Add Vehicle",
+                            AppLocalizations.instance.text("AddVehicle"),
                             style: TextStyle(
                               // fontWeight: FontWeight.bold,
                               fontSize: 20.0,
@@ -82,7 +82,7 @@ class VehicleAddFormState extends State<VehicleAddForm> {
                       ),
                       IconButton(
                         icon: Icon(Icons.check),
-                        tooltip: "Add vehicle",
+                        tooltip: AppLocalizations.instance.text("AddVehicle"),
                         iconSize: 26.0,
                         color: Colors.white,
                         onPressed: () async {
@@ -107,8 +107,8 @@ class VehicleAddFormState extends State<VehicleAddForm> {
   List<Widget> formList(){
     return [
       CardDropdown(
-        listItems: vehicleType,
-        labelText: "Type",
+        listItems: DropdownVar().vehicleType,
+        labelText: AppLocalizations.instance.text("type"),
         dropdownTileBuild: (value) {
           return Text(value);
         },
@@ -116,26 +116,26 @@ class VehicleAddFormState extends State<VehicleAddForm> {
       ),
       CardTextField(
         notNull: true,
-        labelText: "License",
+        labelText: AppLocalizations.instance.text("license"),
         onChanged: (data) => vehicleData.license = data,
       ),
       CardTextField(
         notNull: true,
-        labelText: "Brand",
+        labelText: AppLocalizations.instance.text("brand"),
         onChanged: (data) => vehicleData.brand = data,
       ),
       CardTextField(
         notNull: true,
-        labelText: "Model",
+        labelText: AppLocalizations.instance.text("model"),
         onChanged: (data) => vehicleData.model = data,
       ),
       CardTextField(
         notNull: true,
-        labelText: "Color",
+        labelText: AppLocalizations.instance.text("color"),
         onChanged: (data) => vehicleData.color = data,
       ),
       CheckboxListTile(
-        title: const Text("Set to default vehicle"),
+        title: Text(AppLocalizations.instance.text("setDefault")),
         value: vehicleData.isDefault,
         onChanged: (val){
           setState(() {

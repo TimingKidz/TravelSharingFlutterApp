@@ -3,11 +3,10 @@ import 'package:travel_sharing/Class/MapStaticRequest.dart';
 import 'package:travel_sharing/Class/Req_Info.dart';
 import 'package:travel_sharing/Class/Travel_Info.dart';
 import 'package:travel_sharing/Dialog.dart';
-import 'package:travel_sharing/Pages/Matchinformation.dart';
 import 'package:travel_sharing/UI/NotificationBarSettings.dart';
 import 'package:travel_sharing/UI/ReqMapCard.dart';
+import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
-import 'package:flutter/services.dart';
 
 
 class ReqList extends StatefulWidget {
@@ -20,7 +19,7 @@ class ReqList extends StatefulWidget {
 }
 
 class _ReqListstate extends State<ReqList> {
-  List<Req_Info> _ReqList = null;
+  List<Req_Info> _ReqList;
   int _index = 1;
 //  Travel_Info Data; // current routes
 //  bool isFromMatchinfo;
@@ -101,7 +100,7 @@ class _ReqListstate extends State<ReqList> {
     if( _ReqList != null){
       if(_ReqList.isEmpty){
         return Center(
-          child: Text('No List'),
+          child: Text(AppLocalizations.instance.text("noList")),
         );
       }else{
         return _buildListView();
@@ -116,7 +115,7 @@ class _ReqListstate extends State<ReqList> {
             children: <Widget>[
               CircularProgressIndicator(),
               SizedBox(height: 20.0),
-              Text("Loading..."),
+              Text(AppLocalizations.instance.text("loading")),
             ],
           )
       ),
@@ -224,7 +223,7 @@ class _ReqListstate extends State<ReqList> {
         isPress[data.routes.uid] = false;
         await getData(true);
         ScaffoldMessenger.of(context).removeCurrentSnackBar();
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not accept please try again.")));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.instance.text("acceptErr"))));
       }
     });
   }
@@ -240,7 +239,7 @@ class _ReqListstate extends State<ReqList> {
       }else{
         print("error");
         ScaffoldMessenger.of(context).removeCurrentSnackBar();
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not decline please try again.")));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.instance.text("declineErr"))));
       }
       await getData(true);
     });

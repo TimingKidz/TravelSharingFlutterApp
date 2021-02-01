@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart' as u;
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -10,11 +9,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:location/location.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:travel_sharing/Dialog.dart';
-import 'package:travel_sharing/Pages/homeNavigation.dart';
-import 'package:travel_sharing/Pages/signupPage.dart';
 import 'package:travel_sharing/UI/NotificationBarSettings.dart';
 import 'package:travel_sharing/main.dart';
-import 'loginPage.dart';
 
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -23,7 +19,6 @@ class Splashscreen extends StatefulWidget {
 }
 
 class SplashscreenState extends State<Splashscreen> {
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   var initializationSettings;
 
 

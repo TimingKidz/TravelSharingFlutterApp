@@ -1,10 +1,8 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_directions_api/google_directions_api.dart';
 import 'package:intl/intl.dart';
 import 'package:travel_sharing/Class/DateManage.dart';
-import 'package:travel_sharing/buttons/cardTextField.dart';
 
 class CardDatePicker extends StatefulWidget {
   final String labelText;
@@ -56,19 +54,6 @@ class CardDatePickerState extends State<CardDatePicker> with TickerProviderState
   void dispose() {
     _controller.dispose();
     super.dispose();
-  }
-
-  bool get _isAnimationRunningForwardsOrComplete {
-    switch (_controller.status) {
-      case AnimationStatus.forward:
-      case AnimationStatus.completed:
-        return true;
-      case AnimationStatus.reverse:
-      case AnimationStatus.dismissed:
-        return false;
-    }
-    assert(false);
-    return null;
   }
 
   @override

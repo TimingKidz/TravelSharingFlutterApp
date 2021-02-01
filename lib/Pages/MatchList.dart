@@ -1,4 +1,3 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_sharing/Class/MapStaticRequest.dart';
 import 'package:travel_sharing/Class/Match_Info.dart';
@@ -7,12 +6,10 @@ import 'package:travel_sharing/Class/Travel_Info.dart';
 import 'package:travel_sharing/Class/User.dart';
 import 'package:location/location.dart' ;
 import 'package:travel_sharing/Dialog.dart';
-import 'package:travel_sharing/Pages/Matchinformation.dart';
-import 'package:travel_sharing/Pages/mapview.dart';
 import 'package:travel_sharing/UI/MatchMapCard.dart';
 import 'package:travel_sharing/UI/NotificationBarSettings.dart';
+import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
-import 'package:flutter/services.dart';
 
 
 class MatchList extends StatefulWidget {
@@ -27,9 +24,9 @@ class MatchList extends StatefulWidget {
 class _MatchListstate extends State<MatchList> {
   Location location = Location();
   LocationData Locations;
-  List<Match_Info> _MatchList = null;
+  List<Match_Info> _MatchList;
   bool isFirstPage = true;
-  List<String> isreq = null;
+  List<String> isreq;
   int _index = 1;
 //  Travel_Info Data;
   Map<String,bool> isPress = Map();
@@ -89,11 +86,11 @@ class _MatchListstate extends State<MatchList> {
       if( widget.data.uid == data['tripid'] ){
         unPopDialog(
           this.context,
-          'Accept',
-          Text("Your requset has been Accepted."),
+          AppLocalizations.instance.text("tripAccTitle"),
+          Text(AppLocalizations.instance.text("tripAccDes")),
           <Widget>[
             FlatButton(
-              child: Text('Ok'),
+              child: Text(AppLocalizations.instance.text("ok")),
               onPressed: () async {
                 Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
               },
@@ -184,7 +181,7 @@ class _MatchListstate extends State<MatchList> {
     if( _MatchList != null){
       if(_MatchList.isEmpty){
         return Center(
-          child: Text('No List'),
+          child: Text(AppLocalizations.instance.text("noList")),
         );
       }else{
         return _buildListView();
@@ -199,7 +196,7 @@ class _MatchListstate extends State<MatchList> {
             children: <Widget>[
               CircularProgressIndicator(),
               SizedBox(height: 20.0),
-              Text("Loading..."),
+              Text(AppLocalizations.instance.text("loading")),
             ],
           )
       ),
@@ -239,7 +236,7 @@ class _MatchListstate extends State<MatchList> {
     );
   }
 
-  Future<bool> _onButtonPressed(Match_Info data) async {
+  Future<void> _onButtonPressed(Match_Info data) async {
     isPress[data.routes.uid] = true;
     setState((){ });
     Routes().Request(data,widget.data).then((value){

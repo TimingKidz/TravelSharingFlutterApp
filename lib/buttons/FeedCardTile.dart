@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:travel_sharing/Class/DateManage.dart';
 import 'package:travel_sharing/Class/Feed.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/Dialog.dart';
 import 'package:travel_sharing/UI/ProfileInfo.dart';
-import 'package:travel_sharing/custom_color_scheme.dart';
+import 'package:travel_sharing/localization.dart';
 import 'package:travel_sharing/main.dart';
 
 class FeedCardTile extends StatefulWidget {
@@ -29,80 +28,65 @@ class FeedCardTileState extends State<FeedCardTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // margin: EdgeInsets.symmetric(horizontal: 8.0),
-      // decoration: BoxDecoration(
-      //   color: Colors.white,
-      //   borderRadius: cardBorder,
-      //   boxShadow: [
-      //     BoxShadow(
-      //       color: Colors.grey.withOpacity(0.2),
-      //       spreadRadius: 1,
-      //       blurRadius: 2,
-      //       offset: Offset(0.0, 0.0), //(x,y)
-      //     ),
-      //   ],
-      // ),
-      child: FlatButton(
-          padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-          shape: RoundedRectangleBorder(
-              borderRadius: cardBorder
-          ),
-          onPressed: () {
-            widget.onCardPressed();
-          },
-          child: Stack(
-            children: <Widget>[
-              widget.data.routes.imgpath != null || widget.data.routes.description.isNotEmpty
-              ? Column(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      children: <Widget>[
-                        leftWidget(),
-                        SizedBox(width: 16.0),
-                        Flexible(child: Container(child: mainInfo()))
+    return FlatButton(
+        padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+        shape: RoundedRectangleBorder(
+            borderRadius: cardBorder
+        ),
+        onPressed: () {
+          widget.onCardPressed();
+        },
+        child: Stack(
+          children: <Widget>[
+            widget.data.routes.imgpath != null || widget.data.routes.description.isNotEmpty
+            ? Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Row(
+                    children: <Widget>[
+                      leftWidget(),
+                      SizedBox(width: 16.0),
+                      Flexible(child: Container(child: mainInfo()))
+                    ],
+                  ),
+                ),
+                if(widget.data.routes.description.isNotEmpty)
+                  tripImage(),
+                if(widget.data.routes.imgpath != null)
+                  tripDescription(),
+                SizedBox(height: 8.0),
+                Align(alignment: Alignment.centerRight, child: profile())
+              ],
+            )
+            : Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: leftWidget(),
+                ),
+                Flexible(
+                  child: Container(
+                    width: double.infinity,
+                    child: Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: mainInfo()
+                          ),
+                        ),
+                        Align(alignment: Alignment.centerRight,child: profile())
                       ],
                     ),
                   ),
-                  if(widget.data.routes.description.isNotEmpty)
-                    tripImage(),
-                  if(widget.data.routes.imgpath != null)
-                    tripDescription(),
-                  SizedBox(height: 8.0),
-                  Align(alignment: Alignment.centerRight, child: profile())
-                ],
-              )
-              : Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: leftWidget(),
-                  ),
-                  Flexible(
-                    child: Container(
-                      width: double.infinity,
-                      child: Column(
-                        children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: mainInfo()
-                            ),
-                          ),
-                          Align(alignment: Alignment.centerRight,child: profile())
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              badge() // Type badge
-            ],
-          )
-      ),
+                )
+              ],
+            ),
+            badge() // Type badge
+          ],
+        )
     );
   }
 
@@ -161,7 +145,7 @@ class FeedCardTileState extends State<FeedCardTile> {
         if(widget.data.routes.role == "0")
           SizedBox(height: 12.0),
         if(widget.data.routes.role == "0")
-          Text(widget.data.routes.cost == "0" ? "FREE" :"฿${widget.data.routes.cost}"),
+          Text(widget.data.routes.cost == "0" ? AppLocalizations.instance.text("free") :"฿${widget.data.routes.cost}"),
         SizedBox(height: 8.0),
         Text(
           widget.data.routes.role == "1"
@@ -187,7 +171,7 @@ class FeedCardTileState extends State<FeedCardTile> {
       crossAxisAlignment: CrossAxisAlignment
           .start,
       children: <Widget>[
-        Text('ปลายทาง',
+        Text(AppLocalizations.instance.text("dst"),
             style: TextStyle(fontSize: 10.0)),
         SizedBox(height: 8.0),
         Text(widget.data.routes.dst,
@@ -195,7 +179,7 @@ class FeedCardTileState extends State<FeedCardTile> {
             style: TextStyle(fontSize: 20.0,
                 fontWeight: FontWeight.bold)),
         SizedBox(height: 24.0),
-        Text('ต้นทาง', style: TextStyle(
+        Text(AppLocalizations.instance.text("src"), style: TextStyle(
             fontSize: 10.0,
             color: Colors.black54)),
         SizedBox(height: 8.0),

@@ -8,13 +8,11 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_sharing/Class/HTTP.dart';
 import 'package:travel_sharing/Class/Status.dart';
 import 'package:travel_sharing/Pages/Account.dart';
 import 'package:travel_sharing/Pages/JoinMap.dart';
-import 'package:travel_sharing/Pages/LocationSearchBar.dart';
 import 'package:travel_sharing/Pages/MatchList.dart';
 import 'package:travel_sharing/Pages/Matchinformation.dart';
 import 'package:travel_sharing/Pages/NotificationsPage.dart';
@@ -156,9 +154,7 @@ class MyApp extends StatelessWidget {
           '/feedPage' : (context) => FeedPage(),
           '/MatchInfo' : (context) => Matchinformation(),
           '/Account' : (context) => Account(),
-          '/inviteMap' : (context) => CreateRoute(),
           '/Map' : (context) => MapView(),
-          '/LocationSerch' : (context) => LocationSearch(),
           '/MatchList' : (context) => MatchList(),
           '/NotificationPage' : (context) => NotificationsPage(),
           '/Profile' : (context) => ProfileManagePage(),

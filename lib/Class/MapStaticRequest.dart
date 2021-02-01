@@ -1,13 +1,11 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:travel_sharing/Class/Match_Info.dart';
 import 'package:travel_sharing/Class/RouteJson.dart';
-import 'package:travel_sharing/Class/Travel_Info.dart';
 import 'package:travel_sharing/main.dart';
 
 class MapStaticRequest{
 
   String getMapUrl(Routes user,Routes other){
-    String url ="http://maps.googleapis.com/maps/api/staticmap?size=512x1980&key=${api_key}";
+    String url ="http://maps.googleapis.com/maps/api/staticmap?size=512x1980&key=$api_key";
     String path = "&path=color:0xFFB400|weight:7|";
     String marker =  "";
     String end = "&sensor=false";
@@ -31,7 +29,7 @@ class MapStaticRequest{
 
   String join_getMapUrl(Routes user){
     List<String> markericon = ["icon:https://i.ibb.co/RNhMDcD/person-min.png","icon:https://i.ibb.co/b6QjxL5/dst-paiduay-min.png"];
-    String url ="http://maps.googleapis.com/maps/api/staticmap?size=512x1980&key=${api_key}";
+    String url ="http://maps.googleapis.com/maps/api/staticmap?size=512x1980&key=$api_key";
     String marker =  "";
     String end = "&sensor=false";
     if(user != null)
@@ -47,7 +45,7 @@ class MapStaticRequest{
 
   String invite_getMapUrl(Routes user){
     List<String> markericon = ["icon:https://i.ibb.co/sCh6hMW/car-min.png","icon:https://i.ibb.co/7Snt16C/dst-chuan-min.png"];
-    String url ="http://maps.googleapis.com/maps/api/staticmap?size=512x1980&key=${api_key}";
+    String url ="http://maps.googleapis.com/maps/api/staticmap?size=512x1980&key=$api_key";
     String path = "&path=color:0xFFB400|weight:7|";
     String marker =  "";
     String end = "&sensor=false";

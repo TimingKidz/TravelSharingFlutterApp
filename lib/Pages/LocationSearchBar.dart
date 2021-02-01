@@ -116,7 +116,6 @@ class _LocationSearchState extends State<LocationSearch> {
     print(predictions);
 
     for (var i=0; i < predictions.length; i++) {
-      String name = predictions[i]['description'];
       _displayResults.add(predictions[i]);
     }
 

@@ -113,7 +113,7 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
             Padding(
               padding: EdgeInsets.only(top: 80),
               child: notifications.isNotEmpty ? _buildListView() : Center(
-                child: Text("Nothing in notifications yet."),
+                child: Text(AppLocalizations.instance.text("notiempty")),
               ),
             ) : Padding(
               padding: EdgeInsets.only(top: 80),
@@ -124,7 +124,7 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
                   children: <Widget>[
                     CircularProgressIndicator(),
                     SizedBox(height: 20.0),
-                    Text("Loading..."),
+                    Text(AppLocalizations.instance.text("loading")),
                   ],
                 )
               ),
@@ -176,7 +176,7 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
             actionExtentRatio: 0.25,
             secondaryActions: <Widget>[
                 IconSlideAction(
-                  caption: 'Delete',
+                  caption: AppLocalizations.instance.text("delete"),
                   color: Colors.red,
                   icon: Icons.delete,
                   onTap: () {
@@ -495,6 +495,9 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
             ],
           ),
         );
+        break;
+      default:
+        return Container();
         break;
     }
   }
