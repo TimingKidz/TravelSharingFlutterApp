@@ -98,7 +98,6 @@ class HomeNavigationState extends State<HomeNavigation> {
 
   @override
   void setState(fn) {
-    print("setsate homenav");
     if(mounted) {
       super.setState(fn);
     }
@@ -118,7 +117,7 @@ class HomeNavigationState extends State<HomeNavigation> {
         unPopDialog(
           this.context,
           'Accept',
-          Text("You already online with other device."),
+          Text("You already online with other device or lost connection for along time."),
           <Widget>[
             FlatButton(
               child: Text('Ok'),

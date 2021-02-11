@@ -143,11 +143,11 @@ class _Dashboard extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: OpenContainer(
+      floatingActionButton:  _joinList == null && _invitedList == null ? Container() : OpenContainer(
         closedBuilder: (context, openWidget){
           return InkWell(
             onTap: (){
-              if(currentUser.vehicle.isEmpty && !isJoinPage)
+              if(currentUser.vehicle.isEmpty && !isJoinPage){
                 alertDialog(context,
                   AppLocalizations.instance.text("vehicleDialogTitle"),
                   Text(AppLocalizations.instance.text("vehicleDialogBody")),
@@ -160,8 +160,37 @@ class _Dashboard extends State<Dashboard> {
                     ),
                   ],
                 );
-              else
-                openWidget();
+              } else {
+                if(isJoinPage && _joinList.length >= 5){
+                  alertDialog(context,
+                    AppLocalizations.instance.text("LimitDialog"),
+                    Text(AppLocalizations.instance.text("LimitDialogBody")),
+                    <Widget>[
+                      FlatButton(
+                        child: Text(AppLocalizations.instance.text("ok")),
+                        onPressed: () async {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                }else if ( !isJoinPage && _invitedList.length >= 5 ){
+                  alertDialog(context,
+                    AppLocalizations.instance.text("LimitDialog"),
+                    Text(AppLocalizations.instance.text("LimitDialogBody")),
+                    <Widget>[
+                      FlatButton(
+                        child: Text(AppLocalizations.instance.text("ok")),
+                        onPressed: () async {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                }else{
+                  openWidget();
+                }
+              }
             },
             child: SizedBox(
               height: 56.0,

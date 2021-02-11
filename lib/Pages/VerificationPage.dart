@@ -44,6 +44,7 @@ class _VerificationPageState extends State<VerificationPage>{
     notificationBarIconDark();
     return WillPopScope(
       onWillPop: () async {
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
         if(isEdit){
           setState(() {
             isEdit = !isEdit;
@@ -255,7 +256,9 @@ class _VerificationPageState extends State<VerificationPage>{
         ScaffoldMessenger.of(context).removeCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Can not resend. Please try again.")));
       }
-      isResend = false;
+      setState(() {
+        isResend = false;
+      });
     });
   }
 
@@ -269,7 +272,10 @@ class _VerificationPageState extends State<VerificationPage>{
         ScaffoldMessenger.of(context).removeCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(value)));
       }
-      isLoading = false;
+      setState(() {
+        isLoading = false;
+      });
+
       Navigator.of(context).maybePop();
     });
   }

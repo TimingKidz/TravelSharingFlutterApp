@@ -41,7 +41,7 @@
   "feedempty": "Nothing in feed yet.",
   "filter": "Filter",
   "vehicleDialogTitle": "No vehicle",
-  "vehicleDialogBody": "Please add your vehicle.\nAccount -> Vehicle Management",
+  "vehicleDialogBody": "\"Please add your vehicle.\\nAccount -> Vehicle Management\"",
   "free": "FREE",
   "src": "Source",
   "dst": "Destination",
@@ -51,7 +51,6 @@
   "statPending": "Pending Request",
   "statNoMatch": "No Matches Found",
   "statFoundMatch": "Found Matched",
-  "statExpired": "Expired",
   "dashboardEmpty": "Nothing in dashboard yet.",
   "pleasewait": "Please wait ...",
   "more": "More",
@@ -118,5 +117,7 @@
   "reqFin": "Requested",
   "accept": "Accept",
   "decline": "Decline",
-  "full": "Already\nFull"
+  "full": "Already\nFull",
+  "LimitDialog" : "Limited",
+  "LimitDialogBody" : "Amount of your trip reach the limit."
 }

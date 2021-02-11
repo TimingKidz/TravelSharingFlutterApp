@@ -54,7 +54,18 @@ class _Matchinformation extends State<Matchinformation> {
     super.initState();
     isHistory = widget.isHistory == null ? false : widget.isHistory;
     _pageConfig(widget.data.routes.status);
-    colors = [Color(0xFFFFF100),Color(0xFFFF8C00),Color(0xFFE81123),Color(0xFFEC008C)];
+    colors = [
+      Color(0xFFFF8C00),
+      Color(0xFFE81123),
+      Color(0xFFEC008C),
+      Color(0xFF68217A),
+      Color(0xFF00188F),
+      Color(0xFF00BCF2),
+      Color(0xFF00B294),
+      Color(0xFF009E49),
+      Color(0xFFBAD80A),
+      Color(0xFF363636)
+    ];
   }
 
   _pageConfig(bool isNeed2Update){
@@ -493,16 +504,9 @@ class _Matchinformation extends State<Matchinformation> {
   }
 
   Future<void> endTrip() async {
-    List<Map<String,dynamic>> subuser = List();
-    for(int i = 0 ; i<tripDetails.subUser.length ;i++){
-      subuser.add({"user_id":tripDetails.subUser[i].uid,"trip_id":tripDetails.subRoutes[i].uid});
-    }
     Map<String,dynamic> tmp = {
       "hostuser_trip_id" : widget.uid,
-      "hostuser_id" : tripDetails.hostUser.uid
     };
-    tmp['subuser'] = subuser;
-
    currentUser.endTrip(tmp).then((value){
      ScaffoldMessenger.of(context).removeCurrentSnackBar();
         if(value)
@@ -606,7 +610,7 @@ class _Matchinformation extends State<Matchinformation> {
     try{
     if(!isHistory) tripDetails =  await TripDetails().getDetails(widget.uid,widget.data.uid,isNeed2Update);
     else tripDetails =  await TripDetails().getHistory(widget.uid);
-    for ( int x = 0 ; x < 4 ; x++) {
+    for ( int x = 0 ; x < 10 ; x++) {
       BitmapDescriptor src = await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(3,3)), 'assets/marker/color_${x+1}.png');
       BitmapDescriptor dst = await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(3,3)), 'assets/marker/dst_color_${x+1}.png');
       markerSet.add({"src" : src , "dst" : dst });

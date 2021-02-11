@@ -84,25 +84,28 @@ class _MatchListstate extends State<MatchList> {
     socket.on('onAccept', (data) {
       print(data);
       if( widget.data.uid == data['tripid'] ){
-        unPopDialog(
-          this.context,
-          AppLocalizations.instance.text("tripAccTitle"),
-          Text(AppLocalizations.instance.text("tripAccDes")),
-          <Widget>[
-            FlatButton(
-              child: Text(AppLocalizations.instance.text("ok")),
-              onPressed: () async {
-                Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
-              },
-            ),
-          ],
-        );
+        if(mounted){
+          unPopDialog(
+            this.context,
+            AppLocalizations.instance.text("tripAccTitle"),
+            Text(AppLocalizations.instance.text("tripAccDes")),
+            <Widget>[
+              FlatButton(
+                child: Text(AppLocalizations.instance.text("ok")),
+                onPressed: () async {
+                  Navigator.popUntil(context, ModalRoute.withName('/homeNavigation'));
+                },
+              ),
+            ],
+          );
+        }
+
       }
     });
 
     firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
-          if( (message['data']['tag'] != widget.data.uid && message['data']['tag'] == '/MatchList') ||  message['data']['tag'] != '/MatchList' ){
+          if( (message['data']['tag'] != widget.data.uid && message['data']['page'] == '/MatchList') ||  message['data']['page'] != '/MatchList' ){
             print("onMessage: $message");
             showNotification(message);
           }
@@ -115,6 +118,7 @@ class _MatchListstate extends State<MatchList> {
     notificationBarIconDark();
     return  WillPopScope(
       onWillPop: () async {
+        socket.off('onAccept');
         ScaffoldMessenger.of(context).removeCurrentSnackBar();
         Navigator.of(context).pop();
         return false;
