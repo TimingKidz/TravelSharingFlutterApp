@@ -41,7 +41,7 @@
   "feedempty": "ยังไม่มีอะไรอยู่ในหน้าฟีด",
   "filter": "ฟิลเตอร์",
   "vehicleDialogTitle": "ไม่มียานพาหนะ",
-  "vehicleDialogBody": "\"เพิ่มยานพาหนะได้ที่\\nบัญชี -> จัดการยานพาหนะ\"",
+  "vehicleDialogBody": "เพิ่มยานพาหนะได้ที่\nบัญชี -> จัดการยานพาหนะ",
   "free": "ฟรี",
   "src": "ต้นทาง",
   "dst": "ปลายทาง",
@@ -49,8 +49,9 @@
   "statAccept": "ตอบรับแล้ว",
   "statWait": "รอ",
   "statPending": "รอการตอบรับ",
-  "statNoMatch": "ไม่เจอคนจับคู่",
+  "statNoMatch": "ยังไม่เจอคนจับคู่",
   "statFoundMatch": "เจอคนจับคู่แล้ว",
+  "statExpired": "หมดอายุแล้ว",
   "dashboardEmpty": "ยังไม่มีอะไรอยู่ในหน้าแดชบอร์ด",
   "pleasewait": "กรุณารอสักครู่ ...",
   "more": "เพิ่มเติม",
@@ -72,7 +73,7 @@
   "dateTravel": "วันเดินทาง",
   "tripDemandChuan": "ต้องการคนไปด้วย",
   "tripDemandPaiDuay": "จำนวนคนไปด้วย",
-  "personUnit": "คน",
+  "personUnit": "TH",
   "routeCreateErr": "ไม่สามารถสร้างเส้นทางได้",
   "imgUploadErr": "ไม่สามารถอัพโหลดรูป",
   "choose": "เลือก",
@@ -116,5 +117,6 @@
   "req": "ส่งคำขอ",
   "reqFin": "ส่งคำขอแล้ว",
   "accept": "ตอบรับ",
-  "decline": "ปฏิเสธ"
+  "decline": "ปฏิเสธ",
+  "full": "เต็มแล้ว"
 }

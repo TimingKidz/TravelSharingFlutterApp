@@ -296,19 +296,25 @@ class _ReqMapCardState extends State<ReqMapCard> {
         if(widget.data.routes.role == "0")
           Text(widget.data.routes.cost == "0" ? AppLocalizations.instance.text("free") :"฿${widget.data.routes.cost}"),
         SizedBox(height: 8.0),
-        Text(
-          widget.data.routes.role == "1"
-              ? "ไปด้วย"
-              : "ต้องการ",
-          style: TextStyle(fontSize: 12.0),
-        ),
-        Text(
-          widget.data.routes.role == "1"
-              ? '${widget.data.routes.amount} ${AppLocalizations.instance.text("personUnit")}'
-              : '${int.parse(
-              widget.data.routes.amount) -
-              widget.data.routes.match.length} ${AppLocalizations.instance.text("personUnit")}',
-          style: TextStyle(fontSize: 12.0),
+        widget.data.routes.role == "0" && widget.data.routes.left == 0
+            ? Text(AppLocalizations.instance.text("full"), textAlign: TextAlign.center)
+            : (AppLocalizations.instance.text("personUnit") == "TH"
+            ? Column(
+          children: [
+            Text(
+                widget.data.routes.role == "1" ? "ไปด้วย" : "ต้องการ"
+            ),
+            Text(
+              widget.data.routes.role == "1"
+                  ? '${widget.data.routes.amount} คน'
+                  : '${widget.data.routes.left} คน',
+            ),
+          ],
+        )
+            : Text(
+            "${widget.data.routes.amount} "
+                "${widget.data.routes.role == "1" ? "join" : "left"}"
+        )
         )
       ],
     );

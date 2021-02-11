@@ -163,7 +163,6 @@ class SignUpPageState extends State<SignUpPage> {
   }
 
   List<Widget> fieldList(){
-    // TODO: Add missing field in User class
     return [
       CardTextField(
         notNull: true,
@@ -187,7 +186,7 @@ class SignUpPageState extends State<SignUpPage> {
               listItems: DropdownVar().genderList,
               labelText: AppLocalizations.instance.text("gender"),
               dropdownTileBuild: (value) {
-                return Text(value);
+                return Text(DropdownVar().genderLangMap(value));
               },
               onChanged: (data) => userData.gender = data,
             ),

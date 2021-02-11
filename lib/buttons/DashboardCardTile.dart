@@ -31,18 +31,28 @@ class DashboardCardTile extends StatefulWidget {
 
 class DashboardCardTileState extends State<DashboardCardTile> {
   Map<String, Color> statColors;
+  Map<String, String> statLang;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     statColors = {
-      AppLocalizations.instance.text("statMatch"): Theme.of(context).colorScheme.success,
-      AppLocalizations.instance.text("statAccept"): Theme.of(context).colorScheme.success,
-      AppLocalizations.instance.text("statWait"): Theme.of(context).colorScheme.warning,
-      AppLocalizations.instance.text("statPending"): Theme.of(context).colorScheme.warning,
-      AppLocalizations.instance.text("statNoMatch"): Theme.of(context).colorScheme.danger,
-      AppLocalizations.instance.text("statFoundMatch"): Theme.of(context).colorScheme.warning,
+      "Matched": Theme.of(context).colorScheme.success,
+      "Accepted": Theme.of(context).colorScheme.success,
+      "Waiting": Theme.of(context).colorScheme.warning,
+      "Pending Request": Theme.of(context).colorScheme.warning,
+      "No Matches Found": Theme.of(context).colorScheme.danger,
+      "Found Matched": Theme.of(context).colorScheme.warning,
       "Expired" : Colors.grey
+    };
+    statLang = {
+      "Matched": AppLocalizations.instance.text("statMatch"),
+      "Accepted": AppLocalizations.instance.text("statAccept"),
+      "Waiting": AppLocalizations.instance.text("statWait"),
+      "Pending Request": AppLocalizations.instance.text("statPending"),
+      "No Matches Found": AppLocalizations.instance.text("statNoMatch"),
+      "Found Matched": AppLocalizations.instance.text("statFoundMatch"),
+      "Expired" : AppLocalizations.instance.text("statExpired")
     };
   }
 
@@ -129,13 +139,25 @@ class DashboardCardTileState extends State<DashboardCardTile> {
                                     ),
                                   ),
                                   SizedBox(height: 8.0),
-                                  Text(
-                                      widget.data.routes.role == "1" ? "ไปด้วย" : "ต้องการ"
-                                  ),
-                                  Text(
-                                    widget.data.routes.role == "1"
-                                        ? '${widget.data.routes.amount} คน'
-                                        : '${widget.data.routes.left} คน',
+                                  widget.data.routes.role == "0" && widget.data.routes.left == 0
+                                  ? Text(AppLocalizations.instance.text("full"), textAlign: TextAlign.center)
+                                  : (AppLocalizations.instance.text("personUnit") == "TH"
+                                      ? Column(
+                                    children: [
+                                      Text(
+                                          widget.data.routes.role == "1" ? "ไปด้วย" : "ต้องการ"
+                                      ),
+                                      Text(
+                                        widget.data.routes.role == "1"
+                                            ? '${widget.data.routes.amount} คน'
+                                            : '${widget.data.routes.left} คน',
+                                      ),
+                                    ],
+                                  )
+                                    : Text(
+                                      "${widget.data.routes.amount} "
+                                      "${widget.data.routes.role == "1" ? "join" : "left"}"
+                                    )
                                   )
                                 ],
                               ),
@@ -174,7 +196,7 @@ class DashboardCardTileState extends State<DashboardCardTile> {
                            color: statColors[widget.data.status],
                            child: Container(
                              padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0) ,
-                             child: Text(widget.data.status, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                             child: Text(statLang[widget.data.status], style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                            ),
 
                          ),

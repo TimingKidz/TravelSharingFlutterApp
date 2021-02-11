@@ -26,6 +26,7 @@ class ProfileManagePageState extends State<ProfileManagePage> {
   bool isEdit = false;
   File selectedImage;
   String url = "${httpClass.API_IP}${currentUser.imgpath}";
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -121,7 +122,7 @@ class ProfileManagePageState extends State<ProfileManagePage> {
                                 direction: Axis.horizontal,
                               ),
                               SizedBox(width: 4.0),
-                              Text(currentUser.reviewSummary.amount == 0 ? "0.0": (currentUser.reviewSummary.totalscore/currentUser.reviewSummary.amount).toString(), style: TextStyle(fontSize: 16.0, color: Colors.white)),
+                              Text(currentUser.reviewSummary.amount == 0 ? "0.0": (currentUser.reviewSummary.totalscore/currentUser.reviewSummary.amount).toStringAsPrecision(2), style: TextStyle(fontSize: 16.0, color: Colors.white)),
                               SizedBox(width: 4.0),
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 2.0),
@@ -170,16 +171,19 @@ class ProfileManagePageState extends State<ProfileManagePage> {
             ),
           ),
           Expanded(
-            child: ListView.separated(
-              separatorBuilder: (context, _){
-                return SizedBox(height: 8.0);
-              },
-              padding: EdgeInsets.all(8.0),
-              physics: BouncingScrollPhysics(),
-              itemCount: infoField().length,
-              itemBuilder: (context, i){
-                return infoField()[i];
-              },
+            child: Form(
+              key: _formKey,
+              child: ListView.separated(
+                separatorBuilder: (context, _){
+                  return SizedBox(height: 8.0);
+                },
+                padding: EdgeInsets.all(8.0),
+                physics: BouncingScrollPhysics(),
+                itemCount: infoField().length,
+                itemBuilder: (context, i){
+                  return infoField()[i];
+                },
+              ),
             ),
           )
         ],
@@ -202,13 +206,13 @@ class ProfileManagePageState extends State<ProfileManagePage> {
         sourcePath: image.path,
         aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
         androidUiSettings: AndroidUiSettings(
-            toolbarTitle: 'Crop Image',
+            toolbarTitle: AppLocalizations.instance.text("cropimg"),
             toolbarColor: Theme.of(context).primaryColor,
             toolbarWidgetColor: Colors.white,
             initAspectRatio: CropAspectRatioPreset.square,
             lockAspectRatio: true),
         iosUiSettings: IOSUiSettings(
-          title: 'Crop Image',
+          title: AppLocalizations.instance.text("cropimg"),
           aspectRatioLockEnabled: true,
           aspectRatioPickerButtonHidden: true,
           rectX: 1,
@@ -242,7 +246,7 @@ class ProfileManagePageState extends State<ProfileManagePage> {
           onChanged: (val) => editUser.name = val,
         ),
         CardDatePicker(
-          labelText: "วันเกิด",
+          labelText: AppLocalizations.instance.text("birthday"),
           initDateTime: DateTime.parse(currentUser.birthDate).toLocal(),
           isBirthday: true,
           isJustDate: true,
@@ -259,13 +263,17 @@ class ProfileManagePageState extends State<ProfileManagePage> {
           },
           onChanged: (data) => editUser.faculty = data,
         ),
-        CardTextField(
+        CardDropdown(
+          initData: currentUser.gender,
+          listItems: DropdownVar().genderList,
           labelText: AppLocalizations.instance.text("gender"),
-          initValue: currentUser.gender,
+          dropdownTileBuild: (value) {
+            return Text(DropdownVar().genderLangMap(value));
+          },
           onChanged: (val) => editUser.gender = val,
         ),
         CardTextField(
-          labelText: "เบอร์โทร",
+          labelText: AppLocalizations.instance.text("phone"),
           maxLength: 10,
           isPhoneValidator: true,
           inputFormat: [FilteringTextInputFormatter.digitsOnly],
@@ -284,11 +292,13 @@ class ProfileManagePageState extends State<ProfileManagePage> {
               color: Colors.green,
               child: Text(AppLocalizations.instance.text("ok"), style: TextStyle(color: Colors.white)),
               onPressed: () async {
-                print(editUser.toJson());
-                isEdit = false;
-                await editUser.editUser();
-                getData();
-                selectedImage = null;
+                if (_formKey.currentState.validate()) {
+                  print(editUser.toJson());
+                  isEdit = false;
+                  await editUser.editUser();
+                  getData();
+                  selectedImage = null;
+                }
               },
             ),
           ],
@@ -327,7 +337,7 @@ class ProfileManagePageState extends State<ProfileManagePage> {
           infoText: currentUser.name,
         ),
         CardInformation(
-          labelText: "วันเกิด",
+          labelText: AppLocalizations.instance.text("birthday"),
           infoText: DateManage().datetimeFormat("date", currentUser.birthDate),
         ),
         CardInformation(
@@ -336,10 +346,10 @@ class ProfileManagePageState extends State<ProfileManagePage> {
         ),
         CardInformation(
           labelText: AppLocalizations.instance.text("gender"),
-          infoText: currentUser.gender,
+          infoText: DropdownVar().genderLangMap(currentUser.gender),
         ),
         CardInformation(
-          labelText: "เบอร์โทร",
+          labelText: AppLocalizations.instance.text("phone"),
           infoText: currentUser.phone,
         ),
       ];

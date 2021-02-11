@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:travel_sharing/Class/DropdownVar.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/localization.dart';
 
@@ -31,7 +32,7 @@ class VehicleCardTileMinState extends State<VehicleCardTileMin> {
                     Vehicle().getTypeIcon(widget.data.type,41),
                     SizedBox(width: 8.0),
                     Text(
-                      widget.data.type,
+                      DropdownVar().vehicleLangMap(widget.data.type),
                       style: TextStyle(
                         fontSize: 16.0,
                       ),

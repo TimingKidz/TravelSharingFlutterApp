@@ -324,14 +324,19 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
               ),
             );
           }else{
-            if(!feed.isMore && i+1 == list.length)
-              return Column(
-                children: [
-                  _buildRow(list[i]),
-                  SizedBox(height: 8.0)
-                ],
-              );
-            return _buildRow(list[i]);
+            bool isExpired = DateTime.now().compareTo(DateTime.parse(list[i].routes.date).add(Duration(minutes: int.parse(list[i].routes.range)))) > 0;
+            if (!isExpired) {
+              if(!feed.isMore && i+1 == list.length)
+                return Column(
+                  children: [
+                    _buildRow(list[i]),
+                    SizedBox(height: 8.0)
+                  ],
+                );
+              return _buildRow(list[i]);
+            }else{
+              return Container();
+            }
           }
         }
     );
@@ -388,46 +393,10 @@ class FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
           }
         },
         onClosed: (value) async {
-          // list.clear();
           _pageConfig();
           await widget.setSate();
         },
       ),
     );
   }
-
-  // void onCardPress(Feed data){
-  //   if(data.routes.role == "0"){
-  //     Navigator.push(context, MaterialPageRoute(
-  //         builder: (context) => CreateRoute_Join(data: data.routes))).then((value) async {
-  //       list.clear();
-  //       _pageConfig();
-  //       await widget.setSate();
-  //     });
-  //   }else{
-  //     if(currentUser.vehicle.isEmpty){
-  //       alertDialog(context,
-  //         "No vehicle",
-  //         Text("Please add your vehicle.\nAccount -> Vehicle Management"),
-  //         <Widget>[
-  //           FlatButton(
-  //             child: Text('OK'),
-  //             onPressed: () async {
-  //               Navigator.of(context).pop();
-  //             },
-  //           ),
-  //         ],
-  //       );
-  //     }else{
-  //       Navigator.push(context, MaterialPageRoute(
-  //           builder: (context) => CreateRoute(data: data.routes))).then((value) async {
-  //         list.clear();
-  //         _pageConfig();
-  //         await widget.setSate();
-  //       });
-  //     }
-  //
-  //   }
-  // }
-
 }

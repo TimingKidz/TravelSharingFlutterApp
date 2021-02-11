@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:travel_sharing/Class/DropdownVar.dart';
 import 'package:travel_sharing/Class/Vehicle.dart';
 import 'package:travel_sharing/Dialog.dart';
 import 'package:travel_sharing/UI/PlainBGInfo.dart';
@@ -128,7 +129,6 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
   List<Widget> infoField(){
     if(isEdit){
       return [
-
         SizedBox(width: 16.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -247,7 +247,7 @@ class VehicleCardTileFullState extends State<VehicleCardTileFull> {
       ];
     } else {
       return [
-        PlainBGInfo(label: AppLocalizations.instance.text("type"), info: widget.data.type),
+        PlainBGInfo(label: AppLocalizations.instance.text("type"), info: DropdownVar().vehicleLangMap(widget.data.type)),
         SizedBox(height: 16.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -110,7 +110,7 @@ class VehicleAddFormState extends State<VehicleAddForm> {
         listItems: DropdownVar().vehicleType,
         labelText: AppLocalizations.instance.text("type"),
         dropdownTileBuild: (value) {
-          return Text(value);
+          return Text(DropdownVar().vehicleLangMap(value));
         },
         onChanged: (data) => vehicleData.type = data,
       ),

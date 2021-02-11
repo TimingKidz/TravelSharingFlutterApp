@@ -194,7 +194,7 @@ class RatingPageState extends State<RatingPage> {
         },
         child: Padding(
           padding: EdgeInsets.all(8.0),
-          child: Text(type),
+          child: Text(DropdownVar().ratingLangMap(type)),
         ),
       ),
     );

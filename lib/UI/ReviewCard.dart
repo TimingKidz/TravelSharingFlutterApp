@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:travel_sharing/Class/DropdownVar.dart';
 import 'package:travel_sharing/Class/Review.dart';
 import 'package:travel_sharing/main.dart';
 
@@ -79,7 +80,7 @@ class _ReviewCardState extends State<ReviewCard> {
       child: Padding(
         padding: EdgeInsets.all(8.0),
         child: Text(
-            type
+            DropdownVar().ratingLangMap(type)
         ),
       ),
     );

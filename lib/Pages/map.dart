@@ -53,6 +53,8 @@ class _CreateRoutestate extends State<CreateRoute> {
   StreamSubscription<LocationData> locationSubscription;
   LatLngBounds bounds;
   List<BitmapDescriptor> markerSet = List();
+  bool previewBut = true;
+  bool backBut = true;
 
   @override
   void setState(fn) {
@@ -104,23 +106,28 @@ class _CreateRoutestate extends State<CreateRoute> {
     }
     return WillPopScope(
       onWillPop: () async {
-        if (isChooseOnMap) {
-          setState(() {
-            isChooseOnMap = !isChooseOnMap;
-          });
-          return false;
-        }else{
-          if(!isSelected) return true;
-          else {
-            await _Fin();
-            isPreview = true;
+        if (backBut) {
+          if (isChooseOnMap) {
             setState(() {
-              isWantCustom = false;
-              isSelected = false;
-
+              isChooseOnMap = false;
             });
             return false;
+          }else{
+            if(!isSelected) return true;
+            else {
+              backBut = false;
+              await _Fin();
+              isPreview = true;
+              setState(() {
+                isWantCustom = false;
+                isSelected = false;
+                backBut = true;
+              });
+              return false;
+            }
           }
+        }else{
+          return false;
         }
       },
       child: Scaffold(
@@ -416,6 +423,7 @@ class _CreateRoutestate extends State<CreateRoute> {
                         icon: Icon(Icons.arrow_forward_sharp),
                         label: Text(AppLocalizations.instance.text("next")),
                         onPressed: (){
+                          previewBut = true;
                           isPreview = false;
                           isChooseOnMap = false;
                           isWantCustom = false;
@@ -429,14 +437,16 @@ class _CreateRoutestate extends State<CreateRoute> {
                         icon: Icon(Icons.check),
                         label: Text(AppLocalizations.instance.text("preview")),
                         onPressed: () async {
-                          isChooseOnMap = false;
-                          isWantCustom = false;
-                          isSelected = false;
-                          await _Fin();
-                          isPreview = true;
-
-                          setState(() { });
-                          },
+                          if (previewBut) {
+                            previewBut = false;
+                            isChooseOnMap = false;
+                            isWantCustom = false;
+                            isSelected = false;
+                            await _Fin();
+                            isPreview = true;
+                            setState(() { });
+                          }
+                        },
                         heroTag: null,
                       ),
                     if( Map_Latlng["src"] != null && Map_Latlng["dst"] != null && !isChooseOnMap && !isWantCustom && isPreview)
@@ -474,7 +484,7 @@ class _CreateRoutestate extends State<CreateRoute> {
             child: InkWell(
               child: SizedBox(width: 64, height: 64, child: Icon(Icons.add)),
               onTap: () {
-                isChooseOnMap = !isChooseOnMap;
+                isChooseOnMap = true;
                 setState(() {});
               },
             ),
@@ -711,7 +721,7 @@ class _CreateRoutestate extends State<CreateRoute> {
               src:Placename_src,
               dst: Placename_dst ,
               data: widget.data,
-              Role: Role))).then((value) => setState(() { }));
+              Role: Role))).then((value) => setState(() { previewBut = true; }));
     }
   }
 

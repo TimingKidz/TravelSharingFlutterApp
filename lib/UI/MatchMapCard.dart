@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -67,14 +68,12 @@ class _MatchMapCardState extends State<MatchMapCard> {
                     ),
                   ),
                   if(widget.data.isOffer)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Material(
+                    Material(
                       elevation: 1,
-                      borderRadius: BorderRadius.circular(20.0),
                       color: Theme.of(context).colorScheme.success,
+                      borderRadius: BorderRadius.only(bottomRight: Radius.circular(20.0)),
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                        padding: EdgeInsets.symmetric(horizontal: 32.0, vertical: 8.0),
                         child: Text(
                           AppLocalizations.instance.text("offer"),
                           style: TextStyle(
@@ -85,7 +84,30 @@ class _MatchMapCardState extends State<MatchMapCard> {
                         ),
                       ),
                     ),
-                  ),
+                  Positioned.fill(
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Material(
+                          elevation: 1,
+                          borderRadius: BorderRadius.circular(20.0),
+                          color: Theme.of(context).accentColor,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                            child: Text(
+                              widget.data.routes.tag.first,
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -189,6 +211,8 @@ class _MatchMapCardState extends State<MatchMapCard> {
                                         )
                                       ],
                                     ),
+                                    Spacer(),
+                                    Text(widget.data.routes.cost == "0" ? AppLocalizations.instance.text("free") :"฿${widget.data.routes.cost}")
                                   ],
                                 ),
                               )
@@ -260,24 +284,26 @@ class _MatchMapCardState extends State<MatchMapCard> {
             ],
           ),
         ),
-        if(widget.data.routes.role == "0")
-          SizedBox(height: 12.0),
-        if(widget.data.routes.role == "0")
-          Text(widget.data.routes.cost == "0" ? AppLocalizations.instance.text("free") :"฿${widget.data.routes.cost}"),
         SizedBox(height: 8.0),
-        Text(
-          widget.data.routes.role == "1"
-              ? "ไปด้วย"
-              : "ต้องการ",
-          style: TextStyle(fontSize: 12.0),
-        ),
-        Text(
-          widget.data.routes.role == "1"
-              ? '${widget.data.routes.amount} ${AppLocalizations.instance.text("personUnit")}'
-              : '${int.parse(
-              widget.data.routes.amount) -
-              widget.data.routes.match.length} ${AppLocalizations.instance.text("personUnit")}',
-          style: TextStyle(fontSize: 12.0),
+        widget.data.routes.role == "0" && widget.data.routes.left == 0
+            ? Text(AppLocalizations.instance.text("full"), textAlign: TextAlign.center)
+            : (AppLocalizations.instance.text("personUnit") == "TH"
+            ? Column(
+          children: [
+            Text(
+                widget.data.routes.role == "1" ? "ไปด้วย" : "ต้องการ"
+            ),
+            Text(
+              widget.data.routes.role == "1"
+                  ? '${widget.data.routes.amount} คน'
+                  : '${widget.data.routes.left} คน',
+            ),
+          ],
+        )
+            : Text(
+            "${widget.data.routes.amount} "
+                "${widget.data.routes.role == "1" ? "join" : "left"}"
+        )
         )
       ],
     );
